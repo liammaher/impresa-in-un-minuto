@@ -63,6 +63,7 @@ import yaml  # noqa: E402
 
 REHEARSALS = HERE.parents[4] / "rehearsals"
 CHUNK = 40_000
+MAX_BUNDLE = 12  # runs per --bundle: the pane's storage (2026-11-14: bundles of 12 worked, 20 were never tried)
 
 
 def values_of(run_js, proc):
@@ -190,6 +191,9 @@ def main():
         ap.error("--values and --out are required to build a batch")
     names = a.rehearsals or sorted(d.name for d in REHEARSALS.iterdir()
                                    if (d / "portal-steps.generated.yaml").exists() and (d / a.answers).exists())
+    if a.bundle and len(names) > MAX_BUNDLE:
+        # More than about a dozen runs overflow the pane's storage (README, "Checking them all"): one bundle per dozen, one file pick each.
+        ap.error(f"--bundle holds at most {MAX_BUNDLE} runs, {len(names)} given: split them into bundles of {MAX_BUNDLE}")
     fields = run.fields_of(a.values.read_text())
     (a.out / "steps").mkdir(parents=True, exist_ok=True)
     stored, sources, origin, queue, failed = {}, {}, None, [], []
@@ -389,6 +393,9 @@ JSON.stringify({ done: done.length, of: (window.pvBatch || []).length, running: 
         write_bundle(a.out, a.bundle)
     print(f"{a.out}: {len(names)} rehearsals, {len(chunks)} queue file(s). In the pane, on {origin}: "
           "check.js, then the files it names, then the queue files, loop.js, and results.js until done.")
+    print("The pane closes by itself between turns and takes the login, the file box and sessionStorage (`pv-batch`) with it: "
+          "poll straight through after the pick (each call under 45 s, the pane's tool times out), and record the results "
+          "(--record) before anything else.")
 
 
 if __name__ == "__main__":

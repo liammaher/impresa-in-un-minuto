@@ -579,6 +579,10 @@
     // A list item named by its number ("A.2.", an annex's long items): the one option that starts with it.
     const numbered = /\.$/.test(value) ? opts.filter((o) => o.text.trim().startsWith(value + " ")) : [];
     if (i < 0 && numbered.length === 1) i = opts.indexOf(numbered[0]);
+    // An item named by its code, the text after it a description ("69 _ 1 _ A: Locali di esposizione..." of the fire prevention's activities):
+    // the one option that starts with the code and a colon.
+    const coded = opts.filter((o) => o.text.trim().startsWith(value + ":"));
+    if (i < 0 && coded.length === 1) i = opts.indexOf(coded[0]);
     if (i < 0) fail(`${f.id}: none of its ${opts.length} options is the value`);
     if (sel.value !== opts[i].value) {
       const w = widgetOf(sel) || fail(`${f.id}: no dropdown widget`);

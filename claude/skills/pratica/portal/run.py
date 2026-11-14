@@ -596,6 +596,10 @@ FILTERS = Filters({
     "one_catasto": lambda v: (lambda n, cats: "true" if len({bool(c.strip()) for c in cats[:n]}) <= 1 else "false")(
         int(float(v.split("/")[0] or 1)), _categorie(v.split("/", 1)[1] if "/" in v else "")),
     "not": lambda v: "false" if truthy(v) else "true",
+    # The nth number of "1 0 0" (a count asked as several numbers: the distinta's DC, DI and CI; 0 where one is missing).
+    "w1": lambda v: (str(v).split() + ["0"] * 3)[0],
+    "w2": lambda v: (str(v).split() + ["0"] * 3)[1],
+    "w3": lambda v: (str(v).split() + ["0"] * 3)[2],
     # A box that wants "300.00", the point and the decimals (the medium shop's total, 2026-11-11: "300" was
     # refused with "deve essere un numero comprensivo dei decimali").
     "decimal": lambda v: f"{float(str(v).strip().replace(',', '.')):.2f}",
@@ -1758,12 +1762,13 @@ def said(ask, v):
 
 # Whose a missing detail is, by its role (answers.json "people"; dictionary/fnsuap.yaml's Roles):
 # no role, or a slug that isn't one, is the tecnico's or the studio's own, asked once and kept.
-WHOSE = [(r"(c|cr|o|r|f\d*|ad\d*|a\d*|s|d|p)(#\d+)?:(immobile|locale\d*)\.", "dell'immobile"),
+WHOSE = [(r"(c|cr|o|r|f\d*|ad\d*|a\d*|s|d|p|v)(#\d+)?:(immobile|locale\d*)\.", "dell'immobile"),
          (r"c(#\d+)?:", "del committente"), (r"cr(#\d+)?:", "di chi firma per il committente"),
          (r"o(#\d+)?:", "della società proprietaria"), (r"r(#\d+)?:", "del legale rappresentante della proprietà"),
          (r"f\d*(#\d+)?:", "delle imprese"), (r"ad\d*(#\d+)?:", "delle imprese degli altri tecnici"),
          (r"a\d*(#\d+)?:", "degli altri tecnici"), (r"s(#\d+)?:", "del progettista delle strutture"),
-         (r"d(#\d+)?:", "del direttore dei lavori"), (r"p(#\d+)?:", "del progettista architettonico")]
+         (r"d(#\d+)?:", "del direttore dei lavori"), (r"p(#\d+)?:", "del progettista architettonico"),
+         (r"v(#\d+)?:", "del professionista antincendio")]
 OWN = "Tuoi e dello studio (una volta sola: valgono per le prossime pratiche)"
 WHOSE_ORDER = [OWN] + [w[:1].upper() + w[1:] for w in dict.fromkeys(w for _, w in WHOSE)]
 

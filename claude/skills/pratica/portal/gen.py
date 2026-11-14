@@ -926,7 +926,10 @@ def generate(recipe, base=HERE):
                       if e.get("subject", recipe.get("subject")) == recipe.get("subject")]
         candidates.sort(key=lambda en: "subject" not in en[0])  # the subject's own first
         if not candidates:
-            problems.append(f"{name}: no dictionary entry")
+            # An entry written under `after:` (the screens after the form) instead of `sections:` is never matched (2026-11-14).
+            misplaced = any(norm(a.get("section", "")) and norm(name).startswith(norm(a["section"])[:30]) and "go" not in a
+                            for a in dictionary.get("after", []))
+            problems.append(f"{name}: no dictionary entry" + (" (there is one under `after:`: it belongs under `sections:`)" if misplaced else ""))
             continue
         if candidates[0][0].get("omit"):
             continue

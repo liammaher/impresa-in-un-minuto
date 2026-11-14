@@ -16,11 +16,11 @@ What it settles:
 - The table's `also` role is right for all four: they are filed in the same pratica as the opening, take-over or move,
   not apart (a PIN is a radio operation, the dehors a checkbox one, and the tree still takes both with "Aprire
   l'attività"). The unrouted combinations are therefore real combined pratiche: each needs its own crawl, steps file and run.
-- Every section these combinations show is in `dictionary/fnsuap.yaml` **except the fire prevention's**: the six
-  `SCIA VV.F. - ...` sections and the professional's `ASSEVERAZIONE DEL PROFESSIONISTA AI FINI DELLA SICUREZZA ANTINCENDIO`
-  and `DISTINTA DELLA DOCUMENTAZIONE TECNICA ALLEGATA`. They are unread (no crawl has them). So the combinations
-  without a PIN need crawls and runs; those with a PIN also need the VV.F. sections read, and the asseverazione is a
-  technician's document.
+- Every section these combinations show is in `dictionary/fnsuap.yaml` (the fire prevention's too since 2026-11-14: the six
+  `SCIA VV.F. - ...` sections, the professional's `ASSEVERAZIONE ... ANTINCENDIO` and `DISTINTA DELLA DOCUMENTAZIONE TECNICA
+  ALLEGATA`; the combined pratica's boxes come from the `*-pin-2` combination crawls, not from the standalone crawl of 2026-10-28).
+  The asseverazione is a technician's document: identity and facts are the dictionary's (role `v:`), the assertions and the digital
+  signature stay the technician's. All 48 fire-prevention combinations are filled on the portal (README, "SUAP combinations with fire prevention").
 - The probe records section names only: the combined pratica's boxes come from a crawl of the combination (`catalogue.py
   ops ... --combo`), never from joining two operations' lists.
 
