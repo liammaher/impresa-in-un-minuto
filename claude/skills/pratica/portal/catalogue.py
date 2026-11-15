@@ -250,6 +250,11 @@ def cmd_import(args):
         if r.get("error"):
             out.append(f"{r['name']}: not imported ({r['error']})")
             continue
+        if r.get("sector") is not None and sportello(r["name"]) != "suap":
+            # A SUAP crawl (it has a sector) named without the `suap-NNN-` prefix is filed as the SUE's: the recipe then reads it against
+            # the wrong sportello (2026-11-14: a combination crawl named for its recipe).
+            sys.exit(f"{r['name']}: a SUAP crawl (sector {r['sector']}) must be named suap-NNN-...: not imported; "
+                     "give the combination such a name in `catalogue.py ops suap --combo`")
         # The login's name and CF must never be in a crawl (crawl.js stores only that a box was
         # prefilled): CATALOGUE_PRIVATE is a pattern for them, kept out of the repo.
         private = private_pattern()

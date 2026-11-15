@@ -1,0 +1,560 @@
+{
+ "crawled": "2026-11-14T11:05:58.249Z",
+ "by": "crawl.js batch, depth 3",
+ "pratica": "SUAP: 2 operations in one pratica: Variazioni strutturali in attività di acconciatore + PIN 2 - Segnalazione Certificata di Inizio Attività",
+ "seconds": 43.8,
+ "note": "Every section is one of the operations' own, the same fingerprint: the combination is their union, in this order. A recipe names every operation and extends the main one's.",
+ "also": [
+  "RAD: ALTRI ADEMPIMENTI (Prevenzione Incendi) › Prevenzione incendi › PIN 2 - Segnalazione Certificata di Inizio Attività"
+ ],
+ "generated": {
+  "interventi": "Variazioni strutturali in attività di acconciatore",
+  "adempimenti": [
+   {
+    "adempimento": "SCIA per variazioni strutturali in attività di acconciatore",
+    "amministrazione": "UFFICI COMUNE DI NAPOLI"
+   },
+   {
+    "adempimento": "SCIA per attività soggette ai controlli di prevenzione incendi",
+    "amministrazione": "Comando dei Vigili del Fuoco - PRINCE"
+   }
+  ],
+  "sections": [
+   "Scheda anagrafica",
+   "Oggetto della pratica",
+   "DOMICILIO DIGITALE",
+   "DOMICILIO ELETTRONICO (DOMICILIO DIGITALE SPECIALE)",
+   "Dichiarazione di consapevolezza ex artt. 46 e 47 DPR 445/2000",
+   "INFORMATIVA SULLA PRIVACY (Art. 13 del Reg. UE n. 2016/679 del 27 aprile 2016)",
+   "dichiarazione ubicazione locale",
+   "dichiarazione antimafia D.LGS. 159/2011",
+   "dichiarazione della data di inizio dell'attività",
+   "dichiarazione di titolarità autorizzazione/DIA/SCIA",
+   "dichiarazione di conformità alle norme in materia edilizia, urbanistica, igienico sanitaria e accessibilità",
+   "dichiarazione della tipologia dell'esercizio (permanente/stagionale)",
+   "dichiarazione del rispetto delle leggi e regolamenti vigenti in materia",
+   "dichiarazione del rispetto dei Regolamenti del Comune",
+   "dichiarazione dell'insegna dell'esercizio",
+   "dichiarazione relativa alla superficie dei locali da adibire all'attività, prima della variazione",
+   "dichiarazione relativa alla superficie dei locali da adibire all'attività, successivamente alla variazione",
+   "dichiarazione relativa alla variazione delle attrezzature",
+   "dichiarazione della superficie complessiva dell'esercizio in seguito alla variazione",
+   "modificazione del numero dei posti di lavoro",
+   "dichiarazione del responsabile tecnico",
+   "SCIA VV.F. - intestazione",
+   "SCIA VV.F. - SEGNALAZIONE CERTIFICATA DI INIZIO ATTIVITA' AI FINI DELLA SICUREZZA ANTINCENDIO",
+   "SCIA VV.F. - dichiarazioni",
+   "INFORMAZIONE AI SOLI FINI STATISTICI",
+   "SCIA VV.F. - distinta di versamento",
+   "SCIA VV.F.  - dati per la corrispondenza",
+   "SCIA VV.F. - dati del delegato",
+   "ASSEVERAZIONE DEL PROFESSIONISTA AI FINI DELLA SICUREZZA ANTINCENDIO (art. 4 del Decreto del Ministro dell'Interno 7.8.2012)",
+   "DISTINTA DELLA DOCUMENTAZIONE TECNICA ALLEGATA",
+   "Dichiarazione in materia di rispetto sulle tasse comunali",
+   "dichiarazione relativa ai diritti di segreteria/istruttori"
+  ]
+ },
+ "screens": [
+  {
+   "screen": "scelta del destinatario della pratica",
+   "options": [
+    {
+     "label": "",
+     "checked": false
+    },
+    {
+     "label": "",
+     "checked": false
+    },
+    {
+     "label": "",
+     "checked": true
+    },
+    {
+     "label": "",
+     "checked": false
+    }
+   ]
+  },
+  {
+   "screen": "scelte eventuali",
+   "options": [
+    {
+     "key": "0",
+     "type": "CHK",
+     "label": "l'attività è esercitata in forma societaria (sono tenuti al possesso dei requisiti morali anche le altre persone, oltre al dichiarante, così individuate: tutti gli altri componenti il Consiglio di Amministrazione in caso di SRL e SPA; tutti gli altri soci in caso di SNC; gli altri soci accomandatari in caso di SAS)"
+    },
+    {
+     "key": "1",
+     "type": "CHK",
+     "label": "si rende necessario presentare la valutazione di impatto acustico di attività commerciali e terziarie (Art.4, comma 1, lett. d) L.447/1995 - D.P.C.M. 14.11.1997)"
+    },
+    {
+     "key": "2",
+     "type": "CHK",
+     "label": "attività di CATEGORIE B,C (individuata sulla base dell'elenco contenuto nell'Allegato I del DPR 01/08/2011 n.151)"
+    },
+    {
+     "key": "3",
+     "type": "CHK",
+     "label": "IL PRESENTATORE DELLA DOMANDA È UN PROFESSIONISTA / ALTRO SOGGETTO MUNITO DI PROCURA SPECIALE"
+    },
+    {
+     "key": "4",
+     "type": "CHK",
+     "label": "il Responsabile Tecnico è diverso dal titolare/legale rappresentante dell'impresa"
+    }
+   ]
+  }
+ ],
+ "sections": [
+  {
+   "section": "Scheda anagrafica",
+   "fingerprint": "4dd844db9cdb76ff",
+   "same_as": "sue-combo-cila-paesaggistica-ordinaria#Scheda anagrafica",
+   "seconds": 0
+  },
+  {
+   "section": "Oggetto della pratica",
+   "fingerprint": "b9828eee09a1f50f",
+   "same_as": "sue-combo-cila-paesaggistica-ordinaria#Oggetto della pratica",
+   "seconds": 0.9
+  },
+  {
+   "section": "DOMICILIO DIGITALE",
+   "fingerprint": "5978ae29f079ce08",
+   "same_as": "sue-combo-cila-paesaggistica-ordinaria#DOMICILIO DIGITALE",
+   "seconds": 0.8
+  },
+  {
+   "section": "DOMICILIO ELETTRONICO (DOMICILIO DIGITALE SPECIALE)",
+   "fingerprint": "c282ef61bee9ea4d",
+   "same_as": "sue-combo-cila-paesaggistica-ordinaria#DOMICILIO ELETTRONICO (DOMICILIO DIGITALE SPECIALE)",
+   "seconds": 0.8
+  },
+  {
+   "section": "Dichiarazione di consapevolezza ex artt. 46 e 47 DPR 445/2000",
+   "skipped": "the person's declarations"
+  },
+  {
+   "section": "INFORMATIVA SULLA PRIVACY (Art. 13 del Reg. UE n. 2016/679 del 27 aprile 2016)",
+   "skipped": "the person's declarations"
+  },
+  {
+   "section": "dichiarazione ubicazione locale",
+   "fingerprint": "1ae79e0eb7308899",
+   "same_as": "sue-combo-cila-paesaggistica-ordinaria#dichiarazione ubicazione dell'intervento",
+   "seconds": 0.8
+  },
+  {
+   "section": "dichiarazione antimafia D.LGS. 159/2011",
+   "fields": [
+    {
+     "id": "r1c1p1reg:lbl",
+     "kind": "checkbox",
+     "label": "che nei propri confronti non sussistono le cause di divieto, di decadenza, di sospensione di cui al D.LGS. 159/2011 (normativa antimafia)"
+    }
+   ],
+   "fingerprint": "732ba5b4f8103c5b",
+   "text": "dichiarazione antimafia D.LGS. 159/2011 che nei propri confronti non sussistono le cause di divieto, di decadenza, di sospensione di cui al D.LGS. 159/2011 (normativa antimafia)",
+   "branches": [
+    {
+     "choice": "che nei propri confronti non sussistono le cause di divieto, di decadenza, di sospensione di cui al D.LGS. 159/2011 (normativa antimafia)",
+     "id": "r1c1p1reg:lbl",
+     "kind": "checkbox"
+    }
+   ],
+   "seconds": 1.6
+  },
+  {
+   "section": "dichiarazione della data di inizio dell'attività",
+   "fields": [
+    {
+     "id": "r2c1p2reg:calendar_input",
+     "kind": "date",
+     "label": "data inizio attività"
+    }
+   ],
+   "fingerprint": "f991f8b09879ba6a",
+   "text": "dichiarazione della data di inizio dell'attività data inizio attività",
+   "branches": [],
+   "seconds": 0.8
+  },
+  {
+   "section": "dichiarazione di titolarità autorizzazione/DIA/SCIA",
+   "fields": [
+    {
+     "id": "r2c1p2reg:txt",
+     "kind": "text",
+     "label": "specificare la tipologia del titolo (autorizzazione/comunicazione/DIA/SCIA/ecc.)",
+     "max": 30
+    },
+    {
+     "id": "r4c1p6reg:txt",
+     "kind": "text",
+     "label": "n. autorizzazione/comunicazione o n. protocollo DIA/SCIA",
+     "max": 30
+    },
+    {
+     "id": "r4c2p8reg:calendar_input",
+     "kind": "date",
+     "label": "data"
+    }
+   ],
+   "fingerprint": "6daa74c4b0cb428c",
+   "text": "dichiarazione di titolarità autorizzazione/DIA/SCIA specificare la tipologia del titolo (autorizzazione/comunicazione/DIA/SCIA/ecc.) n. autorizzazione/comunicazione o n. protocollo DIA/SCIA data",
+   "branches": [],
+   "seconds": 0.9
+  },
+  {
+   "section": "dichiarazione di conformità alle norme in materia edilizia, urbanistica, igienico sanitaria e accessibilità",
+   "fields": [
+    {
+     "id": "r1c1p1reg:lbl",
+     "kind": "checkbox",
+     "label": "che il locale ove intende svolgere l'attività è conforme alle vigenti norme in materia edilizia, urbanistica, igienico-sanitaria, alle norme sulla destinazione "
+    }
+   ],
+   "fingerprint": "fa207f5414241787",
+   "text": "dichiarazione di conformità alle norme in materia edilizia, urbanistica, igienico sanitaria e accessibilità che il locale ove intende svolgere l'attività è conforme alle vigenti norme in materia edilizia, urbanistica, igienico-sanitaria, alle norme sulla destinazione d'uso dei locali",
+   "branches": [
+    {
+     "choice": "che il locale ove intende svolgere l'attività è conforme alle vigenti norme in materia edilizia, urbanistica, igienico-sanitaria, alle norme sulla destinazione ",
+     "id": "r1c1p1reg:lbl",
+     "kind": "checkbox"
+    }
+   ],
+   "seconds": 1.6
+  },
+  {
+   "section": "dichiarazione della tipologia dell'esercizio (permanente/stagionale)",
+   "fields": [
+    {
+     "id": "r1c1p1reg:radio:0_clone",
+     "kind": "radio",
+     "label": "permanente",
+     "group": "r1c1p1reg:radio"
+    },
+    {
+     "id": "r2c1p2reg:radio:1_clone",
+     "kind": "radio",
+     "label": "stagionale",
+     "group": "r2c1p2reg:radio"
+    },
+    {
+     "id": "r4c1p4reg:calendar_input",
+     "kind": "date",
+     "label": "data inizio periodo",
+     "disabled": true
+    },
+    {
+     "id": "r6c1p8reg:calendar_input",
+     "kind": "date",
+     "label": "data fine periodo",
+     "disabled": true
+    }
+   ],
+   "fingerprint": "072898a981cd1b8c",
+   "text": "dichiarazione della tipologia dell'esercizio (permanente/stagionale) permanente stagionale data inizio periodo data fine periodo",
+   "branches": [
+    {
+     "choice": "permanente",
+     "id": "r1c1p1reg:radio:0_clone",
+     "kind": "radio"
+    },
+    {
+     "choice": "stagionale",
+     "id": "r2c1p2reg:radio:1_clone",
+     "kind": "radio",
+     "enables": [
+      "r4c1p4reg:calendar_input",
+      "r6c1p8reg:calendar_input"
+     ]
+    }
+   ],
+   "seconds": 2.2
+  },
+  {
+   "section": "dichiarazione del rispetto delle leggi e regolamenti vigenti in materia",
+   "fields": [
+    {
+     "id": "r1c1p1reg:lbl",
+     "kind": "checkbox",
+     "label": "di rispettare tutte le norme di legge e regolamenti vigenti in materia nonché del Regolamento comunale in materia di igiene e sanità pubblica relativamente alle"
+    }
+   ],
+   "fingerprint": "3c486f7fec11f48c",
+   "text": "dichiarazione del rispetto delle leggi e regolamenti vigenti in materia di rispettare tutte le norme di legge e regolamenti vigenti in materia nonché del Regolamento comunale in materia di igiene e sanità pubblica relativamente alle norme specifiche per tale attività",
+   "branches": [
+    {
+     "choice": "di rispettare tutte le norme di legge e regolamenti vigenti in materia nonché del Regolamento comunale in materia di igiene e sanità pubblica relativamente alle",
+     "id": "r1c1p1reg:lbl",
+     "kind": "checkbox"
+    }
+   ],
+   "seconds": 1.6
+  },
+  {
+   "section": "dichiarazione del rispetto dei Regolamenti del Comune",
+   "fields": [
+    {
+     "id": "r1c1p1reg:lbl",
+     "kind": "checkbox",
+     "label": "che per l'attività oggetto della presente SCIA sono stati rispettati i Regolamenti in vigore presso il Comune sede dell'attività"
+    }
+   ],
+   "fingerprint": "b43944807893542c",
+   "text": "dichiarazione del rispetto dei Regolamenti del Comune che per l'attività oggetto della presente SCIA sono stati rispettati i Regolamenti in vigore presso il Comune sede dell'attività",
+   "branches": [
+    {
+     "choice": "che per l'attività oggetto della presente SCIA sono stati rispettati i Regolamenti in vigore presso il Comune sede dell'attività",
+     "id": "r1c1p1reg:lbl",
+     "kind": "checkbox"
+    }
+   ],
+   "seconds": 1.6
+  },
+  {
+   "section": "dichiarazione dell'insegna dell'esercizio",
+   "fields": [
+    {
+     "id": "r2c1p2reg:txt",
+     "kind": "text",
+     "label": "l'insegna è:",
+     "max": 150
+    }
+   ],
+   "fingerprint": "aba1bd5fe83eb6c1",
+   "text": "dichiarazione dell'insegna dell'esercizio l'insegna è:",
+   "branches": [],
+   "seconds": 0.8
+  },
+  {
+   "section": "dichiarazione relativa alla superficie dei locali da adibire all'attività, prima della variazione",
+   "fields": [
+    {
+     "id": "r2c1p2reg:txt",
+     "kind": "text",
+     "label": "superficie complessiva dell'esercizio (mq)",
+     "max": 5
+    }
+   ],
+   "fingerprint": "f316d1d62db7694b",
+   "text": "dichiarazione relativa alla superficie dei locali da adibire all'attività, prima della variazione superficie complessiva dell'esercizio (mq)",
+   "branches": [],
+   "seconds": 0.8
+  },
+  {
+   "section": "dichiarazione relativa alla superficie dei locali da adibire all'attività, successivamente alla variazione",
+   "fields": [
+    {
+     "id": "r2c1p2reg:txt",
+     "kind": "text",
+     "label": "superficie complessiva dell'esercizio (mq)",
+     "max": 5
+    },
+    {
+     "id": "r2c2p4reg:radio:0_clone",
+     "kind": "radio",
+     "label": "con ampliamento",
+     "group": "r2c2p4reg:radio"
+    },
+    {
+     "id": "r2c3p6reg:radio:1_clone",
+     "kind": "radio",
+     "label": "con riduzione",
+     "group": "r2c3p6reg:radio"
+    },
+    {
+     "id": "r2c4p8reg:radio:2_clone",
+     "kind": "radio",
+     "label": "con redistribuzione degli spazi",
+     "group": "r2c4p8reg:radio"
+    }
+   ],
+   "fingerprint": "0cadac6c3a3cde2b",
+   "text": "dichiarazione relativa alla superficie dei locali da adibire all'attività, successivamente alla variazione superficie complessiva dell'esercizio (mq) con ampliamento con riduzione con redistribuzione degli spazi",
+   "branches": [
+    {
+     "choice": "con ampliamento",
+     "id": "r2c2p4reg:radio:0_clone",
+     "kind": "radio"
+    },
+    {
+     "choice": "con riduzione",
+     "id": "r2c3p6reg:radio:1_clone",
+     "kind": "radio"
+    },
+    {
+     "choice": "con redistribuzione degli spazi",
+     "id": "r2c4p8reg:radio:2_clone",
+     "kind": "radio"
+    }
+   ],
+   "seconds": 3
+  },
+  {
+   "section": "dichiarazione relativa alla variazione delle attrezzature",
+   "fields": [
+    {
+     "id": "r2c1p2reg:radio:0_clone",
+     "kind": "radio",
+     "label": "SI",
+     "group": "r2c1p2reg:radio"
+    },
+    {
+     "id": "r2c2p4reg:txta",
+     "kind": "textarea",
+     "label": "400 Caratteri restanti",
+     "context": "specificare",
+     "max": 400,
+     "disabled": true
+    },
+    {
+     "id": "r3c1p5reg:radio:1_clone",
+     "kind": "radio",
+     "label": "NO",
+     "group": "r3c1p5reg:radio"
+    }
+   ],
+   "fingerprint": "6fb01d1ebfe00924",
+   "text": "dichiarazione relativa alla variazione delle attrezzature specificare SI 400 Caratteri restanti NO come risulta dalla documentazione allegata",
+   "branches": [
+    {
+     "choice": "SI",
+     "id": "r2c1p2reg:radio:0_clone",
+     "kind": "radio",
+     "enables": [
+      "r2c2p4reg:txta"
+     ]
+    },
+    {
+     "choice": "NO",
+     "id": "r3c1p5reg:radio:1_clone",
+     "kind": "radio"
+    }
+   ],
+   "seconds": 2.8
+  },
+  {
+   "section": "dichiarazione della superficie complessiva dell'esercizio in seguito alla variazione",
+   "fields": [
+    {
+     "id": "r2c1p2reg:txt",
+     "kind": "text",
+     "label": "superficie complessiva in seguito alla variazione (mq)",
+     "max": 5
+    }
+   ],
+   "fingerprint": "534101c7313973db",
+   "text": "dichiarazione della superficie complessiva dell'esercizio in seguito alla variazione superficie complessiva in seguito alla variazione (mq)",
+   "branches": [],
+   "seconds": 0.8
+  },
+  {
+   "section": "modificazione del numero dei posti di lavoro",
+   "fields": [
+    {
+     "id": "r2c1p2reg:number",
+     "kind": "text",
+     "label": "i posti di lavoro sono variati da n.",
+     "max": 5
+    },
+    {
+     "id": "r2c2p4reg:number",
+     "kind": "text",
+     "label": "a n.",
+     "max": 5
+    }
+   ],
+   "fingerprint": "fccca71f03f623ae",
+   "text": "modificazione del numero dei posti di lavoro i posti di lavoro sono variati da n. a n. come risulta dalla documentazione allegata",
+   "branches": [],
+   "seconds": 0.8
+  },
+  {
+   "section": "dichiarazione del responsabile tecnico",
+   "fields": [
+    {
+     "id": "r1c1p1reg:lbl",
+     "kind": "checkbox",
+     "label": "di essere a conoscenza che il responsabile tecnico debba garantire la propria presenza durante lo svolgimento dell'attività di acconciatore/estetista"
+    }
+   ],
+   "fingerprint": "3f96e197ccc5c661",
+   "text": "dichiarazione del responsabile tecnico di essere a conoscenza che il responsabile tecnico debba garantire la propria presenza durante lo svolgimento dell'attività di acconciatore/estetista",
+   "branches": [
+    {
+     "choice": "di essere a conoscenza che il responsabile tecnico debba garantire la propria presenza durante lo svolgimento dell'attività di acconciatore/estetista",
+     "id": "r1c1p1reg:lbl",
+     "kind": "checkbox"
+    }
+   ],
+   "seconds": 1.8
+  },
+  {
+   "section": "SCIA VV.F. - intestazione",
+   "fingerprint": "c7feb9eebcab49f1",
+   "same_as": "suap-060-aprire-l-attivita-pin-2#SCIA VV.F. - intestazione",
+   "seconds": 1.3
+  },
+  {
+   "section": "SCIA VV.F. - SEGNALAZIONE CERTIFICATA DI INIZIO ATTIVITA' AI FINI DELLA SICUREZZA ANTINCENDIO",
+   "fingerprint": "3f2cb10c247b4302",
+   "same_as": "suap-060-aprire-l-attivita-pin-2#SCIA VV.F. - SEGNALAZIONE CERTIFICATA DI INIZIO ATTIVITA' AI FINI DELLA SICUREZZA ANTINCENDIO",
+   "seconds": 0.8
+  },
+  {
+   "section": "SCIA VV.F. - dichiarazioni",
+   "fingerprint": "c7455a3d47caeecc",
+   "same_as": "suap-060-aprire-l-attivita-pin-2#SCIA VV.F. - dichiarazioni",
+   "seconds": 0.8
+  },
+  {
+   "section": "INFORMAZIONE AI SOLI FINI STATISTICI",
+   "fingerprint": "8dabd9a5d4f2bef9",
+   "same_as": "suap-060-aprire-l-attivita-pin-2#INFORMAZIONE AI SOLI FINI STATISTICI",
+   "seconds": 0.8
+  },
+  {
+   "section": "SCIA VV.F. - distinta di versamento",
+   "fingerprint": "1ccff59a643beadc",
+   "same_as": "suap-060-aprire-l-attivita-pin-2#SCIA VV.F. - distinta di versamento",
+   "seconds": 0.8
+  },
+  {
+   "section": "SCIA VV.F.  - dati per la corrispondenza",
+   "fingerprint": "572a85fbc3ea16c6",
+   "same_as": "suap-060-aprire-l-attivita-pin-2#SCIA VV.F.  - dati per la corrispondenza",
+   "seconds": 0.9
+  },
+  {
+   "section": "SCIA VV.F. - dati del delegato",
+   "fingerprint": "ac3b7a8792f93e89",
+   "same_as": "suap-060-aprire-l-attivita-pin-2#SCIA VV.F. - dati del delegato",
+   "seconds": 0.9
+  },
+  {
+   "section": "ASSEVERAZIONE DEL PROFESSIONISTA AI FINI DELLA SICUREZZA ANTINCENDIO (art. 4 del Decreto del Ministro dell'Interno 7.8.2012)",
+   "fingerprint": "ab1037f0bc4258c6",
+   "same_as": "suap-060-aprire-l-attivita-pin-2#ASSEVERAZIONE DEL PROFESSIONISTA AI FINI DELLA SICUREZZA ANTINCENDIO (art. 4 del Decreto del Ministro dell'Interno 7.8.2012)",
+   "seconds": 0.9
+  },
+  {
+   "section": "DISTINTA DELLA DOCUMENTAZIONE TECNICA ALLEGATA",
+   "fingerprint": "be726d44534f0b94",
+   "same_as": "suap-060-aprire-l-attivita-pin-2#DISTINTA DELLA DOCUMENTAZIONE TECNICA ALLEGATA",
+   "seconds": 0.9
+  },
+  {
+   "section": "Dichiarazione in materia di rispetto sulle tasse comunali",
+   "skipped": "the person's declarations"
+  },
+  {
+   "section": "dichiarazione relativa ai diritti di segreteria/istruttori",
+   "fingerprint": "52afb47e165ec4c7",
+   "same_as": "sue-combo-cila-paesaggistica-ordinaria#dichiarazione relativa ai diritti di segreteria/istruttori",
+   "seconds": 1.1
+  }
+ ]
+}

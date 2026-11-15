@@ -1,0 +1,2033 @@
+{
+ "crawled": "2026-11-14T09:35:32.033Z",
+ "by": "crawl.js batch, depth 3",
+ "pratica": "SUAP: 2 operations in one pratica: Aprire l'attività + PIN 2 - Segnalazione Certificata di Inizio Attività",
+ "seconds": 95.8,
+ "note": "Every section is one of the operations' own, the same fingerprint: the combination is their union, in this order. A recipe names every operation and extends the main one's.",
+ "also": [
+  "RAD: ALTRI ADEMPIMENTI (Prevenzione Incendi) › Prevenzione incendi › PIN 2 - Segnalazione Certificata di Inizio Attività"
+ ],
+ "generated": {
+  "interventi": "Segnalazione Certificata di Inizio Attività per bar, ristoranti e altri esercizi di somministrazione di alimenti e bevande (in zone NON tutelate)",
+  "adempimenti": [
+   {
+    "adempimento": "SCIA per apertura di esercizio di somministrazione di alimenti e bevande",
+    "amministrazione": "UFFICI COMUNE DI NAPOLI"
+   },
+   {
+    "adempimento": "Notifica ai fini della registrazione ai sensi dell'art. 6 del Regolamento CE n. 852/2004",
+    "amministrazione": "ASL Napoli 1 Centro"
+   },
+   {
+    "adempimento": "SCIA per attività soggette ai controlli di prevenzione incendi",
+    "amministrazione": "Comando dei Vigili del Fuoco - PRINCE"
+   }
+  ],
+  "sections": [
+   "Scheda anagrafica",
+   "Oggetto della pratica",
+   "DOMICILIO DIGITALE",
+   "DOMICILIO ELETTRONICO (DOMICILIO DIGITALE SPECIALE)",
+   "Dichiarazione di consapevolezza ex artt. 46 e 47 DPR 445/2000",
+   "INFORMATIVA SULLA PRIVACY (Art. 13 del Reg. UE n. 2016/679 del 27 aprile 2016)",
+   "ubicazione dell'attività",
+   "Dati catastali",
+   "Dati dell'esercizio di somministrazione",
+   "dichiarazioni sul possesso dei requisiti di onorabilità e professionali",
+   "Altre dichiarazioni",
+   "notifica avvio e inizio attività",
+   "tipologia di attività ai sensi dell'art. 6, Reg. CE n. 852/2004",
+   "dichiarazioni ai sensi dell'art. 6, Reg. CE n. 852/2004",
+   "SCIA VV.F. - intestazione",
+   "SCIA VV.F. - SEGNALAZIONE CERTIFICATA DI INIZIO ATTIVITA' AI FINI DELLA SICUREZZA ANTINCENDIO",
+   "SCIA VV.F. - dichiarazioni",
+   "INFORMAZIONE AI SOLI FINI STATISTICI",
+   "SCIA VV.F. - distinta di versamento",
+   "SCIA VV.F.  - dati per la corrispondenza",
+   "SCIA VV.F. - dati del delegato",
+   "ASSEVERAZIONE DEL PROFESSIONISTA AI FINI DELLA SICUREZZA ANTINCENDIO (art. 4 del Decreto del Ministro dell'Interno 7.8.2012)",
+   "DISTINTA DELLA DOCUMENTAZIONE TECNICA ALLEGATA",
+   "Dichiarazione in materia di rispetto sulle tasse comunali",
+   "dichiarazione ai sensi dell' art. 75 del d.P.R. n° 445/2000",
+   "Dichiarazione relativa ai diritti di segreteria/istruttori"
+  ]
+ },
+ "screens": [
+  {
+   "screen": "scelta interventi eventuali",
+   "options": [
+    {
+     "key": "0",
+     "type": "CHK",
+     "label": "presenta la comunicazione di impatto acustico, in caso di utilizzo di impianti di diffusione sonora o di manifestazioni ed eventi con diffusione di musica o utilizzo di strumenti musicali, se non si superano le soglie della zonizzazione comunale"
+    },
+    {
+     "key": "1",
+     "type": "CHK",
+     "label": "richiede il rilascio del Nulla osta impatto acustico, in caso di utilizzo di impianti di diffusione sonora o di manifestazioni ed eventi con diffusione di musica o utilizzo di strumenti musicali, se si superano le soglie della zonizzazione comunale"
+    },
+    {
+     "key": "2",
+     "type": "CHK",
+     "label": "in caso di vendita di alcolici"
+    },
+    {
+     "key": "3",
+     "type": "CHK",
+     "label": "in caso di attività che preveda insegna esterna"
+    },
+    {
+     "key": "3_0",
+     "type": "CHK",
+     "label": "Si presenta contestuale SCIA all'ANAS in quanto proprietario della strada da cui è visibile il mezzo pubblicitario"
+    },
+    {
+     "key": "3_1",
+     "type": "CHK",
+     "label": "Si presenta contestuale SCIA alla PROVINCIA / CITTA' METROPOLITANA in quanto proprietaria della strada da cui è visibile il mezzo pubblicitario"
+    },
+    {
+     "key": "4",
+     "type": "CHK",
+     "label": "in caso di attività che preveda insegna esterna (dove è prevista la SCIA)"
+    }
+   ]
+  },
+  {
+   "screen": "scelta del destinatario della pratica",
+   "options": [
+    {
+     "label": "",
+     "checked": false
+    },
+    {
+     "label": "",
+     "checked": false
+    },
+    {
+     "label": "",
+     "checked": true
+    },
+    {
+     "label": "",
+     "checked": false
+    }
+   ]
+  },
+  {
+   "screen": "scelte eventuali",
+   "options": [
+    {
+     "key": "0",
+     "type": "CHK",
+     "label": "attività di CATEGORIE B,C (individuata sulla base dell'elenco contenuto nell'Allegato I del DPR 01/08/2011 n.151)"
+    },
+    {
+     "key": "1",
+     "type": "CHK",
+     "label": "in presenza di soggetti (es. soci) diversi dal dichiarante (Dichiarazioni sul possesso dei requisiti da parte degli altri soci)"
+    },
+    {
+     "key": "2",
+     "type": "CHK",
+     "label": "IL PRESENTATORE DELLA DOMANDA È UN PROFESSIONISTA / ALTRO SOGGETTO MUNITO DI PROCURA SPECIALE"
+    },
+    {
+     "key": "3",
+     "type": "CHK",
+     "label": "Trattasi di ente del Terzo settore o associazione di volontariato (Art. 1 co.6 Dlgs 32/2021)"
+    }
+   ]
+  }
+ ],
+ "sections": [
+  {
+   "section": "Scheda anagrafica",
+   "fingerprint": "4dd844db9cdb76ff",
+   "same_as": "sue-combo-cila-paesaggistica-ordinaria#Scheda anagrafica",
+   "seconds": 0
+  },
+  {
+   "section": "Oggetto della pratica",
+   "fingerprint": "b9828eee09a1f50f",
+   "same_as": "sue-combo-cila-paesaggistica-ordinaria#Oggetto della pratica",
+   "seconds": 1.4
+  },
+  {
+   "section": "DOMICILIO DIGITALE",
+   "fingerprint": "5978ae29f079ce08",
+   "same_as": "sue-combo-cila-paesaggistica-ordinaria#DOMICILIO DIGITALE",
+   "seconds": 1.2
+  },
+  {
+   "section": "DOMICILIO ELETTRONICO (DOMICILIO DIGITALE SPECIALE)",
+   "fingerprint": "c282ef61bee9ea4d",
+   "same_as": "sue-combo-cila-paesaggistica-ordinaria#DOMICILIO ELETTRONICO (DOMICILIO DIGITALE SPECIALE)",
+   "seconds": 1.3
+  },
+  {
+   "section": "Dichiarazione di consapevolezza ex artt. 46 e 47 DPR 445/2000",
+   "skipped": "the person's declarations"
+  },
+  {
+   "section": "INFORMATIVA SULLA PRIVACY (Art. 13 del Reg. UE n. 2016/679 del 27 aprile 2016)",
+   "skipped": "the person's declarations"
+  },
+  {
+   "section": "ubicazione dell'attività",
+   "fingerprint": "1ae79e0eb7308899",
+   "same_as": "sue-combo-cila-paesaggistica-ordinaria#dichiarazione ubicazione dell'intervento",
+   "seconds": 1.3
+  },
+  {
+   "section": "Dati catastali",
+   "fingerprint": "bd17e4e186aa5dc9",
+   "same_as": "sue-combo-cila-paesaggistica-ordinaria#dati catastali",
+   "seconds": 1.2
+  },
+  {
+   "section": "Dati dell'esercizio di somministrazione",
+   "fingerprint": "cbf04a95051d25d3",
+   "same_as": "suap-060-aprire-l-attivita-dehors#Dati dell'esercizio di somministrazione",
+   "seconds": 1.2
+  },
+  {
+   "section": "dichiarazioni sul possesso dei requisiti di onorabilità e professionali",
+   "skipped": "the person's declarations"
+  },
+  {
+   "section": "Altre dichiarazioni",
+   "skipped": "the person's declarations"
+  },
+  {
+   "section": "notifica avvio e inizio attività",
+   "fingerprint": "a8d63774ff52277d",
+   "same_as": "suap-060-aprire-l-attivita-dehors#notifica avvio e inizio attività",
+   "seconds": 1.2
+  },
+  {
+   "section": "tipologia di attività ai sensi dell'art. 6, Reg. CE n. 852/2004",
+   "fingerprint": "d3161a8066ba1f9f",
+   "same_as": "suap-060-aprire-l-attivita-dehors#tipologia di attività ai sensi dell'art. 6, Reg. CE n. 852/2004",
+   "seconds": 1.3
+  },
+  {
+   "section": "dichiarazioni ai sensi dell'art. 6, Reg. CE n. 852/2004",
+   "skipped": "the person's declarations"
+  },
+  {
+   "section": "SCIA VV.F. - intestazione",
+   "fields": [
+    {
+     "id": "r4c1p4reg:number",
+     "kind": "text",
+     "label": "Rif. Pratica VV.F. n.",
+     "max": 7,
+     "prefilled": true
+    },
+    {
+     "id": "r4c2p6reg:txt",
+     "kind": "text",
+     "label": "AL COMANDO PROVINCIALE DEI VIGILI DEL FUOCO DI",
+     "max": 9999,
+     "prefilled": true
+    }
+   ],
+   "fingerprint": "c7feb9eebcab49f1",
+   "text": "SCIA VV.F. - intestazione Per maggiori informazioni, consultare la nota informativa predisposta dal Comando dei Vigili del Fuoco per la VERIFICA PRELIMINARE dei riferimenti a pratiche già presentate scaricando il documento sottostante Scarica il documento Rif. Pratica VV.F. n. AL COMANDO PROVINCIALE DEI VIGILI DEL FUOCO DI N.B. Inserire solo la parte numerica del “n. pratica”, indicare 0 se non ci sono pratiche precedenti.",
+   "branches": [],
+   "seconds": 1.5
+  },
+  {
+   "section": "SCIA VV.F. - SEGNALAZIONE CERTIFICATA DI INIZIO ATTIVITA' AI FINI DELLA SICUREZZA ANTINCENDIO",
+   "fields": [
+    {
+     "id": "r3c1p5reg:chk",
+     "kind": "checkbox",
+     "label": "ai progetti approvati dal Comando VV.F. (solo per attività di cat B e C)",
+     "disabled": true
+    },
+    {
+     "id": "r4c1p7reg:chk",
+     "kind": "checkbox",
+     "label": "alla documentazione tecnica di progetto di cui alla asseverazione allegata (per attività di cat. A )"
+    },
+    {
+     "id": "r5c1p9reg:chk",
+     "kind": "checkbox",
+     "label": "alla documentazione tecnica di progetto di cui alla asseverazione allegata (per attività di cat. A,B,C in caso di modifiche di cui art.4, comma 6, del DPR 01/08"
+    },
+    {
+     "id": "r9c1p15reg:txt",
+     "kind": "text",
+     "label": "l'inizio, in conformità alla normativa antincendio vigente, dell'esercizio dell'attività di:",
+     "max": 200
+    },
+    {
+     "id": "r11c1p17reg:chk",
+     "kind": "checkbox",
+     "label": "Trattasi di SCIA parziale"
+    },
+    {
+     "id": "r12c1p18reg:radio:0_clone",
+     "kind": "radio",
+     "label": "Indicazione del lotto nel caso di esecuzione per stralci successivi già indicati in fase di valutazione del progetto",
+     "group": "r12c1p18reg:radio",
+     "disabled": true
+    },
+    {
+     "id": "r13c1p19reg:radio:1_clone",
+     "kind": "radio",
+     "label": "Indicazione dello stralcio e normativa di riferimento nel caso in cui la SCIA sia presentata in applicazione di una specifica disposizione che prevede la presen",
+     "group": "r13c1p19reg:radio",
+     "disabled": true
+    }
+   ],
+   "fingerprint": "3f2cb10c247b4302",
+   "text": "SCIA VV.F. - SEGNALAZIONE CERTIFICATA DI INIZIO ATTIVITA' AI FINI DELLA SICUREZZA ANTINCENDIO Il sottoscritto, responsabile dell'attività sotto specificata, consapevole delle conseguenze penali e amministrative previste dagli artt. 75 e 76 del DPR 445/2000 in caso di dichiarazioni mendaci e formazione o uso di atti falsi nonché della sanzione penale prevista dagli artt. 19, comma 6, e 21 della L. 241/90 e successive modificazioni, e con riferimento: ai progetti approvati dal Comando VV.F. (solo per attività di cat B e C) alla documentazione tecnica di progetto di cui alla asseverazione allegata (per attività di cat. A ) alla documentazione tecnica di progetto di cui alla asseverazione allegata (per attività di cat. A,B,C in caso di modifiche di cui art.4, comma 6, del DPR 01/08/2011 n.151, che non comportino aggravio delle preesistenti condizioni di sicurezza) SEGNALA ai sensi dell'art. 4 del DPR 01/08/2011 n. 151 l'inizio, in conformità alla normativa antincendio vigente, dell'esercizio dell'attività di: (tipo di attività (albergo, scuola, etc.) - in caso di SCIA parziale indicare i riferimenti pertinenti) Trattasi di SCIA parziale Indicazione del lotto nel caso di esecuzione per stralci successivi già indicati in fase di valutazione del progetto Indicazione dello stralcio e normativa di riferimento nel caso in cui la SCIA sia presentata in applicazione di una specifica disposizione che prevede la presentazione di SCIA di adeguamento parziale (p.e. strutture sanitarie, campeggi, macchine elettriche, asili nido)",
+   "branches": [
+    {
+     "choice": "alla documentazione tecnica di progetto di cui alla asseverazione allegata (per attività di cat. A )",
+     "id": "r4c1p7reg:chk",
+     "kind": "checkbox",
+     "moved": [
+      [
+       "r5c1p9reg:chk",
+       "r4c1p7reg:chk"
+      ]
+     ]
+    },
+    {
+     "choice": "alla documentazione tecnica di progetto di cui alla asseverazione allegata (per attività di cat. A,B,C in caso di modifiche di cui art.4, comma 6, del DPR 01/08",
+     "id": "r5c1p9reg:chk",
+     "kind": "checkbox",
+     "moved": [
+      [
+       "r5c1p9reg:chk",
+       "r4c1p7reg:chk"
+      ]
+     ]
+    },
+    {
+     "choice": "Trattasi di SCIA parziale",
+     "id": "r11c1p17reg:chk",
+     "kind": "checkbox",
+     "reveals": [
+      {
+       "id": "r15c1p21reg:txt",
+       "kind": "text",
+       "label": "(specificare)",
+       "max": 250
+      }
+     ],
+     "moved": [
+      [
+       "r5c1p9reg:chk",
+       "r4c1p7reg:chk"
+      ]
+     ],
+     "enables": [
+      "r12c1p18reg:radio:0_clone",
+      "r13c1p19reg:radio:1_clone"
+     ],
+     "then": [
+      {
+       "choice": "Indicazione del lotto nel caso di esecuzione per stralci successivi già indicati in fase di valutazione del progetto",
+       "id": "r12c1p18reg:radio:0_clone",
+       "kind": "radio",
+       "moved": [
+        [
+         "r5c1p9reg:chk",
+         "r4c1p7reg:chk"
+        ]
+       ]
+      },
+      {
+       "choice": "Indicazione dello stralcio e normativa di riferimento nel caso in cui la SCIA sia presentata in applicazione di una specifica disposizione che prevede la presen",
+       "id": "r13c1p19reg:radio:1_clone",
+       "kind": "radio",
+       "moved": [
+        [
+         "r5c1p9reg:chk",
+         "r4c1p7reg:chk"
+        ]
+       ]
+      }
+     ]
+    }
+   ],
+   "seconds": 5.9
+  },
+  {
+   "section": "SCIA VV.F. - dichiarazioni",
+   "fields": [
+    {
+     "id": "r1c1p1reg:chk",
+     "kind": "checkbox",
+     "label": "Il sottoscritto dichiara altresì sotto la propria responsabilità civile e penale di essere a conoscenza e di impegnarsi ad osservare gli obblighi connessi con l"
+    },
+    {
+     "id": "r2c1p2reg:chk",
+     "kind": "checkbox",
+     "label": "Allega alla presente l'asseverazione di cui all'art. 4 del Decreto del Ministro dell'Interno 7-8-2012, comprensiva dei relativi allegati, unitamente all'attesta"
+    },
+    {
+     "id": "r4c1p4reg:radio:0_clone",
+     "kind": "radio",
+     "label": "la sede dell'attività",
+     "group": "r4c1p4reg:radio"
+    },
+    {
+     "id": "r4c2p5reg:radio:1_clone",
+     "kind": "radio",
+     "label": "altro indirizzo di seguito indicato",
+     "group": "r4c2p5reg:radio"
+    }
+   ],
+   "fingerprint": "c7455a3d47caeecc",
+   "text": "SCIA VV.F. - dichiarazioni Il sottoscritto dichiara altresì sotto la propria responsabilità civile e penale di essere a conoscenza e di impegnarsi ad osservare gli obblighi connessi con l'esercizio dell'attività previsti dalla vigente normativa, nonché i divieti, le limitazioni e le prescrizioni delle disposizioni di prevenzione incendi e di sicurezza antincendio vigenti disciplinanti l'attività medesima. Allega alla presente l'asseverazione di cui all'art. 4 del Decreto del Ministro dell'Interno 7-8-2012, comprensiva dei relativi allegati, unitamente all'attestato di versamento di seguito specificato. Dichiara, inoltre, che la restante documentazione tecnica è raccolta in apposito fascicolo, che sarà custodito e reso prontamente disponibile in occasione dei controlli delle autorità competenti, presso: la sede dell'attività altro indirizzo di seguito indicato",
+   "branches": [
+    {
+     "choice": "Allega alla presente l'asseverazione di cui all'art. 4 del Decreto del Ministro dell'Interno 7-8-2012, comprensiva dei relativi allegati, unitamente all'attesta",
+     "id": "r2c1p2reg:chk",
+     "kind": "checkbox"
+    },
+    {
+     "choice": "la sede dell'attività",
+     "id": "r4c1p4reg:radio:0_clone",
+     "kind": "radio"
+    },
+    {
+     "choice": "altro indirizzo di seguito indicato",
+     "id": "r4c2p5reg:radio:1_clone",
+     "kind": "radio",
+     "reveals": [
+      {
+       "id": "r6c1p8reg:txt",
+       "kind": "text",
+       "label": "Nominativo",
+       "max": 100
+      },
+      {
+       "id": "r8c1p12reg:txt",
+       "kind": "text",
+       "label": "indirizzo",
+       "max": 70
+      },
+      {
+       "id": "r8c2p14reg:txt",
+       "kind": "text",
+       "label": "n. civico",
+       "max": 20
+      },
+      {
+       "id": "r10c1p18reg",
+       "kind": "select",
+       "label": "provincia",
+       "options": "111 options"
+      },
+      {
+       "id": "r10c2p20reg",
+       "kind": "select",
+       "label": "comune",
+       "options": []
+      },
+      {
+       "id": "r10c3p22reg:txt",
+       "kind": "text",
+       "label": "c.a.p.",
+       "max": 5
+      }
+     ]
+    }
+   ],
+   "seconds": 4
+  },
+  {
+   "section": "INFORMAZIONE AI SOLI FINI STATISTICI",
+   "fields": [
+    {
+     "id": "r2c1p2reg:radio:0_clone",
+     "kind": "radio",
+     "label": "SI",
+     "group": "r2c1p2reg:radio"
+    },
+    {
+     "id": "r2c2p3reg:radio:1_clone",
+     "kind": "radio",
+     "label": "NO",
+     "group": "r2c2p3reg:radio"
+    },
+    {
+     "id": "r3c1p5reg:chk",
+     "kind": "checkbox",
+     "label": "PIANO NAZIONALE DI RIPRESA E RESILIENZA (PNRR)",
+     "disabled": true
+    },
+    {
+     "id": "r4c1p6reg:chk",
+     "kind": "checkbox",
+     "label": "PIANO NAZIONALE PER GLI INVESTIMENTI COMPLEMENTARI (PNC)",
+     "disabled": true
+    },
+    {
+     "id": "r5c1p7reg:chk",
+     "kind": "checkbox",
+     "label": "ZONE ECONOMICHE SPECIALI (ZES)",
+     "disabled": true
+    },
+    {
+     "id": "r7c1p9reg:radio:2_clone",
+     "kind": "radio",
+     "label": "SI",
+     "group": "r7c1p9reg:radio"
+    },
+    {
+     "id": "r7c2p10reg:radio:3_clone",
+     "kind": "radio",
+     "label": "NO",
+     "group": "r7c2p10reg:radio"
+    },
+    {
+     "id": "r8c1p12reg:chk",
+     "kind": "checkbox",
+     "label": "IMPIANTI DI PRODUZIONE, STOCCAGGIO O IMPIEGO DI IDROGENO",
+     "disabled": true
+    },
+    {
+     "id": "r9c1p13reg:chk",
+     "kind": "checkbox",
+     "label": "IMPIANTI DI PRODUZIONE, STOCCAGGIO O IMPIEGO GNL/GNC",
+     "disabled": true
+    },
+    {
+     "id": "r10c1p14reg:chk",
+     "kind": "checkbox",
+     "label": "IMPIANTI DI STOCCAGGIO O TRATTAMENTO DI RIFIUTI (EX ART. 183 DEL D.LGS. 152/06 E S.M.I.)",
+     "disabled": true
+    },
+    {
+     "id": "r11c1p15reg:chk",
+     "kind": "checkbox",
+     "label": "INTERVENTI AFFERENTI I REQUISITI DI SICUREZZA ANTINCENDIO DELLE FACCIATE E DELLE COPERTURE DEGLI EDIFICI CIVILI",
+     "disabled": true
+    }
+   ],
+   "fingerprint": "8dabd9a5d4f2bef9",
+   "text": "INFORMAZIONE AI SOLI FINI STATISTICI Almeno una delle attività in progetto è finanziata o beneficia del regime del PNRR, PNC o ZES: SI NO PIANO NAZIONALE DI RIPRESA E RESILIENZA (PNRR) PIANO NAZIONALE PER GLI INVESTIMENTI COMPLEMENTARI (PNC) ZONE ECONOMICHE SPECIALI (ZES) In almeno una delle attività, gli interventi in progetto riguardano la tipologia di impianti sotto riportati SI NO IMPIANTI DI PRODUZIONE, STOCCAGGIO O IMPIEGO DI IDROGENO IMPIANTI DI PRODUZIONE, STOCCAGGIO O IMPIEGO GNL/GNC IMPIANTI DI STOCCAGGIO O TRATTAMENTO DI RIFIUTI (EX ART. 183 DEL D.LGS. 152/06 E S.M.I.) INTERVENTI AFFERENTI I REQUISITI DI SICUREZZA ANTINCENDIO DELLE FACCIATE E DELLE COPERTURE DEGLI EDIFICI CIVILI",
+   "branches": [
+    {
+     "choice": "SI",
+     "id": "r2c1p2reg:radio:0_clone",
+     "kind": "radio",
+     "moved": [
+      [
+       "r7c1p9reg:radio:2_clone",
+       "r2c1p2reg:radio:0_clone"
+      ],
+      [
+       "r7c2p10reg:radio:3_clone",
+       "r2c2p3reg:radio:1_clone"
+      ]
+     ],
+     "enables": [
+      "r3c1p5reg:chk",
+      "r4c1p6reg:chk",
+      "r5c1p7reg:chk"
+     ],
+     "then": [
+      {
+       "choice": "PIANO NAZIONALE DI RIPRESA E RESILIENZA (PNRR)",
+       "id": "r3c1p5reg:chk",
+       "kind": "checkbox",
+       "moved": [
+        [
+         "r7c1p9reg:radio:2_clone",
+         "r2c1p2reg:radio:0_clone"
+        ],
+        [
+         "r7c2p10reg:radio:3_clone",
+         "r2c2p3reg:radio:1_clone"
+        ]
+       ]
+      },
+      {
+       "choice": "PIANO NAZIONALE PER GLI INVESTIMENTI COMPLEMENTARI (PNC)",
+       "id": "r4c1p6reg:chk",
+       "kind": "checkbox",
+       "moved": [
+        [
+         "r7c1p9reg:radio:2_clone",
+         "r2c1p2reg:radio:0_clone"
+        ],
+        [
+         "r7c2p10reg:radio:3_clone",
+         "r2c2p3reg:radio:1_clone"
+        ]
+       ]
+      },
+      {
+       "choice": "ZONE ECONOMICHE SPECIALI (ZES)",
+       "id": "r5c1p7reg:chk",
+       "kind": "checkbox",
+       "moved": [
+        [
+         "r7c1p9reg:radio:2_clone",
+         "r2c1p2reg:radio:0_clone"
+        ],
+        [
+         "r7c2p10reg:radio:3_clone",
+         "r2c2p3reg:radio:1_clone"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "choice": "NO",
+     "id": "r2c2p3reg:radio:1_clone",
+     "kind": "radio",
+     "moved": [
+      [
+       "r7c1p9reg:radio:2_clone",
+       "r2c1p2reg:radio:0_clone"
+      ],
+      [
+       "r7c2p10reg:radio:3_clone",
+       "r2c2p3reg:radio:1_clone"
+      ]
+     ]
+    },
+    {
+     "choice": "SI",
+     "id": "r7c1p9reg:radio:2_clone",
+     "kind": "radio",
+     "moved": [
+      [
+       "r7c1p9reg:radio:2_clone",
+       "r2c1p2reg:radio:0_clone"
+      ],
+      [
+       "r7c2p10reg:radio:3_clone",
+       "r2c2p3reg:radio:1_clone"
+      ]
+     ],
+     "enables": [
+      "r8c1p12reg:chk",
+      "r9c1p13reg:chk",
+      "r10c1p14reg:chk",
+      "r11c1p15reg:chk"
+     ],
+     "then": [
+      {
+       "choice": "IMPIANTI DI PRODUZIONE, STOCCAGGIO O IMPIEGO DI IDROGENO",
+       "id": "r8c1p12reg:chk",
+       "kind": "checkbox",
+       "moved": [
+        [
+         "r7c1p9reg:radio:2_clone",
+         "r2c1p2reg:radio:0_clone"
+        ],
+        [
+         "r7c2p10reg:radio:3_clone",
+         "r2c2p3reg:radio:1_clone"
+        ]
+       ]
+      },
+      {
+       "choice": "IMPIANTI DI PRODUZIONE, STOCCAGGIO O IMPIEGO GNL/GNC",
+       "id": "r9c1p13reg:chk",
+       "kind": "checkbox",
+       "moved": [
+        [
+         "r7c1p9reg:radio:2_clone",
+         "r2c1p2reg:radio:0_clone"
+        ],
+        [
+         "r7c2p10reg:radio:3_clone",
+         "r2c2p3reg:radio:1_clone"
+        ]
+       ]
+      },
+      {
+       "choice": "IMPIANTI DI STOCCAGGIO O TRATTAMENTO DI RIFIUTI (EX ART. 183 DEL D.LGS. 152/06 E S.M.I.)",
+       "id": "r10c1p14reg:chk",
+       "kind": "checkbox",
+       "moved": [
+        [
+         "r7c1p9reg:radio:2_clone",
+         "r2c1p2reg:radio:0_clone"
+        ],
+        [
+         "r7c2p10reg:radio:3_clone",
+         "r2c2p3reg:radio:1_clone"
+        ]
+       ]
+      },
+      {
+       "choice": "INTERVENTI AFFERENTI I REQUISITI DI SICUREZZA ANTINCENDIO DELLE FACCIATE E DELLE COPERTURE DEGLI EDIFICI CIVILI",
+       "id": "r11c1p15reg:chk",
+       "kind": "checkbox",
+       "moved": [
+        [
+         "r7c1p9reg:radio:2_clone",
+         "r2c1p2reg:radio:0_clone"
+        ],
+        [
+         "r7c2p10reg:radio:3_clone",
+         "r2c2p3reg:radio:1_clone"
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "choice": "NO",
+     "id": "r7c2p10reg:radio:3_clone",
+     "kind": "radio",
+     "moved": [
+      [
+       "r7c1p9reg:radio:2_clone",
+       "r2c1p2reg:radio:0_clone"
+      ],
+      [
+       "r7c2p10reg:radio:3_clone",
+       "r2c2p3reg:radio:1_clone"
+      ]
+     ]
+    }
+   ],
+   "seconds": 12.2
+  },
+  {
+   "section": "SCIA VV.F. - distinta di versamento",
+   "fields": [
+    {
+     "id": "r2c1p2reg:txt",
+     "kind": "text",
+     "label": "Attestato di versamento n.¹",
+     "max": 30
+    },
+    {
+     "id": "r2c2p4reg:calendar_input",
+     "kind": "date",
+     "label": "del"
+    },
+    {
+     "id": "r4c1p8reg",
+     "kind": "select",
+     "label": "intestato alla Tesoreria Provinciale dello Stato di",
+     "options": "112 options",
+     "value": "NAPOLI"
+    },
+    {
+     "id": "r4c2p10reg:real",
+     "kind": "text",
+     "label": "per un totale di euro",
+     "max": 10
+    },
+    {
+     "id": "r6c1p14reg:upload1_input",
+     "kind": "file",
+     "label": "Tipologie ammesse: dwf.p7m;svg.p7m;jpg.p7m;pdf.p7m Allega Max: 9,77 MB",
+     "context": "allega copia del versamento",
+     "accepts": "Tipologie ammesse: dwf.p7m;svg.p7m;jpg.p7m;pdf.p7m"
+    },
+    {
+     "id": "r10c1p20reg:chk",
+     "kind": "checkbox",
+     "label": "In caso di utilizzo dell'approccio ingegneristico alla sicurezza antincendio di cui al decreto del Ministero dell'interno 9 maggio 2007, allegare anche la dichi"
+    },
+    {
+     "id": "r13c3p25reg:radio:0_clone",
+     "kind": "radio",
+     "label": "A",
+     "group": "r13c3p25reg:radio"
+    },
+    {
+     "id": "r13c4p26reg:radio:1_clone",
+     "kind": "radio",
+     "label": "B",
+     "group": "r13c4p26reg:radio",
+     "disabled": true
+    },
+    {
+     "id": "r13c5p27reg:radio:2_clone",
+     "kind": "radio",
+     "label": "C",
+     "group": "r13c5p27reg:radio",
+     "disabled": true
+    },
+    {
+     "id": "r17c1p35reg:radio:3_clone",
+     "kind": "radio",
+     "label": "Nuova",
+     "group": "r17c1p35reg:radio"
+    },
+    {
+     "id": "r17c2p36reg:radio:4_clone",
+     "kind": "radio",
+     "label": "Esistente",
+     "group": "r17c2p36reg:radio"
+    },
+    {
+     "id": "r19c1p39reg",
+     "kind": "select",
+     "label": "Approccio tecnico",
+     "options": [
+      "Modalità Standard",
+      "RTO/RTV ⁴ soluzione conforme",
+      "DM 09-05-2007 (ingegneria della sicurezza) ⁵",
+      "RTO/RTV ⁴ soluzione alternativa",
+      "RTO/RTV ⁴ soluzione in deroga"
+     ],
+     "value": "Modalità Standard"
+    },
+    {
+     "id": "r22c1p45reg:real",
+     "kind": "text",
+     "label": "euro",
+     "max": 10
+    },
+    {
+     "id": "r22c3p49reg:radio:5_clone",
+     "kind": "radio",
+     "label": "Si",
+     "group": "r22c3p49reg:radio"
+    },
+    {
+     "id": "r22c4p51reg:radio:6_clone",
+     "kind": "radio",
+     "label": "No",
+     "group": "r22c4p51reg:radio"
+    }
+   ],
+   "fingerprint": "1ccff59a643beadc",
+   "text": "SCIA VV.F. - distinta di versamento Attestato di versamento n.¹ del intestato alla Tesoreria Provinciale dello Stato di per un totale di euro allega copia del versamento Tipologie ammesse: dwf.p7m;svg.p7m;jpg.p7m;pdf.p7m Allega Max: 9,77 MB In caso di utilizzo dell'approccio ingegneristico alla sicurezza antincendio di cui al decreto del Ministero dell'interno 9 maggio 2007, allegare anche la dichiarazione, a firma del responsabile dell'attività, in merito all'attuazione del sistema di gestione della sicurezza antincendio di cui all'articolo 6 dello stesso decreto; per la definizione del relativo importo, si applica l'art 6 , comma 4, dello stesso decreto. SCIA VV.F. - CATEGORIA, NUMERO E SOTTOCLASSE dell'attività La/e attività oggetto della Segnalazione sono individuate² ai n./sotto classe/ cat.: categoria A B C Nuova Esistente Approccio tecnico euro FV ³ Si No ___________ ¹ In caso di utilizzo dell’approccio ingegneristico alla sicurezza antincendio di cui al decreto del Ministero dell'interno 9 maggio 2007, allegare anche la dichiarazione, a firma del responsabile dell’attività, in merito all’attuazione del sistema di gestione della sicurezza antincendio di cui all’articolo 6 dello stesso decreto; per la definizione del relativo importo, si applica l’art. 6 , comma 4, dello stesso decreto. ² Al fine di definire il relativo importo, riportare il numero e la categoria corrispondente (A/B/C) individuata sulla base dell'elenco contenuto nell'Allegato I del DPR 01/08/2011 n.151 e la sottoclasse di cui al Decreto del Ministro dell'Interno del 7-8-2012. ³ Selezionare solo nel caso in cui sia prevista l’installazione di un impianto fotovoltaico (FV) presso la specifica attività (Decreto Legge 23 settembre 2022, n. 144). ⁴ Selezionare solo nel caso in cui si sia fatto ricorso alle norme tecniche allegate al decreto del Ministro dell’Interno 3 agosto 2015 e s.m.i. (RTO) e/o alle regole tecniche verticali della sezione V (RTV) dello stesso decreto. ⁵ Selezionare solo nel caso in cui si sia fatto ricorso al Decreto del Ministero dell’Interno 09-05-2007. ⁶ Selezionare le misure antincendio (S1, S2,..., S10) per cui si è fatto eventuale ricorso alle soluzioni alternative di cui al decreto del Ministro dell’Interno 3 agosto 2015 e s.m.i..",
+   "branches": [
+    {
+     "choice": "In caso di utilizzo dell'approccio ingegneristico alla sicurezza antincendio di cui al decreto del Ministero dell'interno 9 maggio 2007, allegare anche la dichi",
+     "id": "r10c1p20reg:chk",
+     "kind": "checkbox",
+     "reveals": [
+      {
+       "id": "r12c1p22reg:upload1_input",
+       "kind": "file",
+       "label": "Tipologie ammesse: xml;dwf;dwf.p7m;svg;svg.p7m;jpg;jpg.p7m;pdf;pdf.p7m Allega Max: 9,77 MB",
+       "context": "allega dichiarazione",
+       "accepts": "Tipologie ammesse: xml;dwf;dwf.p7m;svg;svg.p7m;jpg;jpg.p7m;pdf;pdf.p7m"
+      }
+     ],
+     "moved": [
+      [
+       "r13c3p25reg:radio:0_clone",
+       "r17c3p30reg:radio:0_clone"
+      ],
+      [
+       "r13c4p26reg:radio:1_clone",
+       "r17c4p31reg:radio:1_clone"
+      ],
+      [
+       "r13c5p27reg:radio:2_clone",
+       "r17c5p32reg:radio:2_clone"
+      ],
+      [
+       "r17c1p35reg:radio:3_clone",
+       "r21c1p40reg:radio:3_clone"
+      ],
+      [
+       "r17c2p36reg:radio:4_clone",
+       "r21c2p41reg:radio:4_clone"
+      ],
+      [
+       "r19c1p39reg",
+       "r23c1p44reg"
+      ],
+      [
+       "r22c1p45reg:real",
+       "r26c1p50reg:real"
+      ],
+      [
+       "r22c3p49reg:radio:5_clone",
+       "r26c3p54reg:radio:5_clone"
+      ],
+      [
+       "r22c4p51reg:radio:6_clone",
+       "r26c4p56reg:radio:6_clone"
+      ]
+     ],
+     "plus": {
+      "anchor": "A",
+      "adds": 18,
+      "of": 3
+     }
+    },
+    {
+     "choice": "A",
+     "id": "r13c3p25reg:radio:0_clone",
+     "kind": "radio",
+     "reveals": [
+      {
+       "id": "r15c1p30reg",
+       "kind": "select",
+       "label": "attività - sotto classe - categoria - descrizione",
+       "options": [
+        "03 _ 5 _ A: Depositi di GPL in recipienti mobili (massa complessiva da 75 a 300 kg)",
+        "04 _ 3 _ A: Depositi di GPL (serbatoi fissi da 0,3 a 5 mc)",
+        "06 _ 1 _ A: Reti di trasporto gas infiamm. di densità rel. <0,8 (pressione da 0,5 a 2,4MPa)",
+        "12 _ 1 _ A: Depositi, rivendite liquidi infiamm. e/o combust. e/o oli e simili, da 1 a 9 mc",
+        "13 _ 1 _ A: Distributori di carburanti liquidi (P.I.> 65 °C), tramite contenitori < 9 mc",
+        "15 _ 1 _ A: Depositi, rivendite di alcoli (concentr. > 60% in volume), capacità da 1 a 10mc",
+        "41 _ 1 _ A: Teatri di posa per riprese cinematografiche e televisive, fino a 25 persone",
+        "49 _ 1 _ A: Gruppi elettrogeni e/o di cogenerazione con motori di potenza da 25 a 350 kW",
+        "66 _ 1 _ A: Strutture ricettive e simili, con numero di posti letto > 25 (fino a 50 posti)",
+        "67 _ 1 _ A: Scuole e simili, con numero di persone presenti > 100 (fino a 150 persone)",
+        "68 _ 1 _ A: Ospedali, RSA, case di cura e simili, da 25 a 50 posti letto",
+        "68 _ 2 _ A: Strutture ambulatoriali, riabilitative, diagnostica e simili, da 500 a 1000mq",
+        "69 _ 1 _ A: Locali di esposizione e/o vendita, ingrosso e/o dettaglio, sup. da 400 a 600mq",
+        "71 _ 1 _ A: Aziende ed uffici, con oltre 300 persone presenti (fino a 500 persone)",
+        "74 _ 1 _ A: Impianti produzione calore con potenzialità superiore a 116 KW (fino a 350 KW)",
+        "75 _ 1 _ A: Autorimesse e simili, con superficie compresa tra 200 mq a 1000 mq",
+        "77 _ 1 _ A: Edifici ad uso civile, con altezza antincendi superiore a 24 m (fino a 32 m)",
+        "80 _ 1 _ A: Gallerie stradali (lunghezza > 500m) e ferroviarie (lunghezza > 2000m)"
+       ]
+      }
+     ],
+     "moved": [
+      [
+       "r17c1p35reg:radio:3_clone",
+       "r18c1p37reg:radio:3_clone"
+      ],
+      [
+       "r17c2p36reg:radio:4_clone",
+       "r18c2p38reg:radio:4_clone"
+      ],
+      [
+       "r19c1p39reg",
+       "r20c1p41reg"
+      ],
+      [
+       "r22c1p45reg:real",
+       "r23c1p47reg:real"
+      ],
+      [
+       "r22c3p49reg:radio:5_clone",
+       "r23c3p51reg:radio:5_clone"
+      ],
+      [
+       "r22c4p51reg:radio:6_clone",
+       "r23c4p53reg:radio:6_clone"
+      ]
+     ],
+     "plus": {
+      "anchor": "A",
+      "adds": 18,
+      "of": 2
+     }
+    },
+    {
+     "choice": "Nuova",
+     "id": "r17c1p35reg:radio:3_clone",
+     "kind": "radio",
+     "plus": {
+      "anchor": "A",
+      "adds": 18,
+      "of": 2
+     }
+    },
+    {
+     "choice": "Esistente",
+     "id": "r17c2p36reg:radio:4_clone",
+     "kind": "radio",
+     "plus": {
+      "anchor": "A",
+      "adds": 18,
+      "of": 2
+     }
+    },
+    {
+     "choice": "Approccio tecnico = RTO/RTV ⁴ soluzione conforme",
+     "id": "r19c1p39reg",
+     "kind": "select",
+     "option": "RTO/RTV ⁴ soluzione conforme",
+     "plus": {
+      "anchor": "A",
+      "adds": 18,
+      "of": 2
+     }
+    },
+    {
+     "choice": "Approccio tecnico = DM 09-05-2007 (ingegneria della sicurezza) ⁵",
+     "id": "r19c1p39reg",
+     "kind": "select",
+     "option": "DM 09-05-2007 (ingegneria della sicurezza) ⁵",
+     "plus": {
+      "anchor": "A",
+      "adds": 18,
+      "of": 2
+     }
+    },
+    {
+     "choice": "Approccio tecnico = RTO/RTV ⁴ soluzione alternativa",
+     "id": "r19c1p39reg",
+     "kind": "select",
+     "option": "RTO/RTV ⁴ soluzione alternativa",
+     "reveals": [
+      {
+       "id": "r21c1p43reg:multiCombo_focus",
+       "kind": "text",
+       "label": "RTO/RTV soluzione alternativa ⁶"
+      }
+     ],
+     "moved": [
+      [
+       "r22c1p45reg:real",
+       "r23c1p47reg:real"
+      ],
+      [
+       "r22c3p49reg:radio:5_clone",
+       "r23c3p51reg:radio:5_clone"
+      ],
+      [
+       "r22c4p51reg:radio:6_clone",
+       "r23c4p53reg:radio:6_clone"
+      ]
+     ],
+     "plus": {
+      "anchor": "A",
+      "adds": 18,
+      "of": 2
+     }
+    },
+    {
+     "choice": "Approccio tecnico = RTO/RTV ⁴ soluzione in deroga",
+     "id": "r19c1p39reg",
+     "kind": "select",
+     "option": "RTO/RTV ⁴ soluzione in deroga",
+     "plus": {
+      "anchor": "A",
+      "adds": 18,
+      "of": 2
+     }
+    },
+    {
+     "choice": "Si",
+     "id": "r22c3p49reg:radio:5_clone",
+     "kind": "radio",
+     "plus": {
+      "anchor": "A",
+      "adds": 18,
+      "of": 2
+     }
+    },
+    {
+     "choice": "No",
+     "id": "r22c4p51reg:radio:6_clone",
+     "kind": "radio",
+     "plus": {
+      "anchor": "A",
+      "adds": 18,
+      "of": 2
+     }
+    }
+   ],
+   "seconds": 17.5
+  },
+  {
+   "section": "SCIA VV.F.  - dati per la corrispondenza",
+   "fields": [
+    {
+     "id": "r1c1p1reg:chk",
+     "kind": "checkbox",
+     "label": "Eventuale diverso indirizzo presso il quale si chiede di inviare la corrispondenza:"
+    },
+    {
+     "id": "r3c1p3reg:txt",
+     "kind": "text",
+     "label": "Cognome",
+     "max": 50,
+     "disabled": true
+    },
+    {
+     "id": "r3c2p5reg:txt",
+     "kind": "text",
+     "label": "Nome",
+     "max": 50,
+     "disabled": true
+    },
+    {
+     "id": "r5c1p7reg:txt",
+     "kind": "text",
+     "label": "indirizzo",
+     "max": 150,
+     "disabled": true
+    },
+    {
+     "id": "r5c2p9reg:txt",
+     "kind": "text",
+     "label": "n. civico",
+     "max": 10,
+     "disabled": true
+    },
+    {
+     "id": "r5c3p11reg:txt",
+     "kind": "text",
+     "label": "c.a.p.",
+     "max": 5,
+     "disabled": true
+    },
+    {
+     "id": "r7c1p15reg",
+     "kind": "select",
+     "label": "comune",
+     "disabled": true,
+     "options": []
+    },
+    {
+     "id": "r7c2p17reg",
+     "kind": "select",
+     "label": "Provincia",
+     "disabled": true,
+     "options": "111 options"
+    },
+    {
+     "id": "r9c1p21reg:number",
+     "kind": "text",
+     "label": "telefono",
+     "max": 20,
+     "disabled": true
+    },
+    {
+     "id": "r9c2p23reg:txt",
+     "kind": "text",
+     "label": "indirizzo di posta elettronica",
+     "max": 150,
+     "disabled": true
+    },
+    {
+     "id": "r9c3p25reg:txt",
+     "kind": "text",
+     "label": "indirizzo di posta elettronica certificata",
+     "max": 150,
+     "disabled": true
+    }
+   ],
+   "fingerprint": "572a85fbc3ea16c6",
+   "text": "SCIA VV.F. - dati per la corrispondenza Eventuale diverso indirizzo presso il quale si chiede di inviare la corrispondenza: Cognome Nome indirizzo n. civico c.a.p. comune Provincia telefono indirizzo di posta elettronica indirizzo di posta elettronica certificata",
+   "branches": [
+    {
+     "choice": "Eventuale diverso indirizzo presso il quale si chiede di inviare la corrispondenza:",
+     "id": "r1c1p1reg:chk",
+     "kind": "checkbox",
+     "enables": [
+      "r3c1p3reg:txt",
+      "r3c2p5reg:txt",
+      "r5c1p7reg:txt",
+      "r5c2p9reg:txt",
+      "r5c3p11reg:txt",
+      "r7c2p17reg",
+      "r9c1p21reg:number",
+      "r9c2p23reg:txt",
+      "r9c3p25reg:txt"
+     ]
+    }
+   ],
+   "seconds": 2.7
+  },
+  {
+   "section": "SCIA VV.F. - dati del delegato",
+   "fields": [
+    {
+     "id": "r1c1p1reg:chk",
+     "kind": "checkbox",
+     "label": "Il sottoscritto, per il ritiro del parere o per i chiarimenti tecnici in ordine alla presente istanza, delega il/la sig."
+    },
+    {
+     "id": "r3c1p3reg:txt",
+     "kind": "text",
+     "label": "Titolo professionale",
+     "max": 100,
+     "disabled": true
+    },
+    {
+     "id": "r3c2p5reg:txt",
+     "kind": "text",
+     "label": "Cognome",
+     "max": 50,
+     "disabled": true
+    },
+    {
+     "id": "r3c3p7reg:txt",
+     "kind": "text",
+     "label": "Nome",
+     "max": 50,
+     "disabled": true
+    },
+    {
+     "id": "r5c2p11reg:txt",
+     "kind": "text",
+     "label": "via – piazza",
+     "context": "domiciliato in",
+     "max": 150,
+     "disabled": true
+    },
+    {
+     "id": "r5c3p13reg:txt",
+     "kind": "text",
+     "label": "n. civico",
+     "context": "domiciliato in",
+     "max": 10,
+     "disabled": true
+    },
+    {
+     "id": "r5c4p15reg:txt",
+     "kind": "text",
+     "label": "c.a.p.",
+     "context": "domiciliato in",
+     "max": 5,
+     "disabled": true
+    },
+    {
+     "id": "r7c1p19reg",
+     "kind": "select",
+     "label": "comune",
+     "disabled": true,
+     "options": []
+    },
+    {
+     "id": "r7c2p21reg",
+     "kind": "select",
+     "label": "Provincia",
+     "disabled": true,
+     "options": "111 options"
+    },
+    {
+     "id": "r9c1p25reg:number",
+     "kind": "text",
+     "label": "telefono",
+     "max": 20,
+     "disabled": true
+    },
+    {
+     "id": "r9c2p27reg:txt",
+     "kind": "text",
+     "label": "indirizzo di posta elettronica",
+     "max": 150,
+     "disabled": true
+    },
+    {
+     "id": "r9c3p29reg:txt",
+     "kind": "text",
+     "label": "indirizzo di posta elettronica certificata",
+     "max": 150,
+     "disabled": true
+    }
+   ],
+   "fingerprint": "ac3b7a8792f93e89",
+   "text": "SCIA VV.F. - dati del delegato Il sottoscritto, per il ritiro del parere o per i chiarimenti tecnici in ordine alla presente istanza, delega il/la sig. Titolo professionale Cognome Nome via – piazza n. civico c.a.p. domiciliato in comune Provincia telefono indirizzo di posta elettronica indirizzo di posta elettronica certificata",
+   "branches": [],
+   "seconds": 1.3
+  },
+  {
+   "section": "ASSEVERAZIONE DEL PROFESSIONISTA AI FINI DELLA SICUREZZA ANTINCENDIO (art. 4 del Decreto del Ministro dell'Interno 7.8.2012)",
+   "fields": [
+    {
+     "id": "r3c1p4reg:txt",
+     "kind": "text",
+     "label": "Titolo professionale",
+     "max": 100
+    },
+    {
+     "id": "r3c2p6reg:txt",
+     "kind": "text",
+     "label": "Cognome",
+     "max": 100
+    },
+    {
+     "id": "r3c3p8reg:txt",
+     "kind": "text",
+     "label": "Nome",
+     "max": 100
+    },
+    {
+     "id": "r5c1p10reg",
+     "kind": "select",
+     "label": "iscritto all'Albo professionale dell'Ordine/Collegio",
+     "options": "112 options"
+    },
+    {
+     "id": "r5c2p12reg:txt",
+     "kind": "text",
+     "label": "n. iscrizione",
+     "max": 20
+    },
+    {
+     "id": "r5c3p14reg:txt",
+     "kind": "text",
+     "label": "C.F.",
+     "max": 16
+    },
+    {
+     "id": "r7c2p20reg:txt",
+     "kind": "text",
+     "label": "indirizzo",
+     "context": "con ufficio in",
+     "max": 100
+    },
+    {
+     "id": "r7c3p22reg:txt",
+     "kind": "text",
+     "label": "n. civico",
+     "context": "con ufficio in",
+     "max": 20
+    },
+    {
+     "id": "r9c1p26reg:txt",
+     "kind": "text",
+     "label": "c.a.p.",
+     "max": 5
+    },
+    {
+     "id": "r9c2p28reg",
+     "kind": "select",
+     "label": "comune",
+     "disabled": true,
+     "options": []
+    },
+    {
+     "id": "r9c3p30reg",
+     "kind": "select",
+     "label": "provincia",
+     "options": "111 options"
+    },
+    {
+     "id": "r11c1p34reg:number",
+     "kind": "text",
+     "label": "telefono",
+     "max": 15
+    },
+    {
+     "id": "r11c2p36reg:txt",
+     "kind": "text",
+     "label": "indirizzo di posta elettronica",
+     "max": 200
+    },
+    {
+     "id": "r11c3p38reg:txt",
+     "kind": "text",
+     "label": "indirizzo di posta elettronica certificata",
+     "max": 200
+    },
+    {
+     "id": "r13c2p44reg:radio:0_clone",
+     "kind": "radio",
+     "label": "nuovo insediamento",
+     "group": "r13c2p44reg:radio"
+    },
+    {
+     "id": "r13c3p45reg:radio:1_clone",
+     "kind": "radio",
+     "label": "modifica attività esistente",
+     "group": "r13c3p45reg:radio"
+    },
+    {
+     "id": "r15c1p48reg:txt",
+     "kind": "text",
+     "label": "relativi all'attività",
+     "max": 200
+    },
+    {
+     "id": "r18c2p56reg:chk",
+     "kind": "checkbox",
+     "label": "progetti approvati dal Comando VV.F. (solo per attività di cat B e C)",
+     "disabled": true
+    },
+    {
+     "id": "r19c2p59reg:chk",
+     "kind": "checkbox",
+     "label": "relazione tecnica e gli elaborati grafici di progetto, di cui all'Allegato I lettera B del Decreto del Ministro dell'Interno 7.8.2012 (per attività di cat. A )"
+    },
+    {
+     "id": "r20c2p62reg:chk",
+     "kind": "checkbox",
+     "label": "documentazione tecnica di progetto e la dichiarazione di non aggravio del rischio incendi allegate (per attività di cat. A,B,C in caso di modifiche di cui art.4"
+    },
+    {
+     "id": "r21c1p64reg:chk",
+     "kind": "checkbox",
+     "label": "le normative tecniche di prevenzione incendi, valutate ai fini della presente asseverazione;",
+     "checked": true
+    },
+    {
+     "id": "r22c1p65reg:chk",
+     "kind": "checkbox",
+     "label": "l'esito dei sopralluoghi e delle verifiche effettuate, ai fini della presente asseverazione;",
+     "checked": true
+    },
+    {
+     "id": "r23c1p66reg:chk",
+     "kind": "checkbox",
+     "label": "le certificazioni e le dichiarazioni, così come sintetizzate nella distinta allegata;",
+     "checked": true
+    }
+   ],
+   "fingerprint": "ab1037f0bc4258c6",
+   "text": "ASSEVERAZIONE DEL PROFESSIONISTA AI FINI DELLA SICUREZZA ANTINCENDIO (art. 4 del Decreto del Ministro dell'Interno 7.8.2012) Il sottoscritto Titolo professionale Cognome Nome iscritto all'Albo professionale dell'Ordine/Collegio n. iscrizione C.F. indirizzo n. civico con ufficio in c.a.p. comune provincia telefono indirizzo di posta elettronica indirizzo di posta elettronica certificata consapevole della sanzione penale prevista dall'art. 19 comma 6 della L. 241/90, dall'art. 20 comma 2 del D.Lgs. 139/06, nonché di quelle previste dagli artt. 359 e 481 del C.P. in caso di dichiarazioni mendaci e falsa rappresentazione degli atti, in relazione alle opere che hanno come oggetto: i lavori di: nuovo insediamento modifica attività esistente relativi all'attività VISTI la documentazione tecnica di seguito indicata: progetti approvati dal Comando VV.F. (solo per attività di cat B e C) relazione tecnica e gli elaborati grafici di progetto, di cui all'Allegato I lettera B del Decreto del Ministro dell'Interno 7.8.2012 (per attività di cat. A ) documentazione tecnica di progetto e la dichiarazione di non aggravio del rischio incendi allegate (per attività di cat. A,B,C in caso di modifiche di cui art.4, comma 6, del DPR 01/08/2011 n.151, che non comportino aggravio delle preesistenti condizioni di sicurezza) le normative tecniche di prevenzione incendi, valutate ai fini della presente asseverazione; l'esito dei sopralluoghi e delle verifiche effettuate, ai fini della presente asseverazione; le certificazioni e le dichiarazioni, così come sintetizzate nella distinta allegata; ASSEVERA LA CONFORMITÀ DELLA/E ATTIVITA' SOPRAINDICATA/E AI REQUISITI DI PREVENZIONE INCENDI E DI SICUREZZA ANTINCENDIO",
+   "branches": [
+    {
+     "choice": "nuovo insediamento",
+     "id": "r13c2p44reg:radio:0_clone",
+     "kind": "radio"
+    },
+    {
+     "choice": "modifica attività esistente",
+     "id": "r13c3p45reg:radio:1_clone",
+     "kind": "radio"
+    },
+    {
+     "choice": "relazione tecnica e gli elaborati grafici di progetto, di cui all'Allegato I lettera B del Decreto del Ministro dell'Interno 7.8.2012 (per attività di cat. A )",
+     "id": "r19c2p59reg:chk",
+     "kind": "checkbox"
+    },
+    {
+     "choice": "documentazione tecnica di progetto e la dichiarazione di non aggravio del rischio incendi allegate (per attività di cat. A,B,C in caso di modifiche di cui art.4",
+     "id": "r20c2p62reg:chk",
+     "kind": "checkbox"
+    }
+   ],
+   "seconds": 5.4
+  },
+  {
+   "section": "DISTINTA DELLA DOCUMENTAZIONE TECNICA ALLEGATA",
+   "fields": [
+    {
+     "id": "r6c1p7reg:chk",
+     "kind": "checkbox",
+     "label": "Relazione tecnica ed elaborati grafici"
+    },
+    {
+     "id": "r8c2p12reg:number",
+     "kind": "text",
+     "label": "n. atti:",
+     "max": 2,
+     "disabled": true
+    },
+    {
+     "id": "r8c3p14reg:number",
+     "kind": "text",
+     "label": "n. elaborati:",
+     "max": 2,
+     "disabled": true
+    },
+    {
+     "id": "r11c1p23reg:chk",
+     "kind": "checkbox",
+     "label": "Dichiarazione di non aggravio del rischio incendio"
+    },
+    {
+     "id": "r14c1p29reg:chk",
+     "kind": "checkbox",
+     "label": "CERTIFICAZIONI DI ELEMENTI STRUTTURALI PORTANTI E/O SEPARANTI CLASSIFICATI AI FINI DELLA RESISTENZA AL FUOCO, CON ESCLUSIONE DELLE PORTE E DEGLI ALTRI ELEMENTI "
+    },
+    {
+     "id": "r16c2p33reg:number",
+     "kind": "text",
+     "label": "n°",
+     "max": 2,
+     "disabled": true
+    },
+    {
+     "id": "r18c1p39reg:chk",
+     "kind": "checkbox",
+     "label": "DICHIARAZIONI INERENTI I PRODOTTI CLASSIFICATI AI FINI DELLA REAZIONE E DELLA RESISTENZA AL FUOCO ED I DISPOSITIVI DI APERTURA DELLE PORTE"
+    },
+    {
+     "id": "r20c2p43reg:number",
+     "kind": "text",
+     "label": "n°",
+     "max": 2,
+     "disabled": true
+    },
+    {
+     "id": "r29c2p62reg:number",
+     "kind": "text",
+     "label": "n°",
+     "context": "4.I)",
+     "max": 2,
+     "prefilled": true
+    },
+    {
+     "id": "r29c3p64reg:number",
+     "kind": "text",
+     "label": "n°",
+     "context": "4.I)",
+     "max": 2,
+     "prefilled": true
+    },
+    {
+     "id": "r29c4p66reg:number",
+     "kind": "text",
+     "label": "n°",
+     "context": "4.I)",
+     "max": 2,
+     "prefilled": true
+    },
+    {
+     "id": "r31c2p74reg:number",
+     "kind": "text",
+     "label": "n°",
+     "context": "4.II)",
+     "max": 2,
+     "prefilled": true
+    },
+    {
+     "id": "r31c3p76reg:number",
+     "kind": "text",
+     "label": "n°",
+     "context": "4.II)",
+     "max": 2,
+     "prefilled": true
+    },
+    {
+     "id": "r31c4p78reg:number",
+     "kind": "text",
+     "label": "n°",
+     "context": "4.II)",
+     "max": 2,
+     "prefilled": true
+    },
+    {
+     "id": "r33c2p84reg:number",
+     "kind": "text",
+     "label": "n°",
+     "context": "4.III)",
+     "max": 2,
+     "prefilled": true
+    },
+    {
+     "id": "r33c3p86reg:number",
+     "kind": "text",
+     "label": "n°",
+     "context": "4.III)",
+     "max": 2,
+     "prefilled": true
+    },
+    {
+     "id": "r33c4p88reg:number",
+     "kind": "text",
+     "label": "n°",
+     "context": "4.III)",
+     "max": 2,
+     "prefilled": true
+    },
+    {
+     "id": "r35c2p94reg:number",
+     "kind": "text",
+     "label": "n°",
+     "context": "4.IV)",
+     "max": 2,
+     "prefilled": true
+    },
+    {
+     "id": "r35c3p96reg:number",
+     "kind": "text",
+     "label": "n°",
+     "context": "4.IV)",
+     "max": 2,
+     "prefilled": true
+    },
+    {
+     "id": "r35c4p98reg:number",
+     "kind": "text",
+     "label": "n°",
+     "context": "4.IV)",
+     "max": 2,
+     "prefilled": true
+    },
+    {
+     "id": "r37c2p104reg:number",
+     "kind": "text",
+     "label": "n°",
+     "context": "4.V)",
+     "max": 2,
+     "prefilled": true
+    },
+    {
+     "id": "r37c3p106reg:number",
+     "kind": "text",
+     "label": "n°",
+     "context": "4.V)",
+     "max": 2,
+     "prefilled": true
+    },
+    {
+     "id": "r37c4p108reg:number",
+     "kind": "text",
+     "label": "n°",
+     "context": "4.V)",
+     "max": 2,
+     "prefilled": true
+    },
+    {
+     "id": "r39c2p114reg:number",
+     "kind": "text",
+     "label": "n°",
+     "context": "4.VI)",
+     "max": 2,
+     "prefilled": true
+    },
+    {
+     "id": "r39c3p116reg:number",
+     "kind": "text",
+     "label": "n°",
+     "context": "4.VI)",
+     "max": 2,
+     "prefilled": true
+    },
+    {
+     "id": "r39c4p118reg:number",
+     "kind": "text",
+     "label": "n°",
+     "context": "4.VI)",
+     "max": 2,
+     "prefilled": true
+    },
+    {
+     "id": "r41c2p124reg:number",
+     "kind": "text",
+     "label": "n°",
+     "context": "4.VII)",
+     "max": 2,
+     "prefilled": true
+    },
+    {
+     "id": "r41c3p126reg:number",
+     "kind": "text",
+     "label": "n°",
+     "context": "4.VII)",
+     "max": 2,
+     "prefilled": true
+    },
+    {
+     "id": "r41c4p128reg:number",
+     "kind": "text",
+     "label": "n°",
+     "context": "4.VII)",
+     "max": 2,
+     "prefilled": true
+    },
+    {
+     "id": "r43c2p134reg:number",
+     "kind": "text",
+     "label": "n°",
+     "context": "4.VIII)",
+     "max": 2,
+     "prefilled": true
+    },
+    {
+     "id": "r43c3p136reg:number",
+     "kind": "text",
+     "label": "n°",
+     "context": "4.VIII)",
+     "max": 2,
+     "prefilled": true
+    },
+    {
+     "id": "r43c4p138reg:number",
+     "kind": "text",
+     "label": "n°",
+     "context": "4.VIII)",
+     "max": 2,
+     "prefilled": true
+    },
+    {
+     "id": "r46c1p143reg:number",
+     "kind": "text",
+     "label": "n°",
+     "max": 2,
+     "prefilled": true
+    },
+    {
+     "id": "r46c2p145reg:txt",
+     "kind": "text",
+     "label": "specificare tipologia documenti",
+     "max": 100,
+     "prefilled": true
+    }
+   ],
+   "fingerprint": "be726d44534f0b94",
+   "text": "DISTINTA DELLA DOCUMENTAZIONE TECNICA ALLEGATA (In caso di modifiche le documentazioni da produrre vanno riferite alle parti oggetto della modifica stessa) A) La documentazione non allegata alle certificazioni e/o dichiarazioni di cui ai successivi punti 2, 3, 4, nonché all' eventuale documentazione di cui al p.to 5, è raccolta in apposito fascicolo che il titolare è tenuto a rendere disponibile per eventuali controlli. B) La documentazione progettuale, le certificazioni e/o le dichiarazioni di cui ai successivi punti 1,2, 3, 4 possono essere integrate da una distinta (da allegare ed indicare al successivo punto 5) ove specificare nome, cognome del firmatario e data di sottoscrizione di ciascun documento allegato. N.B. La distinta deve essere compilata in ogni sua parte, mediante l'apposizione in ogni riquadro del relativo numero dei modelli allegati (riportando il valore 0 per le tipologie di certificazione/dichiarazione non presentate) 1. DOCUMENTAZIONE PROGETTUALE Relazione tecnica ed elaborati grafici n. atti: n. elaborati: Allegare in caso di attività di cui all'Allegato I, cat. A del DPR 01/08/2011 n. 151 o di modifiche di cui art.4, comma 6, del DPR 01/08/2011 n.151, che non comportino aggravio delle preesistenti condizioni di sicurezza. Dichiarazione di non aggravio del rischio incendio Allegare in caso di modifiche di cui art.4, comma 6, del DPR 01/08/2011 n.151, che non comportino aggravio delle preesistenti condizioni di sicurezza. 2. CERTIFICAZIONI DI ELEMENTI STRUTTURALI PORTANTI E/O SEPARANTI CLASSIFICATI AI FINI DELLA RESISTENZA AL FUOCO, CON ESCLUSIONE DELLE PORTE E DEGLI ALTRI ELEMENTI DI CHIUSURA CERTIFICAZIONI DI ELEMENTI STRUTTURALI PORTANTI E/O SEPARANTI CLASSIFICATI AI FINI DELLA RESISTENZA AL FUOCO, CON ESCLUSIONE DELLE PORTE E DEGLI ALTRI ELEMENTI DI CHIUSURA n° (n° totale dei modelli allegati – ogni modello può riferirsi a più elementi) 3. DICHIARAZIONI INERENTI I PRODOTTI CLASSIFICATI AI FINI DELLA REAZIONE E DELLA RESISTENZA AL FUOCO ED I DISPOSITIVI DI APERTURA DELLE PORTE DICHIARAZIONI INERENTI I PRODOTTI CLASSIFICATI AI FINI DELLA REAZIONE E DELLA RESISTENZA AL FUOCO ED I DISPOSITIVI DI APERTURA DELLE PORTE n° (n° totale dei modelli allegati – ogni documento può riferirsi a più prodotti) 4. DICHIARAZIONI/CERTIFICAZIONI RELATIVE AGLI IMPIANTI RILEVANTI AI FINI DELLA SICUREZZA ANTINCENDIO COSI' DISTINTE: - DICHIARAZIONI DI CONFORMITÀ/RISPONDENZA redatte sul modello di cui al DM 37/08 e s.m.i. (DC); - DICHIARAZIONI DI CORRETTA INSTALLAZIONE E FUNZIONAMENTO redatte sul modello mod. DICH. IMP. (DI); - CERTIFICAZIONI DI RISPONDENZA E FUNZIONALITÀ redatte sul modello mod. CERT. IMP ( CI). La distinta di seguito riportata deve essere compilata in ogni sua parte, mediante l'apposizione in ogni riquadro del relativo numero dei modelli allegati (riportando il valore 0 per le tipologie di certificazione/dichiarazione non presentate) (DC) (DI) (CI) n° n° n° 4.I) produzione, trasformazione, trasporto, distribuzione e di utilizzazi",
+   "branches": [
+    {
+     "choice": "Relazione tecnica ed elaborati grafici",
+     "id": "r6c1p7reg:chk",
+     "kind": "checkbox",
+     "moved": [
+      [
+       "r46c1p143reg:number",
+       "r16c2p33reg:number"
+      ],
+      [
+       "r46c1p143reg:number",
+       "r20c2p43reg:number"
+      ],
+      [
+       "r29c4p66reg:number",
+       "r29c2p62reg:number"
+      ],
+      [
+       "r29c4p66reg:number",
+       "r29c3p64reg:number"
+      ],
+      [
+       "r31c4p78reg:number",
+       "r31c2p74reg:number"
+      ],
+      [
+       "r31c4p78reg:number",
+       "r31c3p76reg:number"
+      ],
+      [
+       "r33c4p88reg:number",
+       "r33c2p84reg:number"
+      ],
+      [
+       "r33c4p88reg:number",
+       "r33c3p86reg:number"
+      ],
+      [
+       "r35c4p98reg:number",
+       "r35c2p94reg:number"
+      ],
+      [
+       "r35c4p98reg:number",
+       "r35c3p96reg:number"
+      ],
+      [
+       "r37c4p108reg:number",
+       "r37c2p104reg:number"
+      ],
+      [
+       "r37c4p108reg:number",
+       "r37c3p106reg:number"
+      ],
+      [
+       "r39c4p118reg:number",
+       "r39c2p114reg:number"
+      ],
+      [
+       "r39c4p118reg:number",
+       "r39c3p116reg:number"
+      ],
+      [
+       "r41c4p128reg:number",
+       "r41c2p124reg:number"
+      ],
+      [
+       "r41c4p128reg:number",
+       "r41c3p126reg:number"
+      ],
+      [
+       "r43c4p138reg:number",
+       "r43c2p134reg:number"
+      ],
+      [
+       "r43c4p138reg:number",
+       "r43c3p136reg:number"
+      ]
+     ],
+     "enables": [
+      "r8c2p12reg:number",
+      "r8c3p14reg:number"
+     ],
+     "disables": [
+      "r16c2p33reg:number",
+      "r20c2p43reg:number"
+     ],
+     "plus": {
+      "anchor": "n°",
+      "adds": 6,
+      "of": 1
+     }
+    },
+    {
+     "choice": "Dichiarazione di non aggravio del rischio incendio",
+     "id": "r11c1p23reg:chk",
+     "kind": "checkbox",
+     "moved": [
+      [
+       "r46c1p143reg:number",
+       "r16c2p33reg:number"
+      ],
+      [
+       "r46c1p143reg:number",
+       "r20c2p43reg:number"
+      ],
+      [
+       "r29c4p66reg:number",
+       "r29c2p62reg:number"
+      ],
+      [
+       "r29c4p66reg:number",
+       "r29c3p64reg:number"
+      ],
+      [
+       "r31c4p78reg:number",
+       "r31c2p74reg:number"
+      ],
+      [
+       "r31c4p78reg:number",
+       "r31c3p76reg:number"
+      ],
+      [
+       "r33c4p88reg:number",
+       "r33c2p84reg:number"
+      ],
+      [
+       "r33c4p88reg:number",
+       "r33c3p86reg:number"
+      ],
+      [
+       "r35c4p98reg:number",
+       "r35c2p94reg:number"
+      ],
+      [
+       "r35c4p98reg:number",
+       "r35c3p96reg:number"
+      ],
+      [
+       "r37c4p108reg:number",
+       "r37c2p104reg:number"
+      ],
+      [
+       "r37c4p108reg:number",
+       "r37c3p106reg:number"
+      ],
+      [
+       "r39c4p118reg:number",
+       "r39c2p114reg:number"
+      ],
+      [
+       "r39c4p118reg:number",
+       "r39c3p116reg:number"
+      ],
+      [
+       "r41c4p128reg:number",
+       "r41c2p124reg:number"
+      ],
+      [
+       "r41c4p128reg:number",
+       "r41c3p126reg:number"
+      ],
+      [
+       "r43c4p138reg:number",
+       "r43c2p134reg:number"
+      ],
+      [
+       "r43c4p138reg:number",
+       "r43c3p136reg:number"
+      ]
+     ],
+     "disables": [
+      "r16c2p33reg:number",
+      "r20c2p43reg:number"
+     ],
+     "plus": {
+      "anchor": "n°",
+      "adds": 6,
+      "of": 1
+     }
+    },
+    {
+     "choice": "CERTIFICAZIONI DI ELEMENTI STRUTTURALI PORTANTI E/O SEPARANTI CLASSIFICATI AI FINI DELLA RESISTENZA AL FUOCO, CON ESCLUSIONE DELLE PORTE E DEGLI ALTRI ELEMENTI ",
+     "id": "r14c1p29reg:chk",
+     "kind": "checkbox",
+     "moved": [
+      [
+       "r46c1p143reg:number",
+       "r16c2p33reg:number"
+      ],
+      [
+       "r46c1p143reg:number",
+       "r20c2p43reg:number"
+      ],
+      [
+       "r29c4p66reg:number",
+       "r29c2p62reg:number"
+      ],
+      [
+       "r29c4p66reg:number",
+       "r29c3p64reg:number"
+      ],
+      [
+       "r31c4p78reg:number",
+       "r31c2p74reg:number"
+      ],
+      [
+       "r31c4p78reg:number",
+       "r31c3p76reg:number"
+      ],
+      [
+       "r33c4p88reg:number",
+       "r33c2p84reg:number"
+      ],
+      [
+       "r33c4p88reg:number",
+       "r33c3p86reg:number"
+      ],
+      [
+       "r35c4p98reg:number",
+       "r35c2p94reg:number"
+      ],
+      [
+       "r35c4p98reg:number",
+       "r35c3p96reg:number"
+      ],
+      [
+       "r37c4p108reg:number",
+       "r37c2p104reg:number"
+      ],
+      [
+       "r37c4p108reg:number",
+       "r37c3p106reg:number"
+      ],
+      [
+       "r39c4p118reg:number",
+       "r39c2p114reg:number"
+      ],
+      [
+       "r39c4p118reg:number",
+       "r39c3p116reg:number"
+      ],
+      [
+       "r41c4p128reg:number",
+       "r41c2p124reg:number"
+      ],
+      [
+       "r41c4p128reg:number",
+       "r41c3p126reg:number"
+      ],
+      [
+       "r43c4p138reg:number",
+       "r43c2p134reg:number"
+      ],
+      [
+       "r43c4p138reg:number",
+       "r43c3p136reg:number"
+      ]
+     ],
+     "disables": [
+      "r20c2p43reg:number"
+     ],
+     "plus": {
+      "anchor": "n°",
+      "adds": 6,
+      "of": 1
+     }
+    },
+    {
+     "choice": "DICHIARAZIONI INERENTI I PRODOTTI CLASSIFICATI AI FINI DELLA REAZIONE E DELLA RESISTENZA AL FUOCO ED I DISPOSITIVI DI APERTURA DELLE PORTE",
+     "id": "r18c1p39reg:chk",
+     "kind": "checkbox",
+     "moved": [
+      [
+       "r46c1p143reg:number",
+       "r16c2p33reg:number"
+      ],
+      [
+       "r46c1p143reg:number",
+       "r20c2p43reg:number"
+      ],
+      [
+       "r29c4p66reg:number",
+       "r29c2p62reg:number"
+      ],
+      [
+       "r29c4p66reg:number",
+       "r29c3p64reg:number"
+      ],
+      [
+       "r31c4p78reg:number",
+       "r31c2p74reg:number"
+      ],
+      [
+       "r31c4p78reg:number",
+       "r31c3p76reg:number"
+      ],
+      [
+       "r33c4p88reg:number",
+       "r33c2p84reg:number"
+      ],
+      [
+       "r33c4p88reg:number",
+       "r33c3p86reg:number"
+      ],
+      [
+       "r35c4p98reg:number",
+       "r35c2p94reg:number"
+      ],
+      [
+       "r35c4p98reg:number",
+       "r35c3p96reg:number"
+      ],
+      [
+       "r37c4p108reg:number",
+       "r37c2p104reg:number"
+      ],
+      [
+       "r37c4p108reg:number",
+       "r37c3p106reg:number"
+      ],
+      [
+       "r39c4p118reg:number",
+       "r39c2p114reg:number"
+      ],
+      [
+       "r39c4p118reg:number",
+       "r39c3p116reg:number"
+      ],
+      [
+       "r41c4p128reg:number",
+       "r41c2p124reg:number"
+      ],
+      [
+       "r41c4p128reg:number",
+       "r41c3p126reg:number"
+      ],
+      [
+       "r43c4p138reg:number",
+       "r43c2p134reg:number"
+      ],
+      [
+       "r43c4p138reg:number",
+       "r43c3p136reg:number"
+      ]
+     ],
+     "disables": [
+      "r16c2p33reg:number"
+     ],
+     "plus": {
+      "anchor": "n°",
+      "adds": 6,
+      "of": 1
+     }
+    }
+   ],
+   "seconds": 7.8
+  },
+  {
+   "section": "Dichiarazione in materia di rispetto sulle tasse comunali",
+   "skipped": "the person's declarations"
+  },
+  {
+   "section": "dichiarazione ai sensi dell' art. 75 del d.P.R. n° 445/2000",
+   "skipped": "the person's declarations"
+  },
+  {
+   "section": "Dichiarazione relativa ai diritti di segreteria/istruttori",
+   "fingerprint": "52afb47e165ec4c7",
+   "same_as": "sue-combo-cila-paesaggistica-ordinaria#dichiarazione relativa ai diritti di segreteria/istruttori",
+   "seconds": 1.3
+  }
+ ]
+}

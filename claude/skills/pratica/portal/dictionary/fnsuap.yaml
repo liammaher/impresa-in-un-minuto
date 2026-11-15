@@ -64,6 +64,7 @@
 # lavori who isn't the architect, `p:` the architectural designer when it isn't the architect
 # presenting the pratica, `a:`/`a2:`/`a3:` other technicians appointed for the works
 # and `ad:`/`ad2:`/`ad3:` the firm each is employed by.
+# `v:` the professional who signs the fire prevention's asseverazione (the SCIA VV.F., PIN 2): a person of their own, never the titolare.
 
 # Yes/no asks with a `group` are asked as one checklist (`item`), the answer the list of
 # items that apply.
@@ -1610,6 +1611,37 @@ asks:
   ricettiva_var_tipo: {type: choice, question: "Che cosa cambia? denominazione (della struttura ricettiva); periodo (di apertura); altro (una variazione che non richiede una SCIA). Il cambio del legale rappresentante non lo preparo ancora", options: [denominazione, periodo, altro]}
   ricettiva_periodo: {type: choice, question: "Il nuovo periodo di apertura è annuale o stagionale?", options: [annuale, stagionale]}
   ricettiva_var_altro: {type: text, question: "Quale altra variazione, in poche parole"}
+
+  # Fire prevention (PIN 2, the SCIA VV.F.), 2026-11-13, from the standalone PIN 2 crawl (2026-10-28) and PIN 1's B/C lists; not yet
+  # proved on the portal. The asseverazione is the professional's (role `v:`): the runner fills their identity and the facts the form
+  # asks, never its assertions, and the professional signs it digitally (`yours`). The fee's payment and its receipt are the person's.
+  vvf_attivita: {type: text, question: "Che attività segnali ai Vigili del Fuoco (il tipo di attività, ad es. «ristorante»; 200 caratteri al massimo)"}
+  vvf_categoria: {type: choice, question: "In quale categoria cade l'attività nell'elenco dell'Allegato I del DPR 151/2011 (la decide il professionista antincendio)? a; b; c", options: [a, b, c]}
+  vvf_allegato: {type: text, question: "Il numero, la sottoclasse e la categoria dell'attività nell'Allegato I del DPR 151/2011, come li scrive la tendina del modulo all'inizio di ogni voce (ad es. «69 _ 1 _ A»)"}
+  vvf_stato: {type: choice, question: "L'attività è nuova (nuovo insediamento) o esistente (modifica di un'attività esistente)? nuova; esistente", options: [nuova, esistente]}
+  vvf_modifica: {type: yes_no, question: "Sono modifiche che non aggravano le condizioni di sicurezza già esistenti (art. 4 c. 6 del DPR 151/2011), con la dichiarazione di non aggravio?", propose: "false"}
+  vvf_parziale: {type: yes_no, question: "È una SCIA parziale (lotto, stralcio o adeguamento parziale)? Non la preparo ancora", propose: "false"}
+  vvf_approccio: {type: choice, question: "Con quale approccio tecnico è progettata la sicurezza antincendio? standard (modalità standard); conforme (RTO/RTV, soluzione conforme); ingegneria (DM 9 maggio 2007: serve anche la dichiarazione del responsabile sul sistema di gestione della sicurezza); deroga (RTO/RTV, soluzione in deroga). La soluzione alternativa non la preparo ancora", options: [standard, conforme, ingegneria, deroga], propose: "standard"}
+  vvf_fotovoltaico: {type: yes_no, question: "È prevista l'installazione di un impianto fotovoltaico presso l'attività (DL 144/2022)?", propose: "false"}
+  vvf_gsa_doc: {type: file, question: "La dichiarazione del responsabile dell'attività sul sistema di gestione della sicurezza antincendio (DM 9 maggio 2007, art. 6) (PDF)", when: "{{ask.vvf_approccio|is_ingegneria}}"}
+  vvf_pnrr: {type: yes_no, question: "Almeno una delle attività in progetto è finanziata o beneficia del regime del PNRR, PNC o ZES? Non lo preparo ancora", propose: "false"}
+  vvf_impianti_speciali: {type: yes_no, question: "Gli interventi in progetto riguardano impianti di idrogeno, GNL/GNC, stoccaggio o trattamento di rifiuti, o le facciate e coperture di edifici civili? Non lo preparo ancora", propose: "false"}
+  vvf_importo: {type: text, question: "L'importo versato ai Vigili del Fuoco per questa attività, in euro (la tariffa della categoria; il versamento lo fai tu)"}
+  vvf_versamento_numero: {type: text, question: "Il numero dell'attestato di versamento ai Vigili del Fuoco"}
+  vvf_versamento_data: {type: date, question: "La data dell'attestato di versamento"}
+  vvf_versamento_doc: {type: file, question: "La copia del versamento, firmata digitalmente (.p7m): il modulo non accetta altro"}
+  vvf_doc_atti: {type: text, question: "Quanti atti e quanti elaborati grafici ha la relazione tecnica di progetto? Scrivi due numeri, ad es. «1 4»"}
+  vvf_doc_strutture: {type: text, question: "Quanti modelli di certificazione di elementi strutturali portanti o separanti (resistenza al fuoco) sono allegati? Un numero, 0 se nessuno"}
+  vvf_doc_prodotti: {type: text, question: "Quante dichiarazioni sui prodotti classificati (reazione e resistenza al fuoco, dispositivi di apertura delle porte) sono allegate? Un numero, 0 se nessuna"}
+  vvf_doc_imp1: {type: text, question: "Punto 4.I) della distinta, la produzione, trasformazione, trasporto, distribuzione e utilizzazione dell'energia elettrica: quante dichiarazioni di conformità (DC), di corretta installazione (DI) e certificazioni di rispondenza (CI) sono allegate? Tre numeri, ad es. «1 0 0»"}
+  vvf_doc_imp2: {type: text, question: "Punto 4.II) della distinta, la protezione contro le scariche atmosferiche: quante dichiarazioni di conformità (DC), di corretta installazione (DI) e certificazioni di rispondenza (CI) sono allegate? Tre numeri, ad es. «0 0 0»"}
+  vvf_doc_imp3: {type: text, question: "Punto 4.III) della distinta, il deposito, trasporto, distribuzione e utilizzazione di gas (anche in forma liquida), combustibili, infiammabili o comburenti, comprese le opere di evacuazione dei prodotti della combustione e di ventilazione ed aerazione: quante dichiarazioni di conformità (DC), di corretta installazione (DI) e certificazioni di rispondenza (CI) sono allegate? Tre numeri, ad es. «0 0 0»"}
+  vvf_doc_imp4: {type: text, question: "Punto 4.IV) della distinta, il deposito, trasporto, distribuzione e utilizzazione di solidi e liquidi combustibili, infiammabili o comburenti, comprese le opere di evacuazione dei prodotti della combustione e di ventilazione ed aerazione: quante dichiarazioni di conformità (DC), di corretta installazione (DI) e certificazioni di rispondenza (CI) sono allegate? Tre numeri, ad es. «0 0 0»"}
+  vvf_doc_imp5: {type: text, question: "Punto 4.V) della distinta, il riscaldamento, la climatizzazione, il condizionamento e la refrigerazione, comprese le opere di evacuazione dei prodotti della combustione e di ventilazione ed aerazione dei locali: quante dichiarazioni di conformità (DC), di corretta installazione (DI) e certificazioni di rispondenza (CI) sono allegate? Tre numeri, ad es. «0 0 0»"}
+  vvf_doc_imp6: {type: text, question: "Punto 4.VI) della distinta, l'estinzione o il controllo di incendi ed esplosioni, automatico e manuale: quante dichiarazioni di conformità (DC), di corretta installazione (DI) e certificazioni di rispondenza (CI) sono allegate? Tre numeri, ad es. «0 0 0»"}
+  vvf_doc_imp7: {type: text, question: "Punto 4.VII) della distinta, il controllo del fumo e del calore: quante dichiarazioni di conformità (DC), di corretta installazione (DI) e certificazioni di rispondenza (CI) sono allegate? Tre numeri, ad es. «0 0 0»"}
+  vvf_doc_imp8: {type: text, question: "Punto 4.VIII) della distinta, la rivelazione di fumo, calore, gas e incendio e la segnalazione di allarme: quante dichiarazioni di conformità (DC), di corretta installazione (DI) e certificazioni di rispondenza (CI) sono allegate? Tre numeri, ad es. «0 0 0»"}
+  vvf_doc_altri: {type: text, question: "Quanti altri documenti allegati non sono nelle voci precedenti? Un numero, 0 se nessuno"}
 
 sections:
   # The dichiarante is the client (the titolare). The draft opens on it. A private person declares
@@ -6648,6 +6680,132 @@ sections:
       - {kind: text, label: Specificare, value: "{{ask.ricettiva_var_altro}}", when: "{{ask.ricettiva_var_tipo|is_altro}}"}
       - {kind: text, label: DA (situazione ante variazione), value: "{{ask.variazione_da}}"}
       - {kind: text, label: A (situazione post variazione), value: "{{ask.variazione_a}}"}
+
+  # Fire prevention (PIN 2): the SCIA VV.F. in the combined pratica. See the asks `vvf_*`.
+  - section: SCIA VV.F. - intestazione
+    plus: "The Rif. Pratica VV.F. n. and the Comando are preselected (prefilled in the crawl): left as the portal shows them. A take-over (PIN 7) needs the previous pratica's number."
+    leave: [Rif. Pratica VV.F. n., AL COMANDO PROVINCIALE DEI VIGILI DEL FUOCO DI]
+    fields: []
+  - section: "SCIA VV.F. - SEGNALAZIONE CERTIFICATA DI INIZIO ATTIVITA'"
+    leave: ["(specificare)", Indicazione del lotto, Indicazione dello stralcio]
+    fields:
+      # The three bases, by category: B and C refer to the projects the Comando approved; A to the asseverazione's technical documents;
+      # the changes of art. 4 c. 6 (no aggravation) to those and the declaration. Read from the form's words: proved by a run.
+      - {kind: checkbox, label: ai progetti approvati dal Comando VV.F., when: "{{ask.vvf_categoria|in_b__c}} {{ask.vvf_modifica|not}}"}
+      - {kind: checkbox, label: alla documentazione tecnica di progetto di cui alla asseverazione allegata (per attività di cat. A ), when: "{{ask.vvf_categoria|is_a}} {{ask.vvf_modifica|not}}"}
+      - {kind: checkbox, label: "alla documentazione tecnica di progetto di cui alla asseverazione allegata (per attività di cat. A,B,C in caso", when: "{{ask.vvf_modifica}}"}
+      - {kind: text, label: "l'inizio, in conformità alla normativa antincendio vigente, dell'esercizio dell'attività di", value: "{{ask.vvf_attivita}}"}
+      - {kind: checkbox, label: Trattasi di SCIA parziale, when: "{{ask.vvf_parziale}}"}
+  - section: SCIA VV.F. - dichiarazioni
+    strict: true
+    # The first tick is the person's declaration of the obligations; the second says the asseverazione and the receipt are attached.
+    theirs: ["Il sottoscritto dichiara altresì sotto la propria responsabilità"]
+    leave: ["Il sottoscritto dichiara altresì sotto la propria responsabilità", altro indirizzo di seguito indicato]
+    fields:
+      - {kind: checkbox, label: "Allega alla presente l'asseverazione di cui all'art. 4 del Decreto del Ministro dell'Interno 7-8-2012"}
+      - {kind: radio, label: la sede dell'attività}
+  - section: SCIA VV.F. - distinta di versamento
+    leave: ["RTO/RTV soluzione alternativa"]
+    fields:
+      - {kind: text, label: Attestato di versamento n., value: "{{ask.vvf_versamento_numero}}"}
+      - {kind: date, label: del, value: "{{ask.vvf_versamento_data|date_it}}"}
+      # The Tesoreria Provinciale of Napoli is preselected (the crawl read NAPOLI).
+      - {kind: text, label: per un totale di euro, value: "{{ask.vvf_importo}}"}
+      # The slot takes only signed files (.p7m): the person's, as the stabilimento's planimetria.
+      - {kind: file, label: Tipologie ammesse, accepts: "dwf.p7m;svg.p7m;jpg.p7m;pdf.p7m", value: "{{ask.vvf_versamento_doc}}"}
+      - {kind: checkbox, label: "In caso di utilizzo dell'approccio ingegneristico", when: "{{ask.vvf_approccio|is_ingegneria}}"}
+      - {kind: radio, label: A, when: "{{ask.vvf_categoria|is_a}}"}
+      # B and C are disabled here: the SCIA of a cat. B or C activity rests on the Comando's approval of the project (the first box,
+      # disabled too, and the Rif. Pratica VV.F.), which the PIN 1's pratica gets first. Not prepared: the recipe refuses them.
+      - {kind: select, label: attività - sotto classe - categoria - descrizione, value: "{{ask.vvf_allegato}}", when: "{{ask.vvf_categoria|is_a}}"}
+      - {kind: radio, label: Nuova, when: "{{ask.vvf_stato|is_nuova}}"}
+      - {kind: radio, label: Esistente, when: "{{ask.vvf_stato|is_esistente}}"}
+      - {kind: select, label: Approccio tecnico, value: "Modalità Standard", when: "{{ask.vvf_approccio|is_standard}}"}
+      - {kind: select, label: Approccio tecnico, value: "RTO/RTV ⁴ soluzione conforme", when: "{{ask.vvf_approccio|is_conforme}}"}
+      - {kind: select, label: Approccio tecnico, value: "DM 09-05-2007 (ingegneria della sicurezza) ⁵", when: "{{ask.vvf_approccio|is_ingegneria}}"}
+      - {kind: select, label: Approccio tecnico, value: "RTO/RTV ⁴ soluzione in deroga", when: "{{ask.vvf_approccio|is_deroga}}"}
+      - {kind: text, label: euro, value: "{{ask.vvf_importo}}"}
+      - {kind: radio, label: Si, when: "{{ask.vvf_fotovoltaico}}"}
+      - {kind: radio, label: "No", when: "{{ask.vvf_fotovoltaico|not}}"}
+      - {kind: file, label: Tipologie ammesse, nth: 2, value: "{{ask.vvf_gsa_doc}}", when: "{{ask.vvf_approccio|is_ingegneria}}"}
+  # Statistics only: both questions answered NO (a yes opens boxes for the PNRR/PNC/ZES and the hydrogen, GNL/GNC, waste and facade
+  # plants; the recipe refuses it).
+  - section: INFORMAZIONE AI SOLI FINI STATISTICI
+    fields:
+      - {kind: radio, label: "NO", nth: 1, when: "{{ask.vvf_pnrr|not}}"}
+      - {kind: radio, label: "NO", nth: 2, when: "{{ask.vvf_impianti_speciali|not}}"}
+  # An address for the post and a delegate are optional: the boxes stay unticked (the person's, on the portal, if they want them).
+  - section: SCIA VV.F.  - dati per la corrispondenza
+    leave: [Eventuale diverso indirizzo presso il quale si chiede di inviare la corrispondenza, Cognome, Nome, indirizzo, n. civico, c.a.p., comune, Provincia, telefono, indirizzo di posta elettronica, indirizzo di posta elettronica certificata]
+    fields: []
+  - section: SCIA VV.F. - dati del delegato
+    leave: [Il sottoscritto per il ritiro del parere o per i chiarimenti tecnici in ordine alla presente istanza delega il/la sig., Titolo professionale, Cognome, Nome, via – piazza, n. civico, c.a.p., comune, Provincia, telefono, indirizzo di posta elettronica, indirizzo di posta elettronica certificata]
+    fields: []
+  # The professional's asseverazione. The three assertions at its end (the technical rules assessed, the inspections' outcome, the
+  # certifications) come ticked by the portal and are the professional's (`theirs`).
+  - section: ASSEVERAZIONE DEL PROFESSIONISTA AI FINI DELLA SICUREZZA ANTINCENDIO
+    theirs: ["le normative tecniche di prevenzione incendi", "l'esito dei sopralluoghi e delle verifiche effettuate", "le certificazioni e le dichiarazioni, così come sintetizzate"]
+    leave: ["le normative tecniche di prevenzione incendi", "l'esito dei sopralluoghi e delle verifiche effettuate", "le certificazioni e le dichiarazioni, così come sintetizzate"]
+    fields:
+      - {kind: text, label: Titolo professionale, value: "{{v:albo.ordine|albo_tipo}}"}
+      - {kind: text, label: Cognome, value: "{{v:identity.last_name}}"}
+      - {kind: text, label: Nome, value: "{{v:identity.first_name}}"}
+      - {kind: select, label: iscritto all'Albo professionale dell'Ordine/Collegio, value: "{{v:albo.provincia|provincia_nome}}"}
+      - {kind: text, label: n. iscrizione, value: "{{v:albo.numero}}"}
+      - {kind: text, label: C.F., value: "{{v:identity.codice_fiscale}}"}
+      - {kind: text, label: indirizzo, value: "{{v:residenza.indirizzo}}"}
+      - {kind: text, label: n. civico, value: "{{v:residenza.civico}}"}
+      - {kind: text, label: c.a.p., value: "{{v:residenza.cap}}"}
+      - {kind: select, label: provincia, value: "{{v:residenza.provincia|provincia_nome}}"}
+      - {kind: select, label: comune, value: "{{v:residenza.comune|upper}}"}
+      - {kind: text, label: telefono, value: "{{v:identity.phone|phone_it}}"}
+      - {kind: text, label: indirizzo di posta elettronica, value: "{{v:identity.email}}"}
+      - {kind: text, label: indirizzo di posta elettronica certificata, value: "{{v:identity.pec}}"}
+      - {kind: radio, label: nuovo insediamento, when: "{{ask.vvf_stato|is_nuova}}"}
+      - {kind: radio, label: modifica attività esistente, when: "{{ask.vvf_stato|is_esistente}}"}
+      - {kind: text, label: relativi all'attività, value: "{{ask.vvf_attivita}}"}
+      - {kind: checkbox, label: progetti approvati dal Comando VV.F., when: "{{ask.vvf_categoria|in_b__c}} {{ask.vvf_modifica|not}}"}
+      - {kind: checkbox, label: relazione tecnica e gli elaborati grafici di progetto, when: "{{ask.vvf_categoria|is_a}} {{ask.vvf_modifica|not}}"}
+      - {kind: checkbox, label: documentazione tecnica di progetto e la dichiarazione di non aggravio, when: "{{ask.vvf_modifica}}"}
+  - section: DISTINTA DELLA DOCUMENTAZIONE TECNICA ALLEGATA
+    leave: [specificare tipologia documenti]
+    fields:
+      - {kind: checkbox, label: Relazione tecnica ed elaborati grafici, when: "{{ask.vvf_categoria|is_a}} {{ask.vvf_modifica|not}}"}
+      - {kind: number, label: "n. atti", value: "{{ask.vvf_doc_atti|w1}}", when: "{{ask.vvf_categoria|is_a}} {{ask.vvf_modifica|not}}"}
+      - {kind: number, label: "n. elaborati", value: "{{ask.vvf_doc_atti|w2}}", when: "{{ask.vvf_categoria|is_a}} {{ask.vvf_modifica|not}}"}
+      - {kind: checkbox, label: Dichiarazione di non aggravio del rischio incendio, when: "{{ask.vvf_modifica}}"}
+      # The count boxes are switched off until their tick is ticked (a run showed it): filled only with it. The impianti's rows are
+      # found by the row's number (their `context`, 4.I) to 4.VIII), each with its three boxes DC, DI and CI. A plain "n°" matches the
+      # "n. atti" and "n. elaborati" boxes too, so these count from the third.
+      - {kind: checkbox, label: CERTIFICAZIONI DI ELEMENTI STRUTTURALI PORTANTI, when: "{{ask.vvf_doc_strutture|positive}}"}
+      - {kind: number, label: n°, nth: 3, value: "{{ask.vvf_doc_strutture}}", when: "{{ask.vvf_doc_strutture|positive}}"}
+      - {kind: checkbox, label: DICHIARAZIONI INERENTI I PRODOTTI CLASSIFICATI, when: "{{ask.vvf_doc_prodotti|positive}}"}
+      - {kind: number, label: n°, nth: 4, value: "{{ask.vvf_doc_prodotti}}", when: "{{ask.vvf_doc_prodotti|positive}}"}
+      - {kind: number, label: "4.I)", nth: 1, value: "{{ask.vvf_doc_imp1|w1}}"}
+      - {kind: number, label: "4.I)", nth: 2, value: "{{ask.vvf_doc_imp1|w2}}"}
+      - {kind: number, label: "4.I)", nth: 3, value: "{{ask.vvf_doc_imp1|w3}}"}
+      - {kind: number, label: "4.II)", nth: 1, value: "{{ask.vvf_doc_imp2|w1}}"}
+      - {kind: number, label: "4.II)", nth: 2, value: "{{ask.vvf_doc_imp2|w2}}"}
+      - {kind: number, label: "4.II)", nth: 3, value: "{{ask.vvf_doc_imp2|w3}}"}
+      - {kind: number, label: "4.III)", nth: 1, value: "{{ask.vvf_doc_imp3|w1}}"}
+      - {kind: number, label: "4.III)", nth: 2, value: "{{ask.vvf_doc_imp3|w2}}"}
+      - {kind: number, label: "4.III)", nth: 3, value: "{{ask.vvf_doc_imp3|w3}}"}
+      - {kind: number, label: "4.IV)", nth: 1, value: "{{ask.vvf_doc_imp4|w1}}"}
+      - {kind: number, label: "4.IV)", nth: 2, value: "{{ask.vvf_doc_imp4|w2}}"}
+      - {kind: number, label: "4.IV)", nth: 3, value: "{{ask.vvf_doc_imp4|w3}}"}
+      - {kind: number, label: "4.V)", nth: 1, value: "{{ask.vvf_doc_imp5|w1}}"}
+      - {kind: number, label: "4.V)", nth: 2, value: "{{ask.vvf_doc_imp5|w2}}"}
+      - {kind: number, label: "4.V)", nth: 3, value: "{{ask.vvf_doc_imp5|w3}}"}
+      - {kind: number, label: "4.VI)", nth: 1, value: "{{ask.vvf_doc_imp6|w1}}"}
+      - {kind: number, label: "4.VI)", nth: 2, value: "{{ask.vvf_doc_imp6|w2}}"}
+      - {kind: number, label: "4.VI)", nth: 3, value: "{{ask.vvf_doc_imp6|w3}}"}
+      - {kind: number, label: "4.VII)", nth: 1, value: "{{ask.vvf_doc_imp7|w1}}"}
+      - {kind: number, label: "4.VII)", nth: 2, value: "{{ask.vvf_doc_imp7|w2}}"}
+      - {kind: number, label: "4.VII)", nth: 3, value: "{{ask.vvf_doc_imp7|w3}}"}
+      - {kind: number, label: "4.VIII)", nth: 1, value: "{{ask.vvf_doc_imp8|w1}}"}
+      - {kind: number, label: "4.VIII)", nth: 2, value: "{{ask.vvf_doc_imp8|w2}}"}
+      - {kind: number, label: "4.VIII)", nth: 3, value: "{{ask.vvf_doc_imp8|w3}}"}
+      - {kind: number, label: n°, nth: 29, value: "{{ask.vvf_doc_altri}}"}
 
 # The screens after the form, reached with their button. The attachments go by slot title; a
 # slot the pratica's crawl doesn't list is left out, a required one nothing fills stops gen.py.

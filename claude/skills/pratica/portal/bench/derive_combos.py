@@ -26,6 +26,24 @@ NO = "napoli/comune/nulla-osta-impatto-acustico"
 SIGN = "in caso di attività che preveda insegna esterna"
 NULLA = ("richiede il rilascio del Nulla osta impatto acustico, in caso di utilizzo di impianti di diffusione sonora o di manifestazioni ed "
          "eventi con diffusione di musica o utilizzo di strumenti musicali, se si superano le soglie della zonizzazione comunale")
+VVF = "napoli/vigili-del-fuoco/scia-prevenzione-incendi"
+PIN2_OP = "PIN 2 - Segnalazione Certificata di Inizio Attività"  # the fire prevention's SCIA (VV.F.) as a second operation
+PIN2_DONOR = "cila-fittizia"  # whose fixture-p6.json has the made-up professional `valerio`
+# The made-up fire prevention case: a category A activity, new, standard approach, one electrical certificate; the professional is a person
+# of their own (role `v`), never the titolare (the asseverazione is theirs: dictionary/fnsuap.yaml `vvf_*`).
+PIN2_ANSWERS = {"vvf_attivita": "ristorante", "vvf_categoria": "a", "vvf_allegato": "69 _ 1 _ A", "vvf_stato": "nuova", "vvf_modifica": "false",
+                "vvf_parziale": "false", "vvf_pnrr": "false", "vvf_impianti_speciali": "false", "vvf_approccio": "standard", "vvf_fotovoltaico": "false", "vvf_importo": "90",
+                "vvf_versamento_numero": "0000123456", "vvf_versamento_data": "2026-10-15", "vvf_doc_atti": "1 4", "vvf_doc_strutture": "0",
+                "vvf_doc_prodotti": "0", "vvf_doc_imp1": "1 0 0", **{f"vvf_doc_imp{i}": "0 0 0" for i in range(2, 9)}, "vvf_doc_altri": "0"}
+PIN2_YOURS = ("Il professionista antincendio firma tu o per lui, con la sua firma digitale, l'asseverazione e le dichiarazioni dei Vigili del Fuoco: "
+              "il portale le fa firmare al professionista, non al titolare",
+              "Paga ai Vigili del Fuoco la tariffa della categoria (€ {{ask.vvf_importo}}) e allega la copia del versamento firmata digitalmente (.p7m)")
+PIN2_SUPPORTS = (
+    '  - {when: "{{ask.vvf_parziale|not}}", else: "Una SCIA antincendio parziale (lotto, stralcio, adeguamento parziale) non la preparo ancora."}',
+    '  - {value: "{{ask.vvf_categoria}}", in: [a], else: "Per le attività di categoria B e C la SCIA antincendio segue l\'approvazione del progetto da parte dei Vigili del Fuoco (con il suo numero di pratica): non la preparo ancora."}',
+    '  - {when: "{{ask.vvf_pnrr|not}}", else: "Un\'attività finanziata dal PNRR, PNC o ZES apre altre voci della SCIA antincendio, che non preparo ancora."}',
+    '  - {when: "{{ask.vvf_impianti_speciali|not}}", else: "Impianti di idrogeno, GNL/GNC, rifiuti o le facciate e coperture di edifici civili aprono altre voci della SCIA antincendio, che non preparo ancora."}',
+)
 SIGN_OP = "SCIA per installazione insegna di esercizio"  # the sign as a second operation, where the screen has no tick for it
 DEHORS_OP = "Domanda di occupazione suolo pubblico per area annessa ad esercizio di somministrazione di alimenti e bevande"
 DEH = "napoli/comune/concessione-suolo-pubblico-dehors"
@@ -73,6 +91,9 @@ COMBOS = {
                                                      f'{S}, evento: apertura, dehors: "true", somministrazione_particolare: false, insegna: "false"', [NO, ASL, DEH], [DEHORS_OP]),
     "ristorante-centro-storico-dehors-insegna-fittizio": row("ristorante-centro-storico-fittizio", "suap-061-aprire-l-attivita-dehors", [SIGN],
                                                              f'{S}, evento: apertura, dehors: "true", somministrazione_particolare: false, insegna: "true"', [NO, ASL, DEH, INS], [DEHORS_OP]),
+    # Fire prevention (the SCIA VV.F., PIN 2) with an opening: a second operation of the same wizard
+    "ristorante-pin-2-fittizio": row("ristorante-fittizio", "suap-060-aprire-l-attivita-pin-2", [],
+                                     f'{S}, evento: apertura, insegna: "false", prevenzione_incendi: "true"', [ASL, VVF], [PIN2_OP]),
     # Food shops
     "alimentari-insegna-fittizio": row("alimentari-fittizio", "suap-017-aprire-l-attivita", [SIGN],
                                        f'{V}, evento: apertura, consumo_sul_posto: false, insegna: "true"', [ASL, INS]),
@@ -106,6 +127,73 @@ COMBOS = {
     "affittacamere-insegna-fittizio": row("affittacamere-fittizio", "suap-056-aprire-l-attivita", [SIGN],
                                           'attivita: bed_and_breakfast, evento: apertura, insegna: "true"', [INS]),
 }
+
+
+def pin2_recipe(s):
+    """The fire prevention's yours lines and refusals in a recipe's text."""
+    s = s.replace("\nyours:\n", "\nyours:\n" + "".join(f'  - "{y}"\n' for y in PIN2_YOURS), 1)
+    return s.replace("\nsupports:\n", "\nsupports:\n" + "\n".join(PIN2_SUPPORTS) + "\n", 1)
+
+
+def pin2_answers(folder, d):
+    """The made-up fire prevention answers, the professional's role and the professional in the fixture."""
+    d.update(PIN2_ANSWERS)
+    d["people"] = {**d.get("people", {}), "v": "valerio"}
+    fx = folder / "fixture.json"
+    fixture = json.loads(fx.read_text())
+    donor_fx = json.loads((ROOT / "rehearsals" / PIN2_DONOR / "fixture-p6.json").read_text())
+    have = {f[0] for f in fixture["fields"]}
+    fixture["fields"] += [f for f in donor_fx["fields"] if f[0].startswith("valerio:") and f[0] not in have]
+    fx.write_text(json.dumps(fixture, ensure_ascii=False, indent=1) + "\n")
+
+
+# The fire prevention added to every routed opening, move and enlargement (2026-11-14): the sibling of each such recipe, on a crawl of
+# its pratica with the PIN 2 as a second operation (`catalogue.py ops suap --combo`; a dehors one also lists the dehors' area).
+def sibling_rows():
+    """name -> row, one per routed SUAP recipe of an opening, a move or an enlargement without fire prevention, in rehearsals/."""
+    import yaml
+    rows = {}
+    for f in sorted((ROOT / "rehearsals").glob("*/recipe.yaml")):
+        r = yaml.safe_load(f.read_text(encoding="utf-8"))
+        ru = r.get("rules") or {}
+        if ru.get("table") != "suap-napoli" or "-pin-2" in f.parent.name or "prevenzione_incendi" in (ru.get("facts") or {}):
+            continue
+        facts = dict(ru.get("facts") or {})
+        if facts.get("evento") not in ("apertura", "trasferimento", "ampliamento"):
+            continue
+        wiz = {d["screen"]: d for d in (r.get("wizard") or []) if isinstance(d, dict) and "screen" in d}
+        ops = list(wiz["Scelta operazioni"]["tree"])
+        ticks = [f"{t['leaf']}::{t.get('nth', 1)}" if isinstance(t, dict) else f"{t}::1" for t in (wiz.get("Scelta interventi eventuali") or {}).get("tree", [])]
+        base = re.sub(r"-(interventi|procura)$", "", r["crawl"])
+        crawl = base + "-pin-2"
+        name = re.sub(r"-fittizi[oa]$", "", f.parent.name) + "-pin-2-fittizio"
+        def fact(v):
+            return str(v).lower() if isinstance(v, bool) else json.dumps(v) if isinstance(v, str) and (v in ("true", "false") or v.startswith("{{")) else str(v)
+        fs = ", ".join(f"{k}: {fact(v)}" for k, v in facts.items())
+        if name in COMBOS:
+            continue
+        rows[name] = dict(tpl=f.parent.name, crawl=crawl, ops=ops, ticks=ticks, facts=fs + ', prevenzione_incendi: "true"', handles=list(ru.get("handles") or []) + [VVF])
+    return rows
+
+
+def build_sibling(name):
+    c = SIBLINGS[name]
+    also = tuple(c["ops"][1:]) + (PIN2_OP,)
+    folder = dr.derive(name, c["tpl"], c["crawl"], None, c["ticks"], c["facts"], c["handles"], (), also)
+    p = folder / "recipe.yaml"
+    p.write_text(pin2_recipe(p.read_text(encoding="utf-8")), encoding="utf-8")
+    a = folder / "answers.json"
+    d = json.loads(a.read_text())
+    pin2_answers(folder, d)
+    # The facts the table reads from the answers too (as overlay() does for the combinations): the zone from the name, the shop's
+    # consumption on the spot from the facts, and no "fatti" asked.
+    d["zona"] = "a" if "centro-storico" in name else (d.get("zona") or "c")
+    m = re.search(r"consumo_sul_posto: (true|false)", c["facts"])
+    if m:
+        d["consumo_sul_posto"] = m.group(1)
+    d.setdefault("fatti", [])
+    a.write_text(json.dumps(d, ensure_ascii=False, indent=1) + "\n")
+    return dr.fill(folder)
 
 
 def overlay(folder, tpl_has_sign, ticks, template, facts, also=()):
@@ -142,6 +230,8 @@ def overlay(folder, tpl_has_sign, ticks, template, facts, also=()):
         s = s.replace("\nyours:\n", "\nyours:\n" + "\n".join(yours) + "\n", 1)
         if "bollo_yours" not in s:
             s = s.replace("\nyours:\n", "\nyours:\n  - \"{{ask.bollo_marche,ask.bollo_esenzione|bollo_yours}}\"\n", 1)
+    if PIN2_OP in also:
+        s = pin2_recipe(s)
     p.write_text(s, encoding="utf-8")
     a = folder / "answers.json"
     d = json.loads(a.read_text())
@@ -162,6 +252,8 @@ def overlay(folder, tpl_has_sign, ticks, template, facts, also=()):
         d.setdefault("bollo_marche", False)
         d.setdefault("bollo_esenzione", "no")
         d.setdefault("diritti_euro", "370")
+    if PIN2_OP in also:
+        pin2_answers(folder, d)
     if NULLA in ticks:
         d["bollo_marche"], d["bollo_esenzione"] = False, "no"
         if DEHORS_OP in also:
@@ -182,7 +274,12 @@ def overlay(folder, tpl_has_sign, ticks, template, facts, also=()):
     a.write_text(json.dumps(d, ensure_ascii=False, indent=1) + "\n")
 
 
+SIBLINGS = {}
+
+
 def build(name):
+    if name in SIBLINGS:
+        return build_sibling(name)
     c = COMBOS[name]
     tpl_has_sign = "insegna_consenso" in (ROOT / "rehearsals" / c["tpl"] / "recipe.yaml").read_text(encoding="utf-8")
     folder = dr.derive(name, c["tpl"], c["crawl"], None, [t if t != SIGN else SIGN + "::1" for t in c["ticks"]], c["facts"], c["handles"], (), c["also"])
@@ -191,6 +288,7 @@ def build(name):
 
 
 if __name__ == "__main__":
+    SIBLINGS.update(sibling_rows())
     names = sys.argv[1:] or list(COMBOS)
     for n in names:
         print(n, json.dumps(build(n), ensure_ascii=False))

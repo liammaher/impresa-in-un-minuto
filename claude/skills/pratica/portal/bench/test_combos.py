@@ -139,11 +139,90 @@ def the_pane_code_keeps_what_it_learned():
     assert "window.__crawlBusy && window.__crawl && (window.__crawl.report() || {}).done === false" in src
     assert "skipped: r.skipped" in src
     assert "--base-only" in src and "--interventi" in src and "--suap" in src
+    # The PrimeFaces dropdown has no stand-in in bench/portal.html: its code-prefixed items («69 _ 1 _ A: Locali di esposizione...») were
+    # proved on the portal (2026-11-14), and the rule is held here as text.
+    inpage = (HERE.parent / "inpage.js").read_text()
+    assert 'startsWith(value + ":")' in inpage and "coded.length === 1" in inpage
+    run_py = (HERE.parent / "run.py").read_text()
+    assert '"w1"' in run_py and '"w2"' in run_py and '"w3"' in run_py
+
+
+VVF_PROCEDURE = "napoli/vigili-del-fuoco/scia-prevenzione-incendi"
+
+
+def fire_prevention_combinations():
+    """The opening, move and enlargement filed with the SCIA VV.F. (PIN 2), 2026-11-14: 48 rehearsals, each filled on the portal.
+    What each cost a run: the crawl is the combination's own (`suap-NNN-...-pin-2`, else import files it as the SUE's); in zones A/B the
+    nulla osta has its own bollo, so the plain crawl's `scelte_none` must be in the -pin-2 crawl too (two recipes stopped at «no section
+    dichiarazione relativa all'imposta di bollo»); the antincendio professional is the `v:` person; only category A, whole SCIA."""
+    folders = sorted(REHEARSALS.glob("*-pin-2-fittizio"))
+    assert len(folders) >= 48, len(folders)
+    for d in folders:
+        r = recipe(d.name)
+        crawl = r["crawl"]
+        assert crawl.startswith("suap-") and crawl.endswith("-pin-2") and (cat.SECTIONS / f"{crawl}.json").exists(), (d.name, crawl)
+        assert r["rules"]["facts"]["prevenzione_incendi"] in (True, "true"), d.name
+        assert VVF_PROCEDURE in r["rules"]["handles"], d.name
+        assert dc.PIN2_OP in next(st["tree"] for st in r["wizard"] if st.get("screen") == "Scelta operazioni"), d.name
+        assert json.loads((d / "answers.json").read_text()).get("people", {}).get("v"), f"{d.name}: no antincendio professional (`v:`)"
+        refused = " ".join(str(x.get("else", "")) for x in r.get("supports", []))
+        assert "categoria B e C" in refused and "parziale" in refused, f"{d.name}: B/C and SCIA parziale must be refused"
+        runs = json.loads((d / "runs.json").read_text())
+        assert any(x.get("result") == "filled" for x in (runs["runs"] if isinstance(runs, dict) else runs)), f"{d.name}: no filled run"
+        # the plain crawl's scelte_none (a tick that adds no section) is inherited
+        base = json.loads((cat.SECTIONS / f"{crawl[:-len('-pin-2')]}.json").read_text()) if (cat.SECTIONS / f"{crawl[:-len('-pin-2')]}.json").exists() else {}
+        mine = json.loads((cat.SECTIONS / f"{crawl}.json").read_text())
+        for k in base.get("scelte_none", {}):
+            assert k in mine.get("scelte_none", {}), f"{crawl}: «{k[:50]}» adds no section in the plain crawl; inherit scelte_none from it"
+    # The distinta's counts: each impianti row by its number, the structure and product counts only when their tick is set
+    # (the portal switches them off otherwise, and a bare «n°» also matches «n. atti», «n. elaborati»).
+    sec = next(s for s in steps("ristorante-pin-2-fittizio")["sections"] if s["section"].upper().startswith("DISTINTA DELLA DOCUMENTAZIONE TECNICA"))
+    rows = [f for f in sec["fields"] if f.get("kind") == "number" and str(f.get("label", "")).startswith("4.")]
+    assert len(rows) == 24, len(rows)
+    ticked_only = [f for f in sec["fields"] if f.get("kind") == "number" and f.get("label") == "n°" and f.get("nth") in (3, 4)]
+    assert len(ticked_only) == 2 and all(f.get("when") for f in ticked_only), ticked_only
+
+
+def import_refuses_a_suap_crawl_named_as_the_sue_s():
+    """A SUAP crawl (it has a sector) whose name lacks `suap-NNN-` was filed as «SUE:» and no recipe found its sections (2026-11-14)."""
+    import os
+    import tempfile
+    os.environ.setdefault("CATALOGUE_PRIVATE", r"\b(nomeprova)\b")  # import checks every crawl against the login's name: a placeholder here
+    with tempfile.TemporaryDirectory() as t:
+        f = Path(t) / "export.json"
+        f.write_text(json.dumps({"crawl:op:ristorante-pin-2": {"name": "ristorante-pin-2", "sector": 60, "operation": "x", "sections": []}}))
+        try:
+            cat.cmd_import(type("a", (), {"export": str(f), "depth": None}))
+            raise AssertionError("a SUAP crawl named without suap- should be refused")
+        except SystemExit as e:
+            assert "suap-NNN" in str(e), e
+
+
+def dictionary_entries_are_where_gen_reads_them():
+    """An entry written under `after:` (the screens after the form: they have `go`) is never matched as a section: gen.py said only «no
+    dictionary entry» (2026-11-14, the VV.F. entries). Now it says where it is, and every `after:` item has `go`."""
+    d = yaml.safe_load((HERE.parent / "dictionary" / "fnsuap.yaml").read_text(encoding="utf-8"))
+    assert all("go" in a for a in d["after"]), [a.get("section") for a in d["after"] if "go" not in a]
+    assert "belongs under `sections:`" in (HERE.parent / "gen.py").read_text()
+
+
+def a_bundle_holds_at_most_a_dozen_runs():
+    """The pane's storage takes about 12 runs a bundle (README, «Checking them all»): rerun.py refuses more rather than failing in the pane."""
+    import subprocess
+    import tempfile
+    with tempfile.TemporaryDirectory() as t:
+        v = Path(t) / "values.json"
+        v.write_text("{}")
+        p = subprocess.run([sys.executable, str(HERE / "rerun.py"), "--values", str(v), "--out", str(Path(t) / "out"),
+                            "--bundle", str(Path(t) / "b.js"), *[f"x{i}:answers.json" for i in range(13)]], capture_output=True, text=True)
+        assert p.returncode == 2 and "at most 12 runs" in p.stderr, (p.returncode, p.stderr[-300:])
 
 
 def main():
     for t in (no_recipe_rests_on_a_ticked_crawl, gen_refuses_a_ticked_crawl, every_reference_resolves, combinations_are_what_the_probe_took,
-              every_combination_has_a_filled_run_and_its_rules, one_bollo_when_two_adempimenti_want_it, the_signs_form_is_the_pages_when_both_ticks_are_ticked, the_pane_code_keeps_what_it_learned):
+              every_combination_has_a_filled_run_and_its_rules, one_bollo_when_two_adempimenti_want_it, the_signs_form_is_the_pages_when_both_ticks_are_ticked, the_pane_code_keeps_what_it_learned,
+              fire_prevention_combinations, import_refuses_a_suap_crawl_named_as_the_sue_s, dictionary_entries_are_where_gen_reads_them,
+              a_bundle_holds_at_most_a_dozen_runs):
         t()
         print("ok ", t.__name__)
     print("done")

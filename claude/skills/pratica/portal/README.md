@@ -1191,8 +1191,8 @@ lines once). A list of several units' values joined by "/" breaks on a categoria
 
 Of the 189 cases the SUAP rules table decided and no steps file filed (31 combinations of pratiche), the 72 without fire prevention
 are filed now: **73 → 145 of the 262 cases the table decides**, 30 new rehearsals, **all 30 filled on the portal** (runs 126 → 135 by the
-scoreboard's count of recipes; the rest share a pratica). The 117 cases left all add fire prevention (PIN 2): its nine `SCIA VV.F.`,
-asseverazione and documents' sections are unread (`catalogue/F839/suap-pairs.md`).
+scoreboard's count of recipes; the rest share a pratica). The 117 cases left all added fire prevention (PIN 2): done the next day, see
+"SUAP combinations with fire prevention" below.
 
 - **The wizard takes them together.** `catalogue.py pairs DIR --bundle FILE --suap` probed 53 pairs (each main operation with the
   PIN 2, the sign's SCIA, the dehors' area, the ASL notification): all accepted, each adds its own adempimento. So the table's `also`
@@ -1233,6 +1233,47 @@ asseverazione and documents' sections are unread (`catalogue/F839/suap-pairs.md`
   "done, 0 crawled": status.js shows `skipped`; `--fresh` redoes them). A SUAP batch needs a SUAP scratch draft that exists:
   `--draft "PROVA NON INVIARE - ..."`. zsh doesn't split an unquoted `$specs`: build an array for `rerun.py`'s `NAME:answers.json:VALUES`. A run's `total_seconds` counts the runner, not the portal's slow
   minutes. `CATALOGUE_PRIVATE` can be the name plus the codice fiscale's shape, for the one command.
+
+## SUAP combinations with fire prevention: the SCIA VV.F. (PIN 2) with an opening, a move or an enlargement (2026-11-14)
+
+The last 117 cases of the SUAP rules table add fire prevention (`prevenzione_incendi: true` → `also`
+`napoli/vigili-del-fuoco/scia-prevenzione-incendi`). **48 rehearsals (`*-pin-2-fittizio`), all 48 filled on the portal; the table's 262 cases are all routed now (`test_route`: "262 routed, 0 not mapped yet", 145 → 262).**
+
+- **The VV.F. sections are in the dictionary now** (`dictionary/fnsuap.yaml`, about 25 `vvf_*` asks): the SCIA VV.F.'s intestazione,
+  SEGNALAZIONE, dichiarazioni, the statistical information, the distinta di versamento, corrispondenza and delegato, the
+  professional's asseverazione, and the distinta della documentazione tecnica (rows 4.I-4.VIII by `w1 w2 w3` filters, three counts per row).
+- **The asseverazione is split, as the SUE's progettista.** The runner fills the antincendio professional's identity (role `v:` in
+  `people`) and the facts. The three pre-ticked assertions are `theirs`/`leave`: the professional ticks and signs (digital
+  signature, `human_only`). The fee's payment and the signed receipt stay the person's.
+- **Only category A is reachable.** On a combined pratica the B and C radios and the «progetti approvati» box are disabled
+  without a Rif. Pratica VV.F. (a PIN 1 first), so the recipes refuse B/C, SCIA parziale, PNRR/PNC/ZES and special plants (asked
+  and refused in `supports`). Subingresso + fire prevention stays refused by the rules table.
+- **Crawls are per combination.** `*-pin-2` crawls (names start `suap-NNN-`: `catalogue.py import` refuses a SUAP crawl named otherwise, it would be filed as the SUE's) were taken with
+  `catalogue.py ops suap --combo`; a dehors + PIN 2 crawl is two `also` lists merged. `bench/derive_combos.py` builds each recipe from
+  its plain sibling (`sibling_rows()`: every routed opening/move/enlargement recipe without a PIN, the donor `cila-fittizia`'s `v:`
+  person) and holds the combination's rules block.
+- **`scelte_none` must be inherited.** In zones A/B the nulla osta has its own bollo, so a tick adds no section; the three `061`
+  `-pin-2` crawls hold the plain crawl's `scelte_none` (text "inherited from ..."). Without it two recipes stopped at "no section
+  dichiarazione relativa all'imposta di bollo"; with it both filled.
+- **A coded select.** The distinta's «attività - sotto classe - categoria» options start with a code; `inpage.js` `select` matches
+  `value + ":"` when the value alone matches nothing and one option fits.
+- **The pane closes between turns** and takes the login, the file box and `pv-batch` with it: poll straight through after a pick
+  (each `javascript_tool` call under 45 s: a 55 s wait timed out; `results.js` waits 35 s) and `rerun.py --record` the results before
+  anything else (a lost batch cost a rerun; `rerun.py` prints this). A bundle holds at most 12 runs (`rerun.py` refuses more; each
+  bundle is one file pick; zsh doesn't word-split an unquoted list of names: pass them as separate arguments).
+- **A bare label matches every field it starts.** `norm` drops non-ASCII, so «n°» matched «n. atti» and «n. elaborati» too and
+  `nth` counted wrongly («switched off»): the distinta's rows go by their row number (`4.I)` ... `4.VIII)`, `nth` 1-3), the structure
+  and product counts only `when` their tick is set. `test_combos.fire_prevention_combinations` holds both.
+- **A misplaced dictionary entry** (under `after:`, the screens after the form, instead of `sections:`) was never matched: gen.py now
+  says so, and `after:` items all have `go`.
+- **Siblings need their facts.** A sibling recipe derived from a plain one (`derive_combos.py`, `sibling_rows`) must carry its zone,
+  `consumo_sul_posto` and `fatti` into answers.json, or pre-flight asks "altra pratica" / the facts question.
+- **Export before the next bundle.** A crawl bundle's results live in the pane's storage and the export reads them: save the
+  `crawl-batch-*.json` (after the person's yes) before starting the next bundle, which overwrites them.
+- **Held by tests:** `bench/test_combos.py` (the 48 combinations: crawl names, inherited `scelte_none`, the `v:` person, B/C and SCIA
+  parziale refused, a filled run; the distinta's counts; import's name rule; `after:` entries; the 12-run bundle) and `test_route.py`
+  (the opening and move route, the take-over is refused). The coded dropdown has no stand-in in `bench/portal.html`: it is held as text.
+- **Not covered:** a real filer's case (categories B/C, the PIN 1 first), the drift check on 5 of 126+ pratiche.
 
 ## Checking them all: `bench/rerun.py`
 

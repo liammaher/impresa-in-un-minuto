@@ -529,9 +529,15 @@ def suap_routed():
     assert r["pratica"] == "trasferimento-ristorante-insegna-fittizio", r
     r = route.route(SUAP, {**base, "evento": "subingresso", "fatti": ["insegna"]}, REHEARSALS)
     assert r["pratica"] == "subingresso-ristorante-insegna-fittizio", r
-    # Fire prevention (PIN 2) is filed with the opening too, but its VV.F. sections are unread: no steps file yet.
+    # Fire prevention (PIN 2, the SCIA VV.F.) is filed with the opening, a move and an enlargement (2026-11-14: its sections are
+    # in the dictionary, each combination crawled and filled on the portal); with a take-over the table refuses it.
     r = route.route(SUAP, {**base, "evento": "apertura", "fatti": ["insegna", "prevenzione_incendi"]}, REHEARSALS)
-    assert not r["routed"] and r["unsupported"][0].startswith("Non ancora prevista"), r
+    assert r["routed"] and r["pratica"] == "ristorante-insegna-pin-2-fittizio", r
+    assert "napoli/vigili-del-fuoco/scia-prevenzione-incendi" in r["also"], r
+    r = route.route(SUAP, {**base, "evento": "trasferimento", "fatti": ["prevenzione_incendi"]}, REHEARSALS)
+    assert r["routed"] and r["pratica"] == "trasferimento-ristorante-pin-2-fittizio", r
+    r = route.route(SUAP, {**base, "evento": "subingresso", "fatti": ["prevenzione_incendi"]}, REHEARSALS)
+    assert not r["routed"], r
 
 
 def suap_with_procura():
