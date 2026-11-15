@@ -1,0 +1,16 @@
+{
+ "extras": [],
+ "descrizione": "PROVA NON INVIARE - hobbista tesserino generato",
+ "oggetto": "Rilascio tesserino per hobbisti o creatori delle opere dell’ingegno e artistiche: pratica di prova con dati inventati.",
+ "attivita_cessata": "panificazione (pane e pizza, vendita al banco)",
+ "titolo_attivita_protocollo": "0999999",
+ "titolo_attivita_data": "2021-02-22",
+ "cessazione_data": "2026-12-31",
+ "diritti_euro": "0",
+ "diritti_esente": false,
+ "bollo_esenzione": "no",
+ "bollo_marche": false,
+ "tesserino_tipo": "rilascio",
+ "tesserino_anni": "3",
+ "hobbista_merceologia": "Creazioni artigianali di bigiotteria (prova)"
+}
