@@ -120,6 +120,10 @@ def main():
         assert r[3:6] and all(x in ("yes", "no") for x in r[3:6]), r
     named = {i for r in rows for i in re.findall(r"`(r[0-9a-f]{6})`", r[6])}
     assert named == {r[0].strip("`") for r in table(section(committed, "Refusals"))}, "every refusal is named by a row"
+    # An operation the wizard offers under two branches is `{leaf, nth}`, not a string (the A.U.A.'s and the emissioni's solvent plan, 2026-11-15):
+    # ready.py joined the tree's items and stopped on a dict, which stopped `scoreboard.py --write` halfway.
+    assert ready.portal_name({"wizard": [{"screen": "Scelta operazioni", "tree": [{"leaf": "Piano solventi", "nth": 2}]}]}) == "Piano solventi"
+    assert ready.portal_name({"wizard": [{"screen": "Scelta operazioni", "tree": [{"leaf": "One", "nth": 1}, "Two"]}]}) == "One + Two"
     print("ok: ready.md is drawn from the catalog and the scoreboard, written with coverage.md, and agrees with it")
     return 0
 

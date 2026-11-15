@@ -64,6 +64,36 @@ def short_sector(sector):
     return re.split(r" \(|, ", sector)[0][:40].rstrip()
 
 
+def _norm(s):
+    return re.sub(r"\s+", " ", s or "").strip()
+
+
+def operation_nth(crawl, op, idx):
+    """The nth of an operation's label among the wizard's operations that share it (1 when it is the only one).
+
+    The A.U.A. and the Emissioni in atmosfera both offer «Comunicare il piano di gestione solventi» and «Comunicazione messa in esercizio/a
+    regime ...»: a plain label stopped the run on "2 nodes named ..." (2026-11-15). The crawl's `pratica` names the whole path, so its
+    place among the operations that end in the same label is the nth (the wizard lists them in the page's order)."""
+    wizard = json.loads((PORTAL / "catalogue" / "F839" / "suap-wizard.json").read_text())
+    pool = wizard["common"] if idx is None else WIZARD[idx]["operations"]
+    path = _norm(re.sub(r" \(sector .+\)$", "", re.sub(r"^SUAP: ", "", crawl["pratica"])))
+    same = [x for x in pool if _norm(x.split("›")[-1]) == _norm(op)]
+    if len(same) < 2:
+        return 1
+    for n, x in enumerate(same, 1):
+        if _norm(re.sub(r"^[A-Z]+: ", "", x)) == _norm(re.sub(r"^[A-Z]+: ", "", path)):
+            return n
+    return 1
+
+
+def wizard_answers(options):
+    """The `answers:` a wizard step needs for the Si/No questions (type SIN) the crawl read on its screen: «No», as a made-up case
+    has no reason for «Sì». A required one left unanswered stopped the garage's opening on «il valore e obbligatorio» (2026-11-15), and
+    a recipe derived from another pratica's kept the other's question, which the 056 and 054 forms don't have («0 Si/No questions»)."""
+    sins = [_norm(o["label"]) for o in options if o.get("type") == "SIN"]
+    return ", answers: {%s}" % ", ".join("%s: \"No\"" % json.dumps(s, ensure_ascii=False) for s in sins) if sins else ""
+
+
 def drop_asks(text, keys):
     """The recipe's ask lines named, and every `yours`/`supports` line that reads them."""
     for key in keys:
@@ -107,7 +137,12 @@ def derive(new, template, crawl_name, fixture=None, ticks=(), facts=None, handle
     text = re.sub(r"^operation: .*$", "operation: " + (json.dumps(op, ensure_ascii=False) if ":" in op else op), text, flags=re.M)
     text = re.sub(r"^(  - \{screen: Scelta settore attività, tree: )\[.*?\](, confirm: CONFERMA\})", lambda k: k[1] + "[" + tree + "]" + k[2], text, flags=re.M)
     # `also`: the other operations selected with it (a combination's crawl, `catalogue.py ops suap --combo`), by their leaf labels.
-    text = re.sub(r"^(  - \{screen: Scelta operazioni, tree: )\[.*\](, confirm: CONFERMA\})", lambda k: k[1] + "[" + ", ".join(json.dumps(x, ensure_ascii=False) for x in (op, *also)) + "]" + k[2], text, flags=re.M)
+    nth_op = operation_nth(crawl, op, idx)
+    first_op = json.dumps(op, ensure_ascii=False) if nth_op == 1 else '{leaf: %s, nth: %d}' % (json.dumps(op, ensure_ascii=False), nth_op)
+    text = re.sub(r"^(  - \{screen: Scelta operazioni, tree: )\[.*\](, confirm: CONFERMA\})", lambda k: k[1] + "[" + ", ".join([first_op] + [json.dumps(x, ensure_ascii=False) for x in also]) + "]" + k[2], text, flags=re.M)
+    # The Si/No questions of the two eventuali screens are the crawl's own, not the template's (see wizard_answers).
+    scelte = next((s for s in (crawl.get("screens") or []) if s["screen"] == "scelte eventuali"), None)
+    text = re.sub(r"^  - \{screen: Scelte eventuali.*\n", "  - {screen: Scelte eventuali%s, confirm: CONFERMA}\n" % wizard_answers((scelte or {}).get("options", [])), text, flags=re.M)
     text = re.sub(r"^  - \{screen: Scelta interventi eventuali.*\n", "", text, flags=re.M)
     if "scelta interventi eventuali" in screens:
         # `ticks`: the interventi's options this pratica ticks, as "label[:nth]" (a label that is the start of another's needs the nth
@@ -117,7 +152,8 @@ def derive(new, template, crawl_name, fixture=None, ticks=(), facts=None, handle
             label, _, nth_ = t.partition("::")
             leaves.append('{leaf: "%s", nth: %s}' % (label, nth_ or 1))
         tree_part = ", tree: [%s]" % ", ".join(leaves) if leaves else ""
-        text = text.replace("  - {screen: Scelta del destinatario della pratica", "  - {screen: Scelta interventi eventuali%s, confirm: CONFERMA}\n  - {screen: Scelta del destinatario della pratica" % tree_part, 1)
+        interventi = next(s for s in crawl["screens"] if s["screen"] == "scelta interventi eventuali")
+        text = text.replace("  - {screen: Scelta del destinatario della pratica", "  - {screen: Scelta interventi eventuali%s%s, confirm: CONFERMA}\n  - {screen: Scelta del destinatario della pratica" % (tree_part, wizard_answers(interventi["options"])), 1)
         if leaves:
             text = re.sub(r"^(wizard:)", "scelte: [%s]\n\\1" % ", ".join(json.dumps(t.partition("::")[0], ensure_ascii=False) for t in ticks), text, count=1, flags=re.M)
     elif ticks:
@@ -225,6 +261,7 @@ def main():
     a = ap.parse_args()
     folder = derive(a.new, a.template, a.crawl, a.fixture, a.tick, a.facts, [h for h in (a.handles or "").split(",") if h], a.drop_ask, a.also)
     print(f"wrote {folder.relative_to(ROOT)}: recipe.yaml, answers.json, fixture.json")
+    print("then: add it to catalogue/F839/suap-unrouted.yaml with its reason unless route.py reaches it (bench/test_route.py fails otherwise), regen.py, a bundle")
     if not a.no_fill:
         print(json.dumps(fill(folder), ensure_ascii=False))
 

@@ -2344,5 +2344,51 @@ def _():
         assert any(f["label"] == "permanente" for f in section(generated(name), "periodo dell'attività")["fields"]), name
 
 
+
+@case("round 7: derive_recipe takes an operation the wizard offers twice by its nth (A.U.A. 1, Emissioni 2) and a screen's Si/No questions from the crawl, answered No")
+def _():
+    sys.path.insert(0, str(HERE))
+    import derive_recipe as dr
+    crawl = lambda n: json.loads((HERE.parent / "catalogue" / "F839" / "sections" / f"{n}.json").read_text())
+    solventi = "Comunicare il piano di gestione solventi"
+    assert dr.operation_nth(crawl("suap-common-autorizzazione-unica-ambientale-a-u-a-adempimenti-successivi-3"), solventi, None) == 1
+    assert dr.operation_nth(crawl("suap-common-emissioni-in-atmosfera-adempimenti-successivi-al-rilascio-de-3"), solventi, None) == 2
+    assert dr.operation_nth(crawl("suap-010-aprire-l-attivita"), "Aprire l'attività", 10) == 1
+    answers = dr.wizard_answers(crawl("suap-010-aprire-l-attivita")["screens"][0]["options"])
+    assert answers.startswith(", answers: {") and "zonizzazione comunale?\": \"No\"" in answers and "  " not in answers, answers
+    assert dr.wizard_answers([{"type": "CHK", "label": "x"}]) == ""
+
+
+@case("round 7: a SUAP recipe whose operation the wizard offers under two branches names its nth, in the common tree and in a sector's (\"2 nodes named ...\", 2026-11-15)")
+def _():
+    wizard = json.loads((HERE.parent / "catalogue" / "F839" / "suap-wizard.json").read_text())
+    bad = []
+    for d in sorted(REH.iterdir()):
+        if not (d / "recipe.yaml").exists():
+            continue
+        recipe = gen.load_yaml(d / "recipe.yaml")
+        if "sportello: suap" not in (d / "recipe.yaml").read_text(encoding="utf-8") or not recipe.get("crawl"):
+            continue
+        m = re.match(r"suap-(\d+)-", recipe["crawl"])
+        pool = wizard["sectors"][int(m[1])]["operations"] if m else wizard["common"]
+        for step in recipe.get("wizard", []):
+            if step.get("screen") == "Scelta operazioni":
+                for leaf in step.get("tree", []):
+                    if isinstance(leaf, str) and sum(1 for x in pool if x.split("›")[-1].strip() == leaf) > 1:
+                        bad.append((d.name, leaf))
+    assert not bad, bad
+
+
+@case("round 7: the helper tools of the loop parse, and the pane's read_draft.js parses (gaps.py, section_check.py, answer_case.py)")
+def _():
+    import ast
+    import shutil
+    import subprocess
+    for name in ("gaps.py", "section_check.py", "answer_case.py", "derive_recipe.py"):
+        ast.parse((HERE / name).read_text(encoding="utf-8"), name)
+    if shutil.which("node"):
+        r = subprocess.run(["node", "--check", str(HERE.parent / "read_draft.js")], capture_output=True, text=True)
+        assert r.returncode == 0, r.stderr
+
 print(f"{sum(results)}/{len(results)} passed")
 sys.exit(0 if all(results) else 1)

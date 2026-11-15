@@ -141,6 +141,23 @@ Before mapping anything, look at the other worktrees' branches (`git worktree li
    `test_inpage.py` when inpage.js changed, `test_route.py` for a recipe with `rules:`. Each is a
    script, run with the pratica venv's Python (`~/.cache/pratica-portal/venv/bin/python`), not pytest.
 
+**Tools for the loop (round 7, 2026-11-15)**, all in `bench/` and run with the pratica venv's Python from the repo's root:
+`gaps.py` names the pratiche short of fillable and the sections that top the list (a minute; `scoreboard.py --write` takes eight, and
+`docs/ready.md` needs it to end: it stopped on a `{leaf, nth}` operation until `plugin/ready.py` read it); `section_check.py CRAWL::SECTION`
+says whether the dictionary fills a section and what is unaccounted for (`--dump` prints its boxes and what each choice opens, to write the
+entry from); `derive_recipe.py` then writes the rehearsal (it takes an operation the wizard offers twice by its `nth`, and the Si/No questions of
+the interventi and scelte eventuali screens from the crawl, answered "No") and `answer_case.py REHEARSAL KEY=VALUE ...` answers its new asks until
+pre-flight says `ready True`. Then `regen.py NAME ...` (only the new lock lines may move), `suap-unrouted.yaml` (a rehearsal route.py doesn't reach
+needs its reason: `test_route`), and a bundle of at most 12 runs. **Don't edit the dictionary while `bench/test_gen.py` runs** (25 minutes): a case
+reads the half-written file and fails.
+
+**Reading a section by hand** when a run stops on something the crawl can't tell (a box switched off, a radio that isn't kept, a required
+tick): `read_draft.js` is a pane helper (`window.__draft`: open a draft by name, open a section, list its boxes with `DIS`/`CHK`, toggle one and
+see which boxes it switches on, press SALVA and list what the portal calls required). It needs no bundle and no file pick, only the sign-in, and it
+is how round 7 read the VV.F. take-over, the garage's requisiti and the B&B variation. A stopped run's draft is enough; the sign-in lasts a few hours
+(a fresh load of the home page then lands on InfoCamere's login: the person signs in again).
+
+
 ## From the facts to the steps file: `route.py`
 
 A recipe with `rules:` is routed to by its combination: its main pratica (`main`, else its
@@ -648,9 +665,12 @@ the first pass stopped on, each fixed from what the portal said). Only the 20 ne
 under the take-over, singles and the other room types of the B&B, the AUA's "altro" options. Not routed: the 20 are in `suap-unrouted.yaml` with their reasons
 (step 4). No drift check and no recrawl, as agreed.
 
-**Mechanics this round cost a run each:** a label with a comma or a colon in a flow mapping (`label: di modificare, in seguito ...`) must be quoted, or gen.py reads a
-second key; the textarea counter above; the aliases of an entry reach only the names it lists (the garage's "variazioni della società ..." is a name the bars' entry lacked); a dictionary
-edit during `bench/test_gen.py` makes a case fail on a half-written file (run it only on a quiet tree).
+**Mechanics this round cost a run each** (all in code or tests now): a label with a comma or a colon in a flow mapping
+(`label: di modificare, in seguito ...`) must be quoted, or gen.py reads a second key (it says "quote a label with a comma"); a text area's counter is
+no label (test_gen); an operation the wizard offers under two branches needs its `nth`, and a wizard screen's required Si/No needs its `answers:`
+(`derive_recipe.py` writes both from the crawl, test_gen holds them); the aliases of an entry reach only the names it lists (the garage's «variazioni della
+società ...» is a name the bars' entry lacked); a dictionary edit during `bench/test_gen.py` fails a case on a half-written file. **Portal facts only a draft
+shows** stay in the entries' comments: the VV.F. take-over's b), the garage's header radio, the film shoot's decimal area, the 056 capacity groups.
 
 ## What the portal does that bit us
 
