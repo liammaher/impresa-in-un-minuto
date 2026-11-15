@@ -69,6 +69,8 @@
 # Yes/no asks with a `group` are asked as one checklist (`item`), the answer the list of
 # items that apply.
 groups:
+  emissioni_scarso:
+    question: "Quali di queste attività a inquinamento atmosferico scarsamente rilevante (parte quinta del D.Lgs. 152/2006, allegato IV, parte I) svolge l'impianto? Spunta tutte le voci che valgono."
   audiovisivi:
     question: "Cosa farai con film o musica su dischi o nastri? Spunta tutte le voci che valgono."
   alcolici:
@@ -1642,6 +1644,110 @@ asks:
   vvf_doc_imp7: {type: text, question: "Punto 4.VII) della distinta, il controllo del fumo e del calore: quante dichiarazioni di conformità (DC), di corretta installazione (DI) e certificazioni di rispondenza (CI) sono allegate? Tre numeri, ad es. «0 0 0»"}
   vvf_doc_imp8: {type: text, question: "Punto 4.VIII) della distinta, la rivelazione di fumo, calore, gas e incendio e la segnalazione di allarme: quante dichiarazioni di conformità (DC), di corretta installazione (DI) e certificazioni di rispondenza (CI) sono allegate? Tre numeri, ad es. «0 0 0»"}
   vvf_doc_altri: {type: text, question: "Quanti altri documenti allegati non sono nelle voci precedenti? Un numero, 0 se nessuno"}
+  # Round 7: a garage's technical manager, a hobbyist's tesserino, a hotel's classification, a structure's capacity variation.
+  garage_requisito: {type: choice, question: "Con quale requisito il responsabile tecnico dell'autoriparazione dimostra l'idoneità (art. 7 c. 2 L. 122/1992)? esperienza (almeno un anno di esperienza professionale, come da regolamento); riconosciuto (titolo professionale riconosciuto dall'Autorità competente, titolo III D.Lgs. 206/2007)", options: [esperienza, riconosciuto]}
+  tesserino_tipo: {type: choice, question: "Chiedi il rilascio o il rinnovo del tesserino da hobbista? rilascio; rinnovo", options: [rilascio, rinnovo]}
+  tesserino_anni: {type: number, question: "Per quanti anni (al massimo 3)?"}
+  hobbista_merceologia: {type: text, question: "Di quale specializzazione è la merceologia oggetto della domanda (ad es. «creazioni artigianali di bigiotteria»; 9999 caratteri al massimo)"}
+  albergo_tipo: {type: choice, question: "Che tipo di struttura alberghiera è? albergo; rta (residenza turistico-alberghiera); villaggio albergo; albergo diffuso; motel", options: [albergo, rta, villaggio albergo, albergo diffuso, motel]}
+  classif_azione: {type: choice, question: "Che cosa chiedi? conferma (la classificazione precedente resta); modifica (la classificazione cambia per il mutamento dei requisiti); nuova (classificazione di una struttura di nuova apertura)", options: [conferma, modifica, nuova]}
+  classif_punti: {type: number, question: "Quanti punti totalizza la struttura nella scheda di rilevazione del punteggio di classificazione?"}
+  classif_punti_lettere: {type: text, question: "Gli stessi punti in lettere (30 caratteri al massimo)"}
+  classif_data: {type: date, question: "La data della classificazione precedente"}
+  classif_stelle: {type: number, question: "Quante stelle (1-5) ha la struttura, o avrà dopo la modifica?"}
+  classif_stelle_prima: {type: number, question: "Quante stelle (1-5) aveva prima della modifica?"}
+  ricettiva_segnala: {type: text, question: "Che cosa segnali ai sensi della SCIA per variazioni strutturali (ad es. «la variazione della capacità ricettiva»; 50 caratteri al massimo)"}
+  capacita_camere_da: {type: number, question: "Quante camere aveva la struttura prima della variazione?"}
+  capacita_camere_a: {type: number, question: "Quante camere ha dopo la variazione?"}
+  capacita_letti_da: {type: number, question: "Quanti posti letto aveva prima della variazione?"}
+  capacita_letti_a: {type: number, question: "Quanti posti letto ha dopo la variazione?"}
+  capacita_letti_totale: {type: number, question: "Il totale complessivo dei posti letto della struttura dopo la variazione"}
+  # Round 7: a film shoot on public land (riprese televisive e/o cinematografiche, over 10 mq).
+  riprese_tipo: {type: choice, question: "Che cosa si gira? film; fiction; documentario; cortometraggio; servizio tv; spot pubblicitario; videoclip", options: [film, fiction, documentario, cortometraggio, servizio tv, spot pubblicitario, videoclip]}
+  riprese_titolo: {type: text, question: "Il titolo dell'audiovisivo (100 caratteri al massimo)"}
+  riprese_descrizione: {type: text, question: "Una breve descrizione delle riprese (1000 caratteri al massimo)"}
+  riprese_attrezzature_dettaglio: {type: text, question: "Quali attrezzature tecniche occupano il suolo pubblico (200 caratteri al massimo)"}
+  riprese_mq: {type: number, question: "Quanti m² in tutto occupano, tra attrezzature e allestimenti?"}
+  riprese_troupe: {type: number, question: "Quante persone ha la troupe in tutto (attori, comparse, tecnici ...)?"}
+  riprese_dal: {type: date, question: "Il primo giorno delle riprese"}
+  riprese_al: {type: date, question: "L'ultimo giorno delle riprese"}
+  riprese_luogo: {type: text, question: "Il sito o la location delle riprese (200 caratteri al massimo)"}
+  riprese_in_area: {type: yes_no, question: "Le riprese si fanno dentro l'area che chiedi in occupazione di suolo pubblico?", propose: "true"}
+  riprese_responsabile_altro: {type: yes_no, question: "Chi risponde della troupe e delle attrezzature è una persona diversa da te?", propose: "false"}
+  riprese_percorso: {type: text, question: "Il percorso che faranno i mezzi di trasporto per raggiungere l'area (300 caratteri al massimo)"}
+  riprese_mezzi: {type: text, question: "Con quali mezzi si trasportano le attrezzature (tipo e targa; 200 caratteri al massimo)"}
+  # Round 7: a take-over of an activity under fire prevention (PIN 7, and the SUAP's subingresso 020): the VV.F. pratica taken over and the previous manager.
+  vvf_pratica_numero: {type: text, question: "Il numero della pratica dei Vigili del Fuoco dell'attività che rilevi (7 caratteri al massimo)"}
+  vvf_subentro_titolo: {type: text, question: "A seguito di che cosa sei subentrato nell'attività (ad es. «cessione di azienda»; 100 caratteri al massimo)"}
+  vvf_responsabile_qualita: {type: text, question: "In quale veste sei responsabile dell'attività (ad es. «titolare»; 100 caratteri al massimo)"}
+  vvf_precedente_nome: {type: text, question: "Il nome del precedente responsabile dell'attività (100 caratteri al massimo)"}
+  vvf_precedente_indirizzo: {type: text, question: "Il suo indirizzo: via o piazza (100 caratteri al massimo)"}
+  vvf_precedente_civico: {type: text, question: "Il numero civico"}
+  vvf_precedente_cap: {type: text, question: "Il C.A.P."}
+  vvf_precedente_comune: {type: text, question: "Il comune"}
+  vvf_precedente_provincia: {type: text, question: "La provincia (la sigla, ad es. NA)"}
+  # Round 7: AUA / emissioni (adempimenti successivi, voltura, comunicazione di attività a inquinamento scarsamente rilevante).
+  aua_numero: {type: text, question: "Il numero P.G. (protocollo generale) dell'autorizzazione già rilasciata (15 caratteri al massimo)"}
+  aua_data: {type: date, question: "La data dell'autorizzazione"}
+  aua_ente: {type: text, question: "Chi l'ha rilasciata (70 caratteri al massimo)"}
+  aua_scadenza: {type: date, question: "Il giorno in cui scade, se l'autorizzazione ha una scadenza", default: ""}
+  aua_tutti_impianti: {type: yes_no, question: "Il referto o la data riguarda tutti gli impianti e le attività dell'autorizzazione?", propose: "true"}
+  aua_impianti_elenco: {type: text, question: "Quali impianti o attività, con le lettere che li indicano nel testo dell'autorizzazione (300 caratteri al massimo)"}
+  aua_messa_esercizio: {type: date, question: "La data di messa in esercizio dell'impianto (vuoto se non la comunichi)", default: ""}
+  aua_messa_regime: {type: date, question: "La data di messa a regime dell'impianto (vuoto se non la comunichi)", default: ""}
+  aua_campionamento_1: {type: date, question: "La data del primo campionamento analitico, se prescritto per la messa a regime (vuoto se non c'è)", default: ""}
+  aua_campionamento_2: {type: date, question: "La data dell'ultimo campionamento analitico, se prescritto (vuoto se non c'è)", default: ""}
+  emissioni_pg: {type: text, question: "Il numero P.G. dell'autorizzazione alle emissioni di cui chiedi la voltura (10 caratteri al massimo)"}
+  emissioni_pg_data: {type: date, question: "La data di quel numero P.G."}
+  emissioni_titolare_precedente: {type: text, question: "A chi era stata rilasciata, cioè chi la detiene finora (50 caratteri al massimo)"}
+  emissioni_titolo_data: {type: date, question: "La data in cui era stata rilasciata"}
+  scarso_a: {type: yes_no, group: emissioni_scarso, item: "a) Lavorazioni meccaniche dei metalli, con esclusione di attività di verniciatura e trattamento superficiale e smerigliature con consumo complessivo di olio (co"}
+  scarso_b: {type: yes_no, group: emissioni_scarso, item: "b) Laboratori orafi in cui non è effettuata la fusione di metalli, laboratori odontotecnici, esercizi in cui viene svolta attività estetica, sanitaria e di serv"}
+  scarso_c: {type: yes_no, group: emissioni_scarso, item: "c) Decorazione di piastrelle ceramiche senza procedimento di cottura"}
+  scarso_d: {type: yes_no, group: emissioni_scarso, item: "d) Le seguenti lavorazioni tessili:"}
+  scarso_e: {type: yes_no, group: emissioni_scarso, item: "e) Cucine, esercizi di ristorazione collettiva, mense, rosticcerie e friggitorie"}
+  scarso_f: {type: yes_no, group: emissioni_scarso, item: "f) Panetterie, pasticcerie ed affini con un utilizzo complessivo giornaliero di farina non superiore a 300 kg"}
+  scarso_g: {type: yes_no, group: emissioni_scarso, item: "g) Stabulari acclusi a laboratori di ricerca e di analisi"}
+  scarso_h: {type: yes_no, group: emissioni_scarso, item: "h) Serre"}
+  scarso_i: {type: yes_no, group: emissioni_scarso, item: "i) Stirerie"}
+  scarso_j: {type: yes_no, group: emissioni_scarso, item: "j) Laboratori fotografici"}
+  scarso_k: {type: yes_no, group: emissioni_scarso, item: "k) Autorimesse e officine meccaniche di riparazioni veicoli, escluse quelle in cui si effettuano operazioni di verniciatura"}
+  scarso_l: {type: yes_no, group: emissioni_scarso, item: "l) Autolavaggi"}
+  scarso_m: {type: yes_no, group: emissioni_scarso, item: "m) Silos per materiali da costruzione ad esclusione di quelli asserviti ad altri impianti"}
+  scarso_n: {type: yes_no, group: emissioni_scarso, item: "n) Macchine per eliografia"}
+  scarso_o: {type: yes_no, group: emissioni_scarso, item: "o) Stoccaggio e movimentazione di prodotti petrolchimici ed idrocarburi naturali estratti da giacimento, stoccati e movimentati a ciclo chiuso o protetti da gas"}
+  scarso_p: {type: yes_no, group: emissioni_scarso, item: "p) Impianti di trattamento delle acque, escluse le linee di trattamento dei fanghi, fatto salvo quanto previsto dalla lettera p-bis)"}
+  scarso_p_bis: {type: yes_no, group: emissioni_scarso, item: "p-bis) Linee di trattamento dei fanghi che operano nell'ambito di impianti di trattamento delle acque reflue con potenzialità inferiore a 10.000 abitanti equiva"}
+  scarso_q: {type: yes_no, group: emissioni_scarso, item: "q) Macchinari a ciclo chiuso di concerie e pelliccerie"}
+  scarso_r: {type: yes_no, group: emissioni_scarso, item: "r) Attività di seconde lavorazioni del vetro, successive alle fasi iniziali di fusione, formatura e tempera, ad esclusione di quelle comportanti operazioni di a"}
+  scarso_s: {type: yes_no, group: emissioni_scarso, item: "s) Forni elettrici a volta fredda destinati alla produzione di vetro"}
+  scarso_t: {type: yes_no, group: emissioni_scarso, item: "t) Trasformazione e conservazione, esclusa la surgelazione, di frutta, ortaggi, funghi con produzione giornaliera massima non superiore a 350 kg"}
+  scarso_u: {type: yes_no, group: emissioni_scarso, item: "u) Trasformazione e conservazione, esclusa la surgelazione, di carne con produzione giornaliera massima non superiore a 350 kg"}
+  scarso_v: {type: yes_no, group: emissioni_scarso, item: "v) Molitura di cereali con produzione giornaliera massima non superiore a 500 kg"}
+  scarso_v_bis: {type: yes_no, group: emissioni_scarso, item: "v-bis) impianti di essiccazione di materiali vegetali impiegati da imprese agricole o a servizio delle stesse con potenza termica nominale uguale o inferiore a "}
+  scarso_w: {type: yes_no, group: emissioni_scarso, item: "w) Lavorazione e conservazione, esclusa surgelazione, di pesce ed altri prodotti alimentari marini con produzione giornaliera massima non superiore a 350 kg"}
+  scarso_x: {type: yes_no, group: emissioni_scarso, item: "x) Lavorazioni manifatturiere alimentari con utilizzo giornaliero di materie prime non superiore a 350 kg"}
+  scarso_y: {type: yes_no, group: emissioni_scarso, item: "y) Trasformazioni lattiero-casearie con produzione giornaliera massima non superiore a 350 kg"}
+  scarso_z: {type: yes_no, group: emissioni_scarso, item: "z) Allevamenti effettuati in ambienti confinati in cui il numero di capi presenti è inferiore a quello indicato, per le diverse categorie di animali, nella segu"}
+  scarso_aa: {type: yes_no, group: emissioni_scarso, item: "aa) Allevamenti effettuati in ambienti non confinati"}
+  scarso_bb: {type: yes_no, group: emissioni_scarso, item: "bb) Impianti di combustione, compresi i gruppi elettrogeni e i gruppi elettrogeni di cogenerazione, di potenza termica nominale inferiore a 1 MW, alimentati a b"}
+  scarso_cc: {type: yes_no, group: emissioni_scarso, item: "cc) Impianti di combustione alimentati ad olio combustibile, come tale o in emulsione, di potenza termica nominale inferiore a 0,3 MW"}
+  scarso_dd: {type: yes_no, group: emissioni_scarso, item: "dd) Impianti di combustione alimentati a metano o a GPL, di potenza termica nominale inferiore a 1 MW"}
+  scarso_ee: {type: yes_no, group: emissioni_scarso, item: "ee) Impianti di combustione, compresi i gruppi elettrogeni e i gruppi elettrogeni di cogenerazione, ubicati all'interno di impianti di smaltimento dei rifiuti, "}
+  scarso_ff: {type: yes_no, group: emissioni_scarso, item: "ff) Impianti di combustione, compresi i gruppi elettrogeni e i gruppi elettrogeni di cogenerazione, alimentati a biogas di cui all'allegato X alla parte quinta "}
+  scarso_gg: {type: yes_no, group: emissioni_scarso, item: "gg) Gruppi elettrogeni e gruppi elettrogeni di cogenerazione alimentati a metano o a GPL, di potenza termica nominale inferiore a 1 MW"}
+  scarso_hh: {type: yes_no, group: emissioni_scarso, item: "hh) Gruppi elettrogeni e gruppi elettrogeni di cogenerazione alimentati a benzina di potenza termica nominale inferiore a 1 MW"}
+  scarso_ii: {type: yes_no, group: emissioni_scarso, item: "ii) Impianti di combustione connessi alle attività di stoccaggio dei prodotti petroliferi funzionanti per meno di 2200 ore annue, di potenza termica nominale in"}
+  scarso_jj: {type: yes_no, group: emissioni_scarso, item: "jj) Laboratori di analisi e ricerca, impianti pilota per prove, ricerche, sperimentazioni, individuazione di prototipi"}
+  scarso_kk: {type: yes_no, group: emissioni_scarso, item: "kk) Dispostivi mobili utilizzati all'interno di uno stabilimento da un gestore diverso da quello dello stabilimento o non utilizzati all'interno di uno stabilim"}
+  scarso_kk_bis: {type: yes_no, group: emissioni_scarso, item: "kk-bis) Cantine che trasformano fino a 600 tonnellate l'anno di uva nonché stabilimenti di produzione di aceto o altre bevande fermentate, con una produzione an"}
+  scarso_kk_ter: {type: yes_no, group: emissioni_scarso, item: "kk-ter) Frantoi di materiali vegetali"}
+  scarso_kk_quater: {type: yes_no, group: emissioni_scarso, item: "kk-quater) Attività di stampa «3d» e stampa «ink jet»"}
+  scarso_kk_quinquies: {type: yes_no, group: emissioni_scarso, item: "kk-quinquies) Attività di taglio, incisione e marcatura laser su carta o tessuti"}
+  # Round 7 (2026-11-15): the period of a stabilimento's activity (sectors 60 and 61).
+  stab_periodo: {type: choice, question: "In quale periodo dell'anno svolge l'attività lo stabilimento? permanente (tutto l'anno); stagionale (solo in una stagione: i giorni dal e al, gg/mm); temporaneo (dal giorno al giorno)", options: [permanente, stagionale, temporaneo]}
+  stab_temp_dal: {type: date, question: "Il primo giorno dell'attività temporanea"}
+  stab_temp_al: {type: date, question: "L'ultimo giorno dell'attività temporanea"}
 
 sections:
   # The dichiarante is the client (the titolare). The draft opens on it. A private person declares
@@ -4700,7 +4806,8 @@ sections:
               dichiarazione relativa alla sede dell'attività, "dichiarazione dell'ubicazione dell'",
               dichiarazione dell'ubicazione dell'esercizio, dichiarazione relativa all'indirizzo dello stabilimento,
               nuovo indirizzo dell'esercizio, nuovo indirizzo dell'ubicazione dell'esercizio,
-              indirizzo dell'esercizio commerciale, indirizzo dell'officina]
+              indirizzo dell'esercizio commerciale, indirizzo dell'officina,
+              dichiarazione relativa all'ubicazione dell'impianto produttivo]
     subject: impresa
     leave: [Frazione]
     fields:
@@ -5370,6 +5477,7 @@ sections:
   # (shares, legal representative, partners) and a new professional manager (who files a
   # statement of their own) stay empty, and recipes refuse them.
   - section: dichiarazione relativa alle variazioni della società o dei soggetti
+    aliases: [variazioni della società o dei soggetti]
     leave: ["come da atto notarile del", "dal/ la sig./ ra cognome", "al/ la sig./ ra cognome", "nome"]
     fields:
       - {kind: checkbox, label: VARIAZIONE DELLA DENOMINAZIONE/RAGIONE SOCIALE, when: "{{ask.var_denominazione}}"}
@@ -6806,6 +6914,270 @@ sections:
       - {kind: number, label: "4.VIII)", nth: 2, value: "{{ask.vvf_doc_imp8|w2}}"}
       - {kind: number, label: "4.VIII)", nth: 3, value: "{{ask.vvf_doc_imp8|w3}}"}
       - {kind: number, label: n°, nth: 29, value: "{{ask.vvf_doc_altri}}"}
+
+  # --- Round 7 (2026-11-15): the SUAP pratiche one or two sections short, from the crawls' text ---
+  # A stabilimento's period (the opening, the added lines): permanent, a season (gg/mm) or a temporary stretch (dates).
+  - section: periodo dell'attività
+    fields:
+      - {kind: radio, label: permanente, when: "{{ask.stab_periodo|is_permanente}}"}
+      - {kind: radio, label: stagionale, when: "{{ask.stab_periodo|is_stagionale}}"}
+      - {kind: text, label: dal (gg/mm), value: "{{ask.stagione_dal}}", when: "{{ask.stab_periodo|is_stagionale}}"}
+      - {kind: text, label: al (gg/mm), value: "{{ask.stagione_al}}", when: "{{ask.stab_periodo|is_stagionale}}"}
+      - {kind: radio, label: temporaneo, when: "{{ask.stab_periodo|is_temporaneo}}"}
+      - {kind: date, label: dal ( gg/mm/aaaa ), value: "{{ask.stab_temp_dal|date_it}}", when: "{{ask.stab_periodo|is_temporaneo}}"}
+      - {kind: date, label: al ( gg/mm/aaaa ), value: "{{ask.stab_temp_al|date_it}}", when: "{{ask.stab_periodo|is_temporaneo}}"}
+  # The added lines' form of the Reg. CE 853/2004 stabilimenti (not "per approvazione progetto"): the number the
+  # stabilimento is already registered or recognised under, the master list and its line (as the project form's).
+  - section: DICHIARAZIONE PER L'AGGIUNZIONE DI LINEE DI ATTIVITÀ
+    leave: [Nella stessa riga della master list corrispondente alla vostra attività]
+    branches: ["{{ask.stab_master_tipo|is_allevamenti}}", "{{ask.stab_master_tipo|is_registrati}}", "{{ask.stab_master_tipo|is_riconosciuti}}"]
+    plus: "The \"+\" under the Codice univoco adds a whole row (Macroarea, Aggregazione, Linee, Codice univoco: all four required) with its own \"+ -\"; not mapped: the recipes refuse a second line (ask piu_linee)."
+    fields:
+      - {kind: text, label: già registrato e riconosciuto con n., value: "{{ask.stab_riconoscimento_numero}}"}
+      - {kind: radio, label: ALLEVAMENTI, when: "{{ask.stab_master_tipo|is_allevamenti}}"}
+      - {kind: radio, label: REGISTRATI, when: "{{ask.stab_master_tipo|is_registrati}}"}
+      - {kind: radio, label: RICONOSCIUTI, when: "{{ask.stab_master_tipo|is_riconosciuti}}"}
+      - {kind: text, label: Macroarea, by_label: true, value: "{{ask.stab_macroarea}}", when: "{{ask.stab_master_tipo|is_allevamenti}}"}
+      - {kind: text, label: Aggregazione, by_label: true, value: "{{ask.stab_aggregazione}}", when: "{{ask.stab_master_tipo|is_allevamenti}}"}
+      - {kind: text, label: Linee d'attività, by_label: true, value: "{{ask.stab_linea}}", when: "{{ask.stab_master_tipo|is_allevamenti}}"}
+      - {kind: text, label: Macroarea, by_label: true, value: "{{ask.stab_macroarea}}", when: "{{ask.stab_master_tipo|is_registrati}}"}
+      - {kind: text, label: Aggregazione, by_label: true, value: "{{ask.stab_aggregazione}}", when: "{{ask.stab_master_tipo|is_registrati}}"}
+      - {kind: text, label: Linee d'attività, by_label: true, value: "{{ask.stab_linea}}", when: "{{ask.stab_master_tipo|is_registrati}}"}
+      - {kind: text, label: Codice univoco, by_label: true, value: "{{ask.stab_codice_univoco}}", when: "{{ask.stab_master_tipo|is_registrati}}"}
+      - {kind: text, label: Macroarea, by_label: true, value: "{{ask.stab_macroarea}}", when: "{{ask.stab_master_tipo|is_riconosciuti}}"}
+      - {kind: text, label: Aggregazione, by_label: true, value: "{{ask.stab_aggregazione}}", when: "{{ask.stab_master_tipo|is_riconosciuti}}"}
+      - {kind: text, label: Linee d'attività, by_label: true, value: "{{ask.stab_linea}}", when: "{{ask.stab_master_tipo|is_riconosciuti}}"}
+      - {kind: text, label: Codice univoco, by_label: true, value: "{{ask.stab_codice_univoco}}", when: "{{ask.stab_master_tipo|is_riconosciuti}}"}
+
+  # --- AUA and emissioni in atmosfera (the common forms, 2026-11-15) ---
+  - section: estremi di autorizzazione
+    fields:
+      - {kind: text, label: autorizzazione numero P.G., value: "{{ask.aua_numero}}"}
+      - {kind: date, label: data autorizzazione, value: "{{ask.aua_data|date_it}}"}
+      - {kind: text, label: rilasciata da, value: "{{ask.aua_ente}}"}
+      - {kind: date, label: con scadenza il, value: "{{ask.aua_scadenza|date_it}}", when: "{{ask.aua_scadenza|empty|not}}"}
+  # The referto: the form's object (ticked), and the statement that the firm follows the sampling methods (the person's).
+  - section: oggetto dell'istanza
+    theirs: [la ditta è tenuta a seguire i metodi di campionamento]
+    fields:
+      - {kind: checkbox, label: presenta il referto analitico delle emissioni in atmosfera}
+  - section: oggetto della comunicazione
+    fields:
+      - {kind: checkbox, label: presenta il Piano Gestione Solventi}
+  - section: data di messa in esercizio/a regime impianto e data campionamento
+    leave: [alla messa in esercizio, alla messa a regime, ed all'effettuazione dei campionamenti analitici]
+    fields:
+      - {kind: radio, label: per tutti gli impianti e le attività, when: "{{ask.aua_tutti_impianti}}"}
+      - {kind: radio, label: per i seguenti impianti/attività, when: "{{ask.aua_tutti_impianti|not}}"}
+      - {kind: textarea, label: 300 Caratteri restanti, value: "{{ask.aua_impianti_elenco}}", when: "{{ask.aua_tutti_impianti|not}}"}
+      - {kind: checkbox, label: alla messa in esercizio, when: "{{ask.aua_messa_esercizio|empty|not}}"}
+      - {kind: date, label: in data, nth: 1, value: "{{ask.aua_messa_esercizio|date_it}}", when: "{{ask.aua_messa_esercizio|empty|not}}"}
+      - {kind: checkbox, label: alla messa a regime, when: "{{ask.aua_messa_regime|empty|not}}"}
+      - {kind: date, label: in data, nth: 2, value: "{{ask.aua_messa_regime|date_it}}", when: "{{ask.aua_messa_regime|empty|not}}"}
+      - {kind: checkbox, label: ed all'effettuazione dei campionamenti analitici, when: "{{ask.aua_campionamento_1|empty|not}}"}
+      - {kind: date, label: in data, nth: 3, value: "{{ask.aua_campionamento_1|date_it}}", when: "{{ask.aua_campionamento_1|empty|not}}"}
+      - {kind: date, label: e in data, value: "{{ask.aua_campionamento_2|date_it}}", when: "{{ask.aua_campionamento_1|empty|not}} {{ask.aua_campionamento_2|empty|not}}"}
+  - section: dichiarazione relativa alla voltura dell'autorizzazione alle emissioni in atmosfera
+    fields:
+      - {kind: text, label: P.G., value: "{{ask.emissioni_pg}}"}
+      - {kind: date, label: del, value: "{{ask.emissioni_pg_data|date_it}}"}
+      - {kind: text, label: rilasciata a/alla, value: "{{ask.emissioni_titolare_precedente}}"}
+      - {kind: date, label: in data, value: "{{ask.emissioni_titolo_data|date_it}}"}
+  # The communication of an activity with little atmospheric pollution (art. 272 c. 1, Allegato IV parte I): what the plant does,
+  # a list of the categories (one tick each), and the statement that no carcinogenic substances are used (the person's).
+  - section: Tipologia di attività svolta e utilizzo sostanze generate dagli impianti
+    theirs: [Dichiara inoltre di NON utilizzare sostanze o preparati]
+    fields:
+      - {kind: text, label: "Il sottoscritto dichiara che la tipologia di attività svolta", value: "{{business.descrizione_attivita}}"}
+  - section: dichiarazione su impianti e categorie di attività ad inquinamento atmosferico scarsamente rilevante
+    fields:
+      - {kind: checkbox, label: "a) Lavorazioni meccaniche dei metalli, con esclu", when: "{{ask.scarso_a}}"}
+      - {kind: checkbox, label: "b) Laboratori orafi in cui non è effettuata la f", when: "{{ask.scarso_b}}"}
+      - {kind: checkbox, label: "c) Decorazione di piastrelle ceramiche senza pro", when: "{{ask.scarso_c}}"}
+      - {kind: checkbox, label: "d) Le seguenti lavorazioni tessili:", when: "{{ask.scarso_d}}"}
+      - {kind: checkbox, label: "e) Cucine, esercizi di ristorazione collettiva, ", when: "{{ask.scarso_e}}"}
+      - {kind: checkbox, label: "f) Panetterie, pasticcerie ed affini con un util", when: "{{ask.scarso_f}}"}
+      - {kind: checkbox, label: "g) Stabulari acclusi a laboratori di ricerca e d", when: "{{ask.scarso_g}}"}
+      - {kind: checkbox, label: "h) Serre", when: "{{ask.scarso_h}}"}
+      - {kind: checkbox, label: "i) Stirerie", when: "{{ask.scarso_i}}"}
+      - {kind: checkbox, label: "j) Laboratori fotografici", when: "{{ask.scarso_j}}"}
+      - {kind: checkbox, label: "k) Autorimesse e officine meccaniche di riparazi", when: "{{ask.scarso_k}}"}
+      - {kind: checkbox, label: "l) Autolavaggi", when: "{{ask.scarso_l}}"}
+      - {kind: checkbox, label: "m) Silos per materiali da costruzione ad esclusi", when: "{{ask.scarso_m}}"}
+      - {kind: checkbox, label: "n) Macchine per eliografia", when: "{{ask.scarso_n}}"}
+      - {kind: checkbox, label: "o) Stoccaggio e movimentazione di prodotti petro", when: "{{ask.scarso_o}}"}
+      - {kind: checkbox, label: "p) Impianti di trattamento delle acque, escluse ", when: "{{ask.scarso_p}}"}
+      - {kind: checkbox, label: "p-bis) Linee di trattamento dei fanghi che opera", when: "{{ask.scarso_p_bis}}"}
+      - {kind: checkbox, label: "q) Macchinari a ciclo chiuso di concerie e pelli", when: "{{ask.scarso_q}}"}
+      - {kind: checkbox, label: "r) Attività di seconde lavorazioni del vetro, su", when: "{{ask.scarso_r}}"}
+      - {kind: checkbox, label: "s) Forni elettrici a volta fredda destinati alla", when: "{{ask.scarso_s}}"}
+      - {kind: checkbox, label: "t) Trasformazione e conservazione, esclusa la su", when: "{{ask.scarso_t}}"}
+      - {kind: checkbox, label: "u) Trasformazione e conservazione, esclusa la su", when: "{{ask.scarso_u}}"}
+      - {kind: checkbox, label: "v) Molitura di cereali con produzione giornalier", when: "{{ask.scarso_v}}"}
+      - {kind: checkbox, label: "v-bis) impianti di essiccazione di materiali veg", when: "{{ask.scarso_v_bis}}"}
+      - {kind: checkbox, label: "w) Lavorazione e conservazione, esclusa surgelaz", when: "{{ask.scarso_w}}"}
+      - {kind: checkbox, label: "x) Lavorazioni manifatturiere alimentari con uti", when: "{{ask.scarso_x}}"}
+      - {kind: checkbox, label: "y) Trasformazioni lattiero-casearie con produzio", when: "{{ask.scarso_y}}"}
+      - {kind: checkbox, label: "z) Allevamenti effettuati in ambienti confinati ", when: "{{ask.scarso_z}}"}
+      - {kind: checkbox, label: "aa) Allevamenti effettuati in ambienti non confi", when: "{{ask.scarso_aa}}"}
+      - {kind: checkbox, label: "bb) Impianti di combustione, compresi i gruppi e", when: "{{ask.scarso_bb}}"}
+      - {kind: checkbox, label: "cc) Impianti di combustione alimentati ad olio c", when: "{{ask.scarso_cc}}"}
+      - {kind: checkbox, label: "dd) Impianti di combustione alimentati a metano ", when: "{{ask.scarso_dd}}"}
+      - {kind: checkbox, label: "ee) Impianti di combustione, compresi i gruppi e", when: "{{ask.scarso_ee}}"}
+      - {kind: checkbox, label: "ff) Impianti di combustione, compresi i gruppi e", when: "{{ask.scarso_ff}}"}
+      - {kind: checkbox, label: "gg) Gruppi elettrogeni e gruppi elettrogeni di c", when: "{{ask.scarso_gg}}"}
+      - {kind: checkbox, label: "hh) Gruppi elettrogeni e gruppi elettrogeni di c", when: "{{ask.scarso_hh}}"}
+      - {kind: checkbox, label: "ii) Impianti di combustione connessi alle attivi", when: "{{ask.scarso_ii}}"}
+      - {kind: checkbox, label: "jj) Laboratori di analisi e ricerca, impianti pi", when: "{{ask.scarso_jj}}"}
+      - {kind: checkbox, label: "kk) Dispostivi mobili utilizzati all'interno di ", when: "{{ask.scarso_kk}}"}
+      - {kind: checkbox, label: "kk-bis) Cantine che trasformano fino a 600 tonne", when: "{{ask.scarso_kk_bis}}"}
+      - {kind: checkbox, label: "kk-ter) Frantoi di materiali vegetali.", when: "{{ask.scarso_kk_ter}}"}
+      - {kind: checkbox, label: "kk-quater) Attività di stampa «3d» e stampa «ink", when: "{{ask.scarso_kk_quater}}"}
+      - {kind: checkbox, label: "kk-quinquies) Attività di taglio, incisione e ma", when: "{{ask.scarso_kk_quinquies}}"}
+
+  # A film shoot on public land (over 10 mq). The title, the days, the equipment and the place are facts; the declarations
+  # and the commitments (damage, cleaning, further authorizations, the deposit, safety, custody) are the person's. The responsible
+  # person is the declarant; the other boxes (the type "altro", the scenic fittings, another site) are left: the recipes refuse them.
+  - section: Richiesta di occupazione suolo pubblico per riprese televisive e/o cinematografiche
+    supports:
+      - {when: "{{ask.riprese_in_area}}", else: "Se le riprese non si fanno dentro l'area chiesta in occupazione, il modulo vuole un altro sito: per ora non lo preparo."}
+      - {when: "{{ask.riprese_responsabile_altro|not}}", else: "Se chi risponde della troupe è un'altra persona, il modulo ne chiede il nome e il telefono: per ora non lo preparo."}
+    theirs: [si assume l'onere di rispondere in proprio, si impegna a rimuovere ogni attrezzatura, si impegna ad acquisire ogni ulteriore, si impegna a provvedere al versamento della cauzione, si impegna a realizzare le condizioni di sicurezza, provvederà con proprio personale alla custodia]
+    leave: [altro, allestimenti scenografici, in altro sito, persona diversa dal dichiarante]
+    fields:
+      - {kind: radio, label: film, when: "{{ask.riprese_tipo|is_film}}"}
+      - {kind: radio, label: fiction, when: "{{ask.riprese_tipo|is_fiction}}"}
+      - {kind: radio, label: documentario, when: "{{ask.riprese_tipo|is_documentario}}"}
+      - {kind: radio, label: cortometraggio, when: "{{ask.riprese_tipo|is_cortometraggio}}"}
+      - {kind: radio, label: servizio tv, when: "{{ask.riprese_tipo|is_servizio_tv}}"}
+      - {kind: radio, label: spot pubblicitario, when: "{{ask.riprese_tipo|is_spot_pubblicitario}}"}
+      - {kind: radio, label: videoclip, when: "{{ask.riprese_tipo|is_videoclip}}"}
+      - {kind: text, label: Titolo dell’audiovisivo, value: "{{ask.riprese_titolo}}"}
+      - {kind: textarea, label: 1000 Caratteri restanti, value: "{{ask.riprese_descrizione}}"}
+      - {kind: checkbox, label: attrezzature tecniche}
+      - {kind: text, label: specificare, value: "{{ask.riprese_attrezzature_dettaglio}}"}
+      - {kind: text, label: Per complessivi mq., value: "{{ask.riprese_mq}}"}
+      - {kind: text, label: Numero complessivo dei componenti della troupe, value: "{{ask.riprese_troupe}}"}
+      - {kind: date, label: dal, value: "{{ask.riprese_dal|date_it}}"}
+      - {kind: date, label: al, value: "{{ask.riprese_al|date_it}}"}
+      - {kind: text, label: Sito/location, value: "{{ask.riprese_luogo}}"}
+      - {kind: checkbox, label: all'interno dell'area richiesta in occupazione di suolo pubblico}
+      - {kind: radio, label: il dichiarante}
+      - {kind: text, label: I mezzi di trasporto utilizzati faranno il seguente percorso, value: "{{ask.riprese_percorso}}"}
+      - {kind: text, label: Le attrezzature verranno trasportate con seguenti mezzi, value: "{{ask.riprese_mezzi}}"}
+  - section: Avvertenza per le domande di concessione
+    theirs: [PRESA VISIONE]
+    fields: []
+  # The take-over of an activity under fire prevention: the pratica taken over and the manager who takes it over (the form's
+  # category radios A, B, C and the coded dropdown under each as the SCIA VV.F.'s distinta), the previous manager's address.
+  # The Comando is preselected (left), the two statements under a) and b) are the person's.
+  - section: Rif. Pratica VVF
+    leave: [AL COMANDO PROVINCIALE DEI VIGILI DEL FUOCO DI]
+    fields:
+      - {kind: text, label: Rif. Pratica VV.F. n., value: "{{ask.vvf_pratica_numero}}"}
+  - section: dichiarazione relativa al responsabile attività
+    theirs: [a) di essere a conoscenza e di impegnarsi ad osservare gli obblighi, b) che le condizioni relative alla sicurezza antincendio]
+    branches: ["{{ask.vvf_categoria|is_a}}", "{{ask.vvf_categoria|is_b}}", "{{ask.vvf_categoria|is_c}}"]
+    fields:
+      - {kind: text, label: "di essere subentrato, a seguito di:", value: "{{ask.vvf_subentro_titolo}}"}
+      - {kind: text, label: "quale responsabile dell'attività", value: "{{ask.vvf_responsabile_qualita}}"}
+      - {kind: text, label: identificata con numero di pratica VV.F, value: "{{ask.vvf_pratica_numero}}"}
+      - {kind: radio, label: A, when: "{{ask.vvf_categoria|is_a}}"}
+      - {kind: radio, label: B, when: "{{ask.vvf_categoria|is_b}}"}
+      - {kind: radio, label: C, when: "{{ask.vvf_categoria|is_c}}"}
+      - {kind: select, label: attività - sotto classe - categoria - descrizione, value: "{{ask.vvf_allegato}}", when: "{{ask.vvf_categoria|is_a}}"}
+      - {kind: select, label: attività - sotto classe - categoria - descrizione, value: "{{ask.vvf_allegato}}", when: "{{ask.vvf_categoria|is_b}}"}
+      - {kind: select, label: attività - sotto classe - categoria - descrizione, value: "{{ask.vvf_allegato}}", when: "{{ask.vvf_categoria|is_c}}"}
+      - {kind: text, label: nominativo, value: "{{ask.vvf_precedente_nome}}"}
+      - {kind: text, label: indirizzo, value: "{{ask.vvf_precedente_indirizzo}}"}
+      - {kind: text, label: n. civico, value: "{{ask.vvf_precedente_civico}}"}
+      - {kind: text, label: C.A.P, value: "{{ask.vvf_precedente_cap}}"}
+      - {kind: select, label: comune, value: "{{ask.vvf_precedente_comune}}"}
+      - {kind: select, label: provincia, value: "{{ask.vvf_precedente_provincia}}"}
+
+  # A garage's technical manager (the opening of an autoriparazione, and its change of people): the holder is the manager (the
+  # other person's name and file are refused), the requisito one of two. The antimafia and the moral requisites are the person's.
+  # Read from the crawl's text; the options each requisito opens are for the portal to show (run 2026-11-15).
+  - section: dichiarazioni sul possesso dei requisiti
+    aliases: [variazione del/dei soggetti in possesso dei requisiti professionali per l'esercizio dell'attività]
+    theirs: [che non sussistono nei propri confronti le cause di divieto, di essere in possesso dei requisiti morali previsti dalla legge]
+    leave: [che il/la responsabile tecnico/a preposto è, il/la Sig./ra]
+    fields:
+      - {kind: radio, label: "di essere il/la responsabile tecnico/a e:"}
+      - {kind: radio, label: di essere in possesso di almeno uno dei seguenti requisiti tecnico professionali}
+      - {kind: radio, label: aver maturato esperienza professionale, when: "{{ask.garage_requisito|is_esperienza}}"}
+      - {kind: radio, label: che il proprio titolo professionale è stato riconosciuto, when: "{{ask.garage_requisito|is_riconosciuto}}"}
+  # A hobbyist's tesserino (private person): the request, its years and the merceologia are facts; every other statement is theirs.
+  - section: Oggetto dell'istanza
+    strict: true
+    theirs: ["di partecipare ai mercatini degli hobbisti di cu", "di essere in possesso dei requisiti di cui all’a", "di non essere già in possesso di altro tesserino", "di non aver presentato domanda per il rilascio d", "di essere a conoscenza che il tesserino ha valid", "che con la presente richiesta, l’esercizio dell’", "di essere a conoscenza che il tesserino, munito", "di impegnarsi ad esporre il tesserino, durante i", "di partecipare ad un massimo di 12 manifestazion", "di essere a conoscenza che il tesserino deve ess", "di essere a conoscenza che le manifestazioni che", "di essere a conoscenza che esauriti gli spazi su", "di essere a conoscenza delle sanzioni previste d", "di allegare alla presente domanda: n. 1 fototess"]
+    leave: ["di partecipare ai mercatini degli hobbisti di cu", "di essere in possesso dei requisiti di cui all’a", "di non essere già in possesso di altro tesserino", "di non aver presentato domanda per il rilascio d", "di essere a conoscenza che il tesserino ha valid", "che con la presente richiesta, l’esercizio dell’", "di essere a conoscenza che il tesserino, munito", "di impegnarsi ad esporre il tesserino, durante i", "di partecipare ad un massimo di 12 manifestazion", "di essere a conoscenza che il tesserino deve ess", "di essere a conoscenza che le manifestazioni che", "di essere a conoscenza che esauriti gli spazi su", "di essere a conoscenza delle sanzioni previste d", "di allegare alla presente domanda: n. 1 fototess"]
+    fields:
+      - {kind: radio, label: il rilascio per anni, when: "{{ask.tesserino_tipo|is_rilascio}}"}
+      - {kind: text, label: "numero (massimo 3 anni):", value: "{{ask.tesserino_anni}}", when: "{{ask.tesserino_tipo|is_rilascio}}"}
+      - {kind: radio, label: il rinnovo del tesserino per anni, when: "{{ask.tesserino_tipo|is_rinnovo}}"}
+      - {kind: text, label: "numero:", value: "{{ask.tesserino_anni}}", when: "{{ask.tesserino_tipo|is_rinnovo}}"}
+      - {kind: checkbox, label: che la merceologia oggetto della presente domanda}
+      - {kind: text, label: che la merceologia oggetto della presente domanda è della seguente specializzazione, value: "{{ask.hobbista_merceologia}}"}
+  # A hotel's classification (the SCIA of its first classification, renewal or change): the structure's type and name, the
+  # points on the Region's score sheet, and the stars before and after.
+  - section: Tipologia e denominazione della struttura ricettiva alberghiera
+    fields:
+      - {kind: radio, label: albergo, when: "{{ask.albergo_tipo|is_albergo}}"}
+      - {kind: radio, label: R.T.A., when: "{{ask.albergo_tipo|is_rta}}"}
+      - {kind: radio, label: villaggio albergo, when: "{{ask.albergo_tipo|is_villaggio_albergo}}"}
+      - {kind: radio, label: albergo diffuso, when: "{{ask.albergo_tipo|is_albergo_diffuso}}"}
+      - {kind: radio, label: motel, when: "{{ask.albergo_tipo|is_motel}}"}
+      - {kind: text, label: denominazione della struttura, value: "{{ask.denominazione_struttura}}"}
+  - section: Dichiarazione relativa all'oggetto della domanda
+    fields:
+      - {kind: text, label: pari a punti, value: "{{ask.classif_punti}}"}
+      - {kind: text, label: in lettere, value: "{{ask.classif_punti_lettere}}"}
+      - {kind: radio, label: scheda per la rilevazione del punteggio di classificazione per gli alberghi, when: "{{ask.albergo_tipo|in_albergo__villaggio_albergo__albergo_diffuso__motel}}"}
+      - {kind: radio, label: scheda per la rilevazione del punteggio di classificazione per le residenze, when: "{{ask.albergo_tipo|is_rta}}"}
+      - {kind: radio, label: di confermare la classificazione precedente, when: "{{ask.classif_azione|is_conferma}}"}
+      - {kind: date, label: in data, nth: 1, value: "{{ask.classif_data|date_it}}", when: "{{ask.classif_azione|is_conferma}}"}
+      - {kind: text, label: di n. stelle, nth: 1, value: "{{ask.classif_stelle}}", when: "{{ask.classif_azione|is_conferma}}"}
+      - {kind: radio, label: "di modificare, in seguito al mutamento dei requisiti", when: "{{ask.classif_azione|is_modifica}}"}
+      - {kind: date, label: in data, nth: 2, value: "{{ask.classif_data|date_it}}", when: "{{ask.classif_azione|is_modifica}}"}
+      - {kind: text, label: da n. stelle, value: "{{ask.classif_stelle_prima}}", when: "{{ask.classif_azione|is_modifica}}"}
+      - {kind: text, label: a n. stelle, value: "{{ask.classif_stelle}}", when: "{{ask.classif_azione|is_modifica}}"}
+      - {kind: radio, label: di attribuire alla struttura ricettiva di nuova apertura, when: "{{ask.classif_azione|is_nuova}}"}
+      - {kind: text, label: di n. stelle, nth: 2, value: "{{ask.classif_stelle}}", when: "{{ask.classif_azione|is_nuova}}"}
+  # A B&B's or affittacamere's structural variation (SCIA): the title the structure holds, and the capacity before and after in rooms
+  # and beds; the rooms by type, the units and "altro" are left (the recipes refuse them).
+  - section: Variazioni
+    leave: [Camere, Unità abitative, altro, da n. unità abitative, a n. unità abitative]
+    fields:
+      - {kind: text, label: "Il sottoscritto SEGNALA:", value: "{{ask.ricettiva_segnala}}"}
+      - {kind: text, label: "che la struttura ricettiva in oggetto, già avviata con la SCIA/DIA/autorizzazione prot./n.", value: "{{ask.titolo_attivita_protocollo}}"}
+      - {kind: date, label: del, value: "{{ask.titolo_attivita_data|date_it}}"}
+      - {kind: text, label: presentata al Comune di, value: "{{ask.titolo_attivita_comune}}"}
+      - {kind: text, label: prov., value: "NA"}
+      - {kind: text, label: avente CIN, value: "{{ask.struttura_cin}}"}
+      - {kind: text, label: e CUSR, value: "{{ask.struttura_cusr}}"}
+      - {kind: checkbox, label: "VARIAZIONE DELLA CAPACITÀ RICETTIVA:"}
+      - {kind: text, label: da n. camere, value: "{{ask.capacita_camere_da}}"}
+      - {kind: text, label: a n. camere, value: "{{ask.capacita_camere_a}}"}
+      - {kind: text, label: da n. posti letto, nth: 1, value: "{{ask.capacita_letti_da}}"}
+      - {kind: text, label: a n. posti letto, nth: 1, value: "{{ask.capacita_letti_a}}"}
+      - {kind: text, label: TOTALE complessivo posti letto della struttura a seguito di variazione n., value: "{{ask.capacita_letti_totale}}"}
+
+  # Garage (sector 010): the same boxes as the bars' entry, with "a via o" for the new office (the garage crawl has no dots).
+  - section: variazioni della società o dei soggetti
+    leave: ["come da atto notarile del", "dal/ la sig./ ra cognome", "a sig./ ra cognome", "nome"]
+    fields:
+      - {kind: checkbox, label: VARIAZIONE DELLA DENOMINAZIONE/RAGIONE SOCIALE, when: "{{ask.var_denominazione}}"}
+      - {kind: date, label: con decorrenza dal, value: "{{ask.var_decorrenza|date_it}}", when: "{{ask.var_denominazione}}"}
+      - {kind: text, label: precedente, value: "{{ask.denominazione_precedente}}", when: "{{ask.var_denominazione}}"}
+      - {kind: text, label: nuova, value: "{{business.denominazione}}", when: "{{ask.var_denominazione}}"}
+      - {kind: checkbox, label: VARIAZIONE DELLA SEDE LEGALE, when: "{{ask.var_sede_legale}}"}
+      - {kind: text, label: da via o..., value: "{{ask.sede_precedente_via}}", when: "{{ask.var_sede_legale}}"}
+      - {kind: text, label: comune, value: "{{ask.sede_precedente_comune}}", when: "{{ask.var_sede_legale}}"}
+      - {kind: text, label: C.A.P., value: "{{ask.sede_precedente_cap}}", when: "{{ask.var_sede_legale}}"}
+      - {kind: text, label: a via o, value: "{{business.sede_legale_indirizzo}} {{business.sede_legale_civico}}", when: "{{ask.var_sede_legale}}"}
+      - {kind: text, label: comune, nth: 2, value: "{{business.sede_legale_comune}}", when: "{{ask.var_sede_legale}}"}
+      - {kind: text, label: C.A.P., nth: 2, value: "{{business.sede_legale_cap}}", when: "{{ask.var_sede_legale}}"}
 
 # The screens after the form, reached with their button. The attachments go by slot title; a
 # slot the pratica's crawl doesn't list is left out, a required one nothing fills stops gen.py.
