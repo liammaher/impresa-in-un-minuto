@@ -1662,12 +1662,16 @@ asks:
   capacita_letti_da: {type: number, question: "Quanti posti letto aveva prima della variazione?"}
   capacita_letti_a: {type: number, question: "Quanti posti letto ha dopo la variazione?"}
   capacita_letti_totale: {type: number, question: "Il totale complessivo dei posti letto della struttura dopo la variazione"}
+  capacita_unita_da: {type: number, question: "Quante unità abitative aveva la struttura prima della variazione? 0 se non ne ha", propose: "0"}
+  capacita_unita_a: {type: number, question: "Quante ne ha dopo la variazione? 0 se non ne ha", propose: "0"}
+  capacita_unita_letti_da: {type: number, question: "Quanti posti letto nelle unità abitative prima della variazione? 0 se non ne ha", propose: "0"}
+  capacita_unita_letti_a: {type: number, question: "Quanti posti letto nelle unità abitative dopo la variazione? 0 se non ne ha", propose: "0"}
   # Round 7: a film shoot on public land (riprese televisive e/o cinematografiche, over 10 mq).
   riprese_tipo: {type: choice, question: "Che cosa si gira? film; fiction; documentario; cortometraggio; servizio tv; spot pubblicitario; videoclip", options: [film, fiction, documentario, cortometraggio, servizio tv, spot pubblicitario, videoclip]}
   riprese_titolo: {type: text, question: "Il titolo dell'audiovisivo (100 caratteri al massimo)"}
   riprese_descrizione: {type: text, question: "Una breve descrizione delle riprese (1000 caratteri al massimo)"}
   riprese_attrezzature_dettaglio: {type: text, question: "Quali attrezzature tecniche occupano il suolo pubblico (200 caratteri al massimo)"}
-  riprese_mq: {type: number, question: "Quanti m² in tutto occupano, tra attrezzature e allestimenti?"}
+  riprese_mq: {type: number, question: "Quanti m² in tutto occupano, tra attrezzature e allestimenti? Il modulo vale solo per più di 10 m²"}
   riprese_troupe: {type: number, question: "Quante persone ha la troupe in tutto (attori, comparse, tecnici ...)?"}
   riprese_dal: {type: date, question: "Il primo giorno delle riprese"}
   riprese_al: {type: date, question: "L'ultimo giorno delle riprese"}
@@ -1676,16 +1680,10 @@ asks:
   riprese_responsabile_altro: {type: yes_no, question: "Chi risponde della troupe e delle attrezzature è una persona diversa da te?", propose: "false"}
   riprese_percorso: {type: text, question: "Il percorso che faranno i mezzi di trasporto per raggiungere l'area (300 caratteri al massimo)"}
   riprese_mezzi: {type: text, question: "Con quali mezzi si trasportano le attrezzature (tipo e targa; 200 caratteri al massimo)"}
-  # Round 7: a take-over of an activity under fire prevention (PIN 7, and the SUAP's subingresso 020): the VV.F. pratica taken over and the previous manager.
+  # Round 7: a take-over of an activity under fire prevention (PIN 7, and the SUAP's subingresso 020): the VV.F. pratica taken over (the previous manager's boxes are the person's: see the section's entry).
   vvf_pratica_numero: {type: text, question: "Il numero della pratica dei Vigili del Fuoco dell'attività che rilevi (7 caratteri al massimo)"}
   vvf_subentro_titolo: {type: text, question: "A seguito di che cosa sei subentrato nell'attività (ad es. «cessione di azienda»; 100 caratteri al massimo)"}
   vvf_responsabile_qualita: {type: text, question: "In quale veste sei responsabile dell'attività (ad es. «titolare»; 100 caratteri al massimo)"}
-  vvf_precedente_nome: {type: text, question: "Il nome del precedente responsabile dell'attività (100 caratteri al massimo)"}
-  vvf_precedente_indirizzo: {type: text, question: "Il suo indirizzo: via o piazza (100 caratteri al massimo)"}
-  vvf_precedente_civico: {type: text, question: "Il numero civico"}
-  vvf_precedente_cap: {type: text, question: "Il C.A.P."}
-  vvf_precedente_comune: {type: text, question: "Il comune"}
-  vvf_precedente_provincia: {type: text, question: "La provincia (la sigla, ad es. NA)"}
   # Round 7: AUA / emissioni (adempimenti successivi, voltura, comunicazione di attività a inquinamento scarsamente rilevante).
   aua_numero: {type: text, question: "Il numero P.G. (protocollo generale) dell'autorizzazione già rilasciata (15 caratteri al massimo)"}
   aua_data: {type: date, question: "La data dell'autorizzazione"}
@@ -6969,7 +6967,7 @@ sections:
     fields:
       - {kind: radio, label: per tutti gli impianti e le attività, when: "{{ask.aua_tutti_impianti}}"}
       - {kind: radio, label: per i seguenti impianti/attività, when: "{{ask.aua_tutti_impianti|not}}"}
-      - {kind: textarea, label: 300 Caratteri restanti, value: "{{ask.aua_impianti_elenco}}", when: "{{ask.aua_tutti_impianti|not}}"}
+      - {kind: textarea, label: "(specificare gli impianti", value: "{{ask.aua_impianti_elenco}}", when: "{{ask.aua_tutti_impianti|not}}"}
       - {kind: checkbox, label: alla messa in esercizio, when: "{{ask.aua_messa_esercizio|empty|not}}"}
       - {kind: date, label: in data, nth: 1, value: "{{ask.aua_messa_esercizio|date_it}}", when: "{{ask.aua_messa_esercizio|empty|not}}"}
       - {kind: checkbox, label: alla messa a regime, when: "{{ask.aua_messa_regime|empty|not}}"}
@@ -7053,10 +7051,10 @@ sections:
       - {kind: radio, label: spot pubblicitario, when: "{{ask.riprese_tipo|is_spot_pubblicitario}}"}
       - {kind: radio, label: videoclip, when: "{{ask.riprese_tipo|is_videoclip}}"}
       - {kind: text, label: Titolo dell’audiovisivo, value: "{{ask.riprese_titolo}}"}
-      - {kind: textarea, label: 1000 Caratteri restanti, value: "{{ask.riprese_descrizione}}"}
+      - {kind: textarea, label: Breve descrizione, value: "{{ask.riprese_descrizione}}"}
       - {kind: checkbox, label: attrezzature tecniche}
       - {kind: text, label: specificare, value: "{{ask.riprese_attrezzature_dettaglio}}"}
-      - {kind: text, label: Per complessivi mq., value: "{{ask.riprese_mq}}"}
+      - {kind: text, label: Per complessivi mq., value: "{{ask.riprese_mq|decimal}}"}
       - {kind: text, label: Numero complessivo dei componenti della troupe, value: "{{ask.riprese_troupe}}"}
       - {kind: date, label: dal, value: "{{ask.riprese_dal|date_it}}"}
       - {kind: date, label: al, value: "{{ask.riprese_al|date_it}}"}
@@ -7075,12 +7073,15 @@ sections:
     leave: [AL COMANDO PROVINCIALE DEI VIGILI DEL FUOCO DI]
     fields:
       - {kind: text, label: Rif. Pratica VV.F. n., value: "{{ask.vvf_pratica_numero}}"}
+  # The portal requires both statements (a and b: "Il valore è obbligatorio", read on the draft 2026-11-15) and b) switches on
+  # the previous manager's boxes (nominativo, indirizzo, civico, C.A.P., comune, provincia): the person ticks both and fills them.
   - section: dichiarazione relativa al responsabile attività
     theirs: [a) di essere a conoscenza e di impegnarsi ad osservare gli obblighi, b) che le condizioni relative alla sicurezza antincendio]
+    leave: [nominativo, indirizzo, n. civico, C.A.P, comune, provincia]
     branches: ["{{ask.vvf_categoria|is_a}}", "{{ask.vvf_categoria|is_b}}", "{{ask.vvf_categoria|is_c}}"]
     fields:
       - {kind: text, label: "di essere subentrato, a seguito di:", value: "{{ask.vvf_subentro_titolo}}"}
-      - {kind: text, label: "quale responsabile dell'attività", value: "{{ask.vvf_responsabile_qualita}}"}
+      - {kind: text, label: quale responsabile, value: "{{ask.vvf_responsabile_qualita}}"}
       - {kind: text, label: identificata con numero di pratica VV.F, value: "{{ask.vvf_pratica_numero}}"}
       - {kind: radio, label: A, when: "{{ask.vvf_categoria|is_a}}"}
       - {kind: radio, label: B, when: "{{ask.vvf_categoria|is_b}}"}
@@ -7088,23 +7089,17 @@ sections:
       - {kind: select, label: attività - sotto classe - categoria - descrizione, value: "{{ask.vvf_allegato}}", when: "{{ask.vvf_categoria|is_a}}"}
       - {kind: select, label: attività - sotto classe - categoria - descrizione, value: "{{ask.vvf_allegato}}", when: "{{ask.vvf_categoria|is_b}}"}
       - {kind: select, label: attività - sotto classe - categoria - descrizione, value: "{{ask.vvf_allegato}}", when: "{{ask.vvf_categoria|is_c}}"}
-      - {kind: text, label: nominativo, value: "{{ask.vvf_precedente_nome}}"}
-      - {kind: text, label: indirizzo, value: "{{ask.vvf_precedente_indirizzo}}"}
-      - {kind: text, label: n. civico, value: "{{ask.vvf_precedente_civico}}"}
-      - {kind: text, label: C.A.P, value: "{{ask.vvf_precedente_cap}}"}
-      - {kind: select, label: comune, value: "{{ask.vvf_precedente_comune}}"}
-      - {kind: select, label: provincia, value: "{{ask.vvf_precedente_provincia}}"}
 
   # A garage's technical manager (the opening of an autoriparazione, and its change of people): the holder is the manager (the
   # other person's name and file are refused), the requisito one of two. The antimafia and the moral requisites are the person's.
-  # Read from the crawl's text; the options each requisito opens are for the portal to show (run 2026-11-15).
+  # Read on the portal's draft (2026-11-15): the two requisito radios are what is kept.
   - section: dichiarazioni sul possesso dei requisiti
     aliases: [variazione del/dei soggetti in possesso dei requisiti professionali per l'esercizio dell'attività]
     theirs: [che non sussistono nei propri confronti le cause di divieto, di essere in possesso dei requisiti morali previsti dalla legge]
-    leave: [che il/la responsabile tecnico/a preposto è, il/la Sig./ra]
+    # The header "di essere in possesso di almeno uno dei seguenti requisiti" is no choice: a click on it is not kept, the two radios under it are (draft, 2026-11-15).
+    leave: [che il/la responsabile tecnico/a preposto è, il/la Sig./ra, di essere in possesso di almeno uno dei seguenti requisiti]
     fields:
       - {kind: radio, label: "di essere il/la responsabile tecnico/a e:"}
-      - {kind: radio, label: di essere in possesso di almeno uno dei seguenti requisiti tecnico professionali}
       - {kind: radio, label: aver maturato esperienza professionale, when: "{{ask.garage_requisito|is_esperienza}}"}
       - {kind: radio, label: che il proprio titolo professionale è stato riconosciuto, when: "{{ask.garage_requisito|is_riconosciuto}}"}
   # A hobbyist's tesserino (private person): the request, its years and the merceologia are facts; every other statement is theirs.
@@ -7144,10 +7139,16 @@ sections:
       - {kind: text, label: a n. stelle, value: "{{ask.classif_stelle}}", when: "{{ask.classif_azione|is_modifica}}"}
       - {kind: radio, label: di attribuire alla struttura ricettiva di nuova apertura, when: "{{ask.classif_azione|is_nuova}}"}
       - {kind: text, label: di n. stelle, nth: 2, value: "{{ask.classif_stelle}}", when: "{{ask.classif_azione|is_nuova}}"}
-  # A B&B's or affittacamere's structural variation (SCIA): the title the structure holds, and the capacity before and after in rooms
-  # and beds; the rooms by type, the units and "altro" are left (the recipes refuse them).
+  # A B&B's or affittacamere's structural variation (SCIA), read on the draft (2026-11-15): the title the structure holds, the
+  # capacity before and after (rooms, units, beds: all required once the capacity tick is on), then two "dettaglio" groups
+  # that each need an option: the first (camere / unità abitative / altro) repeats the rooms' before/after and the total, the
+  # second (Camere / Unità abitative) the room types, here doubles only, each with its four boxes and the totals. The units'
+  # detail and "altro" are left (the recipes refuse a structure with units). Several boxes share labels: `nth` counts them in
+  # page order, and the groups' ticks and what they open are found on the page (the crawl read only the first tick's boxes).
   - section: Variazioni
-    leave: [Camere, Unità abitative, altro, da n. unità abitative, a n. unità abitative]
+    leave: [Unità abitative, altro, Numero camere singole, Numero camere triple, Numero camere quadruple, Numero camere con più di 4 letti, Cuccette]
+    supports:
+      - {when: "{{ask.camere_doppie_bagno+ask.camere_doppie_senza|positive}}", else: "Indica almeno una camera doppia, che è il tipo che preparo per questa variazione."}
     fields:
       - {kind: text, label: "Il sottoscritto SEGNALA:", value: "{{ask.ricettiva_segnala}}"}
       - {kind: text, label: "che la struttura ricettiva in oggetto, già avviata con la SCIA/DIA/autorizzazione prot./n.", value: "{{ask.titolo_attivita_protocollo}}"}
@@ -7161,7 +7162,25 @@ sections:
       - {kind: text, label: a n. camere, value: "{{ask.capacita_camere_a}}"}
       - {kind: text, label: da n. posti letto, nth: 1, value: "{{ask.capacita_letti_da}}"}
       - {kind: text, label: a n. posti letto, nth: 1, value: "{{ask.capacita_letti_a}}"}
-      - {kind: text, label: TOTALE complessivo posti letto della struttura a seguito di variazione n., value: "{{ask.capacita_letti_totale}}"}
+      - {kind: text, label: da n. unità abitative, value: "{{ask.capacita_unita_da}}"}
+      - {kind: text, label: a n. unità abitative, value: "{{ask.capacita_unita_a}}"}
+      - {kind: text, label: da n. posti letto, nth: 2, value: "{{ask.capacita_unita_letti_da}}"}
+      - {kind: text, label: a n. posti letto, nth: 2, value: "{{ask.capacita_unita_letti_a}}"}
+      - {kind: text, label: TOTALE complessivo posti letto della struttura a seguito di variazione n., nth: 1, value: "{{ask.capacita_letti_totale}}"}
+      - {kind: checkbox, label: camere, nth: 1, on_page: true}
+      - {kind: text, label: n. camere, value: "{{ask.capacita_camere_da}}", on_page: true}
+      - {kind: text, label: a n. camere, nth: 2, value: "{{ask.capacita_camere_a}}", on_page: true}
+      - {kind: text, label: da n. posti letto, nth: 3, value: "{{ask.capacita_letti_da}}", on_page: true}
+      - {kind: text, label: a n. posti letto, nth: 3, value: "{{ask.capacita_letti_a}}", on_page: true}
+      - {kind: text, label: TOTALE complessivo posti letto della struttura a seguito di variazione n., nth: 2, value: "{{ask.capacita_letti_totale}}", on_page: true}
+      - {kind: checkbox, label: Camere, nth: 2, on_page: true}
+      - {kind: checkbox, label: Numero camere doppie, on_page: true}
+      - {kind: text, label: con bagno (n.), value: "{{ask.camere_doppie_bagno}}", on_page: true}
+      - {kind: text, label: senza bagno (n.), value: "{{ask.camere_doppie_senza}}", on_page: true}
+      - {kind: text, label: totale camere (n.), value: "{{ask.camere_doppie_bagno+ask.camere_doppie_senza}}", on_page: true}
+      - {kind: text, label: Totale posti letto (n.), value: "{{2*ask.camere_doppie_bagno+2*ask.camere_doppie_senza}}", on_page: true}
+      - {kind: text, label: TOTALE camere n., value: "{{ask.camere_doppie_bagno+ask.camere_doppie_senza}}", on_page: true}
+      - {kind: text, label: TOTALE posti letto camere n., value: "{{2*ask.camere_doppie_bagno+2*ask.camere_doppie_senza}}", on_page: true}
 
   # Garage (sector 010): the same boxes as the bars' entry, with "a via o" for the new office (the garage crawl has no dots).
   - section: variazioni della società o dei soggetti

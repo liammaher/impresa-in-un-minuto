@@ -604,6 +604,54 @@ Macroarea, Aggregazione, Linee and Codice univoco are typed from the rehearsal's
 real master-list line is required, and the made-up one saved.
 
 
+## The one-or-two-sections-short pratiche, round 7 (2026-11-15)
+
+Seventh round: the 20 SUAP pratiche one or two sections short (79 pratiche short in all, 59 after this round: 5 of them one or two sections short, the sector 60 and 61 "Avvio dello stabilimento" with its "Linee d'attività svolte" in four pratiche, and the emissioni's adhesion to the general authorization). 19 sections went into the
+dictionary from the crawls' text, shared ones first; **the 20 pratiche became fillable (230 → 250) and all 20 filled on the portal (run on the portal 159 → 179)**, in 20
+new rehearsals derived from siblings (`bench/derive_recipe.py`), over four bundles (10, 10, 11 and 1 runs: three of them were reruns of what
+the first pass stopped on, each fixed from what the portal said). Only the 20 new lock lines moved: no existing rehearsal's steps changed.
+
+- **A stabilimento's added lines, the other form** ("DICHIARAZIONE PER L'AGGIUNZIONE DI LINEE DI ATTIVITÀ", sectors 60 and 61, four pratiche:
+  the same entry as round 6's project form, but its first box is "già registrato e riconosciuto con n." and it has no conferenza di servizi),
+  and **the stabilimento's period** ("periodo dell'attività": permanent, a season as gg/mm, or two dates; `stab_periodo`). All four filled first time.
+- **AUA and air emissions, the "adempimenti successivi" forms and the low-pollution communication** (nine pratiche, the common crawls). The
+  authorization's number, date, issuer and expiry (the expiry only when given), the referto or the solvent plan as the form's object (ticked), the
+  start-up dates (each tick only when its date is given), the voltura's P.G., and the 43 categories of the low-pollution list (one tick each, a
+  group of 43 yes/no asks `scarso_*`). The statements (the sampling methods, "no carcinogenic substances") are the person's.
+  - **The same operation label exists in both trees.** "Comunicare il piano di gestione solventi" and "Comunicazione messa in esercizio/a regime
+    ..." are under A.U.A. and under Emissioni in atmosfera: the wizard stopped on "2 nodes named ...". The recipes take `{leaf, nth}`, 1 for the
+    A.U.A. and 2 for the emissioni (the order of `suap-wizard.json`'s `common`; the referto's two labels differ, so no nth).
+  - **A text area's counter is no label.** The crawl names the area "300 Caratteri restanti" with its real label as `context`; the entry names it
+    by that ("(specificare gli impianti", "Breve descrizione"): test_gen holds no entry to a counter.
+- **A film shoot on public land** (over 10 m²): the portal wants the area as a decimal ("12.00", the `decimal` filter) and over 10. The
+  commitments and the damages statement are the person's; "persona diversa" for the responsible, another site and the other types are refused.
+  The "Avvertenza per le domande di concessione" (PRESA VISIONE) is the person's.
+- **The VV.F. take-over** (PIN 7 and the SUAP's subingresso 020 under fire prevention). The portal requires both statements a) and b) ("Il valore è
+  obbligatorio", read on the draft), and **b) switches on the previous manager's boxes** (nominativo, indirizzo, civico, C.A.P., comune, provincia):
+  the person ticks both and fills them, so the entry leaves them. The runs filled with those left. The dropdown under A, B or C is the SCIA VV.F.'s coded
+  one (`vvf_allegato`: A's list is 18 entries, B's 64, C's 91). `quale responsabile` stays a `loose` label (matched by its id: the page splits the sentence).
+- **A garage's technical manager** (the opening of an autoriparazione and its change of people, one entry, two section names). Read on the draft:
+  the header radio "di essere in possesso di almeno uno dei seguenti requisiti" is no choice (a click on it is not kept: "not kept ... empty"); the
+  two radios under it (esperienza; titolo riconosciuto) are. The wizard's interventi screen has a **required Si/No** for the acoustic limits: the
+  recipe's step carries `answers:` ("No"). The company-change section reuses the bars' entry with its own copy for the garage's "a via o".
+- **A hobbyist's tesserino** (a private person's request: every statement except the type, the years and the merceologia is the person's, strict).
+  **A hotel's first classification** (type, name, points, stars before and after) and **a B&B's structural variation**.
+  - The 056 "Variazioni" form is the deepest of the round: once "VARIAZIONE DELLA CAPACITÀ RICETTIVA" is ticked, the rooms' and the units' before and after
+    and the second pair of beds are all required; two "dettaglio" groups each need an option (the first repeats the rooms' boxes, the second opens the
+    room types, each with con bagno / senza bagno / totale camere / totale posti letto, and the page's two totals). The entry fills doubles only
+    (the opening's asks `camere_doppie_*`); the units' detail, "altro", singles and the other types are left, and a structure with no double room is
+    refused. Its boxes share labels (`nth` in page order, the groups' ticks and what they open `on_page`).
+  - The wizard of 056's variation and of the hotel's classification has **no** "la variazione riguarda il legale rappresentante" question: a
+    derived recipe from the variation recipes that kept that `answers:` stopped on "0 Si/No questions".
+
+**Not run on the portal:** a second line of the master list (refused), the temporaneo period of a stabilimento (mapped, not run), the B and C categories
+under the take-over, singles and the other room types of the B&B, the AUA's "altro" options. Not routed: the 20 are in `suap-unrouted.yaml` with their reasons
+(step 4). No drift check and no recrawl, as agreed.
+
+**Mechanics this round cost a run each:** a label with a comma or a colon in a flow mapping (`label: di modificare, in seguito ...`) must be quoted, or gen.py reads a
+second key; the textarea counter above; the aliases of an entry reach only the names it lists (the garage's "variazioni della società ..." is a name the bars' entry lacked); a dictionary
+edit during `bench/test_gen.py` makes a case fail on a half-written file (run it only on a quiet tree).
+
 ## What the portal does that bit us
 
 - **Street names without their particles.** The location's street lookup and the Comune's

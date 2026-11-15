@@ -47,7 +47,9 @@ def portal_name(steps):
     for screen in steps.get("wizard", []):
         if screen.get("screen") == "Scelta operazioni" and screen.get("tree"):
             tree = screen["tree"]
-            return " + ".join(tree if isinstance(tree, list) else [tree])
+            # An operation that two branches of the tree share is `{leaf: label, nth: N}` (the A.U.A.'s and the emissioni's solvent plan).
+            names = [x.get("leaf", "") if isinstance(x, dict) else x for x in (tree if isinstance(tree, list) else [tree])]
+            return " + ".join(names)
     return steps.get("title") or ""
 
 

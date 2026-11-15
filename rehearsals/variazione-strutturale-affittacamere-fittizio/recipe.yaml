@@ -18,7 +18,7 @@ wizard:
   - {screen: Scelta operazioni, tree: ["SCIA per variazioni strutturali"], confirm: CONFERMA}
   - {screen: Scelta interventi eventuali, confirm: CONFERMA}
   - {screen: Scelta del destinatario della pratica, confirm: CONFERMA}
-  - {screen: Scelte eventuali, answers: {"la variazione riguarda il/la legale rappresentante": "No"}, confirm: CONFERMA}
+  - {screen: Scelte eventuali, confirm: CONFERMA}
 groups:
   extras:
     question: "Qualcuna di queste voci vale per la struttura ricettiva? Spunta tutte quelle che valgono, o nessuna."

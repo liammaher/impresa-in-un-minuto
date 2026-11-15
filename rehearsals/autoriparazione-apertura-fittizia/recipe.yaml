@@ -16,7 +16,7 @@ wizard:
   - {screen: Controlla l'accesso alla pratica, confirm: CONFERMA}
   - {screen: Scelta settore attività, tree: [{leaf: "Autoriparazione", nth: 1}], confirm: CONFERMA}
   - {screen: Scelta operazioni, tree: ["Aprire l'attività"], confirm: CONFERMA}
-  - {screen: Scelta interventi eventuali, confirm: CONFERMA}
+  - {screen: Scelta interventi eventuali, answers: {"al fine di presentare il Nulla Osta o la Comunicazione di impatto acustico": "No"}, confirm: CONFERMA}
   - {screen: Scelta del destinatario della pratica, confirm: CONFERMA}
   - {screen: Scelte eventuali, confirm: CONFERMA}
 groups:

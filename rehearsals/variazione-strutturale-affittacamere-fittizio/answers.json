@@ -4,8 +4,8 @@
  "oggetto": "SCIA per variazioni strutturali: pratica di prova con dati inventati.",
  "tipo_struttura": "Affittacamere",
  "imprenditoriale": "true",
- "camere_doppie_bagno": "2",
- "camere_doppie_senza": "1",
+ "camere_doppie_bagno": "4",
+ "camere_doppie_senza": "0",
  "diritti_euro": "200",
  "stagionale": "false",
  "camere_singole_bagno": "0",
@@ -30,5 +30,9 @@
  "capacita_camere_a": "4",
  "capacita_letti_da": "6",
  "capacita_letti_a": "8",
- "capacita_letti_totale": "8"
+ "capacita_letti_totale": "8",
+ "capacita_unita_da": "0",
+ "capacita_unita_a": "0",
+ "capacita_unita_letti_da": "0",
+ "capacita_unita_letti_a": "0"
 }

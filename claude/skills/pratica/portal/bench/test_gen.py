@@ -2277,5 +2277,72 @@ def _():
             assert "piu_linee" in recipe["asks"] and any("piu_linee" in str(x.get("when", "")) for x in recipe["supports"]), name
 
 
+# --- round 7 (2026-11-15): the pratiche one or two sections short, from the crawls' text ---
+
+ROUND7 = {  # rehearsal -> the stored crawl it is generated from: the 20 pratiche that became fillable (230 -> 250)
+    "stabilimento-linee-aggiunzione-ristorante-fittizio": "suap-060-aggiunzione-linee-dattivita",
+    "stabilimento-linee-stabilimento-ristorante-fittizio": "suap-060-aggiunzione-di-linee-d-attivita-in-uno-stabiliment",
+    "stabilimento-linee-aggiunzione-ristorante-centro-storico-fittizio": "suap-061-aggiunzione-linee-dattivita",
+    "stabilimento-linee-stabilimento-ristorante-centro-storico-fittizio": "suap-061-aggiunzione-di-linee-d-attivita-in-uno-stabiliment",
+    "autoriparazione-apertura-fittizia": "suap-010-aprire-l-attivita",
+    "variazione-soggetti-officina-fittizio": "suap-010-variazioni-soggetti",
+    "hobbista-tesserino-fittizio": "suap-015-rilascio-tesserino-per-hobbisti-o-creatori-delle-o",
+    "variazione-strutturale-affittacamere-fittizio": "suap-056-scia-per-variazioni-strutturali",
+    "classificazione-albergo-fittizio": "suap-054-domanda-per-prima-classificazione-rinnovo-o-modifi",
+    "subingresso-media-grande-fittizio": "suap-020-subentrare-nell-esercizio-dell-attivita",
+    "aua-adempimenti-referto-fittizio": "suap-common-autorizzazione-unica-ambientale-a-u-a-adempimenti-successivi-2",
+    "aua-adempimenti-pgs-fittizio": "suap-common-autorizzazione-unica-ambientale-a-u-a-adempimenti-successivi-3",
+    "aua-adempimenti-messa-in-esercizio-fittizio": "suap-common-autorizzazione-unica-ambientale-a-u-a-adempimenti-successivi",
+    "emissioni-adempimenti-referto-fittizio": "suap-common-emissioni-in-atmosfera-adempimenti-successivi-al-rilascio-de-2",
+    "emissioni-adempimenti-pgs-fittizio": "suap-common-emissioni-in-atmosfera-adempimenti-successivi-al-rilascio-de-3",
+    "emissioni-adempimenti-messa-in-esercizio-fittizio": "suap-common-emissioni-in-atmosfera-adempimenti-successivi-al-rilascio-de",
+    "emissioni-scarsamente-rilevanti-fittizio": "suap-common-emissioni-in-atmosfera-comunicare-emissioni-ad-inquinamento",
+    "emissioni-voltura-fittizia": "suap-common-emissioni-in-atmosfera-richiedere-la-voltura-di-autorizzazio",
+    "suolo-pubblico-riprese-fittizio": "suap-common-occupazione-suolo-pubblico-richiesta-di-occupazione-suolo-pu",
+    "pin-7-titolarita-fittizio": "suap-common-prevenzione-incendi-pin-7-variazione-della-titolarita",
+}
+
+
+@case("round 7: each of the 20 pratiche it made fillable has a rehearsal generated from its own crawl, every section filled or left to the person")
+def _():
+    for name, crawl in ROUND7.items():
+        recipe = gen.load_yaml(REH / name / "recipe.yaml")
+        assert recipe["crawl"] == crawl, (name, recipe["crawl"])
+        generated(name)  # gen.py writes nothing if a field is unaccounted for
+
+
+@case("round 7: the low-pollution list is one tick a category (43 asks of one group), and a category's tick is found by its letter")
+def _():
+    dictionary = gen.load_yaml(HERE.parent / "dictionary" / "fnsuap.yaml")
+    items = [k for k, v in dictionary["asks"].items() if k.startswith("scarso_")]
+    assert len(items) == 43 and all(dictionary["asks"][k]["group"] == "emissioni_scarso" for k in items), len(items)
+    sec = section(generated("emissioni-scarsamente-rilevanti-fittizio"), "dichiarazione su impianti e categorie")
+    ticks = [f for f in sec["fields"] if f["kind"] == "checkbox"]
+    assert len(ticks) == 43 and len({f["label"] for f in ticks}) == 43, len(ticks)
+
+
+@case("round 7: the take-over's responsabile section picks the dropdown under the category's own radio (A, B and C each open one), and both forms carry the VV.F. pratica's number")
+def _():
+    for name in ("subingresso-media-grande-fittizio", "pin-7-titolarita-fittizio"):
+        sec = section(generated(name), "dichiarazione relativa al responsabile")
+        selects = [f for f in sec["fields"] if f["kind"] == "select" and f["label"].startswith("attività - sotto classe")]
+        assert len(selects) == 3, (name, len(selects))
+        rif = section(generated(name), "Rif. Pratica VVF")
+        assert any(f.get("value") == "{{ask.vvf_pratica_numero}}" for f in rif["fields"]), name
+
+
+@case("round 7: the added-lines forms of the other crawl (\"DICHIARAZIONE PER L'AGGIUNZIONE\") find the master-list boxes by label, refuse a second line, and ask the stabilimento's period")
+def _():
+    for name, crawl in ROUND7.items():
+        if "linee" not in name:
+            continue
+        sec = section(generated(name), "DICHIARAZIONE PER L'AGGIUNZIONE")
+        boxes = [f for f in sec["fields"] if f["label"] in ("Macroarea", "Aggregazione", "Linee d'attività", "Codice univoco")]
+        assert len(boxes) == 11 and not any("id" in f for f in boxes), (name, [f.get("id") for f in boxes])
+        recipe = gen.load_yaml(REH / name / "recipe.yaml")
+        assert "piu_linee" in recipe["asks"] and any("piu_linee" in str(x.get("when", "")) for x in recipe["supports"]), name
+        assert any(f["label"] == "permanente" for f in section(generated(name), "periodo dell'attività")["fields"]), name
+
+
 print(f"{sum(results)}/{len(results)} passed")
 sys.exit(0 if all(results) else 1)

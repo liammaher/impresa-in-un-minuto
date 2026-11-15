@@ -17,7 +17,7 @@ wizard:
   - {screen: Scelta settore attività, tree: ["Strutture ricettive alberghiere (alberghi, motel, villaggi-albergo residenze turistico-alberghiere alberghi diffusi, condhotel e loro dipendenze)"], confirm: CONFERMA}
   - {screen: Scelta operazioni, tree: ["Domanda per prima classificazione / rinnovo o modifica di precedente classificazione"], confirm: CONFERMA}
   - {screen: Scelta del destinatario della pratica, confirm: CONFERMA}
-  - {screen: Scelte eventuali, answers: {"la variazione riguarda il/la legale rappresentante": "No"}, confirm: CONFERMA}
+  - {screen: Scelte eventuali, confirm: CONFERMA}
 groups:
   extras:
     question: "Qualcuna di queste voci vale per la struttura ricettiva? Spunta tutte quelle che valgono, o nessuna."

@@ -15,7 +15,7 @@ wizard:
     confirm: CONFERMA
   - {screen: Controlla l'accesso alla pratica, confirm: CONFERMA}
   - {screen: Scelta settore attività, tree: [Esercizio di somministrazione di alimenti e bevande in zone NON tutelate], confirm: CONFERMA}
-  - {screen: Scelta operazioni, tree: ["Comunicazione messa in esercizio/a regime impianto e data campionamenti analitici"], confirm: CONFERMA}
+  - {screen: Scelta operazioni, tree: [{leaf: "Comunicazione messa in esercizio/a regime impianto e data campionamenti analitici", nth: 1}], confirm: CONFERMA}
   - {screen: Scelta del destinatario della pratica, confirm: CONFERMA}
   - {screen: Scelte eventuali, confirm: CONFERMA}
 groups:
