@@ -773,6 +773,56 @@ All eight are in `suap-unrouted.yaml` with their reasons. What the portal taught
 - **Still short (36):** the scarichi voltura's older form (-2), the area-occupation form (furnishings with repeated labels), the garage's technical manager (suap-010), the
   056 locazione breve forms, PIN 6, the other four-section ones. `bench/gaps.py --max 4` lists them.
 
+**Round 11 (2026-11-16, night): six more pratiche** (SUAP fillable 273 → 279, run 202 → 208; 30 are short at least one section). Six of the seven four-section ones: the garage's technical
+manager designated by communication (suap-010), the two SCIA for a short-term rental run as a business (056 avvio and variazione), the older form of the discharge voltura (`-2`), the
+public-land «area» form and PIN 6. Fifteen rehearsals (`responsabile-tecnico-officina-{,diploma-,esperienza-,estero-}fittizio`, `locazione-breve-scia-{avvio,avvio-monolocale,variazione,
+variazione-superficie,variazione-titolo}-fittizia`, `scarichi-voltura-2-{,legale-,natura-}fittizia`, `suolo-pubblico-area-{,sedie-}fittizio`, `pin-6-verifiche-fittizio`), all in
+`suap-unrouted.yaml` with their reasons. Four bundles (12, 11, 2 and 1 runs: four of the first twelve filled; the second held the eight that stopped and three variants, and nine of its eleven filled; the last two garage cases needed the fixes below). The occupazione temporanea `-2`
+(three sections) was left. What the portal taught:
+
+- **The boxes a choice enables are on the page, switched off, so a repeated label counts in the crawl's order, not in the ticked choice's.** The garage manager's «in aggiunta di»
+  «cognome» and «nome» are the second of their label (the run stopped on «cognome: switched off»: the first copy is the «in sostituzione di» one); the diploma's «titolo di studio» and
+  «specializzazione tecnica in» the second; C's first impresa the fourth «specificare», «con sede in», «dal» and «al» and the third «n. R.E.A»; the public-land form's tavoli the second
+  «numero», «larghezza» and «x lunghezza» and the third «materiale della struttura» and «colore della struttura» (the banchetto sits between sedie and tavoli); the discharge form's «nuovo»
+  of the denominazione the second, since «nuovo:» (the legal nature's) is also a label that starts with «nuovo». Round 9 wrote the opposite for the cleaning firm's manager («the page shows
+  only the ticked title's boxes»): read the first «switched off» stop before choosing `on_page` or `nth`, the sections of one portal do not all behave the same, and a laurea's boxes passed
+  with the first copies while the diploma's stopped. `on_page` is for a box a choice *adds* to the page; `nth` for one that is there and switched off.
+- **The short-term rental SCIA's owner boxes are required whatever the title.** «Specificare i dati della proprietà immobiliare…» and «Tipo di persona…» say «nel caso in cui il titolo
+  sia diverso dalla proprietà» but a property stopped on «il valore e obbligatorio»: the entry fills them under every title. The deed's «atto del», «registrazione n.» and «del» are opened
+  by the radio (one set per title: the `when` starts with that title's term).
+- **A `number` box takes digits only.** The garage manager's «n. R.E.A» said «il numero immesso non e valido» for «NA-123456»: 123456 is kept (the cleaning firm's own «n. R.E.A» is
+  another box). An answer file edit is enough, the steps file doesn't change (`answer_case.py ... rt_esp_rea=123456`), but the values are in the bundle, so it is a new bundle.
+- **`dictionary/fnsuap.yaml` does not end with `sections:`.** A top-level `after:` closes the file: an entry appended with `cat >>` landed in `after:` and section_check said «NO ENTRY»
+  for all of them. Insert before `\nafter:\n` (the round's scripts did); an Edit that replaces an ask's start must keep its trailing space (`file,question:` otherwise).
+- **PIN 6's sections have no «SCIA VV.F.» prefix** («Oggetto della richiesta verifica in corso», «documentazione allegata», «distinta di versamento», «dati per la corrispondenza»): the
+  PIN 2 entries don't reach them, new ones of the plain names do (after the longer ones, none of them is a prefix of another entry's). The `vvf_*` asks are shared.
+- **`derive_recipe.py` from a restaurant's template** needs the template's own asks: the dehors' acoustic statement reads `ask.musica`, defined in recipes, so the area rehearsal said
+  «asks with no definition in the dictionary: ['musica']»; the recipe takes the `musica` ask (answered «no»), or `--drop-ask musica`.
+- **A box's kind is in its crawl id.** `…:number` takes digits only («il numero immesso non e valido» for «NA-123456», and for «12.00» in round 10); `…:real` takes a decimal
+  (the area form's «larghezza» and «x lunghezza», `:real`, kept «0.8»); `…:txt` is free text. gen.py shows `number` for both in the steps; read the id in the crawl
+  (`catalogue/F839/sections/<crawl>.json`) before choosing an answer's shape.
+- **Confirmed on the portal this round (so don't re-read them):** the province select takes «263 Napoli»; «ATECO prevalente» takes the vault's `business.codice_ateco` («55.20.51»);
+  `business.email` and `business.telefono` fill the 056 contacts; a select of the Vigili del Fuoco's activities takes the code alone («69 _ 1 _ A» matches «69 _ 1 _ A: …»);
+  the Tesoreria Provinciale of PIN 6 is preselected (leave it); the discharge form's «di» (the Conservatoria's city) is the second box starting with «di»
+  («Distretto Notarile» is the first), `nth: 2`; the 056 SCIA has no box for the heating declaration of an annual opening.
+- **The pane loop, round 11 (same as rounds 9 and 10, plus):** the pane was signed out at the start (InfoCamere's login: the person signs in with SPID, never typed by Claude; check with
+  `get_page_text` that the title is «Front Office I-SUAP» after a navigation to `/fnsuap/cmd/home`). For a second bundle in the same tab: run `fresh.js` (it files the earlier results
+  under `pv-batch-earlier`, which `record.js` still reads), set `window.pvBundleLoaded = false`, then arm the box with `pick.js`'s text. Take the sha256 from that bundle's own
+  `pick.js` (`grep -o '"[0-9a-f]\{64\}"' bN/pick.js`), never typed by hand: a placeholder hash in the armed box makes the picker say «Not that file» and costs a pick.
+  Record each batch with `rerun.py --record FILE` as soon as it ends (the pane forgets between turns); the list of names `record.js` returns holds earlier batches too, so the last
+  record call states every rehearsal's latest result. A bundle takes 2-5 minutes to build (`rerun.py --help` takes minutes while `regen.py --check` and `test_gen.py` run: read the
+  file's docstring instead). `regen.py --check`, `test_route.py`, `make coverage` and `test_gen.py` all only read the dictionary: they can run together (each is slower), but
+  don't edit the dictionary, gen.py or a rehearsal while any of them runs; test_gen needs a second full run (30+ minutes) after any dictionary edit, even a reorder.
+- **A stopped run's message reads the page:** «X: switched off (a choice before it … switches it on)» means the box found is a disabled copy of the label (use `nth` of the right copy,
+  or the choice's radio isn't ticked first); «portal errors ["il valore e obbligatorio"], not kept []» names the section, not the box (find it by which required box has a value that
+  depends on a choice: here the 056 owner boxes, found because the runs that carried them filled); «il numero immesso non e valido» is a box of kind `number` or `real` (see above).
+  Reading the draft was not needed for any of the eight stops: the message, the crawl's ids and the run that did fill were enough.
+- **Not run on the portal:** the garage's requisito B and D and C's second impresa (not offered), the title of availability «mandato» and «altro» (not offered), a second row of rooms
+  and the start date, the plan's data and the websites of the 056 SCIA, the discharge voltura's «altro» reason and «nessuna» variation, the area form's seven other furnishings,
+  PIN 6 with a B or C activity (its «per attività di categoria B e C» tick, the Comando's opinion and the declaration under it: the run used category A, the one option string we
+  know), and the five of sixteen aspects PIN 6 maps are the only ones offered.
+- **Still short (30):** the one-off occupation's `-2` form (three sections), the other four-section and longer ones. `bench/gaps.py --max 4` lists them.
+
 ## What the portal does that bit us
 
 - **Street names without their particles.** The location's street lookup and the Comune's

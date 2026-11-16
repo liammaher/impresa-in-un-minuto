@@ -52,6 +52,9 @@
 # `section_check.py` warns when the winning entry names none of a section's ticks. A filter goes INSIDE the braces (`{{a|positive|not}}`); gen.py refuses `}}|`.
 # A label is a prefix: «del» is also the start of «dell’Autorizzazione ...» (`nth`); a `number` box takes an integer, a text box that wants decimals says so on the portal.
 # Add a new entry at the END of `sections:` (round 9: a short name added in the middle took 75 sign pratiche's sections; test_gen checks the round's names).
+# Round 11: the boxes a choice enables are usually ON the page, switched off, so a repeated label counts in the crawl's order (`nth`), not in the ticked choice's («switched off» stop);
+# `on_page` is for a box a choice ADDS. A box's crawl id says what it takes: `:number` digits only, `:real` a decimal, `:txt` text. The file ends with a top-level `after:`: insert
+# new entries before it (an entry appended to the end of the file lands in `after:`). A longer name goes before a shorter entry it starts with (test_gen round 10 and 11 check it).
 # A crawl reads every `txtws` box (a street, civico, CAP, scala, piano, interno) as a `lookup`, but only a street lists anything: write the others `kind: text`
 # (the run stopped on "matches 0 of 0 listed"). `nth` counts the boxes on the page, not the crawl's: under a choice only its own boxes are there, so a label the
 # crawl holds once per choice is the first on the page (`on_page: true`, the crawl's copies `leave`d). A box required whatever the choice is filled whatever it is.
@@ -86,6 +89,8 @@ groups:
     question: "Quali prodotti alcolici venderai? Spunta tutte le voci che valgono."
   variazioni:
     question: "Cosa è cambiato? Spunta tutte le voci che valgono."
+  vvf6_oggetti:
+    question: "Su quali aspetti di prevenzione incendi chiedi la verifica in corso d'opera? Spunta tutte le voci che valgono (gli altri aspetti del modulo non li preparo)."
   officina:
     question: "Quali attività svolge l'officina? Spunta tutte le voci che valgono."
   attivita_014:
@@ -1556,6 +1561,60 @@ asks:
   rt_estero_decreto: {type: text, question: "Il numero del decreto di riconoscimento del titolo estero (30 caratteri al massimo)"}
   rt_estero_data: {type: date, question: "La data in cui è stato emesso"}
   rt_estero_ministero: {type: text, question: "Il Ministero che l'ha emesso (100 caratteri al massimo)"}
+  # Round 11: a garage's technical manager designated by communication (suap-010): the requisito is one of four (A a degree or a diploma,
+  # C the experience as titolare of an impresa, E a foreign title; B and D open more boxes and are not offered).
+  gm_requisito: {type: choice, question: "Con quale requisito il responsabile tecnico dell'autoriparazione è abilitato (L. 122/1992)? laurea (laurea o diploma universitario in materia tecnica); diploma (diploma di scuola superiore in materia tecnica); esperienza (esperienza professionale come titolare, amministratore o socio di un'impresa); estero (titolo estero riconosciuto)", options: [laurea, diploma, esperienza, estero]}
+  gm_titolo: {type: text, question: "Il nome del titolo di studio (100 caratteri al massimo)"}
+  rt_esp_dal: {type: date, question: "Da quando ha maturato l'esperienza"}
+  # Round 11: the SCIA for a short-term rental run as a business (056 avvio, variazione): the title of availability, the unit's rooms.
+  locazione_titolo: {type: choice, question: "Con quale titolo hai la disponibilità dell'immobile? proprieta (sei il proprietario); usufrutto; locazione (sei inquilino); comodato", options: [proprieta, usufrutto, locazione, comodato]}
+  locazione_atto_data: {type: date, question: "La data dell'atto che ti dà la disponibilità dell'immobile (il rogito, il contratto di locazione o di comodato)"}
+  locazione_registrazione_n: {type: text, question: "Il numero di registrazione di quell'atto (50 caratteri al massimo)"}
+  locazione_registrazione_data: {type: date, question: "La data di registrazione"}
+  locazione_proprietario_dati: {type: text, question: "I dati del proprietario dell'immobile (nome e cognome o ragione sociale, codice fiscale)"}
+  locazione_proprietario_tipo: {type: choice, question: "Il proprietario è una persona fisica, una persona fisica con partita IVA o una persona giuridica? fisica; fisica con partita iva; giuridica", options: [fisica, fisica con partita iva, giuridica]}
+  locazione_barriere: {type: yes_no, question: "L'unità immobiliare consente il superamento delle barriere architettoniche?", propose: "false"}
+  locazione_tipologia: {type: choice, question: "L'unità immobiliare è un'unità con più locali o un monolocale? piu locali; monolocale", options: [piu locali, monolocale]}
+  loc_soggiorno_n: {type: number, question: "Quanti locali soggiorno ha l'unità?"}
+  loc_soggiorno_mq: {type: number, question: "La superficie dei locali soggiorno, in m² (un numero intero)"}
+  loc_camere_mq: {type: number, question: "La superficie delle camere in tutto, in m² (un numero intero)"}
+  loc_cucina_n: {type: number, question: "Quante cucine o angoli cottura?"}
+  loc_monolocale_mq: {type: number, question: "La superficie dell'angolo cottura, del soggiorno e della camera del monolocale, in m² (un numero intero)"}
+  variazione_mq_da: {type: number, question: "La superficie totale dell'immobile prima della variazione, in m² (un numero intero)"}
+  variazione_mq_a: {type: number, question: "La superficie totale dopo la variazione, in m² (un numero intero)"}
+  variazione_loc_tipo: {type: choice, question: "Che cosa cambia nella locazione? capacita (camere e posti letto); superficie; titolo (il titolo di disponibilità dell'immobile)", options: [capacita, superficie, titolo]}
+  # Round 11: the older form of the discharge authorization's voltura (scarichi, «-2»): the authorization, why the holder changes (the notarial deed), a variation.
+  scarico_mc_anno: {type: number, question: "I metri cubi all'anno dello scarico autorizzato (un numero intero)"}
+  scarico_intestatario: {type: text, question: "A chi era intestata l'autorizzazione finora (50 caratteri al massimo)"}
+  scarico_subentro_motivo: {type: choice, question: "Perché cambia il titolare dello scarico? compravendita; affitto; rientro (rientro in possesso per fine gestione d'azienda); conferimento (d'azienda); scissione; scioglimento (della società con conferimento); fusione; comodato; donazione", options: [compravendita, affitto, rientro, conferimento, scissione, scioglimento, fusione, comodato, donazione]}
+  scarico_atto_distretto: {type: text, question: "Il distretto notarile del notaio dell'atto (50 caratteri al massimo)"}
+  scarico_atto_volume: {type: text, question: "Il volume dell'atto (30 caratteri al massimo)"}
+  scarico_atto_registro: {type: text, question: "Il numero di registro della trascrizione (30 caratteri al massimo)"}
+  scarico_atto_trascrizione_di: {type: text, question: "La città della Conservatoria dove l'atto è stato trascritto (20 caratteri al massimo)"}
+  scarico_variazione: {type: choice, question: "Con la voltura cambia anche qualcosa del titolare? nessuna; natura (la natura giuridica); denominazione (sociale); legale (il legale rappresentante)", options: [nessuna, natura, denominazione, legale]}
+  scarico_natura_nuova: {type: text, question: "La nuova natura giuridica (50 caratteri al massimo)"}
+  scarico_denominazione_nuova: {type: text, question: "La nuova denominazione sociale (30 caratteri al massimo)"}
+  scarico_legale_nome: {type: text, question: "Il nome del nuovo legale rappresentante (30 caratteri al massimo)"}
+  scarico_legale_cognome: {type: text, question: "Il suo cognome (30 caratteri al massimo)"}
+  scarico_legale_cf: {type: text, question: "Il suo codice fiscale"}
+  # Round 11: PIN 6 (verifications in the course of works) and the public-land «area» form.
+  vvf6_ubicazione: {type: yes_no, group: vvf6_oggetti, item: "L'ubicazione"}
+  vvf6_resistenza: {type: yes_no, group: vvf6_oggetti, item: "La resistenza al fuoco"}
+  vvf6_vie_esodo: {type: yes_no, group: vvf6_oggetti, item: "Le vie di esodo"}
+  vvf6_elettrici: {type: yes_no, group: vvf6_oggetti, item: "Gli impianti elettrici di sicurezza"}
+  vvf6_estinzione: {type: yes_no, group: vvf6_oggetti, item: "I mezzi e gli impianti di estinzione degli incendi"}
+  vvf6_doc_numero: {type: number, question: "Quanti documenti allegati? (al massimo 99)"}
+  vvf6_doc_tipologia: {type: text, question: "Che tipo di documenti sono allegati (100 caratteri al massimo)"}
+  occupazione_area_tipo: {type: choice, question: "L'area è pubblica o privata ad uso pubblico? pubblica; privata (area privata ad uso pubblico)", options: [pubblica, privata]}
+  arredi: {type: choice, question: "Quali arredi installi? sedie; tavoli; sedie e tavoli. Gli altri arredi (banchetto, gazebo, ombrelloni, stand, tenda, fioriere) non li preparo ancora", options: [sedie, tavoli, sedie e tavoli]}
+  arredi_sedie_numero: {type: number, question: "Quante sedie? (al massimo 99999)"}
+  arredi_sedie_materiale: {type: text, question: "Il materiale delle sedie (30 caratteri al massimo)"}
+  arredi_sedie_colore: {type: text, question: "Il colore delle sedie (30 caratteri al massimo)"}
+  arredi_tavoli_numero: {type: number, question: "Quanti tavoli? (al massimo 99999)"}
+  arredi_tavoli_larghezza: {type: text, question: "La larghezza di un tavolo, in metri (13 caratteri al massimo, ad es. 0.8)"}
+  arredi_tavoli_lunghezza: {type: text, question: "La lunghezza di un tavolo, in metri (13 caratteri al massimo, ad es. 0.8)"}
+  arredi_tavoli_materiale: {type: text, question: "Il materiale dei tavoli (30 caratteri al massimo)"}
+  arredi_tavoli_colore: {type: text, question: "Il colore dei tavoli (30 caratteri al massimo)"}
   rt_dichiarazione_doc: {type: file, question: "La dichiarazione del responsabile tecnico compilata (si scarica dal portale), con la copia del suo documento d'identità (PDF)"}
   # A hotel's structural SCIA (sector 054, round 9): the variation of the classification or "altro" (the capacity needs the draft read).
   hotel_variazione: {type: choice, question: "Che variazione segnali per l'albergo? classificazione; altro", options: [classificazione, altro]}
@@ -5584,6 +5643,35 @@ sections:
       - {kind: radio, label: non è dotata di sala con attrezzi da palestra}
       - {kind: radio, label: non effettua vendita di prodotti alimentari e artigianali}
     leave: [n. impianti, di mq., mq., altro, Servizio, Soggetto gestore]
+  # The unit's rooms (the SCIA's «Capacità ricettiva e dotazioni»): a unit with several rooms (the room table shows its first row; the "+" adds more) or a studio.
+  # The studio's labels repeat the several-rooms' (`on_page`: only the ticked choice's boxes are on the page).
+  - section: Capacità ricettiva e dotazioni
+    aliases: ["Capacità ricettiva e dotazioni dell’unità immobiliare"]
+    plus: "the rooms' own \"+\" (more rows of rooms): the first row is mapped"
+    fields:
+      - {kind: radio, label: "sì", when: "{{ask.locazione_barriere}}"}
+      - {kind: radio, label: "no", when: "{{ask.locazione_barriere|not}}"}
+      - {kind: radio, label: Unità immobiliare con più locali, when: "{{ask.locazione_tipologia|is_piu_locali}}"}
+      - {kind: text, label: Superficie (mq), value: "{{ask.locazione_superficie_mq}}", when: "{{ask.locazione_tipologia|is_piu_locali}}"}
+      - {kind: text, label: Locali soggiorno n., value: "{{ask.loc_soggiorno_n}}", if_present: true, when: "{{ask.locazione_tipologia|is_piu_locali}}"}
+      - {kind: text, label: Locali soggiorno (mq), value: "{{ask.loc_soggiorno_mq}}", if_present: true, when: "{{ask.locazione_tipologia|is_piu_locali}}"}
+      - {kind: text, label: Locale soggiorno n., value: "{{ask.loc_soggiorno_n}}", if_present: true, when: "{{ask.locazione_tipologia|is_piu_locali}}"}
+      - {kind: text, label: Locale soggiorno mq, value: "{{ask.loc_soggiorno_mq}}", if_present: true, when: "{{ask.locazione_tipologia|is_piu_locali}}"}
+      - {kind: text, label: Camere n., value: "{{ask.locazione_camere}}", if_present: true, when: "{{ask.locazione_tipologia|is_piu_locali}}"}
+      - {kind: text, label: Camere (mq), value: "{{ask.loc_camere_mq}}", if_present: true, when: "{{ask.locazione_tipologia|is_piu_locali}}"}
+      - {kind: text, label: Camera mq, value: "{{ask.loc_camere_mq}}", if_present: true, when: "{{ask.locazione_tipologia|is_piu_locali}}"}
+      - {kind: text, label: Posti letto n., value: "{{ask.locazione_posti_letto}}", if_present: true, when: "{{ask.locazione_tipologia|is_piu_locali}}"}
+      - {kind: text, label: Camera posti letto n., value: "{{ask.locazione_posti_letto}}", if_present: true, when: "{{ask.locazione_tipologia|is_piu_locali}}"}
+      - {kind: text, label: Cucina/angolo cottura n., value: "{{ask.loc_cucina_n}}", if_present: true, when: "{{ask.locazione_tipologia|is_piu_locali}}"}
+      - {kind: text, label: Cucina/ angolo cottura n., value: "{{ask.loc_cucina_n}}", if_present: true, when: "{{ask.locazione_tipologia|is_piu_locali}}"}
+      - {kind: text, label: Servizi igienici n., value: "{{ask.locazione_bagni}}", when: "{{ask.locazione_tipologia|is_piu_locali}}"}
+      - {kind: text, label: Totale posti letto n., value: "{{ask.locazione_posti_letto}}", when: "{{ask.locazione_tipologia|is_piu_locali}}"}
+      - {kind: radio, label: Monolocale, when: "{{ask.locazione_tipologia|is_monolocale}}"}
+      - {kind: text, label: Superficie (mq), on_page: true, value: "{{ask.locazione_superficie_mq}}", when: "{{ask.locazione_tipologia|is_monolocale}}"}
+      - {kind: text, label: "Angolo cottura, soggiorno camera (mq)", value: "{{ask.loc_monolocale_mq}}", when: "{{ask.locazione_tipologia|is_monolocale}}"}
+      - {kind: text, label: Servizi igienici n., on_page: true, value: "{{ask.locazione_bagni}}", when: "{{ask.locazione_tipologia|is_monolocale}}"}
+      - {kind: text, label: Totale posti letto n., on_page: true, value: "{{ask.locazione_posti_letto}}", when: "{{ask.locazione_tipologia|is_monolocale}}"}
+  # (Placed before the hotel's shorter «capacità ricettiva»: a longer name goes first, test_gen's round 10 order check.)
   # Rooms (camere) only, singles and doubles: a row's totals and the structure's are sums of
   # what was asked. A double row after a single one is the page's second (found there).
   - section: capacità ricettiva
@@ -8050,6 +8138,264 @@ sections:
   - section: dichiarazione relativa alla normativa tecnica
     theirs: [PER PRESA VISIONE]
     fields: []
+
+  # Round 11: a garage's technical manager designated by communication (010, «Comunicazione variazione responsabile tecnico»). The manager is one
+  # box («il sig.»: cognome e nome), the relation to the firm as the cleaning firm's, in whose place or besides whom (the other's boxes are on the page
+  # switched off until its radio is ticked: the aggiunta's «cognome» and «nome» are the second of their label). Entries after the cleaning firm's, which has other labels.
+  - section: Designazione del responsabile tecnico
+    fields:
+      - {kind: text, label: il sig., value: "{{ask.rt_cognome}} {{ask.rt_nome}}"}
+      - {kind: date, label: dal, value: "{{ask.rt_dal|date_it}}"}
+      - {kind: radio, label: titolare, when: "{{ask.rt_qualita|is_titolare}}"}
+      - {kind: radio, label: amministratore, when: "{{ask.rt_qualita|is_amministratore}}"}
+      - {kind: radio, label: socio lavoratore, when: "{{ask.rt_qualita|is_socio_lavoratore}}"}
+      - {kind: radio, label: collaboratore familiare, when: "{{ask.rt_qualita|is_collaboratore_familiare}}"}
+      - {kind: radio, label: dipendente, when: "{{ask.rt_qualita|is_dipendente}}"}
+      - {kind: radio, label: institore, when: "{{ask.rt_qualita|is_institore}}"}
+      - {kind: radio, label: altro, when: "{{ask.rt_qualita|is_altro}}"}
+      - {kind: text, label: specificare, value: "{{ask.rt_qualita_altro}}", when: "{{ask.rt_qualita|is_altro}}"}
+      - {kind: radio, label: in sostituzione di, when: "{{ask.rt_designazione|is_sostituzione}}"}
+      - {kind: text, label: cognome, value: "{{ask.rt_prec_cognome}}", when: "{{ask.rt_designazione|is_sostituzione}}"}
+      - {kind: text, label: nome, value: "{{ask.rt_prec_nome}}", when: "{{ask.rt_designazione|is_sostituzione}}"}
+      - {kind: text, label: cod. fisc., value: "{{ask.rt_prec_cf}}", when: "{{ask.rt_designazione|is_sostituzione}}"}
+      - {kind: radio, label: in aggiunta di, when: "{{ask.rt_designazione|is_aggiunta}}"}
+      - {kind: text, label: cognome, nth: 2, value: "{{ask.rt_prec_cognome}}", when: "{{ask.rt_designazione|is_aggiunta}}"}
+      - {kind: text, label: nome, nth: 2, value: "{{ask.rt_prec_nome}}", when: "{{ask.rt_designazione|is_aggiunta}}"}
+      - {kind: text, label: cod.fisc., value: "{{ask.rt_prec_cf}}", when: "{{ask.rt_designazione|is_aggiunta}}"}
+  - section: Settore di attività Autoriparatore
+    fields:
+      - {kind: checkbox, label: meccatronica, when: "{{ask.officina_meccatronica}}"}
+      - {kind: checkbox, label: carrozzeria, when: "{{ask.officina_carrozzeria}}"}
+      - {kind: checkbox, label: gommista, when: "{{ask.officina_gommista}}"}
+  - section: dichiarazione del rispetto dell'art. 67 del D. Lgs. 6.9.2011 n. 159 (antimafia)
+    strict: true
+    theirs: [che non sussistono nei propri confronti cause di divieto]
+    leave: [che non sussistono nei propri confronti cause di divieto]
+    fields: []
+  # The garage manager's requisiti: A (a degree or a diploma), C (the experience as titolare of the first impresa) and E (a foreign title). B (the
+  # attestato, the course, the experience by a collaborator or an employee), the second impresa, D (special cases) are not offered. The boxes
+  # of every title are on the page, switched off until the tick, so a repeated label counts in the crawl's order: «titolo di studio» and «specializzazione tecnica in»
+  # (the diploma's are the second), and C's first impresa is the fourth «specificare», «con sede in», «dal» and «al» and the third «n. R.E.A» (the run stopped on
+  # «switched off» for the first copy, 2026-11-16; the laurea's own boxes are the first of theirs).
+  - section: Requisiti tecnico-professionali
+    strict: true
+    leave: [B) TITOLO DI STUDIO ED ESPERIENZA, attestato di promozione, corso regionale teorico-pratico, "titolare/amministratore/socio partecipante/associato in partecipazione dell'impresa con", "titolare/amministratore/socio partecipante/associato in partecipazione dell'impresa 2", collaboratore familiare, dipendente, D) CASI PARTICOLARI, soggetto in possesso, titolare di impresa del settore, denominazione impresa, qualifica risultante, con sede nel comune di, specializzazione tecnica, rilasciata/o dall'istituto/centro]
+    fields:
+      - {kind: text, label: dichiara che il responsabile tecnico cognome e nome, value: "{{ask.rt_cognome}} {{ask.rt_nome}}"}
+      - {kind: checkbox, label: meccatronica, when: "{{ask.officina_meccatronica}}"}
+      - {kind: checkbox, label: carrozzeria, when: "{{ask.officina_carrozzeria}}"}
+      - {kind: checkbox, label: gommista, when: "{{ask.officina_gommista}}"}
+      - {kind: radio, label: A) TITOLO DI STUDIO, when: "{{ask.gm_requisito|in_laurea__diploma}}"}
+      - {kind: checkbox, label: laurea o diploma universitario in materia tecnica, when: "{{ask.gm_requisito|is_laurea}}"}
+      - {kind: text, label: titolo di studio, value: "{{ask.gm_titolo}}", when: "{{ask.gm_requisito|is_laurea}}"}
+      - {kind: date, label: conseguito/a il, value: "{{ask.rt_titolo_data|date_it}}", when: "{{ask.gm_requisito|is_laurea}}"}
+      - {kind: text, label: rilasciata/o dall'università degli studi di, value: "{{ask.rt_titolo_ente}}", when: "{{ask.gm_requisito|is_laurea}}"}
+      - {kind: text, label: specializzazione tecnica in, value: "{{ask.rt_titolo_specializzazione}}", when: "{{ask.gm_requisito|is_laurea}}"}
+      - {kind: checkbox, label: diploma di istruzione secondaria superiore in materia tecnica, when: "{{ask.gm_requisito|is_diploma}}"}
+      - {kind: text, label: titolo di studio, nth: 2, value: "{{ask.gm_titolo}}", when: "{{ask.gm_requisito|is_diploma}}"}
+      - {kind: date, label: conseguita/o il, value: "{{ask.rt_titolo_data|date_it}}", when: "{{ask.gm_requisito|is_diploma}}"}
+      - {kind: text, label: rilasciata/o dall'istituto, value: "{{ask.rt_titolo_ente}}", when: "{{ask.gm_requisito|is_diploma}}"}
+      - {kind: text, label: specializzazione tecnica in, nth: 2, value: "{{ask.rt_titolo_specializzazione}}", when: "{{ask.gm_requisito|is_diploma}}"}
+      - {kind: radio, label: C) ESPERIENZA PROFESSIONALE, when: "{{ask.gm_requisito|is_esperienza}}"}
+      - {kind: checkbox, label: "titolare/amministratore/socio partecipante/associato in partecipazione dell'impresa 1", when: "{{ask.gm_requisito|is_esperienza}}"}
+      - {kind: text, label: specificare, nth: 4, value: "{{ask.rt_esp_impresa}}", when: "{{ask.gm_requisito|is_esperienza}}"}
+      - {kind: text, label: con sede in, nth: 4, value: "{{ask.rt_esp_sede}}", when: "{{ask.gm_requisito|is_esperienza}}"}
+      - {kind: text, label: n. R.E.A, nth: 3, value: "{{ask.rt_esp_rea}}", when: "{{ask.gm_requisito|is_esperienza}}"}
+      - {kind: date, label: dal, nth: 4, value: "{{ask.rt_esp_dal|date_it}}", when: "{{ask.gm_requisito|is_esperienza}}"}
+      - {kind: date, label: al, nth: 4, value: "{{ask.rt_esp_al|date_it}}", when: "{{ask.gm_requisito|is_esperienza}}"}
+      - {kind: radio, label: E) RICONOSCIMENTO TITOLO ESTERO, when: "{{ask.gm_requisito|is_estero}}"}
+      - {kind: text, label: decreto n°, value: "{{ask.rt_estero_decreto}}", when: "{{ask.gm_requisito|is_estero}}"}
+      - {kind: date, label: in data, value: "{{ask.rt_estero_data|date_it}}", when: "{{ask.gm_requisito|is_estero}}"}
+      - {kind: text, label: del Ministero, value: "{{ask.rt_estero_ministero}}", when: "{{ask.gm_requisito|is_estero}}"}
+
+  # Round 11: the SCIA for a short-term rental run as a business (056, avvio and variazione). Napoli's ISTAT codes; the province is a select ("263 Napoli").
+  - section: Codici istat e ateco
+    leave: [Codice ATECO secondario]
+    fields:
+      - {kind: text, label: Codice ISTAT del Comune, value: "063049"}
+      - {kind: select, label: Codice ISTAT Provincia, value: "263 Napoli"}
+      - {kind: text, label: Codice ATECO prevalente, value: "{{business.codice_ateco}}"}
+  # The title of availability: one of the four titles that a short-term rental has; the deed's date and registration are on the page under any (the crawl
+  # holds them once per choice); the owner's data are required whatever the title (the run stopped on «il valore e obbligatorio» for a property). The mandate and «altro» are not offered.
+  - section: Titolo di disponibilità
+    leave: [mandato con rappresentanza, altro]
+    fields:
+      - {kind: radio, label: proprietà, when: "{{ask.locazione_titolo|is_proprieta}}"}
+      - {kind: radio, label: usufrutto, when: "{{ask.locazione_titolo|is_usufrutto}}"}
+      - {kind: radio, label: locazione, when: "{{ask.locazione_titolo|is_locazione}}"}
+      - {kind: radio, label: comodato, when: "{{ask.locazione_titolo|is_comodato}}"}
+      - {kind: date, label: atto del, value: "{{ask.locazione_atto_data|date_it}}", when: "{{ask.locazione_titolo|is_proprieta}}"}
+      - {kind: text, label: registrazione n., value: "{{ask.locazione_registrazione_n}}", when: "{{ask.locazione_titolo|is_proprieta}}"}
+      - {kind: date, label: del, value: "{{ask.locazione_registrazione_data|date_it}}", when: "{{ask.locazione_titolo|is_proprieta}}"}
+      - {kind: date, label: atto del, value: "{{ask.locazione_atto_data|date_it}}", when: "{{ask.locazione_titolo|is_usufrutto}}"}
+      - {kind: text, label: registrazione n., value: "{{ask.locazione_registrazione_n}}", when: "{{ask.locazione_titolo|is_usufrutto}}"}
+      - {kind: date, label: del, value: "{{ask.locazione_registrazione_data|date_it}}", when: "{{ask.locazione_titolo|is_usufrutto}}"}
+      - {kind: date, label: atto del, value: "{{ask.locazione_atto_data|date_it}}", when: "{{ask.locazione_titolo|is_locazione}}"}
+      - {kind: text, label: registrazione n., value: "{{ask.locazione_registrazione_n}}", when: "{{ask.locazione_titolo|is_locazione}}"}
+      - {kind: date, label: del, value: "{{ask.locazione_registrazione_data|date_it}}", when: "{{ask.locazione_titolo|is_locazione}}"}
+      - {kind: date, label: atto del, value: "{{ask.locazione_atto_data|date_it}}", when: "{{ask.locazione_titolo|is_comodato}}"}
+      - {kind: text, label: registrazione n., value: "{{ask.locazione_registrazione_n}}", when: "{{ask.locazione_titolo|is_comodato}}"}
+      - {kind: date, label: del, value: "{{ask.locazione_registrazione_data|date_it}}", when: "{{ask.locazione_titolo|is_comodato}}"}
+      - {kind: text, label: Specificare i dati della proprietà immobiliare, value: "{{ask.locazione_proprietario_dati}}"}
+      - {kind: text, label: Tipo di persona, value: "{{ask.locazione_proprietario_tipo}}"}
+  # The SCIA's opening: the name, the contacts, the surface and the rooms (one room row), annual or seasonal. The start date, the plan's data and the
+  # websites are optional and stay empty.
+  - section: Apertura
+    plus: "the date range's and the rooms' own \"+\": one row"
+    leave: [Avvio dell’attività con decorrenza, La planimetria è stata presentata in data, con prot. n., Eventuali siti web]
+    fields:
+      - {kind: radio, label: Annuale, when: "{{ask.stagionale|not}}"}
+      - {kind: radio, label: Stagionale, when: "{{ask.stagionale}}"}
+      - {kind: text, label: dal (gg/mm), value: "{{ask.stagione_dal}}", when: "{{ask.stagionale}}"}
+      - {kind: text, label: al (gg/mm), value: "{{ask.stagione_al}}", when: "{{ask.stagionale}}"}
+      - {kind: text, label: Denominazione (1) dell’attività, value: "{{ask.locazione_denominazione}}"}
+      - {kind: text, label: E-mail associata all’attività di locazione, value: "{{business.email}}"}
+      - {kind: text, label: Telefono associato all’attività di locazione, value: "{{business.telefono}}"}
+      - {kind: text, label: Superficie totale immobile, value: "{{ask.locazione_superficie_mq}}"}
+      - {kind: text, label: Camera n., value: "{{ask.locazione_camera_numero}}"}
+      - {kind: text, label: mq, value: "{{ask.locazione_camera_mq}}"}
+      - {kind: text, label: Totale n. camere, value: "{{ask.locazione_camere}}"}
+      - {kind: text, label: N. posti letto complessivi, value: "{{ask.locazione_posti_letto}}"}
+      - {kind: text, label: Totale bagni, value: "{{ask.locazione_bagni}}"}
+  # The SCIA's variation: the rental's CIN and CUSR, the title it was started with, and what changes (the capacity, the surfaces, the title of availability).
+  - section: Variazioni
+    fields:
+      - {kind: text, label: "Il/la sottoscritto/a segnala che l’attività di locazione breve", value: "{{ask.struttura_cin}}"}
+      - {kind: text, label: CUSR(4) regionale, value: "{{ask.struttura_cusr}}"}
+      - {kind: text, label: già avviata con la SCIA/comunicazione prot./n., value: "{{ask.titolo_attivita_protocollo}}"}
+      - {kind: date, label: del, value: "{{ask.titolo_attivita_data|date_it}}"}
+      - {kind: checkbox, label: Variazione della capacità ricettiva, when: "{{ask.variazione_loc_tipo|is_capacita}}"}
+      - {kind: text, label: Da posti letto n., value: "{{ask.capacita_letti_da}}", when: "{{ask.variazione_loc_tipo|is_capacita}}"}
+      - {kind: text, label: a posti letto n., value: "{{ask.capacita_letti_a}}", when: "{{ask.variazione_loc_tipo|is_capacita}}"}
+      - {kind: text, label: da camere n., value: "{{ask.capacita_camere_da}}", when: "{{ask.variazione_loc_tipo|is_capacita}}"}
+      - {kind: text, label: a camere n., value: "{{ask.capacita_camere_a}}", when: "{{ask.variazione_loc_tipo|is_capacita}}"}
+      - {kind: checkbox, label: Variazione della superficie totale, when: "{{ask.variazione_loc_tipo|is_superficie}}"}
+      - {kind: checkbox, label: "Superficie totale immobile (superficie utile abitabile):", when: "{{ask.variazione_loc_tipo|is_superficie}}"}
+      - {kind: text, label: da Mq, value: "{{ask.variazione_mq_da}}", when: "{{ask.variazione_loc_tipo|is_superficie}}"}
+      - {kind: text, label: a mq, value: "{{ask.variazione_mq_a}}", when: "{{ask.variazione_loc_tipo|is_superficie}}"}
+      - {kind: checkbox, label: Superficie utile abitabile camere a disposizione degli ospiti, when: "{{ask.variazione_loc_tipo|is_superficie}}"}
+      - {kind: checkbox, label: Variazione del titolo di disponibilità, when: "{{ask.variazione_loc_tipo|is_titolo}}"}
+
+  # Round 11: the older form of the voltura of a discharge authorization (scarichi, «-2»). The authorization, then the deed that moves the plant
+  # (the reason is one of nine; «altro» is not offered), one variation at most (the legal nature, the name or the legal representative).
+  - section: Dati dell'autorizzazione
+    fields:
+      - {kind: text, label: prot. n., value: "{{ask.scarico_voltura_pg}}"}
+      - {kind: date, label: rilasciata in data, value: "{{ask.scarico_voltura_data|date_it}}"}
+      - {kind: text, label: per mc/anno, value: "{{ask.scarico_mc_anno}}"}
+      - {kind: text, label: "intestata a :", value: "{{ask.scarico_intestatario}}"}
+  - section: DATI SUBENTRO
+    leave: [altro, descrizione]
+    fields:
+      - {kind: radio, label: compravendita, when: "{{ask.scarico_subentro_motivo|is_compravendita}}"}
+      - {kind: radio, label: affitto, when: "{{ask.scarico_subentro_motivo|is_affitto}}"}
+      - {kind: radio, label: rientro in possesso per fine gestione d'azienda, when: "{{ask.scarico_subentro_motivo|is_rientro}}"}
+      - {kind: radio, label: conferimento d'azienda, when: "{{ask.scarico_subentro_motivo|is_conferimento}}"}
+      - {kind: radio, label: scissione d'azienda, when: "{{ask.scarico_subentro_motivo|is_scissione}}"}
+      - {kind: radio, label: scioglimento della società con conferimento, when: "{{ask.scarico_subentro_motivo|is_scioglimento}}"}
+      - {kind: radio, label: fusione, when: "{{ask.scarico_subentro_motivo|is_fusione}}"}
+      - {kind: radio, label: comodato, when: "{{ask.scarico_subentro_motivo|is_comodato}}"}
+      - {kind: radio, label: donazione, when: "{{ask.scarico_subentro_motivo|is_donazione}}"}
+      - {kind: text, label: con Atto di, value: "{{ask.atto_tipo}}"}
+      - {kind: text, label: Rogato dal Notaio, value: "{{ask.atto_notaio}}"}
+      - {kind: text, label: in, value: "{{ask.atto_notaio_sede}}"}
+      - {kind: text, label: Distretto Notarile, value: "{{ask.scarico_atto_distretto}}"}
+      - {kind: text, label: Registrato il, value: "{{ask.atto_registrazione_data|date_it}}"}
+      - {kind: text, label: Numero, value: "{{ask.atto_registrazione_numero}}"}
+      - {kind: text, label: Volume, value: "{{ask.scarico_atto_volume}}"}
+      - {kind: text, label: Trascritto Presso, value: "{{ask.atto_trascrizione_sede}}"}
+      - {kind: text, label: di, nth: 2, value: "{{ask.scarico_atto_trascrizione_di}}"}
+      - {kind: date, label: data, value: "{{ask.atto_trascrizione_data|date_it}}"}
+      - {kind: text, label: Registro, value: "{{ask.scarico_atto_registro}}"}
+      - {kind: text, label: Repertorio, value: "{{ask.atto_repertorio}}"}
+  - section: Variazioni
+    fields:
+      - {kind: checkbox, label: Variazione Natura Giuridica, when: "{{ask.scarico_variazione|is_natura}}"}
+      - {kind: text, label: "nuovo:", value: "{{ask.scarico_natura_nuova}}", when: "{{ask.scarico_variazione|is_natura}}"}
+      - {kind: checkbox, label: Variazione Denominazione Sociale, when: "{{ask.scarico_variazione|is_denominazione}}"}
+      - {kind: text, label: nuovo, nth: 2, value: "{{ask.scarico_denominazione_nuova}}", when: "{{ask.scarico_variazione|is_denominazione}}"}
+      - {kind: checkbox, label: Variazione Legale Rappresentante, when: "{{ask.scarico_variazione|is_legale}}"}
+      - {kind: text, label: Nome, value: "{{ask.scarico_legale_nome}}", when: "{{ask.scarico_variazione|is_legale}}"}
+      - {kind: text, label: Cognome, value: "{{ask.scarico_legale_cognome}}", when: "{{ask.scarico_variazione|is_legale}}"}
+      - {kind: text, label: CF, value: "{{ask.scarico_legale_cf}}", when: "{{ask.scarico_variazione|is_legale}}"}
+  # The voltura's closing statements (the person's): the five points a)-e) and that the documents on file still describe the plant. Strict, the older
+  # voltura form's «dichiarazione relativa alla voltura» (before this one) has other boxes.
+  - section: dichiarazione relativa alla voltura
+    strict: true
+    theirs: [a) le caratteristiche quali-quantitative, b) le caratteristiche del ciclo produttivo, c) le sostanze impiegate, d) gli impianti aziendali, e) la localizzazione dello scarico, dichiara inoltre che la documentazione]
+    leave: [a) le caratteristiche quali-quantitative, b) le caratteristiche del ciclo produttivo, c) le sostanze impiegate, d) gli impianti aziendali, e) la localizzazione dello scarico, dichiara inoltre che la documentazione]
+    fields: []
+
+  # Round 11: PIN 6, the request for verifications in the course of works (the crawl's sections have no «SCIA VV.F.» prefix). The activity, the aspects asked
+  # (five of the sixteen, as a group of yes/no; the others are not offered), for a B or C activity the Comando's earlier opinion and the person's declaration.
+  - section: Oggetto della richiesta verifica in corso
+    leave: [comunicazioni e separazioni, accesso all, caratteristiche costruttive, reazione al fuoco, compartimentazione, sistema di controllo dei fumi, aree ed impianti a rischio, illuminazione di sicurezza, impianti di rivelazione, segnaletica di sicurezza, altro, specificare, Dichiaro che i dati riportati]
+    theirs: [Dichiaro che i dati riportati]
+    plus: "the category B and C box's own \"+\" (a second pratica of the Comando): one is mapped"
+    fields:
+      - {kind: text, label: "all'attività:", value: "{{ask.vvf_attivita}}"}
+      - {kind: checkbox, label: per attività di categoria B e C, when: "{{ask.vvf_categoria|in_b__c}}"}
+      - {kind: date, label: in data, value: "{{ask.vvf_parere_data|date_it}}", when: "{{ask.vvf_categoria|in_b__c}}"}
+      - {kind: text, label: prot. n., value: "{{ask.vvf_parere_protocollo}}", when: "{{ask.vvf_categoria|in_b__c}}"}
+      - {kind: checkbox, label: ubicazione, when: "{{ask.vvf6_ubicazione}}"}
+      - {kind: checkbox, label: resistenza al fuoco, when: "{{ask.vvf6_resistenza}}"}
+      - {kind: checkbox, label: vie esodo, when: "{{ask.vvf6_vie_esodo}}"}
+      - {kind: checkbox, label: impianti elettrici di sicurezza, when: "{{ask.vvf6_elettrici}}"}
+      - {kind: checkbox, label: mezzi ed impianti di estinzione degli incendi, when: "{{ask.vvf6_estinzione}}"}
+  - section: documentazione allegata
+    fields:
+      - {kind: text, label: numero, value: "{{ask.vvf6_doc_numero}}"}
+      - {kind: text, label: specificare tipologia dei documenti allegati, value: "{{ask.vvf6_doc_tipologia}}"}
+  # The payment slip as the SCIA's, with the three categories' own tendina (the activity «69 _ 1 _ A», as the portal writes it). The Tesoreria is preselected.
+  - section: distinta di versamento
+    plus: "the activity's own \"+\" (a second activity): one is mapped"
+    leave: [intestato alla Tesoreria Provinciale dello Stato di]
+    fields:
+      - {kind: text, label: Attestato di versamento n., value: "{{ask.vvf_versamento_numero}}"}
+      - {kind: date, label: del, value: "{{ask.vvf_versamento_data|date_it}}"}
+      - {kind: text, label: per un totale di euro, value: "{{ask.vvf_importo}}"}
+      - {kind: file, label: Tipologie ammesse, accepts: "dwf.p7m;svg.p7m;jpg.p7m;pdf.p7m", value: "{{ask.vvf_versamento_doc}}"}
+      - {kind: radio, label: A, when: "{{ask.vvf_categoria|is_a}}"}
+      - {kind: select, label: attività - sotto classe - categoria - descrizione, value: "{{ask.vvf_allegato}}", when: "{{ask.vvf_categoria|is_a}}"}
+      - {kind: radio, label: B, when: "{{ask.vvf_categoria|is_b}}"}
+      - {kind: select, label: attività - sotto classe - categoria - descrizione, value: "{{ask.vvf_allegato}}", when: "{{ask.vvf_categoria|is_b}}"}
+      - {kind: radio, label: C, when: "{{ask.vvf_categoria|is_c}}"}
+      - {kind: select, label: attività - sotto classe - categoria - descrizione, value: "{{ask.vvf_allegato}}", when: "{{ask.vvf_categoria|is_c}}"}
+  # An address for the post is optional: the box stays unticked (as the SCIA's).
+  - section: dati per la corrispondenza
+    leave: [Eventuale diverso indirizzo presso il quale si chiede di inviare la corrispondenza, Cognome, Nome, indirizzo, n. civico, c.a.p., comune, Provincia, telefono, indirizzo di posta elettronica, indirizzo di posta elettronica certificata]
+    fields: []
+  # The public-land «area» form (a domanda di occupazione suolo area): the kind of area, the furnishings (sedie, tavoli or both: the rest of the nine are
+  # not offered), on whose behalf, and the acceptance of the Comune's regulation (the person's).
+  - section: Tipologia di area
+    fields:
+      - {kind: radio, label: area pubblica, when: "{{ask.occupazione_area_tipo|is_pubblica}}"}
+      - {kind: radio, label: area privata ad uso pubblico, when: "{{ask.occupazione_area_tipo|is_privata}}"}
+  - section: dichiarazione della tipologia di arredi installati
+    leave: [banchetto, gazebo, ombrelloni, stand, tenda, vasi/fioriere, altro, numero, larghezza, x lunghezza, materiale della struttura, colore della struttura, specificare tipologia, scritte presenti, max estensione, colore sella, specificare la tipologia, specificare]
+    fields:
+      # The boxes of all nine furnishings are on the page, switched off until the tick: a label counts in the crawl's order (numero: sedie, tavoli, ...;
+      # materiale and colore: sedie, banchetto, tavoli, ...; larghezza and x lunghezza: banchetto, tavoli, ...).
+      - {kind: checkbox, label: sedie, when: "{{ask.arredi|in_sedie__sedie_e_tavoli}}"}
+      - {kind: text, label: numero, value: "{{ask.arredi_sedie_numero}}", when: "{{ask.arredi|in_sedie__sedie_e_tavoli}}"}
+      - {kind: text, label: materiale della struttura, value: "{{ask.arredi_sedie_materiale}}", when: "{{ask.arredi|in_sedie__sedie_e_tavoli}}"}
+      - {kind: text, label: colore della struttura, value: "{{ask.arredi_sedie_colore}}", when: "{{ask.arredi|in_sedie__sedie_e_tavoli}}"}
+      - {kind: checkbox, label: tavoli, when: "{{ask.arredi|in_tavoli__sedie_e_tavoli}}"}
+      - {kind: text, label: numero, nth: 2, value: "{{ask.arredi_tavoli_numero}}", when: "{{ask.arredi|in_tavoli__sedie_e_tavoli}}"}
+      - {kind: text, label: larghezza, nth: 2, value: "{{ask.arredi_tavoli_larghezza}}", when: "{{ask.arredi|in_tavoli__sedie_e_tavoli}}"}
+      - {kind: text, label: x lunghezza, nth: 2, value: "{{ask.arredi_tavoli_lunghezza}}", when: "{{ask.arredi|in_tavoli__sedie_e_tavoli}}"}
+      - {kind: text, label: materiale della struttura, nth: 3, value: "{{ask.arredi_tavoli_materiale}}", when: "{{ask.arredi|in_tavoli__sedie_e_tavoli}}"}
+      - {kind: text, label: colore della struttura, nth: 3, value: "{{ask.arredi_tavoli_colore}}", when: "{{ask.arredi|in_tavoli__sedie_e_tavoli}}"}
+  - section: dichiarazione del tipo di ente / associazione / società in nome e per conto del quale si agisce
+    fields:
+      - {kind: text, label: in nome e per conto dell'impresa, value: "{{business.denominazione}}"}
+      - {kind: text, label: esercente l'attività di, value: "{{business.descrizione_attivita}}"}
+  - section: Dichiarazione di rispetto delle norme relative alla concessione del suolo pubblico
+    strict: true
+    theirs: [di accettare senza riserva alcuna il regolamento comunale]
+    leave: [di accettare senza riserva alcuna il regolamento comunale]
+    fields: []
+
 
 after:
   - section: Pagamento degli oneri
