@@ -11,6 +11,12 @@
 //                                              ("Il valore è obbligatorio", "deve essere selezionata almeno un'opzione"): the page re-renders
 //   __draft.text(from)                         the section's visible text from the first line containing `from`
 //
+// Round 10 (2026-11-16): the home page's draft list is stale after a bundle's runs (the new drafts are not in it): navigate to the home page again
+// (https://suap.impresainungiorno.gov.it/fnsuap/cmd/home) before open(); that navigation drops `window.__draft`, so paste this file again after it. A click
+// on APRI navigates twice (home, then the draft): the script that clicked is cut off and its value lost, so click in one call, wait ~10 s in the next, and
+// then list the section links. Without the helper, `[...document.querySelectorAll("a")]` filtered on upper-case names lists the draft's sections, and
+// `[...document.querySelectorAll("[name*='dynaForm']")]` its boxes (id, DIS, CHK, value, the text next to it): a box that stayed empty or a "Il valore è
+// obbligatorio" beside it is the stop (the hotel's doubles, the one-off occupation's area "12.00": "il numero immesso non è valido").
 // Written 2026-11-15 for round 7 (README): it found that the VV.F. take-over's statements a) and b) are required and b) switches on the
 // previous manager's boxes, that the garage's header radio is not kept, and what the B&B variation's capacity groups need. A page that
 // navigates (open, section, required) loses the return value of the call that caused it: look at the page, then call again.

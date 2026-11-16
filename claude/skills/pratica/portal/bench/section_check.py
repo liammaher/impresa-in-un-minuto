@@ -38,9 +38,32 @@ def check(spec):
     if not entries:
         print("NO ENTRY", sec["section"])
         return
+    won = False
     for entry, as_name in entries:
         _, problems, _ = gen.fill(entry, as_name, sec, {}, sec["section"])
         print("OK " if not problems else "BAD", sec["section"][:60], problems[:6])
+        if not problems and not won:
+            won = True  # the first without problems is the one gen.py takes
+            unnamed = unnamed_boxes(entry, sec)
+            if unnamed:
+                print("  WARN the winning entry names none of these ticks (not in fields, `theirs` or `leave`): the portal may call them required and stop the run "
+                      "(2026-11-16: the AUA's «Dichiarazioni» and the communication's «Ulteriori dichiarazioni» were taken by older non-strict entries). "
+                      "Write a strict entry with them in `theirs` and `leave`, BEFORE the older ones of the name:", unnamed[:6])
+
+
+def unnamed_boxes(entry, sec):
+    """The radios and checkboxes of a crawled section (and what its choices open) that a non-strict entry neither fills, nor leaves, nor calls the person's."""
+    named = [gen.norm(f["label"]) for f in entry.get("fields", []) if f.get("label")]
+    named += [gen.norm(x) for x in [*entry.get("theirs", []), *entry.get("leave", [])]]
+    boxes = [*sec.get("fields", []), *[x for b in sec.get("branches", []) for x in b.get("reveals", [])]]
+    out = []
+    for f in boxes:
+        if f["kind"] not in ("radio", "checkbox") or not f.get("label"):
+            continue
+        lab = gen.norm(f["label"])
+        if not any(lab.startswith(n) or n.startswith(lab) for n in named if n):
+            out.append(f["label"][:60])
+    return list(dict.fromkeys(out))
 
 
 def dump(spec):

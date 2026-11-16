@@ -500,6 +500,11 @@ def revealed(nodes):
 def fill(entry, as_name, c, recipe, name):
     """One section from one dictionary entry: the steps, what doesn't fit, the asks it uses."""
     problems, asks_used = [], set()
+    # A filter outside its braces (`{{a+b|positive}}|not`) is a term that is never true: the hotel's doubles stayed empty and the portal said "il valore
+    # e obbligatorio" (2026-11-16). Say so here, where the entry is read, not on the portal.
+    for f in entry.get("fields", []):
+        if "}}|" in str(f.get("when", "")):
+            problems.append(f"{name}: the `when` of {f.get('label')!r} has a filter outside its braces (" + "'}}|...'): it is never true; write {{a|filter|not}}")
     sec = Section(c)
     out = {"section": as_name}
     for k in ("open", "save", "go", "theirs", "optional"):
