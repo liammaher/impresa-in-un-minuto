@@ -46,6 +46,10 @@
 # An entry matches a section whose name STARTS WITH the entry's own (the entry's name is the prefix, never longer than the
 # section's: a laundry's "... ANTIMAFIA E PROFESSIONALI" never matched its "... ANTIMAFIA"), in file order, the first
 # without problems winning; a short non-strict entry before a longer one takes its sections and drops their `theirs`.
+# Add a new entry at the END of `sections:` (round 9: a short name added in the middle took 75 sign pratiche's sections; test_gen checks the round's names).
+# A crawl reads every `txtws` box (a street, civico, CAP, scala, piano, interno) as a `lookup`, but only a street lists anything: write the others `kind: text`
+# (the run stopped on "matches 0 of 0 listed"). `nth` counts the boxes on the page, not the crawl's: under a choice only its own boxes are there, so a label the
+# crawl holds once per choice is the first on the page (`on_page: true`, the crawl's copies `leave`d). A box required whatever the choice is filled whatever it is.
 # A box the portal switches off until a choice enables it (a "specificare" box, a locked tick) is filled `when` that choice,
 # and `leave`d otherwise (a run stops on it: "switched off (a choice before it ... switches it on)"). Check an ask's name
 # against the recipes before adding it (`grep -n "^  <ask>:" rehearsals/*/recipe.yaml`): a recipe's ask of the same name merges
@@ -79,6 +83,12 @@ groups:
     question: "Cosa è cambiato? Spunta tutte le voci che valgono."
   officina:
     question: "Quali attività svolge l'officina? Spunta tutte le voci che valgono."
+  attivita_014:
+    question: "Quali attività svolge l'impresa di pulizie? Spunta tutte le voci che valgono."
+  acque_reflue:
+    question: "Che acque reflue scarica l'impianto? Spunta tutte le voci che valgono."
+  emissioni_adesione:
+    question: "Quali attività dell'autorizzazione di carattere generale (parte quinta del D.Lgs. 152/2006, allegato IV, parte II) svolge lo stabilimento? Spunta tutte le voci che valgono."
   attivita_852:
     question: "Che cosa fa l'attività alimentare? Spunta tutte le voci che valgono."
   allegato_b:
@@ -1446,6 +1456,130 @@ asks:
   cessazione_oggetto: {type: text, question: "Il messaggio pubblicitario che cessa (150 caratteri al massimo)"}
   cessazione_motivo: {type: text, question: "Perché cessa? Il motivo, in poche parole (150 caratteri al massimo)"}
   cessazione_dimensioni: {type: text, question: "Le dimensioni dell'occupazione di suolo pubblico che cessa, in metri (ad es. «3 x 2»)"}
+  # Round 9 (2026-11-16): the advertising's take-over (subentro) and transfer (voltura), its holder's variations, the temporary advertising.
+  # Emissioni (round 9): a modification that is not substantial, and the adhesion to the general authorization.
+  emis_motivo: {type: text, question: "Perché la modifica non è sostanziale: in poche righe (200 caratteri al massimo)"}
+  emis_autorizzazione_pg: {type: text, question: "Il numero P.G. dell'autorizzazione alle emissioni che modifichi (10 caratteri al massimo)"}
+  emis_autorizzazione_pg_data: {type: date, question: "La data di quel numero P.G."}
+  emis_autorizzazione_ente: {type: text, question: "Chi l'ha rilasciata (50 caratteri al massimo)"}
+  emis_autorizzazione_data: {type: date, question: "La data in cui è stata rilasciata"}
+  adesione_oggetto: {type: choice, question: "Che cosa chiedi con l'adesione? continuare un'attività già autorizzata (ex D.P.R. 203/1988; D.Lgs. 152/2006; autorizzazione generale della Provincia); nuovo stabilimento; trasferimento; modifica sostanziale", options: [continuare ex DPR 203/1988, continuare D.Lgs. 152/2006, continuare con autorizzazione generale, nuovo stabilimento, trasferimento, modifica sostanziale]}
+  adesione_titolo_numero: {type: text, question: "Il numero del decreto o della determinazione dello stabilimento già autorizzato (30 caratteri al massimo)"}
+  adesione_titolo_data: {type: date, question: "La sua data"}
+  adesione_prec_comune: {type: text, question: "Il comune dove si trova ora lo stabilimento (70 caratteri al massimo)", propose: "Napoli"}
+  adesione_prec_via: {type: text, question: "La via dove si trova ora (70 caratteri al massimo)"}
+  adesione_prec_civico: {type: text, question: "Il numero civico"}
+  adesione_prec_cap: {type: text, question: "Il CAP"}
+  adesione_aut_prot: {type: text, question: "Il numero di protocollo dell'autorizzazione dello stabilimento (30 caratteri al massimo)"}
+  adesione_aut_data: {type: date, question: "La sua data"}
+  adesione_aut_ente: {type: text, question: "Chi l'ha rilasciata (30 caratteri al massimo)"}
+  # Scarichi (round 9): the voltura of an authorization to discharge waste water.
+  scarico_recapito: {type: choice, question: "Dove va lo scarico? corso d'acqua superficiale; strato superficiale del suolo; sub-irrigazione; fossato a perdere; scolo; corpo superficiale con portata naturale stagionalmente nulla; corpo superficiale con portata insignificante", options: [corso d'acqua superficiale, strato superficiale del suolo, sub-irrigazione, fossato a perdere, scolo, corpo superficiale con portata nulla, corpo superficiale con portata insignificante]}
+  scarico_corpo_idrico: {type: text, question: "Il nome del corpo idrico recettore (30 caratteri al massimo)"}
+  acque_processo: {type: yes_no, group: acque_reflue, item: "Acque reflue derivanti dal processo produttivo"}
+  acque_raffreddamento: {type: yes_no, group: acque_reflue, item: "Acque di raffreddamento"}
+  acque_meteoriche: {type: yes_no, group: acque_reflue, item: "Acque meteoriche di dilavamento di aree esterne"}
+  acque_domestiche: {type: yes_no, group: acque_reflue, item: "Acque assimilate alle acque reflue domestiche"}
+  acque_altro: {type: yes_no, group: acque_reflue, item: "Altre acque reflue"}
+  acque_altro_testo: {type: text, question: "Quali altre acque reflue (50 caratteri al massimo)"}
+  scarico_voltura_pg: {type: text, question: "Il numero P.G. dell'autorizzazione allo scarico di cui chiedi la voltura (10 caratteri al massimo)"}
+  scarico_voltura_data: {type: date, question: "La data di quel numero P.G."}
+  adesione_a: {type: yes_no, group: emissioni_adesione, item: "a) Riparazione e verniciatura di carrozzerie di autoveicoli, mezzi e macchine agricole con utilizzo di impianti a ciclo aperto e utilizzo complessivo di prodott"}
+  adesione_b: {type: yes_no, group: emissioni_adesione, item: "b) Tipografia, litografia, serigrafia, con utilizzo di prodotti per la stampa (inchiostri, vernici e similari) giornaliero massimo complessivo non superiore a 3"}
+  adesione_c: {type: yes_no, group: emissioni_adesione, item: "c) Produzione di prodotti in vetroresine con utilizzo giornaliero massimo complessivo di resina pronta all'uso non superiore a 200 kg."}
+  adesione_d: {type: yes_no, group: emissioni_adesione, item: "d) Produzione di articoli in gomma e prodotti delle materie plastiche con utilizzo giornaliero massimo complessivo di materie prime non superiore a 500 kg."}
+  adesione_e: {type: yes_no, group: emissioni_adesione, item: "e) Produzione di mobili, oggetti, imballaggi, prodotti semifiniti in materiale a base di legno con utilizzo giornaliero massimo complessivo di materie prime non"}
+  adesione_f: {type: yes_no, group: emissioni_adesione, item: "f) Verniciatura, laccatura, doratura di mobili ed altri oggetti in legno con utilizzo complessivo di prodotti vernicianti pronti all'uso non superiore a 50 kg/g"}
+  adesione_g: {type: yes_no, group: emissioni_adesione, item: "g) Verniciatura di oggetti vari in metalli o vetro con utilizzo complessivo di prodotti vernicianti pronti all'uso non superiore a 50 kg/ g."}
+  adesione_h: {type: yes_no, group: emissioni_adesione, item: "h) Panificazione, pasticceria e affini con consumo di farina non superiore a 1500 kg/g."}
+  adesione_i: {type: yes_no, group: emissioni_adesione, item: "i) Torrefazione di caffè ed altri prodotti tostati con produzione non superiore a 450 kg/g."}
+  adesione_l: {type: yes_no, group: emissioni_adesione, item: "l) Produzione di mastici, pitture, vernici, cere, inchiostri e affini con produzione complessiva non superiore a 500 kg/h."}
+  adesione_m: {type: yes_no, group: emissioni_adesione, item: "m) Sgrassaggio superficiale dei metalli con consumo complessivo di solventi non superiore a 10 kg/g."}
+  adesione_n: {type: yes_no, group: emissioni_adesione, item: "n) Laboratori orafi con fusione di metalli con meno di venticinque addetti."}
+  adesione_o: {type: yes_no, group: emissioni_adesione, item: "o) Anodizzazione, galvanotecnica, fosfatazione di superfici metalliche con consumo di prodotti chimici non superiore a 10 kg/ g."}
+  adesione_p: {type: yes_no, group: emissioni_adesione, item: "p) Utilizzazione di mastici e colle con consumo complessivo di sostanze collanti non superiore a 100 kg/g."}
+  adesione_q: {type: yes_no, group: emissioni_adesione, item: "q) Produzione di sapone e detergenti sintetici prodotti per l'igiene e la profumeria con utilizzo di materie prime non superiori a 200 kg/g."}
+  adesione_r: {type: yes_no, group: emissioni_adesione, item: "r) Produzione di sapone e detergenti sintetici prodotti per l'igiene e la profumeria con utilizzo di materie prime non superiori a 200 kg/g."}
+  adesione_s: {type: yes_no, group: emissioni_adesione, item: "s) Produzione di oggetti artistici in ceramica, terracotta o vetro in forni in muffola discontinua con utilizzo nel ciclo produttivo di smalti, colori e affini "}
+  adesione_t: {type: yes_no, group: emissioni_adesione, item: "t) Trasformazione e conservazione, esclusa la surgelazione, di frutta, ortaggi, funghi con produzione non superiore a 1000 kg/g."}
+  adesione_u: {type: yes_no, group: emissioni_adesione, item: "u) Trasformazione e conservazione, esclusa la surgelazione, di carne con produzione non superiore a 1000 kg/g."}
+  adesione_v: {type: yes_no, group: emissioni_adesione, item: "v) Molitura cereali con produzione non superiore a 1500 kg/g."}
+  adesione_v_bis: {type: yes_no, group: emissioni_adesione, item: "v-bis) Impianti di essiccazione di materiali vegetali impiegati o a servizio di imprese agricole non ricompresi nella parte I del presente allegato."}
+  adesione_z: {type: yes_no, group: emissioni_adesione, item: "z) Lavorazione e conservazione, esclusa la surgelazione, di pesce ed altri prodotti alimentari marini con produzione non superiore a 1000 kg/g."}
+  adesione_aa: {type: yes_no, group: emissioni_adesione, item: "aa) Prodotti in calcestruzzo e gesso in quantità non superiore a 1500 kg/g."}
+  adesione_bb: {type: yes_no, group: emissioni_adesione, item: "bb) Pressofusione con utilizzo di metalli e leghe in quantità non superiore a 100 kg/g."}
+  adesione_cc: {type: yes_no, group: emissioni_adesione, item: "cc) Lavorazioni manifatturiere alimentari con utilizzo di materie prime non superiori a 1000 kg/ g."}
+  adesione_dd: {type: yes_no, group: emissioni_adesione, item: "dd) Lavorazioni conciarie con utilizzo di prodotti vernicianti pronti all'uso giornaliero massimo non superiore a 50 kg."}
+  adesione_ee: {type: yes_no, group: emissioni_adesione, item: "ee) Fonderie di metalli con produzione di oggetti metallici giornaliero massimo non superiore a 100 kg."}
+  adesione_ff: {type: yes_no, group: emissioni_adesione, item: "ff) Produzione di ceramiche artistiche esclusa la decoratura con utilizzo di materia prima giornaliero massimo non superiore a 3.000 kg."}
+  adesione_gg: {type: yes_no, group: emissioni_adesione, item: "gg) Produzione di carta, cartone e similari con utilizzo di materie prime giornaliero massimo non superiore a 4000 kg."}
+  adesione_hh: {type: yes_no, group: emissioni_adesione, item: "hh) Saldatura di oggetti e superfici metalliche."}
+  adesione_ii: {type: yes_no, group: emissioni_adesione, item: "ii) Trasformazioni lattiero-casearie con produzione giornaliera non superiore a 1000 kg."}
+  adesione_ll: {type: yes_no, group: emissioni_adesione, item: "ll) Impianti termici civili aventi potenza termica nominale non inferiore a 3 MW e inferiore a 10 50 MW mm) impianti a ciclo chiuso per la pulizia a secco di te"}
+  adesione_nn: {type: yes_no, group: emissioni_adesione, item: "nn) Allevamenti effettuati in ambienti confinati in cui il numero di capi potenzialmente presenti è compreso nell'intervallo indicato, per le diverse categorie "}
+  adesione_oo: {type: yes_no, group: emissioni_adesione, item: "oo) Lavorazioni meccaniche dei metalli con consumo complessivo di olio (come tale o come frazione oleosa delle emulsioni) uguale o superiore a 500 kg/anno."}
+  adesione_oo_bis: {type: yes_no, group: emissioni_adesione, item: "oo-bis) Stabilimenti di produzione di vino, aceto o altre bevande fermentate non ricompresi nella parte I del presente allegato."}
+  # Cleaning and pest-control firms (sector 014, law 82/1994, D.M. 274/1997): the activities, and the technical manager.
+  attivita_pulizia: {type: yes_no, group: attivita_014, item: "Pulizia"}
+  attivita_disinfezione: {type: yes_no, group: attivita_014, item: "Disinfezione"}
+  attivita_disinfestazione: {type: yes_no, group: attivita_014, item: "Disinfestazione"}
+  attivita_derattizzazione: {type: yes_no, group: attivita_014, item: "Derattizzazione"}
+  attivita_sanificazione: {type: yes_no, group: attivita_014, item: "Sanificazione"}
+  magazzino_superficie_mq: {type: number, question: "La superficie complessiva coperta del magazzino o della sede, in m² (8 cifre al massimo)"}
+  rt_cognome: {type: text, question: "Il responsabile tecnico: cognome (50 caratteri al massimo)"}
+  rt_nome: {type: text, question: "Il suo nome"}
+  rt_cf: {type: text, question: "Il suo codice fiscale"}
+  rt_dal: {type: date, question: "Da quando è responsabile tecnico"}
+  rt_qualita: {type: choice, question: "In che rapporto sta con l'impresa? titolare; amministratore; socio lavoratore; collaboratore familiare; dipendente; institore; altro", options: [titolare, amministratore, socio lavoratore, collaboratore familiare, dipendente, institore, altro]}
+  rt_qualita_altro: {type: text, question: "Quale altro rapporto (100 caratteri al massimo)"}
+  rt_designazione: {type: choice, question: "Il responsabile tecnico è designato in sostituzione di un altro o in aggiunta? sostituzione; aggiunta", options: [sostituzione, aggiunta]}
+  rt_prec_cognome: {type: text, question: "L'altro responsabile tecnico: cognome (50 caratteri al massimo)"}
+  rt_prec_nome: {type: text, question: "Il suo nome (50 caratteri al massimo)"}
+  rt_prec_cf: {type: text, question: "Il suo codice fiscale"}
+  rt_requisito: {type: choice, question: "Con quale requisito tecnico-professionale (art. 2 c. 3 D.M. 274/1997) il responsabile tecnico è abilitato? titolo di studio; esperienza professionale come titolare o amministratore o socio; titolo estero riconosciuto", options: [titolo di studio, esperienza professionale, titolo estero]}
+  rt_titolo_tipo: {type: choice, question: "Quale titolo di studio tecnico? laurea o diploma universitario; diploma di scuola superiore; attestato di qualifica professionale", options: [laurea, diploma, attestato]}
+  rt_titolo_data: {type: date, question: "La data in cui l'ha conseguito"}
+  rt_titolo_ente: {type: text, question: "Chi l'ha rilasciato: l'Università, l'Istituto o il Centro di formazione (80 caratteri al massimo)"}
+  rt_titolo_sede: {type: text, question: "Il comune della sede dell'Istituto o del Centro (80 caratteri al massimo)", propose: "Napoli"}
+  rt_titolo_specializzazione: {type: text, question: "La specializzazione tecnica (80 caratteri al massimo)"}
+  rt_scuola: {type: text, question: "La scuola dell'obbligo dove ha conseguito il titolo (80 caratteri al massimo)"}
+  rt_scuola_comune: {type: text, question: "Il comune della scuola (100 caratteri al massimo)"}
+  rt_esp_impresa: {type: text, question: "L'impresa dove ha maturato l'esperienza (100 caratteri al massimo)"}
+  rt_esp_rea: {type: text, question: "Il suo numero R.E.A. (15 caratteri al massimo)"}
+  rt_esp_sede: {type: text, question: "Il comune della sede di quell'impresa (100 caratteri al massimo)"}
+  rt_esp_al: {type: date, question: "Fino a quando ha maturato l'esperienza"}
+  rt_estero_decreto: {type: text, question: "Il numero del decreto di riconoscimento del titolo estero (30 caratteri al massimo)"}
+  rt_estero_data: {type: date, question: "La data in cui è stato emesso"}
+  rt_estero_ministero: {type: text, question: "Il Ministero che l'ha emesso (100 caratteri al massimo)"}
+  rt_dichiarazione_doc: {type: file, question: "La dichiarazione del responsabile tecnico compilata (si scarica dal portale), con la copia del suo documento d'identità (PDF)"}
+  # A hotel's structural SCIA (sector 054, round 9): the variation of the classification or "altro" (the capacity needs the draft read).
+  hotel_variazione: {type: choice, question: "Che variazione segnali per l'albergo? classificazione; altro", options: [classificazione, altro]}
+  hotel_classif_ambito: {type: choice, question: "La classificazione varia per la struttura principale o per una dipendenza? struttura principale; dipendenza", options: [struttura principale, dipendenza]}
+  hotel_variazione_altro: {type: text, question: "Quale variazione, in poche parole (200 caratteri al massimo)"}
+  impianto_causa: {type: choice, question: "Come passa l'impianto pubblicitario al nuovo titolare? compravendita; affitto; fusione; conferimento; fallimento; donazione; reintestazione; altre cause; successione", options: [compravendita, affitto, fusione, conferimento, fallimento, donazione, reintestazione, altre cause, successione]}
+  impianto_causa_altro: {type: text, question: "Quale altra causa (100 caratteri al massimo)"}
+  cedente_titolo_tipo: {type: choice, question: "Il titolo con cui il cedente teneva l'impianto: autorizzazione; comunicazione; D.I.A.; S.C.I.A.", options: [autorizzazione, comunicazione, D.I.A., S.C.I.A.]}
+  decesso_data: {type: date, question: "La data di decesso del titolare"}
+  ultimo_rinnovo_data: {type: date, question: "La data dell'ultimo rinnovo dell'autorizzazione"}
+  ultimo_rinnovo_pg: {type: text, question: "Il numero di protocollo (P.G.) dell'ultimo rinnovo (20 caratteri al massimo)"}
+  impianto_comune: {type: text, question: "Il comune dove si trova il mezzo pubblicitario", propose: "Napoli"}
+  impianto_provincia: {type: text, question: "La sua provincia (sigla)", propose: "NA"}
+  impianto_cap: {type: text, question: "Il suo CAP"}
+  impianto_via: {type: text, question: "La via, viale o piazza dove si trova (60 caratteri al massimo)"}
+  impianto_civico: {type: text, question: "Il numero civico"}
+  var_legale: {type: yes_no, group: variazioni, item: "Il legale rappresentante è cambiato"}
+  legale_precedente_cognome: {type: text, question: "Il legale rappresentante finora: cognome"}
+  legale_precedente_nome: {type: text, question: "Il suo nome"}
+  legale_nuovo_cognome: {type: text, question: "Il nuovo legale rappresentante: cognome"}
+  legale_nuovo_nome: {type: text, question: "Il suo nome"}
+  pubblicita_temporanea_tipo: {type: choice, question: "Che pubblicità temporanea è? immobile in locazione o vendita; manifestazione o evento; cartello immobiliare; cartello di cantiere; messaggio su vetrina o porta", options: [immobile in locazione o vendita, manifestazione o evento, cartello immobiliare, cartello di cantiere, messaggio su vetrina o porta]}
+  mezzo_sostegno: {type: text, question: "Il tipo di sostegno (30 caratteri al massimo)"}
+  mezzo_lunghezza_cm: {type: number, question: "La lunghezza del mezzo, in cm"}
+  mezzo_altezza_cm: {type: number, question: "La sua altezza, in cm"}
+  mezzo_spessore_cm: {type: number, question: "Il suo spessore, in cm"}
+  mezzi_numero: {type: number, question: "Quanti mezzi pubblicitari uguali", propose: "1"}
+  luogo_esposizione: {type: text, question: "Il luogo di esposizione (50 caratteri al massimo)"}
+  manifestazione_periodo: {type: text, question: "Il periodo di svolgimento della manifestazione, dello spettacolo o dell'iniziativa; se non c'è, il periodo di esposizione (50 caratteri al massimo)"}
   # Trades beyond the wedge: a garage, a laundry, an agriturismo's end, a cleaning firm's change of people.
   officina_meccatronica: {type: yes_no, group: officina, item: "Meccatronica"}
   officina_carrozzeria: {type: yes_no, group: officina, item: "Carrozzeria"}
@@ -4820,7 +4954,8 @@ sections:
               dichiarazione dell'ubicazione dell'esercizio, dichiarazione relativa all'indirizzo dello stabilimento,
               nuovo indirizzo dell'esercizio, nuovo indirizzo dell'ubicazione dell'esercizio,
               indirizzo dell'esercizio commerciale, indirizzo dell'officina,
-              dichiarazione relativa all'ubicazione dell'impianto produttivo]
+              dichiarazione relativa all'ubicazione dell'impianto produttivo,
+              indirizzo del magazzino/deposito/sede dell'attività]
     subject: impresa
     leave: [Frazione]
     fields:
@@ -7262,6 +7397,363 @@ sections:
 
 # The screens after the form, reached with their button. The attachments go by slot title; a
 # slot the pratica's crawl doesn't list is left out, a required one nothing fills stops gen.py.
+
+  # --- Round 9 entries last: a short name is a prefix of longer ones, and the first entry without problems wins in file order ---
+  # Round 9 (2026-11-16): the advertising's take-over (SCIA 5) and its voltura: the cedente, the title he held, the deed
+  # (the notary's boxes are the deed's for a sale, a lease, a fusion, a conferment, a donation), and for a death the date.
+  - section: DICHIARAZIONE RELATIVA AL SUBENTRO
+    leave: [data di decesso del titolare]
+    fields:
+      - {kind: text, label: Denominazione ditta cedente, value: "{{ask.cedente_denominazione}}"}
+      - {kind: text, label: Codice Fiscale, value: "{{ask.cedente_cf}}"}
+      - {kind: text, label: SCIA per insegna n°, value: "{{ask.cedente_titolo_protocollo}}"}
+      - {kind: date, label: data, value: "{{ask.cedente_titolo_data|date_it}}"}
+      - {kind: radio, label: "atto di trasferimento d'azienda o di ramo d'azienda:", when: "{{ask.impianto_causa|is_successione|not}}"}
+      - {kind: radio, label: compravendita, when: "{{ask.impianto_causa|is_compravendita}}"}
+      - {kind: radio, label: affitto, when: "{{ask.impianto_causa|is_affitto}}"}
+      - {kind: radio, label: fusione, when: "{{ask.impianto_causa|is_fusione}}"}
+      - {kind: radio, label: conferimento, when: "{{ask.impianto_causa|is_conferimento}}"}
+      - {kind: radio, label: fallimento, when: "{{ask.impianto_causa|is_fallimento}}"}
+      - {kind: radio, label: donazione, when: "{{ask.impianto_causa|is_donazione}}"}
+      - {kind: radio, label: reintestazione, when: "{{ask.impianto_causa|is_reintestazione}}"}
+      - {kind: radio, label: altre cause, when: "{{ask.impianto_causa|is_altre_cause}}"}
+      - {kind: text, label: "specificare:", value: "{{ask.impianto_causa_altro}}", when: "{{ask.impianto_causa|is_altre_cause}}"}
+      - {kind: date, label: stipulato/ autenticato in data, value: "{{ask.subingresso_atto_data|date_it}}", when: "{{ask.impianto_causa|is_successione|not}}"}
+      - {kind: date, label: con decorrenza, value: "{{ask.subingresso_decorrenza|date_it}}", when: "{{ask.impianto_causa|is_successione|not}}"}
+      - {kind: text, label: presso il notaio, value: "{{ask.notaio_nome}}", when: "{{ask.impianto_causa|is_successione|not}}"}
+      - {kind: text, label: con sede a, value: "{{ask.notaio_sede}}", when: "{{ask.impianto_causa|is_successione|not}}"}
+      - {kind: radio, label: successione mortis causa, when: "{{ask.impianto_causa|is_successione}}"}
+      - {kind: date, label: data di decesso del titolare, value: "{{ask.decesso_data|date_it}}", when: "{{ask.impianto_causa|is_successione}}"}
+  - section: DICHIARAZIONE DEGLI ESTREMI DELL'ATTIVITÀ DEL SUBENTRANTE
+    fields:
+      - {kind: text, label: per l'attività di, value: "{{ask.attivita_esercitata}}"}
+      - {kind: text, label: "Avente: SCIA/DIA/AUTORIZZAZIONE prot. n°", value: "{{ask.titolo_attivita_protocollo}}"}
+      - {kind: date, label: del, value: "{{ask.titolo_attivita_data|date_it}}"}
+  - section: mancanza di variazioni dell'impianto
+    theirs: [Dichiara che non vi sono state modifiche rispetto al precedente titolo autorizzativo]
+    fields: []
+  - section: dichiarazione relativa alla voltura
+    leave: [data di decesso del titolare]
+    fields:
+      - {kind: text, label: Denominazione ditta cedente, value: "{{ask.cedente_denominazione}}"}
+      - {kind: text, label: Codice Fiscale, value: "{{ask.cedente_cf}}"}
+      - {kind: radio, label: autorizzazione, when: "{{ask.cedente_titolo_tipo|is_autorizzazione}}"}
+      - {kind: radio, label: comunicazione, when: "{{ask.cedente_titolo_tipo|is_comunicazione}}"}
+      - {kind: radio, label: D.I.A., when: "{{ask.cedente_titolo_tipo|is_d_i_a}}"}
+      - {kind: radio, label: S.C.I.A., when: "{{ask.cedente_titolo_tipo|is_s_c_i_a}}"}
+      - {kind: text, label: n°, value: "{{ask.cedente_titolo_protocollo}}"}
+      - {kind: date, label: data, value: "{{ask.cedente_titolo_data|date_it}}"}
+      - {kind: radio, label: "atto di trasferimento d'azienda o di ramo d'azienda:", when: "{{ask.impianto_causa|is_successione|not}}"}
+      - {kind: radio, label: compravendita, when: "{{ask.impianto_causa|is_compravendita}}"}
+      - {kind: radio, label: affitto, when: "{{ask.impianto_causa|is_affitto}}"}
+      - {kind: radio, label: fusione, when: "{{ask.impianto_causa|is_fusione}}"}
+      - {kind: radio, label: conferimento, when: "{{ask.impianto_causa|is_conferimento}}"}
+      - {kind: radio, label: fallimento, when: "{{ask.impianto_causa|is_fallimento}}"}
+      - {kind: radio, label: donazione, when: "{{ask.impianto_causa|is_donazione}}"}
+      - {kind: radio, label: reintestazione, when: "{{ask.impianto_causa|is_reintestazione}}"}
+      - {kind: radio, label: altre cause, when: "{{ask.impianto_causa|is_altre_cause}}"}
+      - {kind: text, label: "specificare:", value: "{{ask.impianto_causa_altro}}", when: "{{ask.impianto_causa|is_altre_cause}}"}
+      - {kind: date, label: stipulato/ autenticato in data, value: "{{ask.subingresso_atto_data|date_it}}", when: "{{ask.impianto_causa|is_successione|not}}"}
+      - {kind: date, label: con decorrenza, value: "{{ask.subingresso_decorrenza|date_it}}", when: "{{ask.impianto_causa|is_successione|not}}"}
+      - {kind: text, label: presso il notaio, value: "{{ask.notaio_nome}}", when: "{{ask.impianto_causa|is_successione|not}}"}
+      - {kind: text, label: con sede a, value: "{{ask.notaio_sede}}", when: "{{ask.impianto_causa|is_successione|not}}"}
+      - {kind: radio, label: successione mortis causa, when: "{{ask.impianto_causa|is_successione}}"}
+      - {kind: date, label: data di decesso del titolare, value: "{{ask.decesso_data|date_it}}", when: "{{ask.impianto_causa|is_successione}}"}
+  - section: dichiarazione estremi ultimo rinnovo
+    fields:
+      - {kind: date, label: data ultimo rinnovo, value: "{{ask.ultimo_rinnovo_data|date_it}}"}
+      - {kind: text, label: numero P.G., value: "{{ask.ultimo_rinnovo_pg}}"}
+  # The holder's variation of a permit: the new place of the sign, the permit, and which of the three subjective changes. Only the
+  # street is a list (its official name: "Viale Augusto" is VIALE OTTAVIO CESARE AUGUSTO there); the civico and CAP, though the crawl
+  # reads them as lookups, list nothing and take the typed value (the run stopped on "matches 0 of 0 listed", 2026-11-16).
+  - section: dichiarazione relativa all'indirizzo/collocazione
+    leave: [Frazione, scala, piano, interno]
+    fields:
+      - {kind: text, label: Comune, value: "{{ask.impianto_comune}}"}
+      - {kind: text, label: Prov., value: "{{ask.impianto_provincia}}"}
+      - {kind: lookup, label: "Via, Viale, Piazza", value: "{{ask.impianto_via}}"}
+      - {kind: text, label: n° civico, value: "{{ask.impianto_civico}}"}
+      - {kind: text, label: CAP, value: "{{ask.impianto_cap}}"}
+  - section: estremi della concessione / autorizzazione
+    theirs: [dichiara che non sono state apportate modifiche e/o variazioni]
+    fields:
+      - {kind: text, label: concessione / autorizzazione n°, value: "{{ask.autorizzazione_numero}}"}
+      - {kind: date, label: del, value: "{{ask.autorizzazione_data|date_it}}"}
+  - section: variazione soggettive
+    fields:
+      - {kind: checkbox, label: VARIAZIONE DELLA DENOMINAZIONE/RAGIONE SOCIALE, when: "{{ask.var_denominazione}}"}
+      - {kind: date, label: con decorrenza dal, value: "{{ask.var_decorrenza|date_it}}", when: "{{ask.var_denominazione}}"}
+      - {kind: text, label: precedente, value: "{{ask.denominazione_precedente}}", when: "{{ask.var_denominazione}}"}
+      - {kind: text, label: nuova, value: "{{business.denominazione}}", when: "{{ask.var_denominazione}}"}
+      - {kind: checkbox, label: VARIAZIONE DELLA SEDE LEGALE, when: "{{ask.var_sede_legale}}"}
+      - {kind: text, label: da via o..., value: "{{ask.sede_precedente_via}}", when: "{{ask.var_sede_legale}}"}
+      - {kind: text, label: comune, value: "{{ask.sede_precedente_comune}}", when: "{{ask.var_sede_legale}}"}
+      - {kind: text, label: C.A.P., value: "{{ask.sede_precedente_cap}}", when: "{{ask.var_sede_legale}}"}
+      - {kind: text, label: a via o ..., value: "{{business.sede_legale_indirizzo}} {{business.sede_legale_civico}}", when: "{{ask.var_sede_legale}}"}
+      - {kind: text, label: comune, nth: 2, value: "{{business.sede_legale_comune}}", when: "{{ask.var_sede_legale}}"}
+      - {kind: text, label: C.A.P., nth: 2, value: "{{business.sede_legale_cap}}", when: "{{ask.var_sede_legale}}"}
+      - {kind: checkbox, label: VARIAZIONE DEL LEGALE RAPPRESENTANTE, when: "{{ask.var_legale}}"}
+      - {kind: text, label: dal/ la sig./ ra cognome, value: "{{ask.legale_precedente_cognome}}", when: "{{ask.var_legale}}"}
+      - {kind: text, label: nome, value: "{{ask.legale_precedente_nome}}", when: "{{ask.var_legale}}"}
+      - {kind: text, label: al/ la sig./ ra cognome, value: "{{ask.legale_nuovo_cognome}}", when: "{{ask.var_legale}}"}
+      - {kind: text, label: nome, nth: 2, value: "{{ask.legale_nuovo_nome}}", when: "{{ask.var_legale}}"}
+  # Temporary advertising (a repeatable panel): one of five kinds, its support and measures, the days and the place; the
+  # person's statements (wind, the municipal rules, the road owner's opinion, the building's availability) are theirs.
+  - section: tipologia del mezzo pubblicitario (pubblicità temporanea) pannello ripetibile
+    fields:
+      - {kind: text, label: numero progressivo del mezzo pubblicitario, value: "1"}
+      - {kind: checkbox, label: pubblicità riguardanti la locazione o la compravendita, when: "{{ask.pubblicita_temporanea_tipo|is_immobile_in_locazione_o_vendita}}"}
+      - {kind: checkbox, label: pubblicità collegata a manifestazioni o eventi, when: "{{ask.pubblicita_temporanea_tipo|is_manifestazione_o_evento}}"}
+      - {kind: checkbox, label: cartelli di tipo immobiliare opachi, when: "{{ask.pubblicita_temporanea_tipo|is_cartello_immobiliare}}"}
+      - {kind: checkbox, label: cartelli di cantiere pubblicitari, when: "{{ask.pubblicita_temporanea_tipo|is_cartello_di_cantiere}}"}
+      - {kind: checkbox, label: messaggi temporanei non luminosi, when: "{{ask.pubblicita_temporanea_tipo|is_messaggio_su_vetrina_o_porta}}"}
+      - {kind: text, label: tipo di sostegno, value: "{{ask.mezzo_sostegno}}"}
+      - {kind: text, label: lunghezza cm, value: "{{ask.mezzo_lunghezza_cm}}"}
+      - {kind: text, label: altezza cm, value: "{{ask.mezzo_altezza_cm}}"}
+      - {kind: text, label: spessore cm, value: "{{ask.mezzo_spessore_cm}}"}
+      - {kind: text, label: numero mezzi pubblicitari, value: "{{ask.mezzi_numero}}"}
+  # The event's period is required for every kind (a cartello di cantiere's run stopped on "il valore e obbligatorio", 2026-11-16):
+  # without an event it is the exposure's own period.
+  - section: Periodo e luogo di esposizione
+    fields:
+      - {kind: date, label: "Periodo di esposizione, dal:", value: "{{ask.esposizione_dal|date_it}}"}
+      - {kind: date, label: "al:", value: "{{ask.esposizione_al|date_it}}"}
+      - {kind: text, label: "Luogo di esposizione:", value: "{{ask.luogo_esposizione}}"}
+      - {kind: text, label: Periodo di svolgimento della manifestazione/spettacolo/iniziativa, value: "{{ask.manifestazione_periodo}}"}
+  - section: Ulteriori dichiarazioni (mezzi pubblicitari temporanei)
+    theirs: [il manufatto/i è/sono stato/i calcolato/i, è a conoscenza di tutte le condizioni, è stato acquisito il parere favorevole, ha la piena disponibilità dell'immobile, è stato autorizzato dal proprietario]
+    fields: []
+
+  # Emissioni in atmosfera: a modification that is not substantial (art. 269 c. 8), and the adhesion to the general
+  # authorization (art. 272 c. 2). The person's statements (the modification's nature, the operator's powers, the commitments)
+  # are theirs; the authorization held, the reason and the object are facts.
+  - section: dichiarazione relativa alla modifica non sostanziale di emissioni in atmosfera dello stabilimento
+    theirs: [che ai sensi dell'art. 269 comma 8 del D.Lgs 152 /06 la modifica può considerarsi non sostanziale]
+    fields: []
+  - section: dichiarazione relativa al/ai motivo/i per il/i quale/i la modifica non è da considerarsi sostanziale
+    fields:
+      - {kind: textarea, label: specificare, value: "{{ask.emis_motivo}}"}
+  - section: dichiarazione relativa agli estremi dell'autorizzazione
+    leave: [ha presentato domanda di autorizzazione ai sensi dell'art. 12 del DPR 203/88]
+    fields:
+      - {kind: radio, label: autorizzazione}
+      - {kind: text, label: P.G., value: "{{ask.emis_autorizzazione_pg}}"}
+      - {kind: date, label: del, value: "{{ask.emis_autorizzazione_pg_data|date_it}}"}
+      - {kind: text, label: rilasciata da, value: "{{ask.emis_autorizzazione_ente}}"}
+      - {kind: date, label: in data, nth: 1, value: "{{ask.emis_autorizzazione_data|date_it}}"}
+  - section: tipologie attività autorizzazione generale (Allegato IV Parte II alla Parte Quinta)
+    fields:
+      - {kind: checkbox, label: "a) Riparazione e verniciatura di carrozzerie di ", when: "{{ask.adesione_a}}"}
+      - {kind: checkbox, label: "b) Tipografia, litografia, serigrafia, con utili", when: "{{ask.adesione_b}}"}
+      - {kind: checkbox, label: "c) Produzione di prodotti in vetroresine con uti", when: "{{ask.adesione_c}}"}
+      - {kind: checkbox, label: "d) Produzione di articoli in gomma e prodotti de", when: "{{ask.adesione_d}}"}
+      - {kind: checkbox, label: "e) Produzione di mobili, oggetti, imballaggi, pr", when: "{{ask.adesione_e}}"}
+      - {kind: checkbox, label: "f) Verniciatura, laccatura, doratura di mobili e", when: "{{ask.adesione_f}}"}
+      - {kind: checkbox, label: "g) Verniciatura di oggetti vari in metalli o vet", when: "{{ask.adesione_g}}"}
+      - {kind: checkbox, label: "h) Panificazione, pasticceria e affini con consu", when: "{{ask.adesione_h}}"}
+      - {kind: checkbox, label: "i) Torrefazione di caffè ed altri prodotti tosta", when: "{{ask.adesione_i}}"}
+      - {kind: checkbox, label: "l) Produzione di mastici, pitture, vernici, cere", when: "{{ask.adesione_l}}"}
+      - {kind: checkbox, label: "m) Sgrassaggio superficiale dei metalli con cons", when: "{{ask.adesione_m}}"}
+      - {kind: checkbox, label: "n) Laboratori orafi con fusione di metalli con m", when: "{{ask.adesione_n}}"}
+      - {kind: checkbox, label: "o) Anodizzazione, galvanotecnica, fosfatazione d", when: "{{ask.adesione_o}}"}
+      - {kind: checkbox, label: "p) Utilizzazione di mastici e colle con consumo ", when: "{{ask.adesione_p}}"}
+      - {kind: checkbox, label: "q) Produzione di sapone e detergenti sintetici p", when: "{{ask.adesione_q}}"}
+      - {kind: checkbox, label: "r) Produzione di sapone e detergenti sintetici p", when: "{{ask.adesione_r}}"}
+      - {kind: checkbox, label: "s) Produzione di oggetti artistici in ceramica, ", when: "{{ask.adesione_s}}"}
+      - {kind: checkbox, label: "t) Trasformazione e conservazione, esclusa la su", when: "{{ask.adesione_t}}"}
+      - {kind: checkbox, label: "u) Trasformazione e conservazione, esclusa la su", when: "{{ask.adesione_u}}"}
+      - {kind: checkbox, label: "v) Molitura cereali con produzione non superiore", when: "{{ask.adesione_v}}"}
+      - {kind: checkbox, label: "v-bis) Impianti di essiccazione di materiali veg", when: "{{ask.adesione_v_bis}}"}
+      - {kind: checkbox, label: "z) Lavorazione e conservazione, esclusa la surge", when: "{{ask.adesione_z}}"}
+      - {kind: checkbox, label: "aa) Prodotti in calcestruzzo e gesso in quantità", when: "{{ask.adesione_aa}}"}
+      - {kind: checkbox, label: "bb) Pressofusione con utilizzo di metalli e legh", when: "{{ask.adesione_bb}}"}
+      - {kind: checkbox, label: "cc) Lavorazioni manifatturiere alimentari con ut", when: "{{ask.adesione_cc}}"}
+      - {kind: checkbox, label: "dd) Lavorazioni conciarie con utilizzo di prodot", when: "{{ask.adesione_dd}}"}
+      - {kind: checkbox, label: "ee) Fonderie di metalli con produzione di oggett", when: "{{ask.adesione_ee}}"}
+      - {kind: checkbox, label: "ff) Produzione di ceramiche artistiche esclusa l", when: "{{ask.adesione_ff}}"}
+      - {kind: checkbox, label: "gg) Produzione di carta, cartone e similari con ", when: "{{ask.adesione_gg}}"}
+      - {kind: checkbox, label: "hh) Saldatura di oggetti e superfici metalliche.", when: "{{ask.adesione_hh}}"}
+      - {kind: checkbox, label: "ii) Trasformazioni lattiero-casearie con produzi", when: "{{ask.adesione_ii}}"}
+      - {kind: checkbox, label: "ll) Impianti termici civili aventi potenza termi", when: "{{ask.adesione_ll}}"}
+      - {kind: checkbox, label: "nn) Allevamenti effettuati in ambienti confinati", when: "{{ask.adesione_nn}}"}
+      - {kind: checkbox, label: "oo) Lavorazioni meccaniche dei metalli con consu", when: "{{ask.adesione_oo}}"}
+      - {kind: checkbox, label: "oo-bis) Stabilimenti di produzione di vino, acet", when: "{{ask.adesione_oo_bis}}"}
+  - section: ulteriori dichiarazioni
+    theirs: [di essere gestore dello stabilimento, di non generare emissioni di sostanze cancerogene, di non impiegare le sostanze o i preparati classificati, che non utilizza solventi, "che, sotto i profili urbanistico-edilizio", si impegna a dare all'autorita competente, si impegna a rispettare i limiti, si impegna ad acquisire]
+    fields: []
+  - section: dichiarazione relativa all'oggetto dell'adesione
+    fields:
+      - {kind: radio, label: "continuare ad esercire l'attività in quanto stabilimento già autorizzato:", when: "{{ask.adesione_oggetto|in_continuare_ex_dpr_203_1988__continuare_d_lgs_152_2006__continuare_con_autorizzazione_generale}}"}
+      - {kind: radio, label: ai sensi dell'ex D.P.R. 203/1988, when: "{{ask.adesione_oggetto|is_continuare_ex_dpr_203_1988}}"}
+      - {kind: text, label: con D.G.R./decreto n., value: "{{ask.adesione_titolo_numero}}", when: "{{ask.adesione_oggetto|is_continuare_ex_dpr_203_1988}}"}
+      - {kind: date, label: del, nth: 1, value: "{{ask.adesione_titolo_data|date_it}}", when: "{{ask.adesione_oggetto|is_continuare_ex_dpr_203_1988}}"}
+      - {kind: radio, label: ai sensi del D.Lgs. 152/2006, when: "{{ask.adesione_oggetto|is_continuare_d_lgs_152_2006}}"}
+      - {kind: text, label: con D.G.R./decreto/determinazione dirigenziale n, value: "{{ask.adesione_titolo_numero}}", when: "{{ask.adesione_oggetto|is_continuare_d_lgs_152_2006}}"}
+      - {kind: date, label: del, nth: 2, value: "{{ask.adesione_titolo_data|date_it}}", when: "{{ask.adesione_oggetto|is_continuare_d_lgs_152_2006}}"}
+      - {kind: radio, label: con autorizzazione di carattere generale emanata dalla Provincia, when: "{{ask.adesione_oggetto|is_continuare_con_autorizzazione_generale}}"}
+      - {kind: text, label: n., value: "{{ask.adesione_titolo_numero}}", when: "{{ask.adesione_oggetto|is_continuare_con_autorizzazione_generale}}"}
+      - {kind: date, label: del, nth: 3, value: "{{ask.adesione_titolo_data|date_it}}", when: "{{ask.adesione_oggetto|is_continuare_con_autorizzazione_generale}}"}
+      - {kind: radio, label: l'installazione di un nuovo stabilimento, when: "{{ask.adesione_oggetto|is_nuovo_stabilimento}}"}
+      - {kind: radio, label: il trasferimento dello stabilimento già autorizzato, when: "{{ask.adesione_oggetto|is_trasferimento}}"}
+      - {kind: text, label: attualmente ubicato nel comune di, value: "{{ask.adesione_prec_comune}}", when: "{{ask.adesione_oggetto|is_trasferimento}}"}
+      - {kind: text, label: via, value: "{{ask.adesione_prec_via}}", when: "{{ask.adesione_oggetto|is_trasferimento}}"}
+      - {kind: text, label: numero civico, value: "{{ask.adesione_prec_civico}}", when: "{{ask.adesione_oggetto|is_trasferimento}}"}
+      - {kind: text, label: CAP, value: "{{ask.adesione_prec_cap}}", when: "{{ask.adesione_oggetto|is_trasferimento}}"}
+      - {kind: text, label: autorizzazione prot. n°, nth: 1, value: "{{ask.adesione_aut_prot}}", when: "{{ask.adesione_oggetto|is_trasferimento}}"}
+      - {kind: date, label: del, nth: 4, value: "{{ask.adesione_aut_data|date_it}}", when: "{{ask.adesione_oggetto|is_trasferimento}}"}
+      - {kind: text, label: rilasciata da, nth: 1, value: "{{ask.adesione_aut_ente}}", when: "{{ask.adesione_oggetto|is_trasferimento}}"}
+      - {kind: radio, label: la modifica sostanziale dello stabilimento già autorizzato, when: "{{ask.adesione_oggetto|is_modifica_sostanziale}}"}
+      - {kind: text, label: autorizzazione prot. n°, nth: 2, value: "{{ask.adesione_aut_prot}}", when: "{{ask.adesione_oggetto|is_modifica_sostanziale}}"}
+      - {kind: date, label: del, nth: 5, value: "{{ask.adesione_aut_data|date_it}}", when: "{{ask.adesione_oggetto|is_modifica_sostanziale}}"}
+      - {kind: text, label: rilasciata da, nth: 2, value: "{{ask.adesione_aut_ente}}", when: "{{ask.adesione_oggetto|is_modifica_sostanziale}}"}
+  # Scarichi: the voltura of an authorization to discharge waste water (where it goes, which waters, the authorization).
+  # The portal's tree (read on the draft, 2026-11-16): "corso d'acqua superficiale" (with its name) and "strato superficiale del suolo", and
+  # only that one switches on the five below it (sub-irrigazione, fossato a perdere, scolo, the two surface bodies: switched off before).
+  - section: dichiarazione del recapito dello scarico
+    fields:
+      - {kind: radio, label: corso d'acqua superficiale, when: "{{ask.scarico_recapito|is_corso_d_acqua_superficiale}}"}
+      - {kind: text, label: nome del corpo idrico recettore, value: "{{ask.scarico_corpo_idrico}}", when: "{{ask.scarico_recapito|is_corso_d_acqua_superficiale}}"}
+      - {kind: radio, label: strato superficiale del suolo, when: "{{ask.scarico_recapito|in_strato_superficiale_del_suolo__sub_irrigazione__fossato_a_perdere__scolo__corpo_superficiale_con_portata_nulla__corpo_superficiale_con_portata_insignificante}}"}
+      - {kind: radio, label: sub-irrigazione, when: "{{ask.scarico_recapito|in_strato_superficiale_del_suolo__sub_irrigazione__fossato_a_perdere__scolo__corpo_superficiale_con_portata_nulla__corpo_superficiale_con_portata_insignificante}} {{ask.scarico_recapito|is_sub_irrigazione}}"}
+      - {kind: radio, label: fossato a perdere, when: "{{ask.scarico_recapito|in_strato_superficiale_del_suolo__sub_irrigazione__fossato_a_perdere__scolo__corpo_superficiale_con_portata_nulla__corpo_superficiale_con_portata_insignificante}} {{ask.scarico_recapito|is_fossato_a_perdere}}"}
+      - {kind: radio, label: scolo, when: "{{ask.scarico_recapito|in_strato_superficiale_del_suolo__sub_irrigazione__fossato_a_perdere__scolo__corpo_superficiale_con_portata_nulla__corpo_superficiale_con_portata_insignificante}} {{ask.scarico_recapito|is_scolo}}"}
+      - {kind: radio, label: corpo superficiale con portata naturale stagionalmente nulla, when: "{{ask.scarico_recapito|in_strato_superficiale_del_suolo__sub_irrigazione__fossato_a_perdere__scolo__corpo_superficiale_con_portata_nulla__corpo_superficiale_con_portata_insignificante}} {{ask.scarico_recapito|is_corpo_superficiale_con_portata_nulla}}"}
+      - {kind: radio, label: corpo superficiale con portata insignificante, when: "{{ask.scarico_recapito|in_strato_superficiale_del_suolo__sub_irrigazione__fossato_a_perdere__scolo__corpo_superficiale_con_portata_nulla__corpo_superficiale_con_portata_insignificante}} {{ask.scarico_recapito|is_corpo_superficiale_con_portata_insignificante}}"}
+  - section: dichiarazione relativa alla tipologia di acque reflue
+    fields:
+      - {kind: checkbox, label: derivanti dal processo produttivo, when: "{{ask.acque_processo}}"}
+      - {kind: checkbox, label: di raffreddamento, when: "{{ask.acque_raffreddamento}}"}
+      - {kind: checkbox, label: meteoriche di dilavamento di aree esterne, when: "{{ask.acque_meteoriche}}"}
+      - {kind: checkbox, label: assimilate alle acque reflue domestiche, when: "{{ask.acque_domestiche}}"}
+      - {kind: checkbox, label: altro, when: "{{ask.acque_altro}}"}
+      - {kind: text, label: (specificare), value: "{{ask.acque_altro_testo}}", when: "{{ask.acque_altro}}"}
+  - section: dichiarazione relativa all'autorizzazione oggetto della domanda di voltura
+    fields:
+      - {kind: text, label: P.G. n., value: "{{ask.scarico_voltura_pg}}"}
+      - {kind: date, label: del, value: "{{ask.scarico_voltura_data|date_it}}"}
+
+  # Cleaning firms (sector 014). The activities; the requisiti of the opening (the person's), with the technical manager's own
+  # questions answered "no" (they open only for pest control, disinfestation and sanification, which a recipe refuses).
+  - section: Dati sull'attività
+    fields:
+      - {kind: checkbox, label: pulizia, when: "{{ask.attivita_pulizia}}"}
+      - {kind: checkbox, label: disinfezione, when: "{{ask.attivita_disinfezione}}"}
+      - {kind: checkbox, label: disinfestazione, when: "{{ask.attivita_disinfestazione}}"}
+      - {kind: checkbox, label: derattizzazione, when: "{{ask.attivita_derattizzazione}}"}
+      - {kind: checkbox, label: sanificazione, when: "{{ask.attivita_sanificazione}}"}
+      - {kind: text, label: mq, value: "{{ask.magazzino_superficie_mq}}"}
+  - section: Possesso dei requisiti
+    theirs: [di essere in possesso dei requisiti di onorabilità, che non sussistono nei propri confronti le cause di divieto, che l'impresa è in possesso dei requisiti di capacità economica]
+    leave: [Altro (eventuali requisiti, SI]
+    supports:
+      - {when: "{{ask.attivita_disinfestazione|not}} {{ask.attivita_derattizzazione|not}} {{ask.attivita_sanificazione|not}}", else: "Per disinfestazione, derattizzazione e sanificazione il modulo chiede anche il preposto alla gestione tecnica, con i suoi requisiti: per ora non lo preparo."}
+    fields:
+      - {kind: radio, label: "NO"}
+  - section: Attività oggetto della segnalazione
+    fields:
+      - {kind: checkbox, label: disinfestazione, when: "{{ask.attivita_disinfestazione}}"}
+      - {kind: checkbox, label: derattizzazione, when: "{{ask.attivita_derattizzazione}}"}
+      - {kind: checkbox, label: sanificazione, when: "{{ask.attivita_sanificazione}}"}
+  - section: requisiti morali e di onorabilità
+    theirs: [non sussistono nei propri confronti cause di divieto, 1. non è stata pronunciata sentenza penale, 2. non sia stata svolta, 3.non è stata pronunciata sentenza, 4.non sono state accertate contravvenzioni]
+    fields: []
+  # The technical manager's designation: who, since when, in what relation to the firm, in whose place (or besides whom), and by
+  # which requisito (a degree, the experience as titolare, a foreign title: the rest, an employee's experience and the special
+  # cases, are not offered). The signed declaration is the person's file.
+  # Only the opened choice's boxes are on the page, so a box the crawl holds three times (the three titles' "specializzazione tecnica",
+  # "conseguito il", "con sede nel Comune di") is the first of its label there: the diploma's and the attestato's are `on_page`, the crawl's
+  # copies left (the run stopped on "1 fields with this label" for an `nth: 2`, 2026-11-16).
+  - section: Designazione del responsabile tecnico
+    fields:
+      - {kind: text, label: Cognome, value: "{{ask.rt_cognome}}"}
+      - {kind: text, label: Nome, value: "{{ask.rt_nome}}"}
+      - {kind: text, label: Codice Fiscale, value: "{{ask.rt_cf}}"}
+      - {kind: date, label: dal, value: "{{ask.rt_dal|date_it}}"}
+      - {kind: radio, label: titolare, when: "{{ask.rt_qualita|is_titolare}}"}
+      - {kind: radio, label: amministratore, when: "{{ask.rt_qualita|is_amministratore}}"}
+      - {kind: radio, label: socio lavoratore, when: "{{ask.rt_qualita|is_socio_lavoratore}}"}
+      - {kind: radio, label: collaboratore familiare, when: "{{ask.rt_qualita|is_collaboratore_familiare}}"}
+      - {kind: radio, label: dipendente, when: "{{ask.rt_qualita|is_dipendente}}"}
+      - {kind: radio, label: institore, when: "{{ask.rt_qualita|is_institore}}"}
+      - {kind: radio, label: altro, when: "{{ask.rt_qualita|is_altro}}"}
+      - {kind: text, label: specificare, value: "{{ask.rt_qualita_altro}}", when: "{{ask.rt_qualita|is_altro}}"}
+      - {kind: radio, label: in sostituzione di, when: "{{ask.rt_designazione|is_sostituzione}}"}
+      - {kind: text, label: cognome, nth: 2, value: "{{ask.rt_prec_cognome}}", when: "{{ask.rt_designazione|is_sostituzione}}"}
+      - {kind: text, label: nome, nth: 2, value: "{{ask.rt_prec_nome}}", when: "{{ask.rt_designazione|is_sostituzione}}"}
+      - {kind: text, label: cod. fisc., value: "{{ask.rt_prec_cf}}", when: "{{ask.rt_designazione|is_sostituzione}}"}
+      - {kind: radio, label: in aggiunta di, when: "{{ask.rt_designazione|is_aggiunta}}"}
+      - {kind: text, label: cognome, nth: 2, value: "{{ask.rt_prec_cognome}}", when: "{{ask.rt_designazione|is_aggiunta}}"}
+      - {kind: text, label: nome, nth: 2, value: "{{ask.rt_prec_nome}}", when: "{{ask.rt_designazione|is_aggiunta}}"}
+      - {kind: text, label: cod.fisc., value: "{{ask.rt_prec_cf}}", when: "{{ask.rt_designazione|is_aggiunta}}"}
+      - {kind: radio, label: A) TITOLO DI STUDIO, when: "{{ask.rt_requisito|is_titolo_di_studio}}"}
+      - {kind: checkbox, label: Laurea in materia tecnica, when: "{{ask.rt_requisito|is_titolo_di_studio}} {{ask.rt_titolo_tipo|is_laurea}}"}
+      - {kind: date, label: conseguita/o il, value: "{{ask.rt_titolo_data|date_it}}", when: "{{ask.rt_requisito|is_titolo_di_studio}} {{ask.rt_titolo_tipo|is_laurea}}"}
+      - {kind: text, label: rilasciato dall'Università degli Studi di, value: "{{ask.rt_titolo_ente}}", when: "{{ask.rt_requisito|is_titolo_di_studio}} {{ask.rt_titolo_tipo|is_laurea}}"}
+      - {kind: text, label: specializzazione tecnica in, value: "{{ask.rt_titolo_specializzazione}}", when: "{{ask.rt_requisito|is_titolo_di_studio}} {{ask.rt_titolo_tipo|is_laurea}}"}
+      - {kind: checkbox, label: Diploma di istruzione secondaria superiore, when: "{{ask.rt_requisito|is_titolo_di_studio}} {{ask.rt_titolo_tipo|is_diploma}}"}
+      - {kind: date, label: conseguito il, value: "{{ask.rt_titolo_data|date_it}}", when: "{{ask.rt_requisito|is_titolo_di_studio}} {{ask.rt_titolo_tipo|is_diploma}}"}
+      - {kind: text, label: rilasciato dall'Istituto, value: "{{ask.rt_titolo_ente}}", when: "{{ask.rt_requisito|is_titolo_di_studio}} {{ask.rt_titolo_tipo|is_diploma}}"}
+      - {kind: text, label: con sede nel Comune di, value: "{{ask.rt_titolo_sede}}", when: "{{ask.rt_requisito|is_titolo_di_studio}} {{ask.rt_titolo_tipo|is_diploma}}"}
+      - {kind: text, label: specializzazione tecnica, on_page: true, value: "{{ask.rt_titolo_specializzazione}}", when: "{{ask.rt_requisito|is_titolo_di_studio}} {{ask.rt_titolo_tipo|is_diploma}}"}
+      - {kind: checkbox, label: Attestato di qualifica a carattere tecnico, when: "{{ask.rt_requisito|is_titolo_di_studio}} {{ask.rt_titolo_tipo|is_attestato}}"}
+      - {kind: date, label: conseguito il, on_page: true, value: "{{ask.rt_titolo_data|date_it}}", when: "{{ask.rt_requisito|is_titolo_di_studio}} {{ask.rt_titolo_tipo|is_attestato}}"}
+      - {kind: text, label: rilasciato dal Centro, value: "{{ask.rt_titolo_ente}}", when: "{{ask.rt_requisito|is_titolo_di_studio}} {{ask.rt_titolo_tipo|is_attestato}}"}
+      - {kind: text, label: con sede nel Comune di, on_page: true, value: "{{ask.rt_titolo_sede}}", when: "{{ask.rt_requisito|is_titolo_di_studio}} {{ask.rt_titolo_tipo|is_attestato}}"}
+      - {kind: text, label: specializzazione tecnica, on_page: true, value: "{{ask.rt_titolo_specializzazione}}", when: "{{ask.rt_requisito|is_titolo_di_studio}} {{ask.rt_titolo_tipo|is_attestato}}"}
+      - {kind: radio, label: B) OBBLIGO SCOLASTICO ED ESPERIENZA PROFESSIONALE, when: "{{ask.rt_requisito|is_esperienza_professionale}}"}
+      - {kind: text, label: conseguito presso la Scuola, value: "{{ask.rt_scuola}}", when: "{{ask.rt_requisito|is_esperienza_professionale}}"}
+      - {kind: text, label: con sede nel Comune, on_page: true, value: "{{ask.rt_scuola_comune}}", when: "{{ask.rt_requisito|is_esperienza_professionale}}"}
+      - {kind: checkbox, label: titolare/amministratore/socio partecipante, when: "{{ask.rt_requisito|is_esperienza_professionale}}"}
+      - {kind: text, label: impresa, nth: 1, value: "{{ask.rt_esp_impresa}}", when: "{{ask.rt_requisito|is_esperienza_professionale}}"}
+      - {kind: text, label: n. R.E.A, nth: 1, value: "{{ask.rt_esp_rea}}", when: "{{ask.rt_requisito|is_esperienza_professionale}}"}
+      - {kind: text, label: con sede in, nth: 1, value: "{{ask.rt_esp_sede}}", when: "{{ask.rt_requisito|is_esperienza_professionale}}"}
+      - {kind: date, label: al, nth: 1, value: "{{ask.rt_esp_al|date_it}}", when: "{{ask.rt_requisito|is_esperienza_professionale}}"}
+      - {kind: radio, label: C) RICONOSCIMENTO TITOLO ESTERO, when: "{{ask.rt_requisito|is_titolo_estero}}"}
+      - {kind: text, label: decreto n., value: "{{ask.rt_estero_decreto}}", when: "{{ask.rt_requisito|is_titolo_estero}}"}
+      - {kind: date, label: emesso il, value: "{{ask.rt_estero_data|date_it}}", when: "{{ask.rt_requisito|is_titolo_estero}}"}
+      - {kind: text, label: dal Ministero, value: "{{ask.rt_estero_ministero}}", when: "{{ask.rt_requisito|is_titolo_estero}}"}
+      - {kind: file, label: "Tipologie ammesse", accepts: "pdf;pdf.p7m", value: "{{ask.rt_dichiarazione_doc}}"}
+    leave: [D) CASI PARTICOLARI, conseguito il, con sede nel Comune, specializzazione tecnica]
+
+  # A hotel's structural variation (054): the title the hotel runs under, the variation of the classification or "altro"; the type is
+  # one of five (a condhotel and a dipendenza open more boxes: refused); the services as the B&B's, with the gym's own wording.
+  - section: Variazioni
+    supports:
+      - {when: "{{ask.albergo_tipo|empty|not}}", else: "Indica il tipo di struttura alberghiera."}
+    leave: [VARIAZIONE DELLA CAPACITÀ RICETTIVA]
+    fields:
+      - {kind: text, label: "che la struttura ricettiva in oggetto, già avviata con la SCIA/DIA/autorizzazione prot./n", value: "{{ask.titolo_attivita_protocollo}}"}
+      - {kind: date, label: del, value: "{{ask.titolo_attivita_data|date_it}}"}
+      - {kind: text, label: presentata al Comune di, value: "{{ask.titolo_attivita_comune}}"}
+      - {kind: text, label: prov., value: "NA"}
+      - {kind: checkbox, label: "VARIAZIONE DELLA CLASSIFICAZIONE:", when: "{{ask.hotel_variazione|is_classificazione}}"}
+      - {kind: checkbox, label: Struttura principale, when: "{{ask.hotel_variazione|is_classificazione}} {{ask.hotel_classif_ambito|is_struttura_principale}}"}
+      - {kind: checkbox, label: Dipendenza, when: "{{ask.hotel_variazione|is_classificazione}} {{ask.hotel_classif_ambito|is_dipendenza}}"}
+      - {kind: text, label: da n. stelle, nth: 1, value: "{{ask.classif_stelle_prima}}", when: "{{ask.hotel_variazione|is_classificazione}} {{ask.hotel_classif_ambito|is_struttura_principale}}"}
+      - {kind: text, label: a n. stelle, nth: 1, value: "{{ask.classif_stelle}}", when: "{{ask.hotel_variazione|is_classificazione}} {{ask.hotel_classif_ambito|is_struttura_principale}}"}
+      - {kind: text, label: da n. stelle, nth: 2, value: "{{ask.classif_stelle_prima}}", when: "{{ask.hotel_variazione|is_classificazione}} {{ask.hotel_classif_ambito|is_dipendenza}}"}
+      - {kind: text, label: a n. stelle, nth: 2, value: "{{ask.classif_stelle}}", when: "{{ask.hotel_variazione|is_classificazione}} {{ask.hotel_classif_ambito|is_dipendenza}}"}
+      - {kind: checkbox, label: ALTRO, when: "{{ask.hotel_variazione|is_altro}}"}
+      - {kind: text, label: specificare, value: "{{ask.hotel_variazione_altro}}", when: "{{ask.hotel_variazione|is_altro}}"}
+  - section: Tipologia di esercizio
+    fields:
+      - {kind: radio, label: albergo, nth: 1, when: "{{ask.albergo_tipo|is_albergo}}"}
+      - {kind: radio, label: motel, when: "{{ask.albergo_tipo|is_motel}}"}
+      - {kind: radio, label: villaggio-albergo, when: "{{ask.albergo_tipo|is_villaggio_albergo}}"}
+      - {kind: radio, label: residenza turistico-alberghiera, when: "{{ask.albergo_tipo|is_rta}}"}
+      - {kind: radio, label: albergo diffuso, when: "{{ask.albergo_tipo|is_albergo_diffuso}}"}
+    leave: [condhotel, dipendenza della struttura]
+  - section: Dotazioni e servizi della struttura
+    leave: [n. impianti, di mq., altro, Servizio, Soggetto gestore]
+    fields:
+      - {kind: radio, label: non ha servizio di somministrazione, when: "{{ask.colazione|is_nessuna}}"}
+      - {kind: radio, label: prevede la somministrazione di alimenti e bevande confezionati, when: "{{ask.colazione|is_confezionata}}"}
+      - {kind: radio, label: prevede la somministrazione di alimenti e bevande preparati, when: "{{ask.colazione|is_preparata}}"}
+      - {kind: radio, label: non ha impianti ad uso natatorio}
+      - {kind: radio, label: non è dotata di centro estetico}
+      - {kind: radio, label: non è dotata di palestra}
+      - {kind: radio, label: non effettua vendita di prodotti alimentari e artigianali}
+
 after:
   - section: Pagamento degli oneri
     go: Prosegui

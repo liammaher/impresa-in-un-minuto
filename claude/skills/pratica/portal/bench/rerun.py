@@ -49,6 +49,7 @@ A rehearsal with no answers-p6.json (the SUAP's) answers in answers.json.
 import argparse
 from datetime import date
 import json
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -198,6 +199,10 @@ def main():
     (a.out / "steps").mkdir(parents=True, exist_ok=True)
     stored, sources, origin, queue, failed = {}, {}, None, [], []
     for item in names:
+        # One argument per run: a shell that doesn't split an unquoted variable (zsh) hands over all of them as one, and the first
+        # failure was a traceback on a path made of two specs (2026-11-16).
+        if re.search(r"\.json\s+\S+:", item):
+            ap.error(f"{item[:80]!r} looks like several runs in one argument: pass each NAME:ANSWERS.json:VALUES.json as its own argument (zsh doesn't split an unquoted variable; use an array or bash)")
         name, _, answers = item.partition(":")
         answers, _, own = answers.partition(":")
         d = REHEARSALS / name

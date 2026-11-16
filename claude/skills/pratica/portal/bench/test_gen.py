@@ -2443,5 +2443,85 @@ def _():
         r = subprocess.run(["node", "--check", str(HERE.parent / "read_draft.js")], capture_output=True, text=True)
         assert r.returncode == 0, r.stderr
 
+ROUND9 = {
+    "pubblicita-subentro-fittizia": "suap-common-mezzi-pubblicitari-installazione-di-mezzi-pubblicitari-scia-5",
+    "pubblicita-voltura-fittizia": "suap-common-mezzi-pubblicitari-installazione-di-mezzi-pubblicitari-voltu",
+    "pubblicita-variazione-fittizia": "suap-common-mezzi-pubblicitari-installazione-di-mezzi-pubblicitari-varia",
+    "pubblicita-temporanea-fittizia": "suap-common-mezzi-pubblicitari-installazione-di-mezzi-pubblicitari-comun-2",
+    "emissioni-modifica-fittizia": "suap-common-emissioni-in-atmosfera-modificare-in-modo-non-sostanziale-un",
+    "emissioni-adesione-generale-fittizia": "suap-common-emissioni-in-atmosfera-richiesta-di-adesione-all-autorizzazi",
+    "scarichi-voltura-fittizia": "suap-common-scarichi-volturare-l-autorizzazione-allo-scarico-di-acque-re",
+    "pulizie-apertura-fittizia": "suap-014-aprire-l-attivita",
+    "pulizie-responsabile-tecnico-fittizio": "suap-014-comunicazione-variazione-responsabile-tecnico",
+    "albergo-variazione-strutturale-fittizio": "suap-054-scia-per-variazioni-strutturali",
+}
+
+
+@case("round 9: each of the 10 pratiche it made fillable (27 sections) has a rehearsal generated from its own crawl and filled on the portal (runs.json)")
+def _():
+    for name, crawl in ROUND9.items():
+        recipe = gen.load_yaml(REH / name / "recipe.yaml")
+        assert recipe["crawl"] == crawl, (name, recipe["crawl"])
+        generated(name)
+        runs = json.loads((REH / name / "runs.json").read_text())
+        assert runs and runs[-1]["result"] == "filled", (name, runs[-1:])
+
+
+@case("round 9: what the portal taught: the event period is required for every kind, civico and CAP list nothing (text), the recapito's five low choices open under \"strato superficiale\", a repeated label is the first on the page")
+def _():
+    t = section(generated("pubblicita-temporanea-fittizia"), "Periodo e luogo")
+    ev = field(t, "Periodo di svolgimento")
+    assert "when" not in ev and ev.get("value"), "required for a cartello di cantiere too (\"il valore e obbligatorio\")"
+    v = section(generated("pubblicita-variazione-fittizia"), "dichiarazione relativa all'indirizzo")
+    kinds = {f["label"]: f["kind"] for f in v["fields"]}
+    assert kinds["Via, Viale, Piazza"] == "lookup" and kinds["n° civico"] == "text" and kinds["CAP"] == "text", kinds
+    sc = section(generated("scarichi-voltura-fittizia"), "dichiarazione del recapito")
+    labels = [f["label"] for f in sc["fields"]]
+    assert labels.index("strato superficiale del suolo") < labels.index("scolo"), "scolo is switched off until the stratum is chosen"
+    rt = section(generated("pulizie-responsabile-tecnico-fittizio"), "Designazione")
+    assert not any(f.get("nth", 1) > 2 for f in rt["fields"]), "only the opened choice's boxes are on the page: no nth beyond the second"
+    ap = generated("pulizie-apertura-fittizia")  # the refusal comes from the dictionary's entry, so it is in the steps file
+    assert any("attivita_disinfestazione" in str(x.get("when", "")) for x in ap["supports"]), "pest control opens the technical manager's boxes: refused"
+    for name, key in (("pulizie-responsabile-tecnico-fittizio", "rt_cf"), ("pulizie-responsabile-tecnico-fittizio", "rt_prec_cf"), ("pubblicita-subentro-fittizia", "cedente_cf")):
+        cf = json.loads((REH / name / "answers.json").read_text())[key]
+        odd = dict(zip("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ", [1, 0, 5, 7, 9, 13, 15, 17, 19, 21] * 1 + [1, 0, 5, 7, 9, 13, 15, 17, 19, 21, 2, 4, 18, 20, 11, 3, 6, 8, 12, 14, 16, 10, 22, 25, 24, 23]))
+        tot = sum(odd[c] if i % 2 == 0 else (int(c) if c.isdigit() else ord(c) - 65) for i, c in enumerate(cf[:15]))
+        assert chr(65 + tot % 26) == cf[15], f"{name} {key}: a made-up codice fiscale needs a valid check letter (the portal said 'non valido')"
+
+
+ROUND9_SECTIONS = [
+    "DICHIARAZIONE RELATIVA AL SUBENTRO", "DICHIARAZIONE DEGLI ESTREMI DELL'ATTIVITÀ DEL SUBENTRANTE", "mancanza di variazioni dell'impianto",
+    "dichiarazione relativa alla voltura", "dichiarazione estremi ultimo rinnovo", "dichiarazione relativa all'indirizzo/collocazione",
+    "estremi della concessione / autorizzazione", "variazione soggettive", "tipologia del mezzo pubblicitario (pubblicità temporanea) pannello ripetibile",
+    "Periodo e luogo di esposizione", "Ulteriori dichiarazioni (mezzi pubblicitari temporanei)",
+    "dichiarazione relativa alla modifica non sostanziale di emissioni in atmosfera dello stabilimento",
+    "dichiarazione relativa al/ai motivo/i per il/i quale/i la modifica non è da considerarsi sostanziale",
+    "dichiarazione relativa agli estremi dell'autorizzazione", "tipologie attività autorizzazione generale (Allegato IV Parte II alla Parte Quinta)",
+    "ulteriori dichiarazioni", "dichiarazione relativa all'oggetto dell'adesione", "dichiarazione del recapito dello scarico",
+    "dichiarazione relativa alla tipologia di acque reflue", "dichiarazione relativa all'autorizzazione oggetto della domanda di voltura",
+    "Dati sull'attività", "Possesso dei requisiti", "Attività oggetto della segnalazione", "requisiti morali e di onorabilità",
+    "Designazione del responsabile tecnico", "Variazioni", "Tipologia di esercizio", "Dotazioni e servizi della struttura",
+]
+
+
+@case("round 9: an entry is matched by prefix in file order, so none of the round's short-named entries comes before a longer-named one (\"ulteriori dichiarazioni\" took the sign's \"... (mezzi pubblicitari)\" and moved 75 steps files)")
+def _():
+    names = [e["section"] for e in gen.load_yaml(HERE.parent / "dictionary" / "fnsuap.yaml")["sections"]]
+    norm = lambda x: re.sub(r"\s+", " ", x.lower()).strip()
+    for want in ROUND9_SECTIONS:
+        idx = [i for i, n in enumerate(names) if norm(n) == norm(want)]
+        assert idx, f"no entry for {want!r}"
+        later = [n for n in names[idx[-1] + 1:] if norm(n).startswith(norm(want)) and norm(n) != norm(want)]
+        assert not later, f"{want!r} comes before the longer {later[:2]}: it would take their sections, and drop their `theirs`"
+
+
+@case("round 9: the loop's tools say what bit us: answer_case takes a group's answer as JSON, rerun.py refuses several runs in one argument (zsh doesn't split a variable)")
+def _():
+    a = (HERE / "answer_case.py").read_text(encoding="utf-8")
+    r = (HERE / "rerun.py").read_text(encoding="utf-8")
+    assert 'json.loads(value) if value[:1] == "["' in a
+    assert "looks like several runs in one argument" in r
+
+
 print(f"{sum(results)}/{len(results)} passed")
 sys.exit(0 if all(results) else 1)

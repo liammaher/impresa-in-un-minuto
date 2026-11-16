@@ -7,7 +7,7 @@ The single list of what the plugin ships, written by `claude/skills/pratica/port
 | | |
 |---|---|
 | Plugin version | 0.7.2 (`plugin/impresa-in-un-minuto/.claude-plugin/plugin.json`) |
-| Repo commit | `c302064298aa6bc1ee69956d1ecc7e96df96fd34` plus uncommitted changes |
+| Repo commit | `831337b3c236bacb5357a5f6efb1f2174eb5b731` plus uncommitted changes |
 | Generated | 2026-11-16 |
 | Sportelli shipped | SUE (building works), SUAP (businesses), as `plugin/build.yaml` `sportelli` says |
 | Not shipped | none |
@@ -30,9 +30,9 @@ Per pratica on the portal, as coverage.md counts them:
 | Sportello | Mapped | Fillable | Run on the portal |
 |---|---:|---:|---:|
 | SUE (building works) | 104 | 104 | 102 |
-| SUAP (businesses) | 309 | 255 | 184 |
+| SUAP (businesses) | 309 | 265 | 194 |
 
-The plugin carries 346 steps files for 290 pratiche on the portal (a few steps files share one pratica, filled with other choices); 340 of the 346 have a run that filled the draft. The rows below are per steps file.
+The plugin carries 356 steps files for 300 pratiche on the portal (a few steps files share one pratica, filled with other choices); 350 of the 356 have a run that filled the draft. The rows below are per steps file.
 
 ## Pratiche
 
@@ -57,6 +57,7 @@ The plugin carries 346 steps files for 290 pratiche on the portal (a few steps f
 | `napoli/comune/avvio-bed-and-breakfast` | Aprire l'attività | `affittacamere-insegna-fittizio` | yes | yes | yes | `r5d9d4e` `r6aa39e` `rdbba63` `ra6788d` `r3487df` `rc0f612` `rc2c5fd` `rc52190` `r760f15` `r51e876` |
 | `napoli/comune/avvio-bed-and-breakfast` | Aprire l'attività + PIN 2 - Segnalazione Certificata di Inizio Attività | `affittacamere-insegna-pin-2-fittizio` | yes | yes | yes | `rd9fa95` `r2f044d` `rc364fb` `r0fd9b2` `r5d9d4e` `r6aa39e` `rdbba63` `ra6788d` `r3487df` `rc0f612` `rc2c5fd` `rc52190` `r760f15` `r51e876` |
 | `napoli/comune/avvio-bed-and-breakfast` | Aprire l'attività + PIN 2 - Segnalazione Certificata di Inizio Attività | `affittacamere-pin-2-fittizio` | yes | yes | yes | `rd9fa95` `r2f044d` `rc364fb` `r0fd9b2` `r3487df` `rc0f612` `rc2c5fd` `rc52190` `rccc098` `r760f15` `r51e876` |
+| `napoli/comune/avvio-bed-and-breakfast` | SCIA per variazioni strutturali | `albergo-variazione-strutturale-fittizio` | yes | yes | yes | `r3487df` `rc0f612` `rc2c5fd` `rc52190` `rccc098` `r760f15` `rd11cb6` |
 | `napoli/comune/avvio-bed-and-breakfast` | Domanda per prima classificazione / rinnovo o modifica di precedente classificazione | `classificazione-albergo-fittizio` | yes | yes | yes | `r3487df` `rc0f612` `rc2c5fd` `rc52190` `rccc098` `r760f15` `rad9d56` |
 | `napoli/comune/avvio-bed-and-breakfast` | SCIA per variazioni strutturali | `variazione-strutturale-affittacamere-fittizio` | yes | yes | yes | `r3487df` `rc0f612` `rc2c5fd` `rc52190` `rccc098` `r760f15` `rc68dfc` |
 | `napoli/comune/avvio-bed-and-breakfast` | Comunicazione per la variazione nelle strutture ricettive (denominazione, periodo di apertura, legale rappresentante, altro) | `variazione-strutture-affittacamere-fittizio` | yes | yes | yes | `r3487df` `rc0f612` `rc2c5fd` `rc52190` `rccc098` `r760f15` |
@@ -83,7 +84,9 @@ The plugin carries 346 steps files for 290 pratiche on the portal (a few steps f
 | `napoli/comune/insegna-esercizio` | Comunicazione messa in esercizio/a regime impianto e data campionamenti analitici | `emissioni-adempimenti-messa-in-esercizio-fittizio` | yes | yes | yes | `r3487df` `rc0f612` |
 | `napoli/comune/insegna-esercizio` | Comunicare il piano di gestione solventi | `emissioni-adempimenti-pgs-fittizio` | yes | yes | yes | `r3487df` `rc0f612` |
 | `napoli/comune/insegna-esercizio` | Comunicazione delle analisi delle emissioni in atmosfera per impianti autorizzati | `emissioni-adempimenti-referto-fittizio` | yes | yes | yes | `r3487df` `rc0f612` |
+| `napoli/comune/insegna-esercizio` | Richiesta di adesione all'autorizzazione in via generale per installazione nuovo impianto, modifica sostanziale, rinnovo dell'adesione, trasferimento di impianto esistente - Attività in deroga (art. 272 commi 2 e 3 D.Lgs. 152/2006) | `emissioni-adesione-generale-fittizia` | yes | yes | yes | `r3487df` `re19949` `rc0f612` `rad9d56` |
 | `napoli/comune/insegna-esercizio` | Richiesta di adesione all'autorizzazione di carattere generale per gli impianti a ciclo chiuso di pulizia a secco di tessuti e di pellami, escluse le pellicce e per le pulitintolavanderie a ciclo chiuso (nuovo impianto, trasferimento, modifica sostanziale. Art. 275, comma 20 e 272, comma 3 D.Lgs. 152/2006) | `emissioni-adesione-pulitintolavanderia-fittizia` | yes | yes | yes | `r3487df` `re19949` `rc0f612` `rad9d56` |
+| `napoli/comune/insegna-esercizio` | Modificare in modo non sostanziale un impianto con emissioni in atmosfera | `emissioni-modifica-fittizia` | yes | yes | yes | `r3487df` `rc0f612` |
 | `napoli/comune/insegna-esercizio` | Comunicare emissioni ad inquinamento atmosferico scarsamente rilevante | `emissioni-scarsamente-rilevanti-fittizio` | yes | yes | yes | `r3487df` `rc0f612` |
 | `napoli/comune/insegna-esercizio` | Richiedere la voltura di autorizzazione alle emissioni in atmosfera | `emissioni-voltura-fittizia` | yes | yes | yes | `r3487df` `rc0f612` `rad9d56` |
 | `napoli/comune/insegna-esercizio` | Modifica del messaggio pubblicitario di insegne di esercizio | `insegna-modifica-messaggio-fittizio` | yes | yes | yes | `r3487df` `rc0f612` |
@@ -93,6 +96,11 @@ The plugin carries 346 steps files for 290 pratiche on the portal (a few steps f
 | `napoli/comune/insegna-esercizio` | PIN 7 - Variazione della titolarità (voltura) | `pin-7-titolarita-fittizio` | yes | yes | yes | `r3487df` `rc0f612` |
 | `napoli/comune/insegna-esercizio` | Richiedere l'autorizzazione per la pubblicità/propaganda fonica | `pubblicita-fonica-fittizia` | yes | yes | yes | `r3487df` `rc0f612` `rcad36b` `rad9d56` |
 | `napoli/comune/insegna-esercizio` | Rimozione di messaggi pubblicitari | `pubblicita-rimozione-fittizia` | yes | yes | yes | `r3487df` `rc0f612` |
+| `napoli/comune/insegna-esercizio` | SCIA per il subentro in insegne di esercizio | `pubblicita-subentro-fittizia` | yes | yes | yes | `r3487df` `rc0f612` |
+| `napoli/comune/insegna-esercizio` | Comunicazione per installazione pubblicità temporanea nei casi in cui non sussistano vincoli ambientali, paesaggistici o culturali o si possieda l'autorizzazione relativa al vincolo (per i soli Comuni che hanno adottato il Piano urbanistico/edilizio impianti per installazione insegne) | `pubblicita-temporanea-fittizia` | yes | yes | yes | `r3487df` `rc0f612` |
+| `napoli/comune/insegna-esercizio` | Variazioni soggetti (denominazione, sede legale, rappresentante legale) | `pubblicita-variazione-fittizia` | yes | yes | yes | `r3487df` `rc0f612` |
+| `napoli/comune/insegna-esercizio` | Voltura dell'autorizzazione/SCIA per l'installazione di impianti pubblicitari a carattere permanente | `pubblicita-voltura-fittizia` | yes | yes | yes | `r3487df` `rc0f612` `rad9d56` |
+| `napoli/comune/insegna-esercizio` | Volturare l'autorizzazione allo scarico di acque reflue industriali e assimilate alle domestiche non recapitanti in rete fognaria | `scarichi-voltura-fittizia` | yes | yes | yes | `r3487df` `rc0f612` `rad9d56` |
 | `napoli/comune/insegna-esercizio` | Comunicazione di cambio messaggio pubblicitario su teli collegati a facciate di palazzi e monumenti, su ponteggi di cantiere, recinzioni ed altre strutture di servizio e di pertinenza (ATTENZIONE: solo per autorizzazioni ancora in corso di validità) | `telo-cambio-messaggio-fittizio` | yes | yes | yes | `r3487df` `rc0f612` |
 | `napoli/comune/insegna-esercizio` | Rinnovo pubblicità effettuata su teli collegati a facciate di palazzi e monumenti, su ponteggi di cantiere, recinzioni ed altre strutture di servizio e di pertinenza | `telo-rinnovo-fittizio` | yes | yes | yes | `r3487df` `rc0f612` `re40499` |
 | `napoli/comune/orario-apertura-deroga` | Richiedere l'orario di apertura in deroga a quanto disposto | `orario-deroga-alimentari-fittizio` | yes | yes | yes | `r3487df` `rad9d56` |
@@ -223,6 +231,8 @@ The plugin carries 346 steps files for 290 pratiche on the portal (a few steps f
 | `napoli/comune/scia-somministrazione-alimenti-bevande` | Trasferire la sede dell'attività | `trasferimento-ristorante-musica-fittizio` | yes | yes | yes | `r3487df` `rc0f612` `rdc314f` `r83933b` `rad9d56` |
 | `napoli/comune/scia-somministrazione-alimenti-bevande` | Trasferire la sede dell'attività + PIN 2 - Segnalazione Certificata di Inizio Attività | `trasferimento-ristorante-musica-pin-2-fittizio` | yes | yes | yes | `rd9fa95` `r2f044d` `rc364fb` `r0fd9b2` `r3487df` `rc0f612` `rdc314f` `r83933b` `rad9d56` |
 | `napoli/comune/scia-somministrazione-alimenti-bevande` | Trasferire la sede dell'attività + PIN 2 - Segnalazione Certificata di Inizio Attività | `trasferimento-ristorante-pin-2-fittizio` | yes | yes | yes | `rd9fa95` `r2f044d` `rc364fb` `r0fd9b2` `r3487df` `rc0f612` `rdc314f` `r83933b` |
+| `napoli/comune/scia-tatuatore-piercer` | Aprire l'attività | `pulizie-apertura-fittizia` | yes | yes | yes | `r3487df` `rc0f612` `ra04be2` |
+| `napoli/comune/scia-tatuatore-piercer` | Comunicazione variazione responsabile tecnico | `pulizie-responsabile-tecnico-fittizio` | yes | yes | yes | `r3487df` `rc0f612` |
 | `napoli/comune/scia-tatuatore-piercer` | Subentrare nell'attività di tatuatore/ piercer | `subingresso-tatuatore-fittizio` | yes | yes | yes | `r3487df` `rc0f612` `rfdddc4` |
 | `napoli/comune/scia-tatuatore-piercer` | Aprire l'attività di tatuatore / piercer | `tatuatore-apertura-fittizio` | yes | yes | yes | `r3487df` `rc0f612` |
 | `napoli/comune/scia-tatuatore-piercer` | Trasferire la sede dell'attività di tatuatore/ piercer | `trasferimento-tatuatore-fittizio` | yes | yes | yes | `r3487df` `rc0f612` |
@@ -391,9 +401,9 @@ What a steps file turns away, in the words the person reads (Italian), by the id
 
 | Id | Rows | Refusal |
 |---|---:|---|
-| `r3487df` | 239 | Per ora per una ditta individuale o una srl, srls, snc, sas o spa. |
-| `rc0f612` | 234 | Gli altri soci o amministratori presentano le proprie dichiarazioni antimafia come allegati firmati (art. 85 D.Lgs. 159/2011): non lo preparo ancora. |
-| `rad9d56` | 141 | L'esenzione ONLUS è cessata con il regime ONLUS il 1° gennaio 2026, salvo per un periodo d'imposta iniziato prima di tale data: un'ex ONLUS iscritta al RUNTS è esente come ets. |
+| `r3487df` | 249 | Per ora per una ditta individuale o una srl, srls, snc, sas o spa. |
+| `rc0f612` | 244 | Gli altri soci o amministratori presentano le proprie dichiarazioni antimafia come allegati firmati (art. 85 D.Lgs. 159/2011): non lo preparo ancora. |
+| `rad9d56` | 144 | L'esenzione ONLUS è cessata con il regime ONLUS il 1° gennaio 2026, salvo per un periodo d'imposta iniziato prima di tale data: un'ex ONLUS iscritta al RUNTS è esente come ets. |
 | `r62ab7e` | 54 | I tecnici del modulo paesaggistico: se l'architetto che presenta la pratica è il suo tecnico, il portale mostra il blocco di un altro tecnico («+») senza nome né codice fiscale, quindi un secondo tecnico non si può indicare. È un difetto del portale: chiedi al SUE. |
 | `r0fd9b2` | 48 | Impianti di idrogeno, GNL/GNC, rifiuti o le facciate e coperture di edifici civili aprono altre voci della SCIA antincendio, che non preparo ancora. |
 | `r2f044d` | 48 | Per le attività di categoria B e C la SCIA antincendio segue l'approvazione del progetto da parte dei Vigili del Fuoco (con il suo numero di pratica): non la preparo ancora. |
@@ -426,8 +436,8 @@ What a steps file turns away, in the words the person reads (Italian), by the id
 | `rfcb6c3` | 18 | Armi, metalli preziosi, prodotti fitosanitari, medicinali o mangimi non sono ancora previsti. |
 | `r4cf6c9` | 15 | I lavori eseguiti senza permesso di costruire (o SCIA alternativa) si regolarizzano con il permesso in sanatoria (art. 36 DPR 380/2001), non con una SCIA: presenta il permesso in sanatoria. |
 | `r803d94` | 15 | Il modulo della SCIA non ha una voce specifica per la fascia di rispetto di un pozzo (art. 94 D.Lgs. 152/2006): rispondi altro e indicala. |
+| `rccc098` | 15 | Un'insegna esterna per ora non la preparo: include in questa la SCIA dell'insegna. |
 | `r146883` | 14 | Più linee d'attività nella master list: il modulo chiede una riga obbligatoria per ciascuna, per ora ne preparo una sola. |
-| `rccc098` | 14 | Un'insegna esterna per ora non la preparo: include in questa la SCIA dell'insegna. |
 | `r2ec47f` | 13 | Un atto ancora in corso di registrazione per ora non lo preparo: in quel caso il portale accetta la sua copia firmata, che spetta a te caricare. Presenta la pratica dopo la registrazione. |
 | `r45eade` | 13 | I dehors coperti (tipo C o D) non sono ancora gestiti. |
 | `r4a4ffe` | 13 | Presentare la notifica Reg. 852 insieme al dehors per ora non lo preparo: presenta prima l'apertura dell'attività. |
@@ -443,19 +453,19 @@ What a steps file turns away, in the words the person reads (Italian), by the id
 | `re2bea8` | 12 | Un permesso in sanatoria (art. 36 DPR 380/2001) si richiede come tale: non come convenzionato né in deroga. |
 | `re5b681` | 12 | Il piano casa (L.R. Campania 19/2009) non accetta nuove richieste dal 30 settembre 2022 (L.R. 31/2021 art. 28 c. 6; la L.R. 13/2022 art. 4 c. 17 disciplina solo quelle pendenti a quella data). Una variante a un permesso rilasciato in base al piano casa per ora non la preparo. |
 | `rfa4891` | 12 | Il permesso in sanatoria (art. 36 DPR 380/2001) lo preparo per gli interventi dell'art. 10 e i mutamenti di destinazione d'uso: non per interventi da SCIA richiesti come permesso (si presentano con la SCIA in sanatoria), per una tipologia regionale campana o per una variante. |
+| `r760f15` | 11 | Piscina, centro estetico, palestra o negozio non sono ancora gestiti. |
 | `r868dc0` | 11 | Una media struttura che vende solo con distributori automatici per ora non la preparo. |
+| `rc2c5fd` | 11 | Le strutture con più di 25 posti letto o soggette ai controlli di prevenzione incendi non sono ancora gestite. |
+| `rc52190` | 11 | La vendita di alcolici per ora non la preparo: aggiunge alla pratica la comunicazione alle Dogane. |
 | `r17daf0` | 10 | Un negozio all'interno di un centro commerciale per ora non lo preparo: Napoli chiede la tipologia del centro. |
 | `r461f5a` | 10 | I lavori già eseguiti seguono una pratica a sé: un permesso in sanatoria (il permesso con la scelta sanatoria nella procedura guidata del portale), oppure, per lavori che richiedevano una SCIA, una SCIA in sanatoria. |
 | `r469d27` | 10 | Un negozio in un factory outlet non lo preparo ancora. |
 | `r4be1f0` | 10 | Il contributo del permesso si paga al ritiro, a rate o in corso d'opera: mai prima della presentazione. |
 | `r734059` | 10 | Con assensi che il SUE deve acquisire, i lavori iniziano solo quando il SUE comunica che sono stati acquisiti (art. 23-bis c. 2 DPR 380/2001): rispondi che i lavori iniziano dopo la sua comunicazione, non a una data. |
-| `r760f15` | 10 | Piscina, centro estetico, palestra o negozio non sono ancora gestiti. |
 | `r76a13e` | 10 | La CIL indica la sua impresa esecutrice: il suo quadro f) non prevede un'impresa ancora da scegliere, e il portale richiede i dati dell'impresa (verificato il 01/11/2026). Presenta la CIL una volta scelta l'impresa. |
 | `r78bdb3` | 10 | La CILA indica la sua impresa esecutrice: il suo quadro h) non prevede un'impresa ancora da scegliere, e il portale richiede i dati dell'impresa (verificato il 01/11/2026). Presenta la CILA una volta scelta l'impresa. |
 | `r7b70d1` | 10 | Il modulo della CIL non prevede la richiesta di assensi da acquisire a cura del SUE (solo le comunicazioni presentate insieme a essa, quadro e): ottienili prima (un nulla osta, un'autorizzazione), poi presenta la CIL e allegali in Allegati liberi. |
 | `r8ba2a5` | 10 | I lavori già in corso o eseguiti non possono avere assensi ancora da acquisire (art. 23-bis c. 2 DPR 380/2001: i lavori iniziano solo una volta acquisiti): chiedi al SUE come regolarizzarli. |
-| `rc2c5fd` | 10 | Le strutture con più di 25 posti letto o soggette ai controlli di prevenzione incendi non sono ancora gestite. |
-| `rc52190` | 10 | La vendita di alcolici per ora non la preparo: aggiunge alla pratica la comunicazione alle Dogane. |
 | `red12f6` | 10 | Il contributo della SCIA alternativa si paga entro 30 giorni dalla presentazione, a rate o in corso d'opera: il suo modulo non ha una casella per una ricevuta di pagamento già effettuato. |
 | `r3ce7cf` | 9 | Una media struttura in un centro commerciale naturale (C.C.N.) riconosciuto per ora non la preparo. |
 | `r419d46` | 9 | Una media struttura in un factory outlet per ora non la preparo. |
@@ -514,6 +524,7 @@ What a steps file turns away, in the words the person reads (Italian), by the id
 | `ra3bdd8` | 2 | Una parte dei locali per altri usi per ora non la preparo. |
 | `rae45b6` | 2 | L'art. 24 c. 5-bis si applica solo se è soddisfatto il requisito di adattabilità (art. 24 c. 5-ter): l'unità non ne ha i requisiti. |
 | `rdc0c3a` | 2 | Permesso in sanatoria dell'art. 36-bis: il portale salva una sola voce tra documenti, data dei lavori e proposta di interventi. È un difetto del portale; l'art. 36 lo preparo. |
+| `re19949` | 2 | Più macchine di lavaggio nell'impianto: il modulo chiede una riga obbligatoria per ciascuna, per ora ne preparo una sola. |
 | `rf163bf` | 2 | I lavori che richiedevano una SCIA si regolarizzano con una SCIA in sanatoria, che è una pratica a sé: non nel permesso in sanatoria. |
 | `rfb86a0` | 2 | Un responsabile della produzione diverso dal titolare per ora non lo preparo sul modulo del subingresso. |
 | `r009615` | 1 | L'elenco dei titoli del portale qui non comprende la DIA: indica quale sia, autorizzazione, comunicazione o SCIA. |
@@ -540,6 +551,7 @@ What a steps file turns away, in the words the person reads (Italian), by the id
 | `r88324a` | 1 | Una lavanderia a gettoni dentro un centro commerciale per ora non la preparo. |
 | `r8fd38e` | 1 | Un cambio di soci per ora non lo preparo: i nuovi soci presentano le proprie dichiarazioni. |
 | `r93fff4` | 1 | La vendita di alcolici aggiunge la comunicazione alle Dogane: non la preparo ancora. |
+| `ra04be2` | 1 | Per disinfestazione, derattizzazione e sanificazione il modulo chiede anche il preposto alla gestione tecnica, con i suoi requisiti: per ora non lo preparo. |
 | `rafa59d` | 1 | Il modulo dell'accertamento prevede solo proprietà, comproprietà, amministratore del condominio o altro diritto reale: un conduttore (inquilino) non rientra in nessuno di questi. |
 | `rb01162` | 1 | Il modulo prevede solo proprietà, comproprietà, amministratore del condominio o altro diritto reale: un conduttore (inquilino) non rientra in nessuno di questi. |
 | `rb481ae` | 1 | Una modifica che il modulo elenca solo come "Altro" per ora non la preparo. |
@@ -550,9 +562,9 @@ What a steps file turns away, in the words the person reads (Italian), by the id
 | `rc83024` | 1 | Per ora la preparo solo per una ditta individuale: la SCIA di una società ha schermate che non compilo ancora. |
 | `rcad36b` | 1 | La pubblicità fonica elettorale ha altre caselle e per ora non la preparo. |
 | `rcc45bf` | 1 | Gli alcolici insieme alla SCIA di una nuova attività si dichiarano all'interno dell'apertura (una scelta della procedura guidata che non preparo ancora), non con questa comunicazione. |
+| `rd11cb6` | 1 | Indica il tipo di struttura alberghiera. |
 | `rd18382` | 1 | Un nuovo legale rappresentante per ora non lo preparo: presenta le proprie dichiarazioni. |
 | `rdef3b7` | 1 | È la pratica di un laboratorio alimentare: devono valere le voci della notifica sui prodotti da forno. |
-| `re19949` | 1 | Più macchine di lavaggio nell'impianto: il modulo chiede una riga obbligatoria per ciascuna, per ora ne preparo una sola. |
 | `re40499` | 1 | Un ponteggio o una recinzione su suolo pubblico chiede anche gli estremi della concessione: per ora non lo preparo. |
 | `rf11ca9` | 1 | Musica o impianto audio non sono ancora gestiti: comportano la documentazione di impatto acustico. |
 | `rf3d64d` | 1 | Musica o impianto audio aggiungono la documentazione di impatto acustico: non la preparo ancora. |
