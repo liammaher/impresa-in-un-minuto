@@ -46,6 +46,11 @@
 # An entry matches a section whose name STARTS WITH the entry's own (the entry's name is the prefix, never longer than the
 # section's: a laundry's "... ANTIMAFIA E PROFESSIONALI" never matched its "... ANTIMAFIA"), in file order, the first
 # without problems winning; a short non-strict entry before a longer one takes its sections and drops their `theirs`.
+# Round 10 (README): a NON-strict entry fills every section of its name and leaves the boxes it does not name required (a run stops on "il valore e obbligatorio"):
+# for a form whose statements an older entry of the same name does not name, write a strict entry (statements in `theirs` AND `leave`) BEFORE the older ones, and give it
+# one field only its form has (never filled: a `when` false in every supported case), or it takes the sections of other forms that happen to hold the same boxes.
+# `section_check.py` warns when the winning entry names none of a section's ticks. A filter goes INSIDE the braces (`{{a|positive|not}}`); gen.py refuses `}}|`.
+# A label is a prefix: «del» is also the start of «dell’Autorizzazione ...» (`nth`); a `number` box takes an integer, a text box that wants decimals says so on the portal.
 # Add a new entry at the END of `sections:` (round 9: a short name added in the middle took 75 sign pratiche's sections; test_gen checks the round's names).
 # A crawl reads every `txtws` box (a street, civico, CAP, scala, piano, interno) as a `lookup`, but only a street lists anything: write the others `kind: text`
 # (the run stopped on "matches 0 of 0 listed"). `nth` counts the boxes on the page, not the crawl's: under a choice only its own boxes are there, so a label the
@@ -1580,6 +1585,48 @@ asks:
   mezzi_numero: {type: number, question: "Quanti mezzi pubblicitari uguali", propose: "1"}
   luogo_esposizione: {type: text, question: "Il luogo di esposizione (50 caratteri al massimo)"}
   manifestazione_periodo: {type: text, question: "Il periodo di svolgimento della manifestazione, dello spettacolo o dell'iniziativa; se non c'è, il periodo di esposizione (50 caratteri al massimo)"}
+  mezzo_tutela: {type: choice, question: "Dove va il mezzo pubblicitario: l'edificio e l'area sono tutelati? non tutelati (né bene culturale né bene paesaggistico); edificio bene culturale (art. 49 D.Lgs. 42/2004); area bene paesaggistico (artt. 146 e 153)", options: [non tutelati, edificio bene culturale, area bene paesaggistico], propose: "non tutelati"}
+  hotel_stelle: {type: choice, question: "Con quante stelle si classifica la struttura? 1 stella; 2 stelle; 3 stelle; 4 stelle; 5 stelle; 5 stelle lusso", options: [1 stella, 2 stelle, 3 stelle, 4 stelle, 5 stelle, 5 stelle lusso]}
+  # A communication of public-land occupation (occupazione suolo pubblico, SUAP common crawl): the structure, its area, the days and the place.
+  occupazione_struttura: {type: text, question: "Che struttura occupa il suolo pubblico (ad es. «gazebo»; 200 caratteri al massimo)"}
+  occupazione_mq: {type: number, question: "Per quanti metri quadrati complessivi (la comunicazione: 10 al massimo)"}
+  occupazione_dal: {type: date, question: "Il primo giorno di occupazione"}
+  occupazione_al: {type: date, question: "L'ultimo giorno di occupazione"}
+  occupazione_toponimo: {type: choice, question: "Il luogo è una via, un viale, una piazza, un corso, un largo? VIA; VIALE; PIAZZA; CORSO; LARGO; ALTRO", options: [VIA, VIALE, PIAZZA, CORSO, LARGO, ALTRO]}
+  occupazione_strada: {type: text, question: "Il nome della strada dell'occupazione (100 caratteri al massimo)"}
+  occupazione_civico: {type: text, question: "Il numero civico (50 caratteri al massimo)"}
+  # The public-land concession's request (domanda di concessione): the address, the initiative, the hours and what is set up.
+  suolo_comune: {type: text, question: "Il comune dell'occupazione (50 caratteri al massimo)", propose: "Napoli"}
+  suolo_provincia: {type: text, question: "La sua provincia (sigla)", propose: "NA"}
+  suolo_cap: {type: text, question: "Il suo CAP"}
+  suolo_via: {type: text, question: "La via, viale o piazza dell'occupazione (60 caratteri al massimo)"}
+  suolo_civico: {type: text, question: "Il numero civico (20 caratteri al massimo)"}
+  suolo_iniziativa: {type: text, question: "Per quale iniziativa occupi il suolo pubblico (50 caratteri al massimo)"}
+  suolo_ora_dalle: {type: text, question: "Dalle ore (hh:mm)"}
+  suolo_ora_alle: {type: text, question: "Alle ore (hh:mm)"}
+  suolo_attrezzature: {type: text, question: "Con quali attrezzature (ad es. tavolo, gazebo, ombrellone; 100 caratteri al massimo)"}
+  canone_pagamento: {type: choice, question: "Come paghi il canone unico? in un'unica soluzione (entro il termine del regolamento comunale); a rate (come prevede il regolamento comunale)", options: [in un'unica soluzione, a rate]}
+  # A one-off occupation (domanda di occupazione temporanea) and the take-over of a public-land concession.
+  temporanea_luogo: {type: text, question: "La via, viale o piazza dell'occupazione (30 caratteri al massimo)"}
+  patrocinio: {type: yes_no, question: "Per l'iniziativa chiedi il patrocinio del Comune?", propose: "false"}
+  iniziativa_attivita: {type: choice, question: "Che attività si svolge nell'iniziativa? stand gastronomico; altro", options: [stand gastronomico, altro]}
+  iniziativa_attivita_altro: {type: text, question: "Quale altra attività (50 caratteri al massimo)"}
+  mezzi_emergenza: {type: yes_no, question: "Sono presenti mezzi di emergenza (ambulanza, vigili del fuoco)?", propose: "false"}
+  suolo_percorso: {type: text, question: "Il percorso che faranno i mezzi di trasporto per raggiungere l'area (1000 caratteri al massimo)"}
+  concessione_precedente_numero: {type: text, question: "Il numero della concessione di suolo pubblico in cui subentri (15 caratteri al massimo)"}
+  concessione_precedente_data: {type: date, question: "La data di quella concessione"}
+  # The authorization to install an advertising cloth (the SUAP's common form): what is shown, who owns the place, the installer.
+  telo_descrizione: {type: text, question: "Che impianto pubblicitario vuoi installare, in poche parole (ad es. telo sul ponteggio della facciata; 500 caratteri al massimo)"}
+  telo_proprieta_privata: {type: yes_no, question: "Il telo va su un bene di proprietà privata, con il consenso del proprietario?", propose: "true"}
+  telo_bene_culturale: {type: yes_no, question: "Il telo va su un edificio o in un'area tutelata come bene culturale?", propose: "false"}
+  telo_ditta: {type: text, question: "La ditta che esegue i lavori di installazione (100 caratteri al massimo)"}
+  # The AUA's voltura or update (the SUAP's common AUA form).
+  aua_impianto_denominazione: {type: text, question: "Il nome dell'impianto, stabilimento o attività oggetto dell'autorizzazione (200 caratteri al massimo)", default: "{{business.denominazione}}"}
+  aua_voltura_azione: {type: choice, question: "Che cosa comunichi per l'autorizzazione unica ambientale? voltura (passa a te); aggiornamento", options: [voltura, aggiornamento]}
+  aua_intestatario: {type: text, question: "A chi era intestata l'autorizzazione finora (200 caratteri al massimo)"}
+  aua_voltura_motivo: {type: choice, question: "Perché cambia il titolare? cambio di denominazione; cessione d'azienda; donazione; fusione; scissione; cambiamento di forma giuridica; cessione o acquisizione di quote; conferimento di ramo d'azienda; altro", options: [cambio di denominazione, cessione d'azienda, donazione, fusione, scissione, cambiamento di forma giuridica, cessione o acquisizione di quote, conferimento di ramo d'azienda, altro]}
+  aua_voltura_motivo_altro: {type: text, question: "Quale altro motivo (100 caratteri al massimo)"}
+  aua_referente_altro: {type: yes_no, question: "Il referente dell'AUA è una persona diversa da chi dichiara?", propose: "false"}
   # Trades beyond the wedge: a garage, a laundry, an agriturismo's end, a cleaning firm's change of people.
   officina_meccatronica: {type: yes_no, group: officina, item: "Meccatronica"}
   officina_carrozzeria: {type: yes_no, group: officina, item: "Carrozzeria"}
@@ -6309,6 +6356,15 @@ sections:
       - {kind: text, label: mq, value: "{{ask.superficie_vendita_mq|decimal}}"}
       - {kind: checkbox, label: Generi di monopolio, when: "{{ask.superficie_monopolio_mq|positive}}"}
       - {kind: text, label: superficie di vendita mq, nth: 5, value: "{{ask.superficie_monopolio_mq}}", when: "{{ask.superficie_monopolio_mq|positive}}"}
+  # The public-land communication's «Ulteriori dichiarazioni» (four statements, all the person's). Strict and before the older entries of the
+  # name, like the AUA's «Dichiarazioni»: a non-strict one fills any section of the name and leaves boxes it does not name required.
+  - section: Ulteriori dichiarazioni
+    strict: true
+    theirs: [dichiara che l’occupazione di suolo pubblico con il manufatto installato, dichiara che il manufatto installato non presenta loghi, è consapevole che è tassativamente vietato, è consapevole che è in facoltà dell’Amministrazione]
+    leave: [dichiara che il manufatto installato non presenta loghi, è consapevole che è tassativamente vietato, è consapevole che è in facoltà dell’Amministrazione]
+    # The first statement is a field that is never filled (its `when` is false: the area is always answered), so that a form with only some of the four boxes falls through.
+    fields:
+      - {kind: checkbox, label: dichiara che l’occupazione di suolo pubblico con il manufatto installato, when: "{{ask.occupazione_mq|empty}}"}
   # The medium shop's closing declarations (opening by merger, move, new sector, ...): six statements and a
   # commitment, all the person's. Strict, so the longer lists of other forms (the stabilimenti's, which
   # share the name) are not taken for it.
@@ -6488,6 +6544,19 @@ sections:
       - {kind: radio, label: Si, when: "{{ask.in_centro_commerciale}}"}
       - {kind: radio, label: "No", when: "{{ask.in_centro_commerciale|not}}"}
       - {kind: text, label: denominazione, value: "{{ask.centro_commerciale_denominazione}}", when: "{{ask.in_centro_commerciale}}"}
+
+  # The AUA's voltura «Dichiarazioni» (three statements, all the person's). It sits BEFORE the hairdressers' entry of the same name on
+  # purpose: it is strict, so it takes only a section whose every box it names, and the hairdressers' sections fall through to theirs
+  # (a non-strict entry after it would never be reached for the AUA: the older one fills any «Dichiarazioni» and left these three
+  # required boxes unnamed, so the run stopped on "il valore e obbligatorio", 2026-11-16).
+  - section: Dichiarazioni
+    strict: true
+    theirs: [che nulla è variato circa l’attività autorizzata, di accettare tutti gli obblighi e le prescrizioni, che non sussistono nei propri confronti le cause di divieto]
+    leave: [di accettare tutti gli obblighi e le prescrizioni, che non sussistono nei propri confronti le cause di divieto]
+    # A box only this form has, named so that a section of another form (the take-overs' «DICHIARAZIONI SUL POSSESSO DEI REQUISITI ANTIMAFIA»,
+    # whose one box is the third statement) is not taken for it: its `when` is false in every supported case (another referente is refused).
+    fields:
+      - {kind: checkbox, label: che nulla è variato circa l’attività autorizzata, when: "{{ask.aua_referente_altro}}"}
 
   # The hairdresser's or beautician's move: what the person declares having complied with
   # (hygiene, the Comune's rules, safety, building and environmental rules) and undertakes. Theirs.
@@ -7500,6 +7569,7 @@ sections:
   # Temporary advertising (a repeatable panel): one of five kinds, its support and measures, the days and the place; the
   # person's statements (wind, the municipal rules, the road owner's opinion, the building's availability) are theirs.
   - section: tipologia del mezzo pubblicitario (pubblicità temporanea) pannello ripetibile
+    aliases: [Tipologia del mezzo pubblicitario (pubblicità temporanea)]
     fields:
       - {kind: text, label: numero progressivo del mezzo pubblicitario, value: "1"}
       - {kind: checkbox, label: pubblicità riguardanti la locazione o la compravendita, when: "{{ask.pubblicita_temporanea_tipo|is_immobile_in_locazione_o_vendita}}"}
@@ -7753,6 +7823,233 @@ sections:
       - {kind: radio, label: non è dotata di centro estetico}
       - {kind: radio, label: non è dotata di palestra}
       - {kind: radio, label: non effettua vendita di prodotti alimentari e artigianali}
+  # The SCIA for temporary advertising's position (a sign-derived SCIA: «Dichiarazione relativa alla posizione del mezzo pubblicitario»):
+  # three ticks, whether the building or the area is protected. Only the first (neither is) is mapped: a protected building or area has its own
+  # authorizations (Soprintendenza, paesaggistica) that this form does not ask for, so those cases are refused.
+  - section: Dichiarazione relativa alla posizione del mezzo pubblicitario
+    strict: true
+    leave: [L'EDIFICIO dove verrà, L'AREA dove verrà]
+    supports:
+      - {when: "{{ask.mezzo_tutela|is_non_tutelati}}", else: "Un mezzo pubblicitario su un edificio o in un'area tutelati ha bisogno di un'autorizzazione che qui non preparo (Soprintendenza o paesaggistica)."}
+    fields:
+      - {kind: checkbox, label: L'EDIFICIO E L'AREA dove verrà}
+
+  # A hotel's opening (054, SCIA for the start of a hotel structure): the name, and the stars the structure's own points give (the
+  # self-assessment form is the person's attachment); the dependence's stars, its «eventuale» group, stay empty.
+  - section: apertura
+    fields:
+      - {kind: text, label: Denominazione commerciale della struttura, value: "{{ask.denominazione_struttura}}"}
+  - section: classificazione della struttura
+    fields:
+      - {kind: radio, label: 1 stella, nth: 1, when: "{{ask.hotel_stelle|is_1_stella}}"}
+      - {kind: radio, label: 2 stelle, nth: 1, when: "{{ask.hotel_stelle|is_2_stelle}}"}
+      - {kind: radio, label: 3 stelle, nth: 1, when: "{{ask.hotel_stelle|is_3_stelle}}"}
+      - {kind: radio, label: 4 stelle, nth: 1, when: "{{ask.hotel_stelle|is_4_stelle}}"}
+      - {kind: radio, label: 5 stelle, nth: 1, when: "{{ask.hotel_stelle|is_5_stelle}}"}
+      - {kind: radio, label: 5 stelle lusso, nth: 1, when: "{{ask.hotel_stelle|is_5_stelle_lusso}}"}
+    leave: [1 stella, 2 stelle, 3 stelle, 4 stelle, 5 stelle, 5 stelle lusso]
+  # A communication of public-land occupation (the SUAP's common form): the structure, the area, the days and the street;
+  # the viability and the contributory-regularity statements are the person's.
+  - section: OGGETTO DELL'ISTANZA
+    fields:
+      - {kind: text, label: indicare il tipo di struttura per cui si comunica, value: "{{ask.occupazione_struttura}}"}
+      - {kind: text, label: per complessivi mq, value: "{{ask.occupazione_mq|decimal}}"}
+      - {kind: date, label: dal, value: "{{ask.occupazione_dal|date_it}}"}
+      - {kind: date, label: al, value: "{{ask.occupazione_al|date_it}}"}
+      - {kind: select, label: "Toponimo (via, corso, piazza)", value: "{{ask.occupazione_toponimo}}"}
+      - {kind: text, label: Denominazione stradale, value: "{{ask.occupazione_strada}}"}
+      - {kind: text, label: Numero civico, value: "{{ask.occupazione_civico}}"}
+  - section: DICHIARAZIONE VIABILITÀ
+    theirs: [Il/la sottoscritto/a dichiara che]
+    fields: []
+  - section: DICHIARAZIONE DI REGOLARITÀ CONTRIBUTIVA
+    theirs: [Il/la sottoscritto/a dichiara di non avere procedure di riscossione]
+    fields: []
+  # The AUA's voltura or update (the SUAP's common form): the plant, the declarant is the AUA's referente, the authorization and who held it,
+  # why the holder changes and the deed. The «No» (another referente) opens the referente's own boxes: refused.
+  - section: DATI DELL’IMPIANTO / STABILIMENTO / ATTIVITA’
+    fields:
+      - {kind: text, label: Denominazione dell’impianto/stabilimento/attività, value: "{{ask.aua_impianto_denominazione}}"}
+      - {kind: text, label: Descrizione attività principale, value: "{{business.descrizione_attivita}}"}
+  - section: Dati del referente AUA
+    supports:
+      - {when: "{{ask.aua_referente_altro|not}}", else: "Se il referente dell'AUA è un'altra persona, il modulo ne chiede i dati e un documento: per ora non lo preparo."}
+    leave: ["No", Nome, Cognome, Codice Fiscale, "in qualità di:", nato a, prov., Stato, il, Residente in, "Via, piazza ecc :", n°, CAP, PEC/posta elettronica, Telefono fisso/cellulare, "Tipologie ammesse"]
+    fields:
+      - {kind: radio, label: "Sì"}
+  - section: DATI DELLA IMPRESA A CUI SI SUBENTRA
+    fields:
+      - {kind: radio, label: la voltura, when: "{{ask.aua_voltura_azione|is_voltura}}"}
+      - {kind: radio, label: l’aggiornamento, when: "{{ask.aua_voltura_azione|is_aggiornamento}}"}
+      - {kind: text, label: "dell’Autorizzazione Unica Ambientale nell’attività di:", value: "{{ask.subingresso_attivita}}"}
+      - {kind: text, label: prot./n., value: "{{ask.aua_numero}}"}
+      # "del" is also the start of the activity box's «dell’Autorizzazione ...»: the date is the second box with that start.
+      - {kind: date, label: del, nth: 2, value: "{{ask.aua_data|date_it}}"}
+      - {kind: text, label: Intestato a, value: "{{ask.aua_intestatario}}"}
+  - section: MOTIVAZIONE DELLA VOLTURA/AGGIORNAMENTO
+    fields:
+      - {kind: radio, label: cambio di denominazione del soggetto titolare, when: "{{ask.aua_voltura_motivo|is_cambio_di_denominazione}}"}
+      - {kind: radio, label: cessione d’azienda, when: "{{ask.aua_voltura_motivo|is_cessione_d_azienda}}"}
+      - {kind: radio, label: donazione, when: "{{ask.aua_voltura_motivo|is_donazione}}"}
+      - {kind: radio, label: fusione, when: "{{ask.aua_voltura_motivo|is_fusione}}"}
+      - {kind: radio, label: scissione, when: "{{ask.aua_voltura_motivo|is_scissione}}"}
+      - {kind: radio, label: cambiamento di forma giuridica, when: "{{ask.aua_voltura_motivo|is_cambiamento_di_forma_giuridica}}"}
+      - {kind: radio, label: cessione o acquisizione di quote, when: "{{ask.aua_voltura_motivo|is_cessione_o_acquisizione_di_quote}}"}
+      - {kind: radio, label: conferimento di ramo d’azienda, when: "{{ask.aua_voltura_motivo|is_conferimento_di_ramo_d_azienda}}"}
+      - {kind: radio, label: altro, when: "{{ask.aua_voltura_motivo|is_altro}}"}
+      - {kind: text, label: in tal caso specificare, value: "{{ask.aua_voltura_motivo_altro}}", when: "{{ask.aua_voltura_motivo|is_altro}}"}
+      - {kind: radio, label: come risulta dall’atto di subingresso, when: "{{ask.atto_registrato}}"}
+      - {kind: text, label: n., value: "{{ask.atto_registrazione_numero}}", when: "{{ask.atto_registrato}}"}
+      - {kind: date, label: del, value: "{{ask.atto_registrazione_data|date_it}}", when: "{{ask.atto_registrato}}"}
+      - {kind: radio, label: l’atto è in corso di registrazione, when: "{{ask.atto_registrato|not}}"}
+  # A public-land concession's request (domanda di concessione): the address, the initiative, its hours and equipment, how the
+  # canone is paid; the takes-note and the knowledge of the forfeiture are the person's.
+  - section: Dichiarazione dell'indirizzo per l'occupazione del suolo pubblico
+    leave: [Frazione, scala, piano, interno]
+    fields:
+      - {kind: text, label: Comune, value: "{{ask.suolo_comune}}"}
+      - {kind: text, label: Prov., value: "{{ask.suolo_provincia}}"}
+      - {kind: lookup, label: "Via, Viale, Piazza", value: "{{ask.suolo_via}}"}
+      - {kind: text, label: n° civico, value: "{{ask.suolo_civico}}"}
+      - {kind: text, label: CAP, value: "{{ask.suolo_cap}}"}
+  - section: tipologia richiesta occupazione suolo pubblico
+    fields:
+      - {kind: text, label: "l'autorizzazione ad occupare il suolo pubblico per", value: "{{ask.suolo_iniziativa}}"}
+      - {kind: text, label: "per un'area totale di mq", value: "{{ask.occupazione_mq}}"}
+      - {kind: text, label: "per il periodo dalle ore", value: "{{ask.suolo_ora_dalle}}"}
+      - {kind: date, label: del giorno, nth: 1, value: "{{ask.occupazione_dal|date_it}}"}
+      - {kind: text, label: alle ore, value: "{{ask.suolo_ora_alle}}"}
+      - {kind: date, label: del giorno, nth: 2, value: "{{ask.occupazione_al|date_it}}"}
+      - {kind: text, label: con le seguente attrezzature, value: "{{ask.suolo_attrezzature}}"}
+  - section: impegni per l'occupazione suolo pubblico
+    theirs: [PER PRESA VISIONE]
+    fields: []
+  - section: dichiarazione di impegno al pagamento del canone unico
+    theirs: [è a conoscenza che il mancato pagamento]
+    fields:
+      - {kind: radio, label: in un unica soluzione, when: "{{ask.canone_pagamento|is_in_un_unica_soluzione}}"}
+      - {kind: radio, label: mediante rateizzazione, when: "{{ask.canone_pagamento|is_a_rate}}"}
+  # The take-over of a public-land concession (subingresso): the title the new holder runs under, the previous holder and its
+  # title, the deed (every cause but a death: refused), the concession; the acoustic and the no-changes statements are the person's.
+  - section: dichiarazione relativa ai titoli abilitanti
+    fields:
+      - {kind: text, label: SCIA/DIA/AUTORIZZAZIONE prot. n°, value: "{{ask.titolo_attivita_protocollo}}"}
+      - {kind: date, label: del, value: "{{ask.titolo_attivita_data|date_it}}"}
+      - {kind: text, label: per l'attività di, value: "{{ask.attivita_esercitata}}"}
+  - section: dichiarazione della modalità di subingresso
+    leave: [successione mortis causa, data di decesso del titolare]
+    supports:
+      - {when: "{{ask.impianto_causa|is_successione|not}}", else: "Un subingresso per successione ha altre caselle: per ora non lo preparo."}
+    fields:
+      - {kind: text, label: Denominazione ditta cedente, value: "{{ask.cedente_denominazione}}"}
+      - {kind: text, label: Codice Fiscale, value: "{{ask.cedente_cf}}"}
+      - {kind: radio, label: autorizzazione, when: "{{ask.cedente_titolo_tipo|is_autorizzazione}}"}
+      - {kind: radio, label: comunicazione, when: "{{ask.cedente_titolo_tipo|is_comunicazione}}"}
+      - {kind: radio, label: D.I.A., when: "{{ask.cedente_titolo_tipo|is_d_i_a}}"}
+      - {kind: radio, label: S.C.I.A., when: "{{ask.cedente_titolo_tipo|is_s_c_i_a}}"}
+      - {kind: text, label: n°, value: "{{ask.cedente_titolo_protocollo}}"}
+      - {kind: date, label: data, value: "{{ask.cedente_titolo_data|date_it}}"}
+      - {kind: radio, label: "atto di trasferimento d'azienda o di ramo d'azienda:"}
+      - {kind: radio, label: compravendita, when: "{{ask.impianto_causa|is_compravendita}}"}
+      - {kind: radio, label: affitto, when: "{{ask.impianto_causa|is_affitto}}"}
+      - {kind: radio, label: fusione, when: "{{ask.impianto_causa|is_fusione}}"}
+      - {kind: radio, label: conferimento, when: "{{ask.impianto_causa|is_conferimento}}"}
+      - {kind: radio, label: fallimento, when: "{{ask.impianto_causa|is_fallimento}}"}
+      - {kind: radio, label: donazione, when: "{{ask.impianto_causa|is_donazione}}"}
+      - {kind: radio, label: reintestazione, when: "{{ask.impianto_causa|is_reintestazione}}"}
+      - {kind: radio, label: altre cause, when: "{{ask.impianto_causa|is_altre_cause}}"}
+      - {kind: text, label: "specificare:", value: "{{ask.impianto_causa_altro}}", when: "{{ask.impianto_causa|is_altre_cause}}"}
+      - {kind: date, label: stipulato/ autenticato in data, value: "{{ask.subingresso_atto_data|date_it}}"}
+      - {kind: date, label: con decorrenza, value: "{{ask.subingresso_decorrenza|date_it}}"}
+      - {kind: text, label: presso il notaio, value: "{{ask.notaio_nome}}"}
+      - {kind: text, label: con sede a, value: "{{ask.notaio_sede}}"}
+  - section: dichiarazione degli estremi della concessione
+    theirs: [dichiara che non sono state apportate modifiche]
+    fields:
+      - {kind: text, label: titolare (cognome e nome o ragione sociale), value: "{{ask.cedente_denominazione}}"}
+      - {kind: text, label: Cod.Fiscale/P.Iva, value: "{{ask.cedente_cf}}"}
+      - {kind: text, label: concessione n°, value: "{{ask.concessione_precedente_numero}}"}
+      - {kind: date, label: del, value: "{{ask.concessione_precedente_data|date_it}}"}
+  - section: Rispetto dei limiti acustici
+    theirs: [Dichiara che l'attività sarà svolta nel rispetto dei limiti acustici]
+    fields: []
+  # A one-off occupation (domanda di occupazione temporanea): the responsible is the declarant (another person refused), the
+  # person's commitments, the transport; the activities (a food stand or another; serving and giving out promotional material
+  # open more boxes: refused); no emergency vehicles (their boxes refused); the request itself and the patronage.
+  - section: ulteriori dichiarazioni
+    supports:
+      - {when: "{{ask.riprese_responsabile_altro|not}}", else: "Se chi risponde è un'altra persona, il modulo ne chiede il nome e il telefono: per ora non lo preparo."}
+    theirs: [si assume l'onere di rispondere in proprio, si impegna a rimuovere ogni attrezzatura, si impegna ad acquisire le eventuali licenze, si impegna ad acquisire eventuali ulteriori, si impegna a provvedere al versamento della cauzione, si impegna ad acquisire le certificazioni, si impegna a realizzare le condizioni di sicurezza, provvederà con proprio personale alla custodia]
+    leave: [persona diversa dal dichiarante, Sig. (nome, cognome), Recapito telefonico, le attrezzature verranno trasportate con il seguente mezzo, specificare tipo, targa]
+    fields:
+      - {kind: radio, label: il dichiarante}
+      - {kind: textarea, label: I mezzi di trasporto utilizzati faranno il seguente percorso, value: "{{ask.suolo_percorso}}"}
+  - section: attività svolte nell'ambito dell'iniziativa promozionale
+    leave: [somministrazione alimenti e bevande, distribuzione materiale promozionale, vendita, gratuita]
+    fields:
+      - {kind: checkbox, label: stand gastronomico, when: "{{ask.iniziativa_attivita|is_stand_gastronomico}}"}
+      - {kind: checkbox, label: altro, when: "{{ask.iniziativa_attivita|is_altro}}"}
+      - {kind: text, label: specificare, value: "{{ask.iniziativa_attivita_altro}}", when: "{{ask.iniziativa_attivita|is_altro}}"}
+  - section: mezzi di emergenza
+    supports:
+      - {when: "{{ask.mezzi_emergenza|not}}", else: "Con ambulanza o vigili del fuoco il modulo chiede altro: per ora non lo preparo."}
+    leave: [ambulanza, precisare, vigili del fuoco]
+    fields:
+      - {kind: checkbox, label: non sono presenti mezzi di emergenza}
+  - section: richiesta occupazione suolo pubblico
+    fields:
+      - {kind: text, label: "l'autorizzazione ad occupare il suolo pubblico per", value: "{{ask.suolo_iniziativa}}"}
+      - {kind: text, label: su Via/Viale/Piazza, value: "{{ask.temporanea_luogo}}"}
+      - {kind: text, label: "per un'area totale di mq", value: "{{ask.occupazione_mq}}"}
+      - {kind: text, label: "per il periodo dalle ore", value: "{{ask.suolo_ora_dalle}}"}
+      - {kind: date, label: del giorno, nth: 1, value: "{{ask.occupazione_dal|date_it}}"}
+      - {kind: text, label: alle ore, value: "{{ask.suolo_ora_alle}}"}
+      - {kind: date, label: del giorno, nth: 2, value: "{{ask.occupazione_al|date_it}}"}
+      - {kind: text, label: con le seguente attrezzature, value: "{{ask.suolo_attrezzature}}"}
+      - {kind: radio, label: "si", when: "{{ask.patrocinio}}"}
+      - {kind: radio, label: "no", when: "{{ask.patrocinio|not}}"}
+  # A hotel's capacity (054, opening): rooms only, singles and doubles (the units, the condhotel's residential units and the albergo diffuso's
+  # locations are refused); the totals are sums of what was asked. Each type's two boxes (con / senza bagno) are all the crawl saw: the
+  # boxes the portal also calls required are read on the draft of the run (README, round 10).
+  - section: capacità ricettiva
+    leave: [Numero camere triple, Numero camere quadruple, Numero camere con più di 4 letti, Altro, Unità abitative, Unità dello stesso tipo n., Tipologia, Soggiorno, si, "no", Bagni privati n., TOTALE posti letto unità abitative n., Ubicazione camere, Camera/unità abitativa n., indirizzo]
+    fields:
+      - {kind: text, label: "n.", value: "{{ask.camere_singole_bagno+ask.camere_singole_senza+2*ask.camere_doppie_bagno+2*ask.camere_doppie_senza}}"}
+      - {kind: checkbox, label: Camere}
+      - {kind: text, label: Totale camere n., value: "{{ask.camere_singole_bagno+ask.camere_singole_senza+ask.camere_doppie_bagno+ask.camere_doppie_senza}}"}
+      - {kind: text, label: per posti letto complessivi in camere n., value: "{{ask.camere_singole_bagno+ask.camere_singole_senza+2*ask.camere_doppie_bagno+2*ask.camere_doppie_senza}}"}
+      - {kind: checkbox, label: Numero camere singole, when: "{{ask.camere_singole_bagno+ask.camere_singole_senza|positive}}"}
+      - {kind: text, label: con bagno, value: "{{ask.camere_singole_bagno}}", when: "{{ask.camere_singole_bagno+ask.camere_singole_senza|positive}}"}
+      - {kind: text, label: senza bagno, value: "{{ask.camere_singole_senza}}", when: "{{ask.camere_singole_bagno+ask.camere_singole_senza|positive}}"}
+      - {kind: checkbox, label: Numero camere doppie, when: "{{ask.camere_doppie_bagno+ask.camere_doppie_senza|positive}}"}
+      - {kind: text, label: con bagno, value: "{{ask.camere_doppie_bagno}}", when: "{{ask.camere_doppie_bagno+ask.camere_doppie_senza|positive}} {{ask.camere_singole_bagno+ask.camere_singole_senza|positive|not}}"}
+      - {kind: text, label: senza bagno, value: "{{ask.camere_doppie_senza}}", when: "{{ask.camere_doppie_bagno+ask.camere_doppie_senza|positive}} {{ask.camere_singole_bagno+ask.camere_singole_senza|positive|not}}"}
+      - {kind: text, label: con bagno, nth: 2, on_page: true, value: "{{ask.camere_doppie_bagno}}", when: "{{ask.camere_doppie_bagno+ask.camere_doppie_senza|positive}} {{ask.camere_singole_bagno+ask.camere_singole_senza|positive}}"}
+      - {kind: text, label: senza bagno, nth: 2, on_page: true, value: "{{ask.camere_doppie_senza}}", when: "{{ask.camere_doppie_bagno+ask.camere_doppie_senza|positive}} {{ask.camere_singole_bagno+ask.camere_singole_senza|positive}}"}
+  # The authorization to install an advertising cloth (the SUAP's common form): the cloth, its owner, the firm; the statements are the
+  # person's. Only a cloth on a private good, not on a protected building and not on a scaffold on public land is mapped: the other
+  # ownerships and the Soprintendenza's or the concession's boxes are refused.
+  - section: OGGETTO DELL'ISTANZA
+    fields:
+      - {kind: textarea, label: Il rilascio dell’autorizzazione per l’installazione, value: "{{ask.telo_descrizione}}"}
+  - section: installazione del telo pubblicitario
+    strict: true
+    supports:
+      - {when: "{{ask.telo_proprieta_privata}}", else: "Un telo su un bene pubblico o del Comune ha altre caselle (contratto, titolo): per ora non lo preparo."}
+      - {when: "{{ask.telo_bene_culturale|not}}", else: "Un telo su un edificio tutelato chiede l'autorizzazione della Soprintendenza: per ora non lo preparo."}
+      - {when: "{{ask.ponteggi_suolo_pubblico|not}}", else: "Un ponteggio su suolo pubblico chiede anche gli estremi della concessione: per ora non lo preparo."}
+    theirs: [che gli interventi previsti non ledono i diritti di terzi, che l’installazione del telo avviene su ponteggi metallici, che i ponteggi di servizio e/o le recinzioni di cantiere insistono su suolo privato]
+    leave: [che gli interventi previsti non ledono i diritti di terzi, che l’installazione del telo avviene su ponteggi metallici, che i ponteggi di servizio e/o le recinzioni di cantiere insistono su suolo privato, che l’installazione del telo pubblicitario avviene su beni di proprietà pubblica, che l’installazione del telo pubblicitario avviene su beni di proprietà del Comune, che l’installazione del telo pubblicitario ricade su edificio, che i ponteggi di servizio e/o le recinzioni di cantiere insistono su suolo pubblico, che in sede di richiesta, contratto n., stipulato con, n., Numero dell'autorizzazione della Soprintendenza, del, dal S.T.M. della Municipalità, in data, data di scadenza della concessione, "Si"]
+    fields:
+      - {kind: radio, label: che l’installazione del telo pubblicitario avviene su beni di proprietà privata}
+      - {kind: radio, label: che l’installazione del telo pubblicitario non ricade su edificio o in aree tutelate}
+      - {kind: radio, label: "No"}
+  - section: ditta esecutrice lavori
+    fields:
+      - {kind: text, label: dalla Ditta, value: "{{ask.telo_ditta}}"}
+  - section: dichiarazione relativa alla normativa tecnica
+    theirs: [PER PRESA VISIONE]
+    fields: []
 
 after:
   - section: Pagamento degli oneri

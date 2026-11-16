@@ -2523,5 +2523,114 @@ def _():
     assert "looks like several runs in one argument" in r
 
 
+ROUND10 = {
+    "pubblicita-temporanea-scia-fittizia": "suap-common-mezzi-pubblicitari-installazione-di-mezzi-pubblicitari-scia-2",
+    "pubblicita-telo-fittizia": "suap-common-mezzi-pubblicitari-installazione-di-mezzi-pubblicitari-richi",
+    "albergo-apertura-fittizio": "suap-054-aprire-l-attivita",
+    "aua-voltura-fittizia": "suap-common-autorizzazione-unica-ambientale-a-u-a-volturare-l-autorizzaz",
+    "suolo-pubblico-comunicazione-fittizio": "suap-common-occupazione-suolo-pubblico-comunicazione-occupazione-suolo-p",
+    "suolo-pubblico-concessione-fittizio": "suap-common-occupazione-suolo-pubblico-domanda-di-concessione-occupazion",
+    "suolo-pubblico-temporanea-fittizio": "suap-common-occupazione-suolo-pubblico-domanda-di-occupazione-temporanea",
+    "suolo-pubblico-subingresso-fittizio": "suap-common-occupazione-suolo-pubblico-subingresso-alla-concessione-per",
+}
+
+
+@case("round 10: each of the 8 pratiche it made fillable has a rehearsal generated from its own crawl and filled on the portal (runs.json)")
+def _():
+    for name, crawl in ROUND10.items():
+        recipe = gen.load_yaml(REH / name / "recipe.yaml")
+        assert recipe["crawl"] == crawl, (name, recipe["crawl"])
+        generated(name)
+        runs = json.loads((REH / name / "runs.json").read_text())
+        assert runs and runs[-1]["result"] == "filled", (name, runs[-1:])
+
+
+@case("round 10: what the portal taught: an area box is `number` (an integer) in the concession and the one-off occupation but a decimal text (10.00 at most) in the communication, \"del\" is also the start of «dell’Autorizzazione», a hotel's doubles with no singles are the first boxes of their label")
+def _():
+    isec = lambda steps, start: next(x for x in steps["sections"] if x["section"].lower().startswith(start.lower()))
+    for name in ("suolo-pubblico-concessione-fittizio", "suolo-pubblico-temporanea-fittizio"):
+        t = isec(generated(name), "tipologia richiesta" if "concessione" in name else "richiesta occupazione")
+        area = field(t, "per un'area totale di mq")
+        assert "decimal" not in str(area["value"]), (name, "the portal said \"il numero immesso non e valido\" for 12.00")
+    c = isec(generated("suolo-pubblico-comunicazione-fittizio"), "OGGETTO DELL'ISTANZA")
+    assert "decimal" in str(field(c, "per complessivi mq")["value"]), "the communication's box wants the decimal point"
+    assert int(json.loads((REH / "suolo-pubblico-comunicazione-fittizio" / "answers.json").read_text())["occupazione_mq"]) <= 10
+    a = isec(generated("aua-voltura-fittizia"), "DATI DELLA IMPRESA A CUI SI SUBENTRA")
+    assert any(f["kind"] == "date" and f["label"] == "del" and f.get("nth") == 2 for f in a["fields"]), "the date is the second box starting with «del»"
+    h = isec(generated("albergo-apertura-fittizio"), "capacità ricettiva")
+    doubles = [f for f in h["fields"] if f["label"] in ("con bagno", "senza bagno") and not f.get("nth")]
+    assert doubles and all(str(f["when"]).count("{{") == str(f["when"]).count("}}") and "}}|" not in str(f["when"]) for f in doubles), "a `|not` outside the braces made the doubles' boxes empty (\"il valore e obbligatorio\")"
+    v = isec(generated("suolo-pubblico-concessione-fittizio"), "dichiarazione dell'indirizzo")
+    assert {f["label"]: f["kind"] for f in v["fields"]}["n° civico"] == "text"
+
+
+@case("round 10: no `when` of the dictionary has a filter outside its braces (`{{a|positive}}|not` read as a term that is never true: the hotel's doubles stayed empty)")
+def _():
+    d = gen.load_yaml(HERE.parent / "dictionary" / "fnsuap.yaml")
+    bad = [f["label"] for e in d["sections"] for f in e.get("fields", []) if "}}|" in str(f.get("when", ""))]
+    assert not bad, bad
+
+
+@case("round 10: a non-strict entry fills every section of its name and leaves the boxes it does not name required, so the AUA's «Dichiarazioni» and the public-land communication's «Ulteriori dichiarazioni» are strict entries BEFORE the older ones of the name (the hairdressers' ones fall through to theirs)")
+def _():
+    import subprocess
+    d = gen.load_yaml(HERE.parent / "dictionary" / "fnsuap.yaml")["sections"]
+    norm = lambda x: re.sub(r"\s+", " ", x.lower()).strip()
+    for name in ("dichiarazioni", "ulteriori dichiarazioni"):
+        same = [e for e in d if norm(e["section"]) == name]
+        assert same[0].get("strict"), f"the first {name!r} entry must be the strict one"
+        assert any(not e.get("strict") for e in same[1:]), f"the older {name!r} entry is still there"
+    for crawl, sec in (("suap-common-autorizzazione-unica-ambientale-a-u-a-volturare-l-autorizzaz", "DICHIARAZIONI"),
+                       ("suap-common-occupazione-suolo-pubblico-comunicazione-occupazione-suolo-p", "ULTERIORI DICHIARAZIONI")):
+        r = subprocess.run([sys.executable, str(HERE / "section_check.py"), f"{crawl}::{sec}"], capture_output=True, text=True)
+        assert r.stdout.splitlines()[0].startswith("OK"), r.stdout[:300]
+
+
+ROUND10_SECTIONS = [
+    "Dichiarazione relativa alla posizione del mezzo pubblicitario", "apertura", "classificazione della struttura", "capacità ricettiva",
+    "OGGETTO DELL'ISTANZA", "DICHIARAZIONE VIABILITÀ", "DICHIARAZIONE DI REGOLARITÀ CONTRIBUTIVA", "DATI DELL’IMPIANTO / STABILIMENTO / ATTIVITA’",
+    "Dati del referente AUA", "DATI DELLA IMPRESA A CUI SI SUBENTRA", "MOTIVAZIONE DELLA VOLTURA/AGGIORNAMENTO",
+    "Dichiarazione dell'indirizzo per l'occupazione del suolo pubblico", "tipologia richiesta occupazione suolo pubblico",
+    "impegni per l'occupazione suolo pubblico", "dichiarazione di impegno al pagamento del canone unico", "dichiarazione relativa ai titoli abilitanti",
+    "dichiarazione della modalità di subingresso", "dichiarazione degli estremi della concessione", "Rispetto dei limiti acustici",
+    "attività svolte nell'ambito dell'iniziativa promozionale", "mezzi di emergenza", "richiesta occupazione suolo pubblico",
+    "installazione del telo pubblicitario", "ditta esecutrice lavori", "dichiarazione relativa alla normativa tecnica",
+]
+
+
+@case("round 10: none of the round's new entries comes before a longer-named one (the strict «Dichiarazioni» and «Ulteriori dichiarazioni» are the deliberate exceptions, above)")
+def _():
+    names = [e["section"] for e in gen.load_yaml(HERE.parent / "dictionary" / "fnsuap.yaml")["sections"]]
+    norm = lambda x: re.sub(r"\s+", " ", x.lower()).strip()
+    for want in ROUND10_SECTIONS:
+        idx = [i for i, n in enumerate(names) if norm(n) == norm(want)]
+        assert idx, f"no entry for {want!r}"
+        later = [n for n in names[idx[-1] + 1:] if norm(n).startswith(norm(want)) and norm(n) != norm(want)]
+        assert not later, f"{want!r} comes before the longer {later[:2]}: it would take their sections, and drop their `theirs`"
+
+
+@case("round 10: gen.py refuses a `when` with a filter outside its braces, and section_check warns when the winning non-strict entry names none of a section's ticks (the older «Dichiarazioni» won the AUA's and left its three statements required)")
+def _():
+    import catalogue as cat
+    crawls = cat.crawls()
+    sec = next(x for x in crawls["suap-054-aprire-l-attivita"]["sections"] if x["section"] == "apertura")
+    bad = {"section": "x", "fields": [{"kind": "text", "label": "a", "when": "{{ask.a|positive}}|not"}]}
+    assert any("outside its braces" in p for p in gen.fill(bad, "x", sec, {}, "x")[1])
+    aua = next(x for x in crawls["suap-common-autorizzazione-unica-ambientale-a-u-a-volturare-l-autorizzaz"]["sections"] if x["section"] == "DICHIARAZIONI")
+    old = {"section": "Dichiarazioni", "theirs": ["i regolamenti di igiene e sanità"], "fields": []}
+    import section_check
+    assert len(section_check.unnamed_boxes(old, aua)) == 3, section_check.unnamed_boxes(old, aua)
+    strict = next(e for e in gen.load_yaml(HERE.parent / "dictionary" / "fnsuap.yaml")["sections"] if e["section"] == "Dichiarazioni" and e.get("strict"))
+    assert not section_check.unnamed_boxes(strict, aua)
+
+
+@case("round 10: the portal-loop facts the README now holds are in the tools: rerun.py says a bundle under a temporary folder is invisible to the picker, the draft helper names the stale list")
+def _():
+    r = (HERE / "rerun.py").read_text(encoding="utf-8")
+    assert "temporary folder the person's file picker does not show" in r
+    d = (HERE.parent / "read_draft.js").read_text(encoding="utf-8")
+    assert "list is stale" in d and "APRI navigates twice" in d
+
+
 print(f"{sum(results)}/{len(results)} passed")
 sys.exit(0 if all(results) else 1)

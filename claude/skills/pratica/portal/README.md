@@ -729,6 +729,50 @@ then a bundle of four, one of two and one of one (a file pick each: the sha256 c
 - **Not run on the portal:** the death branch of the take-over and the voltura (only the transfer by sale), the other eight advertising kinds, the adhesion's four other objects, the
   hotel's dipendenza classification.
 
+**Round 10 (2026-11-16, evening): eight more pratiche** (SUAP fillable 265 → 273, run 194 → 202; 36 are short at least one section). The cheapest of what was left, eight rehearsals
+over three bundles (7, 5 and 2 runs: two filled the first time, the rest after the fixes below): the temporary advertising's SCIA (the same temporary sections round 9 mapped
+under another name: one alias on the existing entry, the position section new), the advertising cloth's authorization (`pubblicita-telo-fittizia`), a hotel's opening (054:
+the name, the stars, the capacity), the AUA's voltura or update, and the four public-land forms (communication, concession, one-off occupation, take-over of a concession).
+All eight are in `suap-unrouted.yaml` with their reasons. What the portal taught:
+
+- **A non-strict entry fills every section of its name and leaves the boxes it does not name required.** The AUA's «DICHIARAZIONI» (three statements) and the communication's
+  «ULTERIORI DICHIARAZIONI» (four) matched the older entries of the same name (the hairdressers', the medium shop's), whose `theirs` don't name them: the portal called the
+  boxes required and the run stopped ("il valore e obbligatorio" × 3 and × 4). The fix is a **strict entry with the statements in `theirs` and `leave`, placed BEFORE the
+  older ones**: for a crawl with other boxes it has problems and falls through, for its own it is the first without any. (This is the one exception to "new entries go last";
+  test_gen holds both the order and the fall-through.)
+- **A `|not` outside its braces is a term that is never true.** `{{a+b|positive}}|not` instead of `{{a+b|positive|not}}` left the hotel's doubles empty, and the portal said
+  "il valore e obbligatorio" for both boxes, which looked like a portal rule. test_gen now fails on any `when` with `}}|`.
+- **The same label, three kinds of area box.** The one-off occupation's and the concession's «per un'area totale di mq» are `number` boxes: "12.00" was "il numero immesso non e
+  valido", "12" is kept. The communication's is a text box that wants the decimal point and no more than 10.00 («il valore non deve essere superiore a 10 .00»): the
+  communication is for 10 m² at most, the answer there is 8.
+- **`del` is also the start of «dell’Autorizzazione Unica Ambientale nell’attività di:»** (a label is a prefix): the AUA's date is `nth: 2`. The check says "date 'del' is in no
+  dictionary entry" for an ambiguous prefix, not for a missing one.
+- **A street list wants the Comune's own name** (again): «Toledo» matched 0 of 9 listed; the fixture's «Viale Augusto» is found.
+- **A hotel's capacity** (054): «Camere» opens «Totale camere n.» and «per posti letto complessivi in camere n.», then one tick per room type; each ticked type's two boxes
+  (con / senza bagno) are required. Only singles and doubles are mapped (as the B&B's); the units, the condhotel's residential units and the albergo diffuso's locations are
+  left. The first «n.» (total beds) is the sum.
+- **The telo's «Si / No»** (the scaffold stands on public land) is a whole-word radio; «No» opens a statement («suolo privato») that is the person's.
+- **An OK from `section_check.py` can hide unnamed statements.** The check prints one line per entry of the name and the first without problems wins; a non-strict
+  entry has none when it names no tick at all. `section_check.py` now adds a WARN under the winning entry listing the radios and checkboxes it names in no `fields`, `theirs`
+  or `leave` (`unnamed_boxes`; test_gen holds it on the AUA's «DICHIARAZIONI»). Read it before building the rehearsal: that stop costs a bundle and a file pick.
+- **A strict entry that is "before the older ones" must also need a box of its own**, or it takes the sections of other forms whose boxes it happens to name: the AUA's
+  third statement is the one box of the take-overs' «DICHIARAZIONI SUL POSSESSO DEI REQUISITI ANTIMAFIA», so four take-over rehearsals' steps moved (`regen.py --check`
+  said "4 file(s) to change"). The entry now carries a field that is never filled (its `when` is false in every supported case) with the label only its form has; a
+  form with only some of the boxes falls through. A dormant field changes the steps hash of the rehearsals that use the entry (here the AUA's and the communication's own) and
+  nothing on the portal.
+- **gen.py refuses a `when` with a filter outside its braces** (`}}|`): the problem is reported when the entry is read, not as an empty box on the portal.
+- **The pane's loop, again.** The home page's draft list does not show the drafts a bundle just made until the page is loaded again; opening a draft is two navigations, so the
+  script that clicks APRI is cut off (click in one call, wait ~10 s in the next); `window.__draft` is gone after each of them (read_draft.js says so in its header now). A stopped
+  run's `error` in `pv-batch` names the box and the portal's own words ("il numero immesso non è valido"): read it whole (`slice(0, 400)`) before opening the draft.
+  A rebuilt bundle is a new file for the picker: copy it to the Desktop under a new name (bundle2.js, bundle3.js) and arm the box with that file's sha256.
+- **Shell traps, again.** `cd dir && P=... ; "$P" cmd` leaves `$P` empty when the `&&` chain is cut (a prefix assignment, not an exported one): put the assignment first, on its own
+  line. zsh doesn't split `set -- $var`: write the arguments out.
+- **Not run on the portal:** the AUA's other referente («No»), the concession's installments (only «in un'unica soluzione»), the one-off occupation's food-stand sub-options
+  (serving and giving out material open more boxes: refused), emergency vehicles present, the telo on public or municipal goods, on a protected building or over public-land
+  scaffolds, the dependence's stars, the hotel's other room types.
+- **Still short (36):** the scarichi voltura's older form (-2), the area-occupation form (furnishings with repeated labels), the garage's technical manager (suap-010), the
+  056 locazione breve forms, PIN 6, the other four-section ones. `bench/gaps.py --max 4` lists them.
+
 ## What the portal does that bit us
 
 - **Street names without their particles.** The location's street lookup and the Comune's
