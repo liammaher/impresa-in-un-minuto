@@ -1743,6 +1743,21 @@ asks:
   scarso_kk_quater: {type: yes_no, group: emissioni_scarso, item: "kk-quater) Attività di stampa «3d» e stampa «ink jet»"}
   scarso_kk_quinquies: {type: yes_no, group: emissioni_scarso, item: "kk-quinquies) Attività di taglio, incisione e marcatura laser su carta o tessuti"}
   # Round 7 (2026-11-15): the period of a stabilimento's activity (sectors 60 and 61).
+  # Round 8 (2026-11-16): the opening of a stabilimento by communication (procedure n. 1, sectors 60 and 61).
+  # A dry-cleaning plant's general authorization (art. 272 c. 3 D.Lgs. 152/2006): the plant's machine, and what it is asked for.
+  tint_intervento: {type: choice, question: "Che cosa chiedi per l'impianto di pulizia a secco? nuovo (l'installazione di un nuovo stabilimento); trasferimento (l'autorizzazione al trasferimento dello stabilimento, da un altro comune); modifica (la modifica sostanziale dello stabilimento); esistente (uno stabilimento esistente al 12.03.2004)", options: [nuovo, trasferimento, modifica, esistente]}
+  tint_comune_prec: {type: text, question: "Il comune dove lo stabilimento è ubicato ora (per il trasferimento; 70 caratteri al massimo)"}
+  tint_via_prec: {type: text, question: "La via dove lo stabilimento è ubicato ora (per il trasferimento; 70 caratteri al massimo)"}
+  tint_civico_prec: {type: text, question: "Il numero civico dove lo stabilimento è ubicato ora (per il trasferimento; 20 caratteri al massimo)"}
+  tint_cap_prec: {type: text, question: "Il CAP dove lo stabilimento è ubicato ora (per il trasferimento; 5 cifre)"}
+  tint_macchine_esistenti: {type: number, question: "Da quante macchine è costituito lo stabilimento esistente al 12.03.2004? (20 caratteri al massimo)"}
+  tint_macchine_n: {type: number, question: "Da quante macchine di lavaggio a ciclo chiuso è costituito l'impianto? (al massimo 2 cifre)"}
+  tint_modello: {type: text, question: "Il numero e il modello della macchina (30 caratteri al massimo)"}
+  tint_volume: {type: number, question: "Il volume del tamburo, in metri cubi (al massimo 5 caratteri, ad es. 0.25)"}
+  tint_solvente: {type: text, question: "Il tipo di solvente utilizzato (30 caratteri al massimo)"}
+  tint_solvente_kg: {type: number, question: "La quantità annua massima di solvente utilizzato, in kg (al massimo 9 caratteri)"}
+  tint_prodotto_kg: {type: number, question: "La quantità annua massima di prodotto pulito e asciugato, in kg (al massimo 6 cifre)"}
+  stab_sede: {type: choice, question: "Lo stabilimento ha una sede fissa? fissa (un locale o un'area stabile); senza (senza sede fissa: ambulante, itinerante)", options: [fissa, senza]}
   stab_periodo: {type: choice, question: "In quale periodo dell'anno svolge l'attività lo stabilimento? permanente (tutto l'anno); stagionale (solo in una stagione: i giorni dal e al, gg/mm); temporaneo (dal giorno al giorno)", options: [permanente, stagionale, temporaneo]}
   stab_temp_dal: {type: date, question: "Il primo giorno dell'attività temporanea"}
   stab_temp_al: {type: date, question: "L'ultimo giorno dell'attività temporanea"}
@@ -6946,6 +6961,53 @@ sections:
       - {kind: text, label: Aggregazione, by_label: true, value: "{{ask.stab_aggregazione}}", when: "{{ask.stab_master_tipo|is_riconosciuti}}"}
       - {kind: text, label: Linee d'attività, by_label: true, value: "{{ask.stab_linea}}", when: "{{ask.stab_master_tipo|is_riconosciuti}}"}
       - {kind: text, label: Codice univoco, by_label: true, value: "{{ask.stab_codice_univoco}}", when: "{{ask.stab_master_tipo|is_riconosciuti}}"}
+
+  # Round 8 (2026-11-16): the opening of a stabilimento by communication (procedure n. 1). The place (a fixed seat or none), and the
+  # line of activity as the master list gives it: one line only (the recipes refuse several: ask piu_linee).
+  - section: Avvio dello stabilimento
+    fields:
+      - {kind: radio, label: A sede fissa, when: "{{ask.stab_sede|is_fissa}}"}
+      - {kind: radio, label: Senza sede fissa, when: "{{ask.stab_sede|is_senza}}"}
+  - section: Linee d'attività svolte nello stabilimento
+    leave: [Nella stessa riga della master list corrispondente alla vostra attività]
+    branches: ["{{ask.stab_master_tipo|is_allevamenti}}", "{{ask.stab_master_tipo|is_registrati}}", "{{ask.stab_master_tipo|is_riconosciuti}}"]
+    plus: "The \"+\" under the Codice univoco adds a whole row (Macroarea, Aggregazione, Linee, Codice univoco: all four required) with its own \"+ -\"; not mapped: the recipes refuse a second line (ask piu_linee)."
+    fields:
+      - {kind: radio, label: un'unica linea di attività}
+      - {kind: radio, label: ALLEVAMENTI, when: "{{ask.stab_master_tipo|is_allevamenti}}"}
+      - {kind: radio, label: REGISTRATI, when: "{{ask.stab_master_tipo|is_registrati}}"}
+      - {kind: radio, label: RICONOSCIUTI, when: "{{ask.stab_master_tipo|is_riconosciuti}}"}
+      - {kind: text, label: Macroarea, by_label: true, value: "{{ask.stab_macroarea}}"}
+      - {kind: text, label: Aggregazione, by_label: true, value: "{{ask.stab_aggregazione}}"}
+      - {kind: text, label: Linee d'attività, by_label: true, value: "{{ask.stab_linea}}"}
+      - {kind: text, label: Codice univoco, by_label: true, value: "{{ask.stab_codice_univoco}}", when: "{{ask.stab_master_tipo|is_registrati}}"}
+      - {kind: text, label: Codice univoco, by_label: true, value: "{{ask.stab_codice_univoco}}", when: "{{ask.stab_master_tipo|is_riconosciuti}}"}
+
+  # Round 8: the dry-cleaning plants' general authorization. One machine's row: the "+" under "N° e modello" adds a row of five boxes
+  # per machine, not mapped (the recipes refuse a second machine: ask piu_macchine). The undertaking to follow the plant's rules is the person's.
+  - section: dati impianto
+    theirs: [Si impegna a rispettare i requisiti tecnico costruttivi e gestionali]
+    plus: "The \"+\" under \"N° e modello\" adds a machine's row (model, drum volume, solvent, solvent and product quantities); not mapped: the recipes refuse a second machine (ask piu_macchine)."
+    fields:
+      - {kind: text, label: "L'impianto è costituito da macchine di lavaggio a ciclo chiuso n°", value: "{{ask.tint_macchine_n}}"}
+      - {kind: text, label: N° e modello dellla macchina, value: "{{ask.tint_modello}}"}
+      - {kind: text, label: Volume del tamburo (metri cubi), value: "{{ask.tint_volume|decimal}}"}
+      - {kind: text, label: Tipo di sovente utilizzato, value: "{{ask.tint_solvente}}"}
+      - {kind: text, label: Quantità annua massima di solvente utilizzato (Kg), value: "{{ask.tint_solvente_kg|decimal}}"}
+      - {kind: text, label: Quantità annua massima di prodotto pulito e asciugato (Kg), value: "{{ask.tint_prodotto_kg}}"}
+  - section: dichiarazione relativa alla tipologia di intervento oggetto della domanda (attività in deroga/tintolavanderie)
+    fields:
+      - {kind: radio, label: l'installazione di un nuovo stabilimento, when: "{{ask.tint_intervento|is_nuovo}}"}
+      - {kind: radio, label: l'autorizzazione al trasferimento dello stabilimento, when: "{{ask.tint_intervento|is_trasferimento}}"}
+      - {kind: text, label: attualmente ubicato nel comune di, value: "{{ask.tint_comune_prec}}", when: "{{ask.tint_intervento|is_trasferimento}}"}
+      - {kind: text, label: via, value: "{{ask.tint_via_prec}}", when: "{{ask.tint_intervento|is_trasferimento}}"}
+      - {kind: text, label: numero civico, value: "{{ask.tint_civico_prec}}", when: "{{ask.tint_intervento|is_trasferimento}}"}
+      - {kind: text, label: CAP, value: "{{ask.tint_cap_prec}}", when: "{{ask.tint_intervento|is_trasferimento}}"}
+      - {kind: radio, label: la modifica sostanziale dello stabilimento, when: "{{ask.tint_intervento|is_modifica}}"}
+      - {kind: radio, label: stabilimento esistente al 12.03.2004, when: "{{ask.tint_intervento|is_esistente}}"}
+      # Required at every intervention (a run left it empty for a new plant, 2026-11-16): the existing plant's own count, else the plant's machines.
+      - {kind: text, label: costituito da n° macchine, value: "{{ask.tint_macchine_esistenti}}", when: "{{ask.tint_intervento|is_esistente}}"}
+      - {kind: text, label: costituito da n° macchine, value: "{{ask.tint_macchine_n}}", when: "{{ask.tint_intervento|is_esistente|not}}"}
 
   # --- AUA and emissioni in atmosfera (the common forms, 2026-11-15) ---
   - section: estremi di autorizzazione

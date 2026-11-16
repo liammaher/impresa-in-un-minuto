@@ -672,6 +672,27 @@ no label (test_gen); an operation the wizard offers under two branches needs its
 società ...» is a name the bars' entry lacked); a dictionary edit during `bench/test_gen.py` fails a case on a half-written file. **Portal facts only a draft
 shows** stay in the entries' comments: the VV.F. take-over's b), the garage's header radio, the film shoot's decimal area, the 056 capacity groups.
 
+**Round 8 (2026-11-16): the last five within two sections of fillable** (SUAP fillable 250 → 255, run 179 → 184; after it none is within two sections, 54 are short
+at least three). The opening of a stabilimento by communication or SCIA sanitaria (procedure n. 1, sectors 60 and 61: four rehearsals, `stabilimento-avvio-*`, derived
+from the added-lines twins) and a dry-cleaning plant's adhesion to the general air-emission authorization (`emissioni-adesione-pulitintolavanderia-fittizia`). One
+bundle of five, then two reruns of the last one; the four stabilimento runs filled the first time. What the portal taught:
+
+- **The dry-cleaning "dati impianto"** requires its undertaking ("Si impegna a rispettare i requisiti tecnico costruttivi", "il valore è obbligatorio"): the person's
+  statement, so the entry has it in `theirs`, not `leave` (a `leave`d box that the portal calls required stops the run; a `theirs` one doesn't).
+- **"costituito da n° macchine" is required at every intervention**, not only for the plant existing at 12.03.2004 (the crawl showed it with no choice opening
+  it): a new plant fills it with its own machine count. The "+" under "N° e modello" adds a machine's row, not mapped: `piu_macchine` refuses a second machine.
+- **The bundle's file box can't see `/tmp`.** The macOS picker in the pane lists neither `/tmp` nor `/private/tmp` ("I don't see bundle.js", two rounds): copy the
+  bundle to the Desktop and name that path; `rerun.py --bundle` now says so when the path is a temporary one. A bundle rebuilt after a fix has a new sha256,
+  so the box refuses the old file: re-arm the box with the new hash (pick.js) and the person picks again; one pick per bundle, however small.
+- **A SUAP bundle takes each rehearsal's own business fixture** (`NAME:answers.json:rehearsals/NAME/fixture.json`). `--values` with a person's fixture
+  (cila-fittizia's) refused all five with "Per ora per una ditta individuale o una srl…"; `rerun.py` now names that as the cause.
+- **`derive_recipe.py` from a sign-derived template** (the emissioni and AUA siblings come from the sign's SCIA) copied "insegna" into the group's question, the
+  draft's default name, the `yours` lines and 11 `insegna_*`/`progettista_insegna_*` answers, and an operation name over 300 characters into the subject
+  (pre-flight refused it). It now rewrites the wording (`unsign`), drops those answers and cuts the subject (`oggetto`); test_gen holds both. About thirty older
+  rehearsals derived before this still carry the wording: changing it moves their steps hashes, so they are left until one is rerun anyway.
+- **Not run on the portal:** the transfer, the substantial change and the 2004 plant of the dry-cleaning form, a second machine, a second master-list line.
+  Not routed: the five are in `suap-unrouted.yaml` with their reasons.
+
 ## What the portal does that bit us
 
 - **Street names without their particles.** The location's street lookup and the Comune's

@@ -125,7 +125,8 @@ claude/skills/       vault and pratica skills; pratica keeps one playbook per pr
                      `parts/` file, so neither drifts: its operations, comune, sportello and
                      rules table's main follow from them); it writes nothing if a field is unaccounted for. Adding a pratica,
                      the portal's quirks and clean batch reruns (`bench/rerun.py`): portal/README.md. The loop for a short pratica: `bench/gaps.py`,
-                     `section_check.py`, `derive_recipe.py`, `answer_case.py`; `read_draft.js` reads a draft's section by hand in the pane.
+                     `section_check.py`, `derive_recipe.py`, `answer_case.py`; `read_draft.js` reads a draft's section by hand in the pane. A statement the portal requires in the person's
+                     name is the entry's `theirs`, never `leave` (a left box the portal calls required stops the run).
                      draft.py drafts dictionary entries for a new section from the national
                      schema (`schema/`, InfoCamere's forms flattened), for a person to check;
                      schema_branches.py sets the 7 SUE forms' choices against the rehearsals' cases

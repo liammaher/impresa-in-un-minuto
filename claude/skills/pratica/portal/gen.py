@@ -684,6 +684,9 @@ def fill(entry, as_name, c, recipe, name):
         if d["kind"] == "select":
             last_select = f
     # What the section shows that the dictionary neither fills nor leaves, in any branch.
+    # `leave`: boxes the entry leaves empty on purpose. A left box the portal then calls required ("il valore è obbligatorio") stops the run
+    # (inpage.js tolerates required errors only on `theirs`), so a statement the portal requires in the person's name is `theirs`
+    # (2026-11-16: the dry-cleaning plant's "Si impegna a rispettare i requisiti" stopped a run as a `leave`).
     leave = [norm(x) for x in entry.get("leave", [])]
     shown = {(f["id"], f["label"]): f for st in [main, *branches.values()] for f in st.fields}
     # The same box, shifted in another branch's view, is the one filled.

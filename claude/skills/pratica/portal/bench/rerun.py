@@ -261,7 +261,12 @@ def main():
         origin = origin or run.re.match(r"https?://[^/]+", steps["logged_in"])[0]
         queue.append([label, proc, json.loads(values_of(files["run.js"], proc))])
     if failed:
-        sys.exit("rerun.py: not written:\n  " + "\n  ".join(failed))
+        hint = ""
+        if all("Per ora per una ditta individuale" in f for f in failed):
+            # Every run refused for the business's legal form: --values is a person's fixture (2026-11-16, round 8: the cila fixture).
+            hint = ("\n  every run refused the legal form: --values is a person's fixture. A SUAP rehearsal is a business: give each its own, "
+                    "NAME:answers.json:rehearsals/NAME/fixture.json (and --values rehearsals/NAME/fixture.json)")
+        sys.exit("rerun.py: not written:\n  " + "\n  ".join(failed) + hint)
     (a.out / "check.js").write_text(run.check_script(stored, origin, sources, then="the queue files, then loop.js"))
     queue = [json.dumps(q, ensure_ascii=False, separators=(",", ":")) for q in compact(queue)]
     chunks, cur = [], []
@@ -391,6 +396,10 @@ JSON.stringify({ done: done.length, of: (window.pvBatch || []).length, running: 
         '})()\n')
     if a.bundle:
         write_bundle(a.out, a.bundle)
+        if str(a.bundle.resolve()).startswith(("/private/tmp", "/tmp", "/private/var", "/var")):
+            # The macOS file picker in the pane does not list /tmp or /var: "I don't see bundle.js" cost two rounds (2026-11-16).
+            print(f"NOTE: {a.bundle} is under a temporary folder the person's file picker does not show: copy it to the Desktop "
+                  "(or write it there) and name that path to the person.")
     print(f"{a.out}: {len(names)} rehearsals, {len(chunks)} queue file(s). In the pane, on {origin}: "
           "check.js, then the files it names, then the queue files, loop.js, and results.js until done.")
     print("The pane closes by itself between turns and takes the login, the file box and sessionStorage (`pv-batch`) with it: "
