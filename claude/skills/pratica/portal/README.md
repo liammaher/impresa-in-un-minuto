@@ -693,6 +693,42 @@ bundle of five, then two reruns of the last one; the four stabilimento runs fill
 - **Not run on the portal:** the transfer, the substantial change and the 2004 plant of the dry-cleaning form, a second machine, a second master-list line.
   Not routed: the five are in `suap-unrouted.yaml` with their reasons.
 
+**Round 9 (2026-11-16): the pratiche short exactly three sections** (SUAP fillable 255 → 265, run 184 → 194; 44 are short at least one, none within one: the nearest, the
+sign's temporary-advertising SCIA, is short two sections the same crawl names in capitals). Ten pratiche, 27 sections, ten rehearsals (`pubblicita-subentro-`, `-voltura-`,
+`-variazione-`, `-temporanea-fittizia`, `emissioni-modifica-`, `emissioni-adesione-generale-fittizia`, `scarichi-voltura-fittizia`, `pulizie-apertura-fittizia`,
+`pulizie-responsabile-tecnico-fittizio`, `albergo-variazione-strutturale-fittizio`), all in `suap-unrouted.yaml` with their reasons. One bundle of ten (six filled the first time),
+then a bundle of four, one of two and one of one (a file pick each: the sha256 changes with every rebuild). What the portal taught:
+
+- **A `txtws` box is not always a list.** The crawl reads a street, civico, scala, piano, interno and CAP alike as `lookup`, but only the street lists anything: the civico and
+  the CAP "matched 0 of 0 listed" (`pubblicita-variazione`). Map them as `text` (the crawl check accepts it; the run types the value). The street list holds the Comune's
+  official name: «Viale Augusto» is VIALE OTTAVIO CESARE AUGUSTO there, found because inpage.js wants every word of the value.
+- **A required box can sit under a choice that doesn't need it.** The temporary advertising's «Periodo di svolgimento della manifestazione» is required for a cartello di cantiere
+  too ("il valore e obbligatorio"): it takes the exposure's own period when there is no event. A `leave`/`when` that drops a box must be read on the draft first.
+- **A choice can switch a whole group on, not only a box.** The scarichi's recapito: only «corso d'acqua superficiale» and «strato superficiale del suolo» are enabled; the
+  five below (sub-irrigazione, fossato, scolo, the two surface bodies) are switched off until the stratum is ticked ("scolo: switched off (a choice before it ...)"). Read with
+  the draft's controls (disabled flags) and a click on each parent: the tree is two levels, and the sub-choices' `when` starts with the stratum's.
+- **`nth` counts what is on the page, not what the crawl saw.** The three titles of the technical manager's requisito A each have «specializzazione tecnica», «conseguito il» and
+  «con sede nel Comune di», but the page shows only the ticked title's boxes, so every one is the first ("1 fields with this label" for `nth: 2`). The crawl check wants each box
+  accounted: the first is a normal entry, the later ones `on_page: true` with the crawl's copies in `leave`. (The replaced manager's «cognome» is the second after the new
+  one's, in «in sostituzione» and in «in aggiunta» alike.)
+- **A made-up codice fiscale needs a valid check letter** ("codice fiscale o partita iva non valido", twice): compute the sixteenth letter (test_gen holds the three new ones).
+- **A new entry goes last in `sections:`.** Entries match by prefix, in file order, the first without problems winning: round 9's «ulteriori dichiarazioni» (the adhesion's) sat before
+  the sign's «ulteriori dichiarazioni (mezzi pubblicitari)» and took its sections, moving 75 steps files off `steps.lock` (`make coverage` refused it; `regen.py --check` named them).
+  The round's entries are now at the end, and test_gen checks that none of its 27 names comes before a longer one.
+- **The loop, as it ran in the pane.** The picked `bundle.js` starts the loop itself (`loop.js` then answers "a batch is already running": poll, don't resend it). `results.js` skips
+  its 35 s wait when the pane is hidden (`document.hidden`: the page was hidden all session), so poll with your own `setTimeout` of about 40 s. Every portal navigation (opening a
+  draft, a section link) drops `window.__draft`: for one look at a stopped run, a few lines in the JS tool (click APRI, click the section, list the boxes with their `disabled`
+  flags and click each parent) are quicker than pasting read_draft.js each time. After a navigation a script's return value is lost: look, then call again. One pick per bundle, and
+  each rebuild has a new sha256: rerun only what stopped, in one bundle after fixing them all (round 9 needed four).
+- **Shell traps.** `rerun.py` takes one argument per run; zsh doesn't split an unquoted `$args`, which handed it all ten as one path (now refused with that explanation). Use bash or an
+  array. `answer_case.py KEY='["a","b"]'` sets a group's answer, so no answers file is edited by hand.
+- **Not mapped (refused or not offered):** the capacity variation of a hotel (the draft's boxes under «VARIAZIONE DELLA CAPACITÀ RICETTIVA» were not read: the entry takes the
+  classification or «altro»); a condhotel and a dipendenza as the type; a cleaning firm that does pest control, disinfestation or sanitization (the opening's «SI» opens the preposto's
+  requisiti: `supports` refuses it); the technical manager's requisito B as a family helper or an employee, and D (special cases): not offered as choices. The adhesion's 35
+  activities are one ask each, one rehearsed (`h`, panificazione).
+- **Not run on the portal:** the death branch of the take-over and the voltura (only the transfer by sale), the other eight advertising kinds, the adhesion's four other objects, the
+  hotel's dipendenza classification.
+
 ## What the portal does that bit us
 
 - **Street names without their particles.** The location's street lookup and the Comune's

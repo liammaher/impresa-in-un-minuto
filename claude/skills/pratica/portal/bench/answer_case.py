@@ -4,7 +4,7 @@
     ~/.cache/pratica-portal/venv/bin/python claude/skills/pratica/portal/bench/answer_case.py REHEARSAL [KEY=VALUE ...]
 
 The loop after `derive_recipe.py` (which asks only what another rehearsal already answered): the new asks of a new dictionary entry are asked
-here until `ready True`. A value `true`/`false` is the text the answers files hold; a group's answer (a list of ask keys) is edited by hand.
+here until `ready True`. A value `true`/`false` is the text the answers files hold; a group's answer (a list of ask keys) is given as JSON: KEY='["a","b"]'.
 Run from the repo's root: an answers file names its files from there. It writes answers.json with `indent=1`, as the derived ones are.
 """
 import json
@@ -23,7 +23,8 @@ def main():
     answers = json.loads((folder / "answers.json").read_text())
     for kv in sys.argv[2:]:
         key, _, value = kv.partition("=")
-        answers[key] = value
+        # A group's answer is a list of ask keys: KEY='["a","b"]' (JSON) sets it, so no hand edit is needed (round 9: ten answers files).
+        answers[key] = json.loads(value) if value[:1] == "[" else value
     (folder / "answers.json").write_text(json.dumps(answers, ensure_ascii=False, indent=1) + "\n")
     steps = folder / "portal-steps.generated.yaml"
     g = subprocess.run([sys.executable, str(PORTAL / "gen.py"), str(folder / "recipe.yaml"), "--out", str(steps)], capture_output=True, text=True)
