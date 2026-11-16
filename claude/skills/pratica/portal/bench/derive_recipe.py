@@ -58,6 +58,24 @@ TEMPLATE_ONLY = {"insegna-ristorante-scia-fittizio": ("insegna_vincolo", "insegn
                  "dehors-fittizio": ("coperto", "centro_storico", "musica", "nuovo_852")}
 
 
+def oggetto(op):
+    """The draft's one-sentence subject: the operation and that it is a test, 300 characters at most (the portal's limit)."""
+    tail = ": pratica di prova con dati inventati."
+    return (op if len(op) + len(tail) <= 300 else op[:300 - len(tail) - 1].rstrip() + "…") + tail
+
+
+def unsign(text, crawl_name, short):
+    """A recipe derived from the sign's SCIA (or from a sibling that was) says "insegna" in the words the person reads: the group's
+    question, the draft's default name, the first `yours` line (2026-11-16: the dry-cleaning plant's emissioni form said "per l'insegna").
+    For a crawl that is not about a sign those words become the pratica's own."""
+    if "insegn" in crawl_name:
+        return text
+    text = re.sub(r"(Qualcuna di queste voci vale per )l'insegna\?", r"\1questa pratica?", text)
+    text = re.sub(r'(default: ")insegna [^"{]*(\{\{business\.denominazione\}\})', lambda m: f"{m.group(1)}{short} {m.group(2)}", text)
+    text = re.sub(r'"Spunta tu le dichiarazioni sull\'insegna \([^)]*\) e le altre della pratica:', '"Spunta tu le dichiarazioni della pratica:', text)
+    return text
+
+
 def short_sector(sector):
     """A short Italian name for the title: the table's, else the wizard's own cut at its first parenthesis or comma (a
     sector with no entry took the hairdressers' words until 2026-11-12: a medium shop's title said "acconciatori")."""
@@ -161,6 +179,7 @@ def derive(new, template, crawl_name, fixture=None, ticks=(), facts=None, handle
     # A short Italian sector name: the wizard's own is long ("Strutture ricettive extralberghiere (affittacamere, bed and ...") and a
     # title cut at 60 characters read as English to bench/test_gen.py's check of what the tecnico reads.
     text = drop_asks(text, tuple(TEMPLATE_ONLY.get(template, ())) + tuple(drop))
+    text = unsign(text, crawl_name, SHORT.get(idx) or COMMON_SHORT.get(sector) or short_sector(sector))
     text = re.sub(r"^title: .*$", "title: " + json.dumps(f"{op}, {SHORT.get(idx) or COMMON_SHORT.get(sector) or short_sector(sector)}, SUAP Napoli", ensure_ascii=False), text, flags=re.M)
     header = (f"# {op} ({sector}), as gen.py writes its steps file from the batch crawl\n# (catalogue/F839/sections/{crawl_name}.json), for the made-up business of this folder's fixture.json.\n"
               f"# Derived from rehearsals/{template} (bench/derive_recipe.py): no `rules:` and no `after:`; the attachments and payment screens are not read.\n")
@@ -178,6 +197,9 @@ def derive(new, template, crawl_name, fixture=None, ticks=(), facts=None, handle
         if (ROOT / "rehearsals" / template / name).exists():
             answers = json.loads((ROOT / "rehearsals" / template / name).read_text())
             break
+    if "insegn" not in crawl_name:
+        # The sign's boxes (insegna_larghezza_m, progettista_insegna_cf, ...) copied from a template derived from it mean nothing to another pratica.
+        answers = {k: v for k, v in answers.items() if "insegna_" not in k}
     short = re.sub(r"-fittizi[oa]$", "", new).replace("-", " ")[:28].rstrip()
     answers["descrizione"] = f"PROVA NON INVIARE - {short} generato"
     # A draft is found by its name (sectionOf, slotsOf and the person's list in Pratiche in bozza read the newest of a name):
@@ -187,7 +209,9 @@ def derive(new, template, crawl_name, fixture=None, ticks=(), facts=None, handle
     if answers["descrizione"] in taken:
         import hashlib
         answers["descrizione"] = f"PROVA NON INVIARE - {short[:22].rstrip()} {hashlib.sha1(new.encode()).hexdigest()[:6]} generato"
-    answers["oggetto"] = f"{op}: pratica di prova con dati inventati."
+    # The portal's "descrizione sintetica" takes 300 characters at most; an operation's name can be longer (the dry-cleaning plant's
+    # adhesion, 2026-11-16: pre-flight refused the derived answer).
+    answers["oggetto"] = oggetto(op)
     (folder / "answers.json").write_text(json.dumps(answers, ensure_ascii=False, indent=1) + "\n")
     source = fixture or (template if (ROOT / "rehearsals" / template / "fixture.json").exists() else FIXTURE.get(idx, "pizzeria-fittizia"))
     shutil.copy(ROOT / "rehearsals" / source / "fixture.json", folder / "fixture.json")

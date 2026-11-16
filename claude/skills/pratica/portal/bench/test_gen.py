@@ -2379,6 +2379,59 @@ def _():
     assert not bad, bad
 
 
+# --- round 8 (2026-11-16): the last pratiche within two sections of fillable (250 -> 255) ---
+
+ROUND8 = {  # rehearsal -> the stored crawl it is generated from
+    "stabilimento-avvio-comunicazione-ristorante-fittizio": "suap-060-avvio-delle-attivita",
+    "stabilimento-avvio-scia-ristorante-fittizio": "suap-060-avvio-delle-attivita-2",
+    "stabilimento-avvio-comunicazione-ristorante-centro-storico-fittizio": "suap-061-avvio-delle-attivita",
+    "stabilimento-avvio-scia-ristorante-centro-storico-fittizio": "suap-061-avvio-delle-attivita-2",
+    "emissioni-adesione-pulitintolavanderia-fittizia": "suap-common-emissioni-in-atmosfera-richiesta-di-adesione-all-autorizzazi-2",
+}
+
+
+@case("round 8: each of the 5 pratiche it made fillable has a rehearsal generated from its own crawl, and the opening picks a seat and one master-list line, refusing a second")
+def _():
+    for name, crawl in ROUND8.items():
+        recipe = gen.load_yaml(REH / name / "recipe.yaml")
+        assert recipe["crawl"] == crawl, (name, recipe["crawl"])
+        generated(name)
+        if "avvio" in name:
+            assert any(f["label"] == "A sede fissa" for f in section(generated(name), "Avvio dello stabilimento")["fields"]), name
+            sec = section(generated(name), "Linee d'attività svolte nello stabilimento")
+            boxes = [f for f in sec["fields"] if f["label"] in ("Macroarea", "Aggregazione", "Linee d'attività", "Codice univoco")]
+            assert boxes and not any("id" in f for f in boxes), (name, [f.get("id") for f in boxes])
+            assert "piu_linee" in recipe["asks"] and any("piu_linee" in str(x.get("when", "")) for x in recipe["supports"]), name
+
+
+@case("round 8: the dry-cleaning plant leaves the person's undertaking, fills the machine count at every intervention (the portal requires it), and refuses a second machine")
+def _():
+    name = "emissioni-adesione-pulitintolavanderia-fittizia"
+    steps = generated(name)
+    impianto = section(steps, "dati impianto")
+    assert not any(f["label"].startswith("Si impegna") for f in impianto["fields"]), "the undertaking is the person's"
+    tipo = section(steps, "dichiarazione relativa alla tipologia di intervento")
+    assert any(f["label"] == "costituito da n° macchine" and f.get("value") for f in tipo["fields"]), "the machine count is required for a new plant too"
+    recipe = gen.load_yaml(REH / name / "recipe.yaml")
+    assert "piu_macchine" in recipe["asks"] and any("piu_macchine" in str(x.get("when", "")) for x in recipe["supports"])
+
+
+@case("round 8: derive_recipe takes the sign's wording and answers out of a pratica that isn't a sign, and keeps the subject within the portal's 300 characters; rerun.py says why a personal fixture is refused and where the picker can't look")
+def _():
+    sys.path.insert(0, str(HERE))
+    import derive_recipe as dr
+    text = ('    question: "Qualcuna di queste voci vale per l\'insegna? Spunta tutte."\n'
+            '  descrizione: {type: text, default: "insegna ristorante {{business.denominazione}}"}\n'
+            '  - "Spunta tu le dichiarazioni sull\'insegna (ulteriori dichiarazioni, mezzi pubblicitari) e le altre della pratica: consapevolezza"\n')
+    out = dr.unsign(text, "suap-common-emissioni-in-atmosfera-x", "bar o ristorante")
+    assert "insegn" not in out and "per questa pratica?" in out and 'default: "bar o ristorante {{business.denominazione}}"' in out, out
+    assert '"Spunta tu le dichiarazioni della pratica: consapevolezza"' in out, out
+    assert dr.unsign(text, "suap-common-pubblicita-insegna-esercizio", "x") == text, "a sign's own pratica keeps its words"
+    assert len(dr.oggetto("x" * 600)) == 300 and dr.oggetto("Aprire l'attività") == "Aprire l'attività: pratica di prova con dati inventati."
+    src = (HERE / "rerun.py").read_text(encoding="utf-8")
+    assert "is a person's fixture" in src and "file picker does not show" in src, "rerun.py's two hints"
+
+
 @case("round 7: the helper tools of the loop parse, and the pane's read_draft.js parses (gaps.py, section_check.py, answer_case.py)")
 def _():
     import ast
