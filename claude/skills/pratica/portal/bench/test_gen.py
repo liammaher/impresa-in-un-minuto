@@ -2632,5 +2632,82 @@ def _():
     assert "list is stale" in d and "APRI navigates twice" in d
 
 
+
+ROUND11 = {
+    "responsabile-tecnico-officina-fittizio": "suap-010-comunicazione-variazione-responsabile-tecnico",
+    "responsabile-tecnico-officina-diploma-fittizio": "suap-010-comunicazione-variazione-responsabile-tecnico",
+    "responsabile-tecnico-officina-esperienza-fittizio": "suap-010-comunicazione-variazione-responsabile-tecnico",
+    "responsabile-tecnico-officina-estero-fittizio": "suap-010-comunicazione-variazione-responsabile-tecnico",
+    "locazione-breve-scia-avvio-fittizia": "suap-056-scia-per-avvio-locazione-breve-turistica-a-caratte",
+    "locazione-breve-scia-avvio-monolocale-fittizia": "suap-056-scia-per-avvio-locazione-breve-turistica-a-caratte",
+    "locazione-breve-scia-variazione-fittizia": "suap-056-scia-per-variazione-in-locazione-breve-turistica-a",
+    "locazione-breve-scia-variazione-superficie-fittizia": "suap-056-scia-per-variazione-in-locazione-breve-turistica-a",
+    "locazione-breve-scia-variazione-titolo-fittizia": "suap-056-scia-per-variazione-in-locazione-breve-turistica-a",
+    "scarichi-voltura-2-fittizia": "suap-common-scarichi-volturare-l-autorizzazione-allo-scarico-di-acque-re-2",
+    "scarichi-voltura-2-legale-fittizia": "suap-common-scarichi-volturare-l-autorizzazione-allo-scarico-di-acque-re-2",
+    "scarichi-voltura-2-natura-fittizia": "suap-common-scarichi-volturare-l-autorizzazione-allo-scarico-di-acque-re-2",
+    "suolo-pubblico-area-fittizio": "suap-common-occupazione-suolo-pubblico-domanda-di-occupazione-suolo-area",
+    "suolo-pubblico-area-sedie-fittizio": "suap-common-occupazione-suolo-pubblico-domanda-di-occupazione-suolo-area",
+    "pin-6-verifiche-fittizio": "suap-common-prevenzione-incendi-pin-6-istanza-di-verifiche-in-corso-d-op",
+}
+
+
+@case("round 11: each of the 6 pratiche it made fillable has a rehearsal generated from its own crawl and filled on the portal (runs.json), 15 rehearsals in all")
+def _():
+    for name, crawl in ROUND11.items():
+        recipe = gen.load_yaml(REH / name / "recipe.yaml")
+        assert recipe["crawl"] == crawl, (name, recipe["crawl"])
+        generated(name)
+        runs = json.loads((REH / name / "runs.json").read_text())
+        assert runs and runs[-1]["result"] == "filled", (name, runs[-1:])
+
+
+@case("round 11: what the portal taught: a box a choice enables is on the page switched off, so a repeated label counts in the crawl's order, not in the ticked choice's (the garage manager's aggiunta «cognome»/«nome», the diploma's «titolo di studio», C's first impresa, the tavoli's boxes, the discharge form's «nuovo»)")
+def _():
+    nth = lambda steps, sec, label, kind="text": [f.get("nth", 1) for f in section(steps, sec)["fields"] if f.get("label") == label and f["kind"] == kind]
+    g = generated("responsabile-tecnico-officina-esperienza-fittizio")
+    assert nth(g, "Designazione", "cognome") == [1, 2] and nth(g, "Designazione", "nome") == [1, 2]
+    assert nth(g, "Requisiti", "specificare") == [4] and nth(g, "Requisiti", "n. R.E.A") == [3]
+    assert nth(g, "Requisiti", "dal", "date") == [4] and nth(g, "Requisiti", "al", "date") == [4]
+    assert nth(g, "Requisiti", "titolo di studio") == [1, 2] and nth(g, "Requisiti", "specializzazione tecnica in") == [1, 2]
+    assert not any(f.get("on_page") for f in section(g, "Requisiti")["fields"]), "a requisito's boxes are all on the page: no `on_page`"
+    a = generated("suolo-pubblico-area-fittizio")
+    assert nth(a, "dichiarazione della tipologia", "numero") == [1, 2]
+    assert nth(a, "dichiarazione della tipologia", "materiale della struttura") == [1, 3]
+    assert nth(a, "dichiarazione della tipologia", "larghezza", "number") == [2] and nth(a, "dichiarazione della tipologia", "x lunghezza", "number") == [2]
+    sc = generated("scarichi-voltura-2-fittizia")
+    assert nth(sc, "Variazioni", "nuovo") == [2] and nth(sc, "Variazioni", "nuovo:") == [1]
+
+
+@case("round 11: the short-term rental SCIA's owner boxes («Specificare i dati della proprietà», «Tipo di persona») are required whatever the title (the run stopped on «il valore e obbligatorio» for a property), so they carry no `when`")
+def _():
+    t = section(generated("locazione-breve-scia-avvio-fittizia"), "Titolo di disponibilità")
+    for lab in ("Specificare i dati della proprietà", "Tipo di persona"):
+        fs = [f for f in t["fields"] if f["label"].startswith(lab)]
+        assert len(fs) == 1 and not fs[0].get("when"), (lab, fs)
+    boxes = [f for f in t["fields"] if f["label"] == "registrazione n."]
+    assert len(boxes) == 4, "the deed's boxes are one per title (a choice opens them: the `when` starts with that choice's term)"
+
+
+ROUND11_SECTIONS = [
+    "Codici istat e ateco", "Titolo di disponibilità", "Capacità ricettiva e dotazioni", "Apertura", "Variazioni", "Dati dell'autorizzazione", "DATI SUBENTRO",
+    "dichiarazione relativa alla voltura", "Designazione del responsabile tecnico", "Settore di attività Autoriparatore",
+    "dichiarazione del rispetto dell'art. 67 del D. Lgs. 6.9.2011 n. 159 (antimafia)", "Requisiti tecnico-professionali", "Oggetto della richiesta verifica in corso",
+    "documentazione allegata", "distinta di versamento", "dati per la corrispondenza", "Tipologia di area", "dichiarazione della tipologia di arredi installati",
+    "dichiarazione del tipo di ente / associazione / società in nome e per conto del quale si agisce",
+    "Dichiarazione di rispetto delle norme relative alla concessione del suolo pubblico",
+]
+
+
+@case("round 11: none of the round's new entries comes before a longer-named one, and each of its 20 section names has an entry")
+def _():
+    names = [e["section"] for e in gen.load_yaml(HERE.parent / "dictionary" / "fnsuap.yaml")["sections"]]
+    norm = lambda x: re.sub(r"\s+", " ", x.lower()).strip()
+    for want in ROUND11_SECTIONS:
+        idx = [i for i, n in enumerate(names) if norm(n) == norm(want)]
+        assert idx, f"no entry for {want!r}"
+        later = [n for n in names[idx[-1] + 1:] if norm(n).startswith(norm(want)) and norm(n) != norm(want)]
+        assert not later, f"{want!r} comes before the longer {later[:2]}: it would take their sections, and drop their `theirs`"
+
 print(f"{sum(results)}/{len(results)} passed")
 sys.exit(0 if all(results) else 1)
