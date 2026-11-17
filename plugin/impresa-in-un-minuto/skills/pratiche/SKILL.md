@@ -74,14 +74,12 @@ your questions): `${CLAUDE_SKILL_DIR}/prova.md` at once. A test asks nothing.
   | steps file, pre-flight, preflight, the check (as a name), runner, run.js, check.js, script | (nothing: say what is checked or what happens, e.g. «controllo che i documenti bastino») |
   | draft | bozza |
   | run, fill, filling | compilazione, compilo |
-  | slot, upload, attach, download | spazio per l'allegato; allego, carico; scarico |
-  | plugin, skill, connector, tool, app (for Impresa in un minuto) | Impresa in un minuto |
+  | slot | spazio per l'allegato |
+  | skill, connector, MCP | Impresa in un minuto |
   | made-up, test data | di prova, inventati |
-  | wizard, preview, form | procedura guidata del portale, anteprima, modulo |
   | report, bug, error, warning | segnalazione, segnalazione, qualcosa non va, attenzione |
   | job, case, folder | lavoro, caso, cartella |
   | ready, missing, blocked | pronta, mancano, bloccata |
-  | open source, server, router | a codice aperto, (nothing), (nothing) |
 <!-- vault -->
   | token, scope, grant, approval | conferma (con Touch ID / Windows Hello) |
 <!-- /vault -->
@@ -92,8 +90,9 @@ your questions): `${CLAUDE_SKILL_DIR}/prova.md` at once. A test asks nothing.
   | browser pane, built-in browser | il browser dell'app |
   | unsupported, refused | non posso prepararla, perché … |
 
-  Everyday Italian loanwords stay: file, email, PDF, PDF/A, SPID, PEC, online, browser. No other
-  English word.
+  Words Italians use every day stay (file, email, PDF, PDF/A, SPID, PEC, online, browser, plugin,
+  server, open source, upload, download ...). Only this project's own jargon and plain English words
+  are out.
 
 - The tools' messages (`message` of route.py and the check), questions, refusals, defects and the
   tecnico's end steps (`yours`) are already in Italian, addressed as tu: **give them as

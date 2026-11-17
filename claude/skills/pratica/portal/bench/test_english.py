@@ -9,7 +9,7 @@
   - and that the skill's prose never names the first check «pre-flight» (Claude repeats the words it reads), except in
     the table of words it must not say.
 
-Everyday loanwords stay (file, email, PDF, SPID, PEC, online, browser); the app's own English labels, which the README
+Words Italians use every day stay (file, email, PDF, SPID, PEC, online, browser, plugin, server, open source, upload ...); the app's own English labels, which the README
 gives in brackets so a tecnico finds the button, are not looked at. What a quoted law or portal label says in its own
 words is not looked at either (a label is the portal's).
 
@@ -31,10 +31,9 @@ PLUGIN = ROOT / "plugin" / "impresa-in-un-minuto"
 SKILLS = PLUGIN / "skills"
 
 BANNED = re.compile(
-    r"\b(pre-?flight|runner|steps? files?|draft|open source|slots?|uploads?|uploaded|uploading|pane|wizard|bundle|"
-    r"server|router|made-up|json|script|dashboard|single job|run\.js|check\.js|readback|read-back|fillable|"
-    r"folders?|jobs?|setup|preview|tokens?|errors?|warnings?|blocked|missing|ready|fill|filling|default|label|"
-    r"fields?|checkbox|dropdown|click|button|check(?!-?list))\b", re.I)
+    r"\b(pre-?flight|runner|steps? files?|draft|slots?|pane|bundle|made-up|json|single job|run\.js|check\.js|"
+    r"readback|read-back|fillable|folders?|jobs?|errors?|warnings?|blocked|missing|ready|fill|filling|label|"
+    r"fields?|check(?!-?list))\b", re.I)
 ITALIAN = re.compile(
     r"\b(il|la|le|lo|di|che|per|non|un|una|è|sono|del|della|dei|delle|con|nel|nella|hai|tuo|tua|tu|sul|alla|al|da|"
     r"se|come|ma|più|già|ancora|portale|pratica|ti|ci|puoi|devi|serve|mi|ho|ha|può|tutti|tutte|ogni)\b", re.I)
