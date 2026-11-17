@@ -1679,6 +1679,15 @@ can't keep stays in the tab, the batch stops saying so, and export.js still save
 tries 80 choices a section (the semplificata's Allegato B list has 41); a section with more says
 `truncated`.
 
+`catalogue.py ops suap` builds what is not known (2026-11-17: 2,333 sector-operation pairs, but only
+219 distinct operation paths: most pairs are one operation offered in another sector). It leaves out a
+pair whose crawl is stored, or that same.json lists `same`; a pair whose path another crawl holds is a
+`check: true` op `like` that crawl (fingerprints only, then `catalogue.py drift` records `same` or
+`different` in same.json; a `different` one is a full crawl next time); a path with no crawl is a full
+crawl. A stored crawl has no `operation` key, so its path is read from `pratica` (a combination, or a
+crawl named in prose, stands in for no path). A summary goes to stderr; `--all` is every pair as before
+(no skipping, no checks). `bench/test_ops_suap.py` holds the counts on the real catalogue.
+
 Which two operations the wizard takes together is recorded in `sue-wizard.json` `pairs` (wizard.js
 `pairs`, catalogue/README.md). Probed 2026-11-03, all 190: the wizard takes any two of different
 groups (a title or other adempimento, a terre e rocce box, a landscape procedure, the exemption
