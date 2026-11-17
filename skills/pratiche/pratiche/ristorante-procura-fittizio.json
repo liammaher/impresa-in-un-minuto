@@ -127,7 +127,7 @@
   },
   "napoli_allegato_a_firmato": {
    "type": "file",
-   "question": "L'Allegato A Programma 100 del committente (lo compila Claude), firmato digitalmente (.p7m)"
+   "question": "L'Allegato A Programma 100 del committente (il modulo del Comune), firmato digitalmente (.p7m)"
   },
   "modello_dp": {
    "type": "yes_no",
@@ -136,7 +136,7 @@
   },
   "modello_dp_firmato": {
    "type": "file",
-   "question": "Il Modello DP (lo compila Claude), firmato digitalmente da te e dal committente (.p7m), con la lettera d'incarico o il contratto"
+   "question": "Il Modello DP (il modulo del Comune), firmato digitalmente da te e dal committente (.p7m), con la lettera d'incarico o il contratto"
   },
   "procura_firmata": {
    "type": "file",

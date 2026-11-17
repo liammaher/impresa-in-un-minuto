@@ -1,0 +1,1189 @@
+{
+ "procedure": "napoli/comune/scia-tatuatore-piercer",
+ "title": "SCIA: subingresso in un'attività di tatuatore o piercer, SUAP Napoli",
+ "generated": "gen.py from suap-011-subentrare-nell-attivita-di-tatuatore-piercer (2026-10-28) and dictionary/fnsuap.yaml",
+ "yours": [
+  "Apri la bozza in Pratiche in bozza ({{ask.descrizione}}) e confrontala con questa pagina",
+  "Spunta tu le dichiarazioni: consapevolezza (artt. 46-47), informativa privacy, tasse comunali, e quelle di conformità, antimafia e rispetto delle leggi nelle sezioni che le hanno",
+  "Paga i diritti di segreteria, se dovuti, con pagoPA nella schermata di pagamento",
+  "Allega quanto chiede la schermata degli allegati dopo aver spuntato le dichiarazioni",
+  "Firma e invia (Firma e invio); conserva la ricevuta"
+ ],
+ "groups": {
+  "extras": {
+   "question": "Qualcuna di queste voci vale per l'attività? Spunta tutte quelle che valgono, o nessuna."
+  }
+ },
+ "asks": {
+  "descrizione": {
+   "type": "text",
+   "question": "Nome della bozza in Pratiche in bozza sul portale",
+   "default": "subingresso tatuatore {{business.denominazione}}"
+  },
+  "oggetto": {
+   "type": "text",
+   "question": "La pratica in una frase (300 caratteri)"
+  },
+  "stagionale": {
+   "type": "yes_no",
+   "question": "Aprirà solo per una parte dell'anno (una stagione)?",
+   "propose": "false"
+  },
+  "diritti_euro": {
+   "type": "number",
+   "question": "I diritti SUAP in euro (controlla la voce nel tariffario 2026; 0 se non dovuti)"
+  },
+  "diritti_esente": {
+   "type": "yes_no",
+   "question": "Non sono dovuti diritti: è perché il committente o i lavori sono esenti in base al tariffario del Comune, e non perché il tariffario non ne preveda per questa pratica?",
+   "propose": "false"
+  },
+  "diritti_esenzione_motivo": {
+   "type": "text",
+   "question": "Perché non sono dovuti diritti: l'esenzione e la norma del tariffario del Comune che la prevede (al massimo 300 caratteri)"
+  },
+  "subingresso_atto_data": {
+   "type": "date",
+   "question": "La data in cui l'atto (compravendita, affitto, donazione, fusione) è stato firmato o autenticato"
+  },
+  "subingresso_decorrenza": {
+   "type": "date",
+   "question": "La data da cui ha effetto"
+  },
+  "notaio_nome": {
+   "type": "text",
+   "question": "Il notaio che lo ha redatto o autenticato"
+  },
+  "notaio_sede": {
+   "type": "text",
+   "question": "La sede del notaio (comune)"
+  },
+  "notaio_repertorio": {
+   "type": "text",
+   "question": "Il numero di repertorio (10 caratteri)"
+  },
+  "tari_denuncia_data": {
+   "type": "date",
+   "question": "La data in cui è stata presentata la denuncia dei rifiuti dei locali (TARI, un tempo TARSU)"
+  },
+  "stagione_inizio_data": {
+   "type": "date",
+   "question": "Il primo giorno della stagione"
+  },
+  "stagione_fine_data": {
+   "type": "date",
+   "question": "L'ultimo giorno della stagione"
+  },
+  "subingresso_causa": {
+   "type": "choice",
+   "question": "Come avviene il trasferimento dell'attività",
+   "options": [
+    "Compravendita",
+    "Affitto d'azienda",
+    "Donazione",
+    "Fusione",
+    "Fallimento",
+    "Successione",
+    "Altre cause"
+   ]
+  },
+  "subingresso_causa_altro": {
+   "type": "text",
+   "question": "Quale altra causa"
+  },
+  "cedente_denominazione": {
+   "type": "text",
+   "question": "Il precedente titolare: nome o denominazione"
+  },
+  "cedente_cf": {
+   "type": "text",
+   "question": "Il codice fiscale o la partita IVA"
+  },
+  "albo_artigiane": {
+   "type": "yes_no",
+   "question": "L'impresa è iscritta all'albo delle imprese artigiane (la sezione speciale del Registro delle imprese)?"
+  },
+  "albo_artigiane_sede": {
+   "type": "text",
+   "question": "La Camera di commercio della sezione speciale (es. Napoli)",
+   "propose": "Napoli"
+  },
+  "albo_artigiane_numero": {
+   "type": "text",
+   "question": "Il numero di iscrizione all'albo delle imprese artigiane (10 caratteri al massimo)"
+  },
+  "albo_artigiane_dal": {
+   "type": "date",
+   "question": "La data di iscrizione all'albo delle imprese artigiane"
+  },
+  "acustica_sorgenti": {
+   "type": "choice",
+   "question": "Rumore dell'attività: nessuna (non ci sono sorgenti sonore significative); previsione (è stata presentata al Comune la previsione di impatto acustico, redatta da un tecnico abilitato); altro",
+   "options": [
+    "nessuna",
+    "previsione",
+    "altro"
+   ]
+  },
+  "acustica_previsione_data": {
+   "type": "date",
+   "question": "La data in cui è stata presentata al Comune la previsione di impatto acustico"
+  },
+  "acustica_sorgenti_altro": {
+   "type": "text",
+   "question": "Cosa dichiari sul rumore, in poche parole (350 caratteri al massimo)"
+  },
+  "locali_invariati": {
+   "type": "yes_no",
+   "question": "I locali del laboratorio non hanno subito modifiche strutturali né di superficie dalla data della precedente autorizzazione?",
+   "propose": "true"
+  },
+  "superficie_complessiva": {
+   "type": "number",
+   "question": "Superficie complessiva del locale: mq",
+   "schema": "modulo_acconciatori_estetisti_apertura/acconciatori_estetisti_apertura/acconciatori_estetisti_apertura/superficie_acc_est/[superfice_acc_est_ctype]/superficie_complessiva"
+  },
+  "altri_soggetti": {
+   "group": "extras",
+   "type": "yes_no",
+   "item": "È una società con altri soci o amministratori oltre a chi dichiara",
+   "why": "Ciascuno presenta una propria dichiarazione antimafia firmata (art. 85 D.Lgs. 159/2011), che non preparo ancora."
+  }
+ },
+ "supports": [
+  {
+   "value": "{{business.forma_giuridica}}",
+   "in": [
+    "ditta_individuale",
+    "srl",
+    "srls",
+    "snc",
+    "sas",
+    "spa"
+   ],
+   "else": "Per ora per una ditta individuale o una srl, srls, snc, sas o spa."
+  },
+  {
+   "when": "{{ask.altri_soggetti|not}}",
+   "else": "Gli altri soci o amministratori presentano le proprie dichiarazioni antimafia come allegati firmati (art. 85 D.Lgs. 159/2011): non lo preparo ancora."
+  },
+  {
+   "value": "{{ask.locali_invariati}}",
+   "in": [
+    "true"
+   ],
+   "else": "Se i locali sono cambiati dalla precedente autorizzazione, la modifica va comunicata con la sua pratica (variazione strutturale): non la preparo insieme al subingresso."
+  }
+ ],
+ "start": "https://suap.impresainungiorno.gov.it/fnsuap/cmd/create?comune=F839",
+ "logged_in": "https://suap.impresainungiorno.gov.it/fnsuap/",
+ "wizard": [
+  {
+   "screen": "Assegna una descrizione alla pratica",
+   "fill": {
+    "css": "input[placeholder^=\"Inserire la descrizione\"]",
+    "value": "{{ask.descrizione}}",
+    "max": 60
+   },
+   "confirm": "CONFERMA"
+  },
+  {
+   "screen": "Controlla l'accesso alla pratica",
+   "confirm": "CONFERMA"
+  },
+  {
+   "screen": "Scelta settore attività",
+   "tree": [
+    {
+     "leaf": "Acconciatore, barbiere, estetista, tatuatore e piercer",
+     "nth": 1
+    }
+   ],
+   "confirm": "CONFERMA"
+  },
+  {
+   "screen": "Scelta operazioni",
+   "tree": [
+    "Subentrare nell'attività di tatuatore/ piercer"
+   ],
+   "confirm": "CONFERMA"
+  },
+  {
+   "screen": "Scelta del destinatario della pratica",
+   "confirm": "CONFERMA"
+  },
+  {
+   "screen": "Scelte eventuali",
+   "confirm": "CONFERMA"
+  }
+ ],
+ "sections": [
+  {
+   "section": "Scheda anagrafica",
+   "open": false,
+   "fields": [
+    {
+     "id": "r1c1p1reg:radio:0_clone",
+     "kind": "radio",
+     "when": "{{business.rea|empty|not}}",
+     "label": "DITTA/SOCIETA'/IMPRESA"
+    },
+    {
+     "id": "r1c1p1reg:radio:0_clone",
+     "kind": "radio",
+     "when": "{{business.rea|empty}}",
+     "label": "DITTA/SOCIETA'/IMPRESA"
+    },
+    {
+     "id": "r2c2p4reg:radio:2_clone",
+     "kind": "radio",
+     "made_up_stops": true,
+     "made_up": "the portal looks the company's codice fiscale up in the Registro Imprese at Salva (\"Il CF inserito non è presente nel RI\"): a made-up company stops there",
+     "when": "{{business.rea|empty|not}}",
+     "label": "ISCRITTA ALLA CCIAA"
+    },
+    {
+     "id": "r8c1p16reg",
+     "kind": "select",
+     "value": "{{business.cciaa|provincia_nome}}",
+     "when": "{{business.rea|empty|not}}",
+     "label": "Camera di commercio di:"
+    },
+    {
+     "id": "r6c2p16reg:radio:3_clone",
+     "kind": "radio",
+     "when": "{{business.rea|empty}}",
+     "label": "NON ANCORA ISCRITTA"
+    },
+    {
+     "id": "r13c1p31reg:txt",
+     "kind": "text",
+     "value": "{{t:identity.first_name}}",
+     "when": "{{business.rea|empty|not}}",
+     "max": 40,
+     "label": "Nome"
+    },
+    {
+     "id": "r10c1p23reg:txt",
+     "kind": "text",
+     "value": "{{t:identity.first_name}}",
+     "when": "{{business.rea|empty}}",
+     "max": 40,
+     "label": "Nome"
+    },
+    {
+     "id": "r13c2p33reg:txt",
+     "kind": "text",
+     "value": "{{t:identity.last_name}}",
+     "when": "{{business.rea|empty|not}}",
+     "max": 40,
+     "label": "Cognome"
+    },
+    {
+     "id": "r10c2p25reg:txt",
+     "kind": "text",
+     "value": "{{t:identity.last_name}}",
+     "when": "{{business.rea|empty}}",
+     "max": 40,
+     "label": "Cognome"
+    },
+    {
+     "id": "r13c3p35reg:txt",
+     "kind": "text",
+     "value": "{{t:identity.codice_fiscale}}",
+     "when": "{{business.rea|empty|not}}",
+     "max": 16,
+     "label": "Cod.Fiscale"
+    },
+    {
+     "id": "r10c3p27reg:txt",
+     "kind": "text",
+     "value": "{{t:identity.codice_fiscale}}",
+     "when": "{{business.rea|empty}}",
+     "max": 16,
+     "label": "Cod.Fiscale"
+    },
+    {
+     "id": "r15c1p37reg",
+     "kind": "select",
+     "value": "{{t:identity.sex}}",
+     "when": "{{business.rea|empty|not}}",
+     "label": "Sesso"
+    },
+    {
+     "id": "r12c1p29reg",
+     "kind": "select",
+     "value": "{{t:identity.sex}}",
+     "when": "{{business.rea|empty}}",
+     "label": "Sesso"
+    },
+    {
+     "id": "r15c2p39reg:calendar_input",
+     "kind": "text",
+     "value": "{{t:identity.date_of_birth|date_it}}",
+     "when": "{{business.rea|empty|not}}",
+     "label": "Data nascita"
+    },
+    {
+     "id": "r12c2p31reg:calendar_input",
+     "kind": "text",
+     "value": "{{t:identity.date_of_birth|date_it}}",
+     "when": "{{business.rea|empty}}",
+     "label": "Data nascita"
+    },
+    {
+     "id": "r18c2p49reg",
+     "kind": "select",
+     "value": "{{t:identity.birth_province}}",
+     "when": "{{business.rea|empty|not}}",
+     "label": "Provincia"
+    },
+    {
+     "id": "r15c2p41reg",
+     "kind": "select",
+     "value": "{{t:identity.birth_province}}",
+     "when": "{{business.rea|empty}}",
+     "label": "Provincia"
+    },
+    {
+     "id": "r20c1p53reg",
+     "kind": "select",
+     "value": "{{t:identity.birth_comune|upper}}",
+     "when": "{{business.rea|empty|not}}",
+     "label": "Comune"
+    },
+    {
+     "id": "r17c1p45reg",
+     "kind": "select",
+     "value": "{{t:identity.birth_comune|upper}}",
+     "when": "{{business.rea|empty}}",
+     "label": "Comune"
+    },
+    {
+     "id": "r27c2p71reg",
+     "kind": "select",
+     "value": "{{t:residenza.provincia}}",
+     "when": "{{business.rea|empty|not}}",
+     "label": "Provincia",
+     "nth": 2
+    },
+    {
+     "id": "r24c2p63reg",
+     "kind": "select",
+     "value": "{{t:residenza.provincia}}",
+     "when": "{{business.rea|empty}}",
+     "label": "Provincia",
+     "nth": 2
+    },
+    {
+     "id": "r29c1p75reg",
+     "kind": "select",
+     "value": "{{t:residenza.comune|upper}}",
+     "when": "{{business.rea|empty|not}}",
+     "label": "Comune",
+     "nth": 2
+    },
+    {
+     "id": "r26c1p67reg",
+     "kind": "select",
+     "value": "{{t:residenza.comune|upper}}",
+     "when": "{{business.rea|empty}}",
+     "label": "Comune",
+     "nth": 2
+    },
+    {
+     "id": "r32c1p81reg",
+     "kind": "select",
+     "value": "{{t:residenza.indirizzo|dug}}",
+     "when": "{{business.rea|empty|not}}",
+     "label": "Toponimo (DUG)"
+    },
+    {
+     "id": "r29c1p73reg",
+     "kind": "select",
+     "value": "{{t:residenza.indirizzo|dug}}",
+     "when": "{{business.rea|empty}}",
+     "label": "Toponimo (DUG)"
+    },
+    {
+     "kind": "select",
+     "value": "{{t:residenza.indirizzo|dug_dettaglio}}",
+     "when": "{{t:residenza.indirizzo|dug_altro}}",
+     "label": "da compilare obbligatoriamente"
+    },
+    {
+     "id": "r34c1p87reg:txt",
+     "kind": "text",
+     "value": "{{t:residenza.indirizzo|street|upper}}",
+     "when": "{{business.rea|empty|not}}",
+     "max": 60,
+     "label": "Denominazione stradale"
+    },
+    {
+     "id": "r31c1p79reg:txt",
+     "kind": "text",
+     "value": "{{t:residenza.indirizzo|street|upper}}",
+     "when": "{{business.rea|empty}}",
+     "max": 60,
+     "label": "Denominazione stradale"
+    },
+    {
+     "id": "r36c1p91reg:txt",
+     "kind": "text",
+     "value": "{{t:residenza.civico}}",
+     "when": "{{business.rea|empty|not}}",
+     "max": 20,
+     "label": "Numero civico"
+    },
+    {
+     "id": "r33c1p83reg:txt",
+     "kind": "text",
+     "value": "{{t:residenza.civico}}",
+     "when": "{{business.rea|empty}}",
+     "max": 20,
+     "label": "Numero civico"
+    },
+    {
+     "id": "r36c2p93reg:txt",
+     "kind": "text",
+     "value": "{{t:residenza.cap}}",
+     "when": "{{business.rea|empty|not}}",
+     "max": 5,
+     "label": "CAP"
+    },
+    {
+     "id": "r33c2p85reg:txt",
+     "kind": "text",
+     "value": "{{t:residenza.cap}}",
+     "when": "{{business.rea|empty}}",
+     "max": 5,
+     "label": "CAP"
+    },
+    {
+     "id": "r36c3p95reg:txt",
+     "kind": "text",
+     "value": "{{t:identity.email}}",
+     "when": "{{business.rea|empty|not}}",
+     "max": 100,
+     "label": "eMail/PEC"
+    },
+    {
+     "id": "r33c3p87reg:txt",
+     "kind": "text",
+     "value": "{{t:identity.email}}",
+     "when": "{{business.rea|empty}}",
+     "max": 100,
+     "label": "eMail/PEC"
+    },
+    {
+     "id": "r36c4p97reg:number",
+     "kind": "text",
+     "value": "{{t:identity.phone|phone_it}}",
+     "when": "{{business.rea|empty|not}}",
+     "max": 12,
+     "label": "Telefono fisso/cellulare"
+    },
+    {
+     "id": "r33c4p89reg:number",
+     "kind": "text",
+     "value": "{{t:identity.phone|phone_it}}",
+     "when": "{{business.rea|empty}}",
+     "max": 12,
+     "label": "Telefono fisso/cellulare"
+    },
+    {
+     "id": "r39c1p101reg",
+     "kind": "select",
+     "value": "{{t:ruolo.tipo|carica}}",
+     "when": "{{business.rea|empty|not}}",
+     "label": "Carica"
+    },
+    {
+     "id": "r36c1p93reg",
+     "kind": "select",
+     "value": "{{t:ruolo.tipo|carica}}",
+     "when": "{{business.rea|empty}}",
+     "label": "Carica"
+    },
+    {
+     "id": "r44c1p111reg",
+     "kind": "select",
+     "value": "{{business.forma_giuridica|forma}}",
+     "when": "{{business.rea|empty|not}}",
+     "label": "Forma giuridica"
+    },
+    {
+     "id": "r41c1p103reg",
+     "kind": "select",
+     "value": "{{business.forma_giuridica|forma}}",
+     "when": "{{business.rea|empty}}",
+     "label": "Forma giuridica"
+    },
+    {
+     "id": "r42c1p107reg:txt",
+     "kind": "text",
+     "value": "{{business.denominazione}}",
+     "when": "{{business.rea|empty|not}}",
+     "max": 305,
+     "label": "Denominazione (nome della ditta"
+    },
+    {
+     "id": "r39c1p99reg:txt",
+     "kind": "text",
+     "value": "{{business.denominazione}}",
+     "when": "{{business.rea|empty}}",
+     "max": 305,
+     "label": "Denominazione (nome della ditta"
+    },
+    {
+     "id": "r44c2p113reg:txt",
+     "kind": "text",
+     "value": "{{business.codice_fiscale}}",
+     "when": "{{business.rea|empty|not}}",
+     "max": 16,
+     "label": "Codice Fiscale"
+    },
+    {
+     "id": "r41c2p105reg:txt",
+     "kind": "text",
+     "value": "{{business.codice_fiscale}}",
+     "when": "{{business.rea|empty}}",
+     "max": 16,
+     "label": "Codice Fiscale"
+    },
+    {
+     "id": "r44c3p115reg:txt",
+     "kind": "text",
+     "value": "{{business.partita_iva}}",
+     "when": "{{business.rea|empty|not}}",
+     "max": 11,
+     "label": "P.IVA"
+    },
+    {
+     "id": "r41c3p107reg:txt",
+     "kind": "text",
+     "value": "{{business.partita_iva}}",
+     "when": "{{business.rea|empty}}",
+     "max": 11,
+     "label": "P.IVA"
+    },
+    {
+     "id": "r47c2p121reg",
+     "kind": "select",
+     "value": "{{business.sede_legale_provincia}}",
+     "when": "{{business.rea|empty|not}}",
+     "label": "Provincia",
+     "nth": 3
+    },
+    {
+     "id": "r44c2p113reg",
+     "kind": "select",
+     "value": "{{business.sede_legale_provincia}}",
+     "when": "{{business.rea|empty}}",
+     "label": "Provincia",
+     "nth": 3
+    },
+    {
+     "id": "r49c1p125reg",
+     "kind": "select",
+     "value": "{{business.sede_legale_comune|upper}}",
+     "when": "{{business.rea|empty|not}}",
+     "label": "Comune",
+     "nth": 3
+    },
+    {
+     "id": "r46c1p117reg",
+     "kind": "select",
+     "value": "{{business.sede_legale_comune|upper}}",
+     "when": "{{business.rea|empty}}",
+     "label": "Comune",
+     "nth": 3
+    },
+    {
+     "id": "r52c1p131reg",
+     "kind": "select",
+     "value": "{{business.sede_legale_indirizzo|dug}}",
+     "when": "{{business.rea|empty|not}}",
+     "label": "Toponimo (DUG)",
+     "nth": 2
+    },
+    {
+     "id": "r49c1p123reg",
+     "kind": "select",
+     "value": "{{business.sede_legale_indirizzo|dug}}",
+     "when": "{{business.rea|empty}}",
+     "label": "Toponimo (DUG)",
+     "nth": 2
+    },
+    {
+     "kind": "select",
+     "value": "{{business.sede_legale_indirizzo|dug_dettaglio}}",
+     "when": "{{business.sede_legale_indirizzo|dug_altro}} {{t:residenza.indirizzo|dug_altro|not}}",
+     "label": "da compilare obbligatoriamente"
+    },
+    {
+     "kind": "select",
+     "label": "da compilare obbligatoriamente",
+     "nth": 2,
+     "value": "{{business.sede_legale_indirizzo|dug_dettaglio}}",
+     "when": "{{business.sede_legale_indirizzo|dug_altro}} {{t:residenza.indirizzo|dug_altro}}"
+    },
+    {
+     "id": "r54c1p137reg:txt",
+     "kind": "text",
+     "value": "{{business.sede_legale_indirizzo|street|upper}}",
+     "when": "{{business.rea|empty|not}}",
+     "max": 60,
+     "label": "Denominazione stradale",
+     "nth": 2
+    },
+    {
+     "id": "r51c1p129reg:txt",
+     "kind": "text",
+     "value": "{{business.sede_legale_indirizzo|street|upper}}",
+     "when": "{{business.rea|empty}}",
+     "max": 60,
+     "label": "Denominazione stradale",
+     "nth": 2
+    },
+    {
+     "id": "r54c2p139reg:txt",
+     "kind": "text",
+     "value": "{{business.sede_legale_civico}}",
+     "when": "{{business.rea|empty|not}}",
+     "max": 20,
+     "label": "Numero civico",
+     "nth": 2
+    },
+    {
+     "id": "r51c2p131reg:txt",
+     "kind": "text",
+     "value": "{{business.sede_legale_civico}}",
+     "when": "{{business.rea|empty}}",
+     "max": 20,
+     "label": "Numero civico",
+     "nth": 2
+    },
+    {
+     "id": "r54c3p141reg:txt",
+     "kind": "text",
+     "value": "{{business.sede_legale_cap}}",
+     "when": "{{business.rea|empty|not}}",
+     "max": 5,
+     "label": "CAP",
+     "nth": 2
+    },
+    {
+     "id": "r51c3p133reg:txt",
+     "kind": "text",
+     "value": "{{business.sede_legale_cap}}",
+     "when": "{{business.rea|empty}}",
+     "max": 5,
+     "label": "CAP",
+     "nth": 2
+    },
+    {
+     "id": "r56c1p143reg:txt",
+     "kind": "text",
+     "value": "{{business.telefono|phone_it}}",
+     "when": "{{business.rea|empty|not}}",
+     "max": 12,
+     "label": "Telefono fisso/Cellulare",
+     "nth": 2
+    },
+    {
+     "id": "r53c1p135reg:txt",
+     "kind": "text",
+     "value": "{{business.telefono|phone_it}}",
+     "when": "{{business.rea|empty}}",
+     "max": 12,
+     "label": "Telefono fisso/Cellulare",
+     "nth": 2
+    },
+    {
+     "id": "r56c3p147reg:txt",
+     "kind": "text",
+     "value": "{{business.pec}}",
+     "when": "{{business.rea|empty|not}}",
+     "max": 100,
+     "label": "PEC"
+    },
+    {
+     "id": "r53c3p139reg:txt",
+     "kind": "text",
+     "value": "{{business.pec}}",
+     "when": "{{business.rea|empty}}",
+     "max": 100,
+     "label": "PEC"
+    }
+   ]
+  },
+  {
+   "section": "Oggetto della pratica",
+   "fields": [
+    {
+     "id": "r2c1p2reg:txta",
+     "kind": "text",
+     "value": "{{ask.oggetto}}",
+     "max": 300,
+     "label": "descrizione sintetica"
+    }
+   ]
+  },
+  {
+   "section": "DOMICILIO DIGITALE",
+   "fields": [
+    {
+     "id": "r5c1p5reg:chk",
+     "kind": "checkbox",
+     "label": "il seguente domicilio digitale inserito in INI-PEC"
+    },
+    {
+     "id": "r7c1p7reg:txt",
+     "kind": "text",
+     "value": "{{business.pec}}",
+     "max": 9999,
+     "label": "il seguente domicilio digitale inserito in INI-PEC"
+    }
+   ]
+  },
+  {
+   "section": "DOMICILIO ELETTRONICO",
+   "theirs": [
+    "Si dichiara di essere consapevoli"
+   ],
+   "fields": [
+    {
+     "id": "r3c1p3reg:txt",
+     "kind": "text",
+     "value": "{{business.pec}}",
+     "max": 9999,
+     "label": "N.B. Inserire l'indirizzo della casella PEC"
+    }
+   ]
+  },
+  {
+   "section": "dichiarazione ubicazione locale",
+   "fields": [
+    {
+     "id": "r2c4p8reg:txtws_input",
+     "kind": "text",
+     "value": "{{locale.cap}}",
+     "max": 5,
+     "label": "CAP"
+    },
+    {
+     "id": "r5c1p13reg:txtws_input",
+     "kind": "lookup",
+     "value": "{{locale.indirizzo}}",
+     "max": 60,
+     "label": "Via, Viale, Piazza"
+    },
+    {
+     "id": "r5c2p15reg:txtws_input",
+     "kind": "text",
+     "value": "{{locale.civico}}",
+     "max": 20,
+     "label": "n° civico"
+    },
+    {
+     "id": "r7c1p19reg:txtws_input",
+     "kind": "text",
+     "value": "{{locale.scala}}",
+     "optional": true,
+     "max": 9999,
+     "label": "scala"
+    },
+    {
+     "id": "r7c2p21reg:txtws_input",
+     "kind": "text",
+     "value": "{{locale.piano}}",
+     "optional": true,
+     "max": 10,
+     "label": "piano"
+    },
+    {
+     "id": "r7c3p23reg:txtws_input",
+     "kind": "text",
+     "value": "{{locale.interno}}",
+     "optional": true,
+     "max": 10,
+     "label": "interno"
+    }
+   ]
+  },
+  {
+   "section": "Dati catastali",
+   "fields": [
+    {
+     "id": "r1c1p1reg:radio:0_clone",
+     "kind": "radio",
+     "label": "Nuovo Catasto Edilizio Urbano"
+    },
+    {
+     "id": "r3c1p5reg:number",
+     "kind": "text",
+     "value": "{{locale.catasto_foglio}}",
+     "max": 5,
+     "label": "foglio"
+    },
+    {
+     "id": "r3c2p7reg:txt",
+     "kind": "text",
+     "value": "{{locale.catasto_particella}}",
+     "max": 5,
+     "label": "particella/mappale"
+    },
+    {
+     "id": "r3c3p9reg:number",
+     "kind": "text",
+     "value": "{{locale.catasto_subalterno}}",
+     "max": 4,
+     "label": "subalterno"
+    },
+    {
+     "id": "r5c2p15reg:txt",
+     "kind": "text",
+     "value": "{{locale.catasto_sezione}}",
+     "optional": true,
+     "max": 3,
+     "label": "sezione Urbana"
+    },
+    {
+     "id": "r8c1p23reg",
+     "kind": "select",
+     "value": "{{locale.catasto_categoria|categoria}}",
+     "label": "categoria"
+    }
+   ]
+  },
+  {
+   "section": "dichiarazione antimafia D.LGS. 159/2011",
+   "theirs": [
+    "che nei propri confronti non sussistono le cause di divieto"
+   ],
+   "fields": []
+  },
+  {
+   "section": "dichiarazione della modalità di subingresso",
+   "fields": [
+    {
+     "id": "r2c1p2reg:radio:1_clone",
+     "kind": "radio",
+     "when": "{{ask.subingresso_causa|is_compravendita}}",
+     "label": "compravendita (2)"
+    },
+    {
+     "id": "r3c1p3reg:radio:2_clone",
+     "kind": "radio",
+     "when": "{{ask.subingresso_causa|is_affitto_d_azienda}}",
+     "label": "affitto d'azienda (2)"
+    },
+    {
+     "id": "r4c1p4reg:radio:3_clone",
+     "kind": "radio",
+     "when": "{{ask.subingresso_causa|is_donazione}}",
+     "label": "donazione (2)"
+    },
+    {
+     "id": "r5c1p5reg:radio:4_clone",
+     "kind": "radio",
+     "when": "{{ask.subingresso_causa|is_fusione}}",
+     "label": "fusione (2)"
+    },
+    {
+     "id": "r6c1p6reg:radio:5_clone",
+     "kind": "radio",
+     "when": "{{ask.subingresso_causa|is_fallimento}}",
+     "label": "fallimento"
+    },
+    {
+     "id": "r7c1p7reg:radio:6_clone",
+     "kind": "radio",
+     "when": "{{ask.subingresso_causa|is_successione}}",
+     "label": "successione"
+    },
+    {
+     "id": "r9c1p9reg:radio:7_clone",
+     "kind": "radio",
+     "when": "{{ask.subingresso_causa|is_altre_cause}}",
+     "label": "altre cause"
+    },
+    {
+     "id": "r9c2p11reg:txt",
+     "kind": "text",
+     "value": "{{ask.subingresso_causa_altro}}",
+     "when": "{{ask.subingresso_causa|is_altre_cause}}",
+     "max": 100,
+     "label": "specificare"
+    },
+    {
+     "id": "r17c1p35reg:calendar_input",
+     "kind": "date",
+     "value": "{{ask.subingresso_atto_data|date_it}}",
+     "when": "{{ask.subingresso_causa|in_compravendita__affitto_d_azienda__donazione__fusione}}",
+     "label": "contratto stipulato / autenticato in data"
+    },
+    {
+     "id": "r17c2p37reg:calendar_input",
+     "kind": "date",
+     "value": "{{ask.subingresso_decorrenza|date_it}}",
+     "when": "{{ask.subingresso_causa|in_compravendita__affitto_d_azienda__donazione__fusione}}",
+     "label": "con decorrenza"
+    },
+    {
+     "id": "r19c1p41reg:txt",
+     "kind": "text",
+     "value": "{{ask.notaio_nome}}",
+     "when": "{{ask.subingresso_causa|in_compravendita__affitto_d_azienda__donazione__fusione}}",
+     "max": 30,
+     "label": "presso il Notaio",
+     "nth": 3
+    },
+    {
+     "id": "r19c2p43reg:txt",
+     "kind": "text",
+     "value": "{{ask.notaio_sede}}",
+     "when": "{{ask.subingresso_causa|in_compravendita__affitto_d_azienda__donazione__fusione}}",
+     "max": 30,
+     "label": "con sede a",
+     "nth": 3
+    },
+    {
+     "id": "r19c3p45reg:txt",
+     "kind": "text",
+     "value": "{{ask.notaio_repertorio}}",
+     "when": "{{ask.subingresso_causa|in_compravendita__affitto_d_azienda__donazione__fusione}}",
+     "max": 10,
+     "label": "repertorio",
+     "nth": 3
+    }
+   ]
+  },
+  {
+   "section": "dichiarazione di conformità alle norme in materia edilizia, urbanistica, igienico sanitaria e accessibilità",
+   "theirs": [
+    "che il locale ove intende svolgere l'attività è conforme"
+   ],
+   "fields": []
+  },
+  {
+   "section": "dichiarazione della tipologia dell'esercizio (permanente/stagionale)",
+   "fields": [
+    {
+     "id": "r1c1p1reg:radio:0_clone",
+     "kind": "radio",
+     "when": "{{ask.stagionale|not}}",
+     "label": "permanente"
+    },
+    {
+     "id": "r2c1p2reg:radio:1_clone",
+     "kind": "radio",
+     "when": "{{ask.stagionale}}",
+     "label": "stagionale"
+    },
+    {
+     "id": "r4c1p4reg:calendar_input",
+     "kind": "date",
+     "value": "{{ask.stagione_inizio_data|date_it}}",
+     "when": "{{ask.stagionale}}",
+     "label": "data inizio periodo"
+    },
+    {
+     "id": "r6c1p8reg:calendar_input",
+     "kind": "date",
+     "value": "{{ask.stagione_fine_data|date_it}}",
+     "when": "{{ask.stagionale}}",
+     "label": "data fine periodo"
+    }
+   ]
+  },
+  {
+   "section": "dichiarazione della denominazione dell'attività precedente",
+   "fields": [
+    {
+     "id": "r2c1p2reg:txt",
+     "kind": "text",
+     "value": "{{ask.cedente_denominazione}}",
+     "max": 100,
+     "label": "denominazione attività"
+    },
+    {
+     "id": "r4c1p4reg:txt",
+     "kind": "text",
+     "value": "{{ask.cedente_cf}}",
+     "max": 16,
+     "label": "Codice Fiscale/P.I."
+    }
+   ]
+  },
+  {
+   "section": "dichiarazione di assenza di modifiche strutturali del laboratorio",
+   "fields": [
+    {
+     "id": "r1c1p1reg:lbl",
+     "kind": "checkbox",
+     "when": "{{ask.locali_invariati}}",
+     "label": "che i locali costituenti il laboratorio non hanno subito modifiche"
+    }
+   ]
+  },
+  {
+   "section": "dichiarazione del rispetto delle leggi e regolamenti vigenti in materia",
+   "theirs": [
+    "di rispettare tutte le norme di legge e regolamenti vigenti"
+   ],
+   "fields": []
+  },
+  {
+   "section": "dichiarazione relativa all'iscrizione all'albo delle imprese artigiane",
+   "fields": [
+    {
+     "id": "r1c1p1reg:radio:0_clone",
+     "kind": "radio",
+     "when": "{{ask.albo_artigiane|not}}",
+     "label": "non è iscritta"
+    },
+    {
+     "id": "r2c1p2reg:radio:1_clone",
+     "kind": "radio",
+     "when": "{{ask.albo_artigiane}}",
+     "label": "è iscritta"
+    },
+    {
+     "id": "r4c1p4reg:txt",
+     "kind": "text",
+     "value": "{{ask.albo_artigiane_sede}}",
+     "when": "{{ask.albo_artigiane}}",
+     "max": 50,
+     "label": "al R.I. sezione speciale di"
+    },
+    {
+     "id": "r6c1p6reg:txt",
+     "kind": "text",
+     "value": "{{ask.albo_artigiane_numero}}",
+     "when": "{{ask.albo_artigiane}}",
+     "max": 10,
+     "label": "con n."
+    },
+    {
+     "id": "r6c2p8reg:calendar_input",
+     "kind": "date",
+     "value": "{{ask.albo_artigiane_dal|date_it}}",
+     "when": "{{ask.albo_artigiane}}",
+     "label": "dal"
+    }
+   ]
+  },
+  {
+   "section": "dichiarazione di denuncia occupazione dei locali ai fini TARSU",
+   "fields": [
+    {
+     "id": "r2c1p2reg:calendar_input",
+     "kind": "date",
+     "value": "{{ask.tari_denuncia_data|date_it}}",
+     "label": "in data"
+    }
+   ]
+  },
+  {
+   "section": "Dichiarazione per inquinamento acustico",
+   "fields": [
+    {
+     "id": "r1c1p1reg:chk",
+     "kind": "checkbox",
+     "when": "{{ask.acustica_sorgenti|is_nessuna}}",
+     "label": "non sono presenti sorgenti sonore significative"
+    },
+    {
+     "id": "r3c1p3reg:chk",
+     "kind": "checkbox",
+     "when": "{{ask.acustica_sorgenti|is_previsione}}",
+     "label": "è stata presentata al comune la \"previsione di impatto acustico\""
+    },
+    {
+     "id": "r3c2p5reg:calendar_input",
+     "kind": "date",
+     "value": "{{ask.acustica_previsione_data|date_it}}",
+     "when": "{{ask.acustica_sorgenti|is_previsione}}",
+     "label": "in data:"
+    },
+    {
+     "id": "r5c1p7reg:chk",
+     "kind": "checkbox",
+     "when": "{{ask.acustica_sorgenti|is_altro}}",
+     "label": "altro"
+    },
+    {
+     "id": "r5c2p9reg:txt",
+     "kind": "text",
+     "value": "{{ask.acustica_sorgenti_altro}}",
+     "when": "{{ask.acustica_sorgenti|is_altro}}",
+     "max": 350,
+     "label": "specificare"
+    }
+   ]
+  },
+  {
+   "section": "dichiarazione relativa alla superficie dei locali da adibire all'attività",
+   "fields": [
+    {
+     "id": "r2c1p2reg:txt",
+     "kind": "text",
+     "value": "{{ask.superficie_complessiva}}",
+     "max": 5,
+     "label": "superficie complessiva dell'esercizio (mq)"
+    }
+   ]
+  },
+  {
+   "section": "Dichiarazione relativa ai diritti",
+   "fields": [
+    {
+     "id": "r2c1p2reg:radio:0_clone",
+     "kind": "radio",
+     "when": "{{ask.diritti_euro|positive|not}}",
+     "label": "non sono dovuti oneri"
+    },
+    {
+     "id": "r3c1p3reg:radio:1_clone",
+     "kind": "radio",
+     "when": "{{ask.diritti_euro|positive|not}} {{ask.diritti_esente|not}}",
+     "label": "poiché non previsti dal tariffario"
+    },
+    {
+     "id": "r3c2p4reg:radio:2_clone",
+     "kind": "radio",
+     "when": "{{ask.diritti_euro|positive|not}} {{ask.diritti_esente}}",
+     "label": "poiché esentati"
+    },
+    {
+     "kind": "text",
+     "label": "specificare la motivazione",
+     "value": "{{ask.diritti_esenzione_motivo}}",
+     "when": "{{ask.diritti_euro|positive|not}} {{ask.diritti_esente}}"
+    },
+    {
+     "id": "r5c1p8reg:radio:3_clone",
+     "kind": "radio",
+     "when": "{{ask.diritti_euro|positive}}",
+     "label": "sono dovuti oneri quali diritti o spese"
+    },
+    {
+     "id": "r7c1p10reg:real",
+     "kind": "number",
+     "value": "{{ask.diritti_euro}}",
+     "when": "{{ask.diritti_euro|positive}}",
+     "max": 11,
+     "label": "per un totale di Euro"
+    },
+    {
+     "id": "r8c1p13reg:radio:4_clone",
+     "kind": "radio",
+     "when": "{{ask.diritti_euro|positive}}",
+     "label": "pagamento on line"
+    }
+   ]
+  }
+ ]
+}

@@ -596,6 +596,13 @@ FILTERS = Filters({
     "one_catasto": lambda v: (lambda n, cats: "true" if len({bool(c.strip()) for c in cats[:n]}) <= 1 else "false")(
         int(float(v.split("/")[0] or 1)), _categorie(v.split("/", 1)[1] if "/" in v else "")),
     "not": lambda v: "false" if truthy(v) else "true",
+    # The nth number of "1 0 0" (a count asked as several numbers: the distinta's DC, DI and CI; 0 where one is missing).
+    "w1": lambda v: (str(v).split() + ["0"] * 3)[0],
+    "w2": lambda v: (str(v).split() + ["0"] * 3)[1],
+    "w3": lambda v: (str(v).split() + ["0"] * 3)[2],
+    # A box that wants "300.00", the point and the decimals (the medium shop's total, 2026-11-11: "300" was
+    # refused with "deve essere un numero comprensivo dei decimali").
+    "decimal": lambda v: f"{float(str(v).strip().replace(',', '.')):.2f}",
     "positive": lambda v: "true" if float(str(v or 0).replace(",", ".")) > 0 else "false",
     # The SUE rules table's facts as the forms' own boxes (an ask's `propose`).
     "sue_scia_tipo": _sue_scia_tipo,
@@ -1559,27 +1566,31 @@ def evidence_text(values):
     return ("Dai tuoi documenti:\n" + "\n".join(lines) + "\n\n") if lines else ""
 
 
-def summary_text(rows, end=(), evidence=""):
+PICK = "li scegli tu in un riquadro sulla pagina del portale, una volta sola (sono troppo pesanti perché li passi io)"  # the files over the pane's limit: the page's own box (`picked`)
+
+
+def summary_text(rows, pick=False, evidence=""):
     """The one message's summary, as a review by exception (GOV.UK's "check answers", kept short so
     it is read, not rubber-stamped): first what only Impresa in un minuto proposes, a line each; then the
-    rest counted by where it comes from; every answer one word away («dettagli»: summary_all)."""
+    rest counted by where it comes from; every answer one word away («dettagli»: summary_all).
+    pick: the files are chosen by the person in the portal's page, which the files' line says."""
     check = [r for r in rows if r["source"] == PROPOSED]
     files = [r for r in rows if r["key"] == "allegati"]
     rest = [r for r in rows if r not in check and r not in files]
     by = {}
     for r in rest:
-        src = "calcolate dalle regole" if r["source"] in AUTOMATIC else r["source"].split(", ")[0] or "già date"
+        src = "regole" if r["source"] in AUTOMATIC else r["source"].split(", ")[0] or "già date"
         by[src] = by.get(src, 0) + 1
     lines = [evidence.rstrip("\n"), ""] if evidence else []
     if check:
         lines.append("Da controllare (le propongo io):")
         lines += [f"– {r['question']} → {r['answer']}" for r in check]
         lines.append("")
-    lines.append(f"Il resto ({len(rest)} risposte) viene da: " + ", ".join(f"{k} {n}" for k, n in sorted(by.items(), key=lambda x: -x[1])) + "."
-                 + (f" I file da allegare sono {files[0]['question'].split('(')[1].rstrip(')')}, già controllati."
-                    if files else "")
-                 + " Per vederle una per una, scrivi «dettagli». Controllami a campione: chiedimi cosa scrivo in una casella qualsiasi.")
-    return "\n".join(lines) + "\n\n" + "\n".join([*end, YES])
+    lines.append(f"Il resto ({len(rest)} risposte): " + ", ".join(f"{k} {n}" for k, n in sorted(by.items(), key=lambda x: -x[1])) + ". "
+                 "Scrivi «dettagli» per leggerle, o chiedimi di una casella qualsiasi.")
+    if files:
+        lines.append(f"{files[0]['question'].split('(')[1].rstrip(')')} file da allegare, già controllati" + (f": {PICK}." if pick else "."))
+    return "\n".join(lines) + "\n\n" + YES
 
 
 def summary_all(rows, made_up=False):
@@ -1611,17 +1622,22 @@ def tu_steps(later):
         what = (["la procura"] if any(re.search(r"procura", x, re.I) for x in later) else []) \
             + (["la ricevuta del pagamento"] if pay_first else [])
         rest = [x for x in later if not re.search(r"procura|versament|ricevut|pagament", x, re.I)]
-        what += ["gli altri documenti" if what else "i documenti da firmare"] if rest else []
+        # The portal's own names for them (the steps file's labels), so nothing is signed unseen.
+        named = ", ".join(dict.fromkeys(rest))
+        what += [f"gli altri documenti ({named})" if what else f"i documenti da firmare ({named})"] if rest else []
         steps += (["paga i diritti"] if pay_first else []) + [
-            f"firma {' e '.join([', '.join(what[:-1]), what[-1]] if len(what) > 1 else what)}, poi scrivimi «ho firmato»"]
+            f"firma {' e '.join([', '.join(what[:-1]), what[-1]] if len(what) > 1 else what)}; "
+            "salva i file firmati nella cartella del lavoro e scrivimi «ho firmato»"]
     return steps + ["firma la pratica"] + ([] if pay_first and later else ["paga"]) + ["invia"]
 
 
 def step_details(steps):
-    """What the sportello adds to a step, shown next to it in the closing lines (review.py): where the diritti
-    are paid, in which order the files are signed, what comes back after sending. Never in the card."""
+    """What is added to a step, shown next to it in the closing lines (review.py): where the draft is, and what the
+    sportello adds: where the diritti are paid, in which order the files are signed, what comes back after
+    sending. Never in the card."""
     d = (filing_rules(steps) or {}).get("card", {})
-    return {k: v for k, v in {"paga i diritti": d.get("pay"), "paga": d.get("pay"), "firma la pratica": d.get("sign"),
+    return {k: v for k, v in {"controlla l'anteprima della bozza": "la trovi in Pratiche in bozza",
+                              "paga i diritti": d.get("pay"), "paga": d.get("pay"), "firma la pratica": d.get("sign"),
                               "invia": d.get("send")}.items() if v}
 
 
@@ -1653,7 +1669,7 @@ def card_why(steps, values, rows):
     return out
 
 
-def card(steps, values, report, made_up=False, rows=None, preview_check=True):
+def card(steps, values, report, made_up=False, rows=None, preview_check=True, later=None):
     """"Cosa succede", in two lines: the pratica and why it is this one, and what Claude does (then, for a real job,
     that it stays a draft; for a Prova, that nothing is sent). What the tecnico does
     is in the verdict (SKILL.md) and the closing lines (review.py), where each step comes with the sportello's
@@ -1688,7 +1704,14 @@ def card(steps, values, report, made_up=False, rows=None, preview_check=True):
     if made_up:
         lines += ["", "Qui non c'è nulla da inviare: finita la prova, cancella la bozza da «Pratiche in bozza»."]
     else:
-        lines += ["", "Resta una bozza: non parte nulla finché non la invii."]
+        if later is None:  # pre-flight passes it: its steps have lost the slots by the time the card is made
+            try:
+                later = after_declarations(steps, values)
+            except (StepError, KeyError):
+                later = []
+        # What the portal makes only after the declarations is a second pass: said now, so it is no surprise at the end.
+        lines += ["", "Resta una bozza: la controlli tu, e non parte nulla finché non la invii."
+                  + (" Dopo le dichiarazioni ti dico quali file firmare e, firmati, li allego io in una seconda compilazione." if later else "")]
     return "\n".join(lines)
 
 
@@ -1739,12 +1762,13 @@ def said(ask, v):
 
 # Whose a missing detail is, by its role (answers.json "people"; dictionary/fnsuap.yaml's Roles):
 # no role, or a slug that isn't one, is the tecnico's or the studio's own, asked once and kept.
-WHOSE = [(r"(c|cr|o|r|f\d*|ad\d*|a\d*|s|d|p)(#\d+)?:(immobile|locale\d*)\.", "dell'immobile"),
+WHOSE = [(r"(c|cr|o|r|f\d*|ad\d*|a\d*|s|d|p|v)(#\d+)?:(immobile|locale\d*)\.", "dell'immobile"),
          (r"c(#\d+)?:", "del committente"), (r"cr(#\d+)?:", "di chi firma per il committente"),
          (r"o(#\d+)?:", "della società proprietaria"), (r"r(#\d+)?:", "del legale rappresentante della proprietà"),
          (r"f\d*(#\d+)?:", "delle imprese"), (r"ad\d*(#\d+)?:", "delle imprese degli altri tecnici"),
          (r"a\d*(#\d+)?:", "degli altri tecnici"), (r"s(#\d+)?:", "del progettista delle strutture"),
-         (r"d(#\d+)?:", "del direttore dei lavori"), (r"p(#\d+)?:", "del progettista architettonico")]
+         (r"d(#\d+)?:", "del direttore dei lavori"), (r"p(#\d+)?:", "del progettista architettonico"),
+         (r"v(#\d+)?:", "del professionista antincendio")]
 OWN = "Tuoi e dello studio (una volta sola: valgono per le prossime pratiche)"
 WHOSE_ORDER = [OWN] + [w[:1].upper() + w[1:] for w in dict.fromkeys(w for _, w in WHOSE)]
 
@@ -2160,8 +2184,7 @@ def preflight(steps, values, made_up=False, after=False, summarize=True, preview
                            or any(not x["exists"] or x.get("problem") for x in report["files"] if x["path"]))
     # What comes after, in a line, so nothing at the end surprises them (`yours` has it all).
     # The verdict says what stays theirs and the closing lines how, so only what changes the start is said here.
-    end = ["All'inizio della compilazione ti chiederò di scegliere i file del lavoro, una volta sola."] \
-        if report.get("pick") else []
+    end = [f"I file del lavoro {PICK}."] if report.get("pick") else []
     if summarize and not after and not report["questions"]:
         # A complete folder: nothing left to ask but the proposals. The one message shows every
         # answer the compilation will use, the proposals among them, and the tecnico's «sì»
@@ -2174,15 +2197,15 @@ def preflight(steps, values, made_up=False, after=False, summarize=True, preview
             if inner["ready"] and not report["missing"]:
                 rows = summary_rows(given_steps, given, proposed=set(held))
                 # The card ("Cosa succede"), sent before it, already says what stays theirs: the summary keeps
-                # only the line on picking the files.
-                report |= {"riepilogo": summary_text(rows, end[:1] if report.get("pick") else [], evidence_text(given)), "riepilogo_dettagli": summary_all(rows), "riepilogo_id": summary_id(rows), "riepilogo_rows": rows}
+                # only the line on picking the files, which is the files' own line.
+                report |= {"riepilogo": summary_text(rows, bool(report.get("pick")), evidence_text(given)), "riepilogo_dettagli": summary_all(rows), "riepilogo_id": summary_id(rows), "riepilogo_rows": rows}
             else:
                 # The details only the proposals make needed (a proposed second firm's VAT number)
                 # are asked now, with the rest, not after the «ok» in a second message.
                 known = {m["field"] for m in report["missing"]}
                 report["missing"] += [m for m in inner["missing"] if m["field"] not in known]
     if (report["ready"] or "riepilogo_rows" in report) and not after:
-        report["card"] = card(steps, values, report, made_up, report.get("riepilogo_rows"), preview_check=preview_check)
+        report["card"] = card(steps, values, report, made_up, report.get("riepilogo_rows"), preview_check=preview_check, later=later)
     text = message(report, asks, held_need)
     if text:
         report["short"] = message(report, asks, held_need, short=True)
@@ -2304,7 +2327,7 @@ FILING = {
             "yours": [
                 "Napoli chiede sempre due dichiarazioni (DD 603/2025): l'Allegato A Nuovo Programma 100 (il "
                 "titolare su quanto deve al Comune) e il Modello DP (il compenso che ti è stato pagato, L.R. Campania 59/2018). "
-                "Claude le compila. L'Allegato A lo firma il committente, il DP entrambi, digitalmente. Vanno con "
+                "Sono moduli del Comune, da compilare tu. L'Allegato A lo firma il committente, il DP entrambi, digitalmente. Vanno con "
                 "la procura nella seconda compilazione",
                 "Su un edificio esistente gli elaborati comprendono lo Stato Comparativo: attuale e progetto "
                 "sovrapposti, demolizioni in giallo, nuove opere in rosso (verde e blu le opere abbandonate in "
@@ -2573,7 +2596,7 @@ def show_code(code, give_up=None):
 # Only these keys of a section and a field reach the page: a new one inpage.js reads goes here
 # too (`last` didn't, 2026-11-04, and the run ticked the first group's radio). fetch.js keeps
 # the same lists, so it builds a section from the published steps file byte for byte.
-PANE_SECTION_KEYS = ("save", "theirs", "go", "step")
+PANE_SECTION_KEYS = ("save", "theirs", "go", "step", "optional")
 PANE_FIELD_KEYS = ("id", "css", "kind", "label", "anchor", "block", "nth", "last", "describe", "if_present")
 
 
@@ -2854,7 +2877,7 @@ def check_script(stored, origin, files=None, then="run.js"):
             f"  const want = {json.dumps(want)};\n"
             "  const stale = [];\n"
             "  for (const [k, v] of Object.entries(want)) if (await sha(localStorage.getItem(k)) !== v) stale.push(k);\n"
-            f"  if (location.origin !== {json.dumps(origin)}) return {json.dumps('go to ' + origin + ' first: its storage holds the runner')};\n"
+            f"  if (location.origin !== {json.dumps(origin)}) return {json.dumps('go to ' + origin + ' first: its storage holds the runner')} + (/sielte|spid|infocamere|poste|aruba|namirial|lepida|tim|intesa|register|infocert|teamsystem/i.test(location.hostname) ? {json.dumps(' (this page is a sign-in: the person signs in with SPID there, and waits for the portal list of drafts; a sign-in that ends on the provider home page did not log in: open the portal home again, and if it shows the sign-in once more, sign in again)')} : \"\");\n"
             f"  const files = {json.dumps(files)};\n"
             f"  return \"run \" + [...new Set(stale.map((k) => files[k]))].concat([{json.dumps(then)}]).join(\", then \");\n"
             "})()\n")

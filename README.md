@@ -73,9 +73,12 @@ installalo da python.org.
 3. Claude risponde con un solo messaggio: se la pratica è coperta, cosa dicono i documenti,
    quale pratica propone, le poche domande. Rispondi una volta.
 4. Accedi con SPID nel browser dell'app e scrivi a Claude «fatto». Claude compila la bozza: non
-   toccare la pagina finché non ti scrive. Poi confronta l'anteprima del portale con i documenti.
+   toccare la pagina finché non ti scrive, tranne il riquadro in cui scegli i file del lavoro. Poi
+   confronta l'anteprima del portale con i documenti.
 5. Quando la bozza è pronta, Claude ti scrive in poche righe cosa controllare e cosa resta a te
-   sul portale: l'anteprima, le dichiarazioni, la firma, il pagamento e l'invio.
+   sul portale: l'anteprima, le dichiarazioni, la firma, il pagamento e l'invio. Gli allegati che il
+   portale crea solo dopo le dichiarazioni (la procura) li firmi tu e li salvi nella cartella del
+   lavoro; scrivi «ho firmato» e Claude li allega con una seconda compilazione.
 6. Dopo l'invio, Claude ti dice le prossime scadenze e la pratica che di solito segue.
 
 ## Dove vanno i dati dei tuoi clienti
