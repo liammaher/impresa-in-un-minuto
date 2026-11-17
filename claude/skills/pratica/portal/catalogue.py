@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """The portal catalogue's bookkeeping, around crawl.js's batch (`__crawl.batch`).
 
-    catalogue.py ops sue|suap [--sectors N,M] [--common]   the batch's `ops`, as JSON
+    catalogue.py ops sue|suap [--sectors N,M] [--common]   the batch's `ops`, as JSON (suap: what is not stored or
+                                                           recorded same; a path crawled in another sector is a
+                                                           `check` op `like` it; --all: every pair, as before)
     catalogue.py ops sue --combo NAME MAIN OTHER           two operations in one pratica, with the procura
                                                            scelta and its attachments screen (crawl.js `also`)
     catalogue.py known                                     fingerprints of the stored crawls
@@ -176,11 +178,71 @@ def ops_of(args):
             ops.append({"name": "suap-common-" + slug(o.split(" › ", 1)[-1], 60), "sector": s["sector"],
                         "sector_nth": s["nth"], "path": o})
         return ops
+    if not args.all:
+        return suap_plan(sectors, pick)
     for i in pick:
         s = sectors[i]
         for o in s["operations"]:
             ops.append({"name": f"suap-{i:03d}-" + slug(o.split(": ", 1)[1].split(" › ")[-1], 50),
                         "sector": s["sector"], "sector_nth": s["nth"], "path": o})
+    return ops
+
+
+def stored_paths():
+    """The operation path of each stored SUAP crawl, to the crawls of it: {path: [names]}, the
+    single-operation ones first. A crawl file has no `operation` key (crawl.js keeps it in the
+    pane's record only): its path is in `pratica`, "SUAP: <path> (sector <sector>)"; a combination
+    ("2 operations in one pratica", or one with `also`) is no stand-in for either of its operations,
+    and a crawl named in prose (the procura variants) has no path to match."""
+    out = {}
+    for p in sorted(SECTIONS.glob("suap-*.json")):
+        c = json.loads(p.read_text())
+        pratica = c.get("pratica", "")
+        if c.get("also") or "operations in one pratica" in pratica or not pratica.startswith("SUAP: "):
+            continue
+        out.setdefault(re.sub(r" \(sector .*\)$", "", pratica[len("SUAP: "):]), []).append(p.stem)
+    return out
+
+
+def suap_plan(sectors, pick):
+    """The SUAP batch that crawls only what is not known (2026-11-17: 2,333 sector-operation pairs, but
+    219 distinct operation paths, the same operation offered in another sector): a pair already stored,
+    or recorded `same` in same.json, is left out; one whose path has a crawl under another name is a
+    fingerprint check (`like` that crawl, recorded by `drift` in same.json); one `different` there, or
+    with no crawl of its path at all, a full crawl. --all is the old list, every pair."""
+    have = {p.stem for p in SECTIONS.glob("*.json")}
+    same = json.loads(SAME.read_text()) if SAME.exists() else {}
+    listed, differ = set(same.get("same", {})), set(same.get("different", {}))
+    by_path, nth = stored_paths(), collections.Counter()
+    ops, st = [], collections.Counter()
+    nopath = set()
+    for i in pick:
+        s = sectors[i]
+        for o in s["operations"]:
+            st["pairs"] += 1
+            name = f"suap-{i:03d}-" + slug(o.split(": ", 1)[1].split(" › ")[-1], 50)
+            nth[name] += 1  # cmd_ops numbers two labels that slug alike; the stored name counts that way too
+            if nth[name] > 1:
+                name += f"-{nth[name]}"
+            op = {"name": name, "sector": s["sector"], "sector_nth": s["nth"], "path": o}
+            if name in have:
+                st["stored"] += 1
+            elif name in listed:
+                st["same_json"] += 1
+            elif name not in differ and o in by_path:
+                op.update(check=True, like=by_path[o][0])
+                ops.append(op)
+                st["check"] += 1
+            else:
+                ops.append(op)
+                st["full"] += 1
+                if o not in by_path:
+                    nopath.add(o)
+                if name in differ:
+                    st["differ"] += 1
+    print(f"suap: {st['pairs']} pairs; skipped {st['stored']} stored + {st['same_json']} in same.json; "
+          f"{st['check']} checks, {st['full']} full crawls ({st['differ']} listed `different`); "
+          f"{len(nopath)} distinct paths with no stored crawl", file=sys.stderr)
     return ops
 
 
@@ -514,7 +576,7 @@ def cmd_drift(args):
         if not key.startswith("crawl:check:"):
             continue
         r = r if isinstance(r, dict) else json.loads(r)
-        name, like = r["name"], r.get("like")
+        name, like, aside = r["name"], r.get("like"), False
         if r.get("error"):
             out.append(f"{name}: not checked ({r['error']})")
             continue
@@ -525,11 +587,19 @@ def cmd_drift(args):
         now = {s["section"]: s.get("fingerprint") for s in r["sections"] if not s.get("skipped") and not s.get("error")}
         diff = sorted(f"gone: {n}" for n in old if n not in now) + sorted(f"new: {n}" for n in now if n not in old)
         diff += sorted(f"changed: {n}" for n in now if n in old and now[n] != old[n])
+        if like and diff:
+            # A stored crawl older than the variants lacks the sections a scelta adds (the procura's), which a check lists:
+            # the same pratica when those are all that differs, as drift --digests reads it (2026-11-17: 22 of the first
+            # bundle's 39 "differed" for that alone, the 011 crawls being older than the variants). A changed or gone
+            # section, or a new one no scelta adds, stays a difference.
+            scelte = {x["section"] for x in r["sections"] if x.get("scelta")}
+            if all(d.startswith("new: ") and d[5:] in scelte for d in diff):
+                diff, aside = [], True
         if like:
             # The same operation in another sector: the same pratica, or one to crawl itself.
             same["same" if not diff else "different"][name] = like if not diff else {"like": like, "differences": diff}
             (same["different" if not diff else "same"]).pop(name, None)
-            out.append(f"{name}: " + (f"same pratica as {like}" if not diff else f"differs from {like}, crawl it: " + "; ".join(diff)))
+            out.append(f"{name}: " + (f"same pratica as {like}" + (" (its scelte's sections aside)" if aside else "") if not diff else f"differs from {like}, crawl it: " + "; ".join(diff)))
             continue
         drift["pratiche"][name] = {"checked": r["crawled"][:10], "differences": diff}
         out.append(f"{name}: " + ("same as the stored crawl" if not diff else "; ".join(diff)))
@@ -893,7 +963,7 @@ def main():
     p.add_argument("sportello", choices=["sue", "suap"])
     p.add_argument("--sectors", help="SUAP sector indices in suap-wizard.json, comma-separated")
     p.add_argument("--common", action="store_true", help="the common operations, under the first sector")
-    p.add_argument("--all", action="store_true", help="also the pratiche already crawled")
+    p.add_argument("--all", action="store_true", help="also the pratiche already crawled (suap: every sector-operation pair, no checks)")
     p.add_argument("--combo", nargs="+", action="append", metavar="NAME MAIN OTHER",
                    help="sue: a combination's crawl name, then its operations' labels, the main one first; repeat it for several. suap: NAME SECTOR_INDEX MAIN OTHER, the operations by the start of their leaf label")
     p.add_argument("--scelta", action="append", help="--combo: a scelta to try, for every combination (default: the procura)")
