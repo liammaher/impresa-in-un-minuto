@@ -3,7 +3,7 @@
 Prepara una pratica del {{copertura}}, su impresainungiorno, dai documenti del tuo
 cliente (o della tua impresa). Si ferma dove comincia la tua parte: le dichiarazioni, la firma digitale, il pagamento e
 l'invio: Claude non spunta mai una dichiarazione, non firma, non paga e non invia. Gratuito e
-open source.
+a codice aperto.
 
 > **Per chi queste pratiche le presenta già.** Impresa in un minuto compila: non è una consulenza e non
 > decide al posto tuo. Claude può sbagliare, e il controllo finale è tuo. Se non sai riconoscere un errore
@@ -37,8 +37,9 @@ documenti, basta dire «è una prova, inventa i dati».
 - Per ogni lavoro Claude ti dice prima se la pratica è **coperta dall'automazione** (la prepara per
   intero), se ha **solo indicazioni** (non la compila) o se **non è coperta**, e perché. Poi tu
   confermi, e solo allora si comincia.
-- **Coperta** vuol dire: compilata sul portale vero con dati di prova, rileggendo ogni valore.
-  Nessuna pratica reale è ancora stata inviata con Impresa in un minuto.
+- **Coperta** vuol dire: compilata sul portale vero con dati di prova, rileggendo ogni valore. Una
+  pratica reale (una CILA per lavori già eseguiti, SUE di Napoli, 17 novembre 2026) è stata compilata
+  anche con questi strumenti; nessuna pratica reale è ancora stata inviata con Impresa in un minuto.
 - Le regole vengono dalla biblioteca delle procedure, ogni fatto con la sua fonte. Ciò che la
   biblioteca non copre, Claude lo dice.
 
@@ -119,11 +120,11 @@ installalo da python.org.
 
 <!-- vault -->
 Nel tuo archivio su questo computer e sul portale. Da nessun'altra parte: Impresa in un minuto non ha un
-server.
+sistema suo su internet dove i dati vengano mandati.
 <!-- /vault -->
 <!-- no-vault -->
 Nella cartella dei tuoi lavori su questo computer, nella conversazione con Claude e sul portale.
-Impresa in un minuto non ha un server suo. Con un solo lavoro aperto, i dati che Claude legge dai
+Impresa in un minuto non ha un sistema suo su internet dove i dati vengano mandati. Con un solo lavoro aperto, i dati che Claude legge dai
 documenti restano in chiaro nella sottocartella «impresa-in-un-minuto» di quella cartella: se la
 cartella è sincronizzata (Dropbox, OneDrive, Drive), lo sono anche loro. Cancellala a lavoro finito.
 **Claude legge i documenti del lavoro**, compila la bozza e la confronta con essi: i dati dei
@@ -139,7 +140,7 @@ migliorare Claude» (Impostazioni → Privacy) e usa il browser dell'app, non Cl
 
 Impresa in un minuto **non è uno strumento ufficiale**: non è affiliato al Comune di Napoli, a
 InfoCamere (che gestisce impresainungiorno) né ad altri enti, e non è una consulenza legale. Il nome
-gioca con quello del portale, ma è un progetto indipendente, gratuito e open source.
+gioca con quello del portale, ma è un progetto indipendente, gratuito e a codice aperto.
 
 Leggi l'[uso responsabile](https://github.com/liammaher/impresa-in-un-minuto/blob/main/docs/responsible-use.md).
 In breve: tu firmi e rispondi della pratica; una pratica alla volta, con il tuo SPID; nessun dato

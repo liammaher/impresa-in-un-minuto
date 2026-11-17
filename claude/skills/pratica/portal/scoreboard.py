@@ -243,7 +243,12 @@ DEFINITION = [
     "5. Each pratica has been filled on the portal from a blank draft, and a real case has been checked by "
     "someone who files that pratica.",
 ]
-NO_REAL_CASE = "No real case has been checked by an architect who files these pratiche (level 5)."
+REAL_CASE = (
+    "On 2026-11-17 the runner was used on one real pratica: a CILA for works already done (art. 6-bis, comma 5) "
+    "at Napoli's SUE, from a real dossier with real signed files. It filled the draft; a review against the "
+    "dossier then found three values to correct (the catasto category, the date of the works, a file in the wrong "
+    "attachment slot), corrected before filing. It has not been sent (Firma e invio is the person's), and no real "
+    "case has been checked by an architect who files these pratiche (level 5).")
 # Open items the recipes can't show (a recipe has no line for what was never tried), from the working
 # notes of 2026-10-28 to 10-30. Edit when one closes.
 OPEN_BEYOND = [
@@ -299,7 +304,7 @@ OPEN_BEYOND = [
     "nothing in the repo maps the portal: integration requests, the codice pratica and receipt, the status "
     "in Pratiche inviate. InfoCamere's manual describes them (MyPage, \"Nuova Comunicazione\": portal/README.md), "
     "but only a sent pratica shows them, and made-up data sends none.",
-    NO_REAL_CASE,
+    REAL_CASE,
     # The audit of 2026-11-04 (what it found that no count above shows).
     "Which pratica a case needs: two rules tables route it (2026-11-04). sue-napoli takes new works (the title, "
     "the landscape authorization filed with it or extended or renewed with it, the terre e rocce); "
@@ -319,7 +324,8 @@ OPEN_BEYOND = [
     "titles, three previous holders and three co-holders on the cambio (2026-11-05). Not tried: more than "
     "that; every list is one `each`, so a fifth is the fourth's steps again.",
     "Napoli's SUE wants every file PDF/A and signed (DD 501/2026), so on a real case every slot takes a signed "
-    "file, and no real signed file has been uploaded yet: the attachments of a real pratica rest on that. "
+    "file; the made-up runs never carry one, and one real pratica has had real signed files attached "
+    "(2026-11-17): the attachments of a real pratica rest on that. "
     "InfoCamere's \"Copia pratica\" (a new pratica from one sent before) is read in its manual, never used.",
 ]
 

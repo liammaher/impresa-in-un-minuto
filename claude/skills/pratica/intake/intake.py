@@ -967,7 +967,7 @@ def scan_suap(dossier, steps=None, client=None, made_up=False):
             propose("facts", "attivita", att, "visura camerale (codice ATECO)", f"ATECO {biz['codice_ateco']}: il codice propone, non prova")
         else:
             report["notes"].append({"from": "visura camerale", "note": f"il codice ATECO {biz['codice_ateco']} non è tra le attività "
-                                    "che il router del SUAP conosce: chiedi che attività è"})
+                                    "che il SUAP riconosce: chiedi che attività è"})
 
     # The premises: the lease, the catastal visura of the unit (its identifiers win).
     lease = {}

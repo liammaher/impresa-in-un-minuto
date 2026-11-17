@@ -68,7 +68,7 @@ run it in the background and tell them first:
 The studio's details (denominazione, partita IVA, sede, PEC) and the tecnico's (dati anagrafici,
 albo, residenza) go in once. Run `pvault ui`: it opens the archive's page in their browser, where
 they type them (it asks the password once more). You see nothing of it; `pvault list` then shows
-which fields exist, not their values. Or leave it: the first pratica's pre-flight lists what's
+which fields exist, not their values. Or leave it: the first pratica's check lists what's
 missing, and they can fill it then.
 
 ## 5. Say what's next

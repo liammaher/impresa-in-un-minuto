@@ -545,7 +545,11 @@ runner's messages and refusals, the steps files (so their sources: recipes, `def
 rules tables, which are `library/rules/`). Verb forms change with the pronoun
 («scrivimi», «controlla», «allegala»), and a formal imperative that is also the tu present («firmi», «paghi») is
 told by its capital at the start of a sentence or by a clitic. `bench/test_voice.py` reads all of it for the
-formal forms and fails on one; a quotation from the law or the portal keeps its own words. **One message per
+formal forms and fails on one; a quotation from the law or the portal keeps its own words. **No English or software word reaches them either**
+(pre-flight, draft, runner, slot, upload, open source ...): `bench/test_english.py` reads what they read (the plugin's README
+and descriptions, the sentences a skill has Claude say, the scripts' Italian, the steps files' questions and `yours`) and fails on
+one; the skill's prose never names the first check «pre-flight», since Claude repeats the words it reads. Everyday loanwords
+(file, email, PDF, SPID, PEC, online, browser) stay. **One message per
 moment**: the Prova says three lines before the login, one while it fills, and three at the end
 (`prova.md`); what only a real filing needs (the c/c, the signing order, the PEC receipt) comes with the step it
 belongs to in the closing lines, never in the card or the Prova.

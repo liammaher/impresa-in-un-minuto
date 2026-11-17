@@ -27,7 +27,7 @@ FORM = "https://github.com/liammaher/impresa-in-un-minuto/issues/new"
 TEMPLATE = "3-qualcosa-non-funziona.yml"
 SKILL = Path(__file__).resolve().parent
 PLUGIN_JSON = SKILL.parents[1] / ".claude-plugin" / "plugin.json"
-DOVE = ("Cowork", "Claude desktop, Code", "Claude Code nel terminale / in a terminal")
+DOVE = ("Cowork", "Claude desktop, Code", "Claude Code nel terminale")
 TEXTS = ("title", "cosa", "atteso", "output")
 # GitHub answers 414 past its limit; well under it, so a browser and a proxy take it too.
 MAX_URL = 6000
