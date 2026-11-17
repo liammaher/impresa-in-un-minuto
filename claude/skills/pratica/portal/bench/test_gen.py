@@ -798,7 +798,8 @@ def _():
                                               "crawl:check:suap-002-x": check("suap-002-x", "Oggetto della pratica")}))
             out = catalogue.cmd_drift(type("a", (), {"export": str(export)}))
             same = gen.json.loads(catalogue.SAME.read_text())
-            assert same["same"] == {"suap-001-x": "sue-comunicazione-di-fine-lavori"}, out
+            # same.json holds the real records too (the SUAP crawl's checks, 2026-11-17): only these two entries are this case's
+            assert same["same"].get("suap-001-x") == "sue-comunicazione-di-fine-lavori" and "suap-002-x" not in same["same"], out
             assert same["different"]["suap-002-x"]["differences"] == ["changed: Oggetto della pratica"], out
             assert not (catalogue.CAT / "drift.json").exists() or "suap-001-x" not in (catalogue.CAT / "drift.json").read_text()
         finally:
