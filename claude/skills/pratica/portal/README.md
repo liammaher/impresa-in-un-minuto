@@ -837,8 +837,7 @@ only PIN 4, whose four sections (the derogated rules, the technical annexes, the
   (a calendar's input is readonly too and is left out); `test_inpage.py` holds it (`?ro=1` on the fake portal). A fill is not refused up front: some readonly boxes take a typed value and keep it.
 - **A select is a text box plus a select in the crawl** (`:combo_focus` and `:combo_input`): the snapshot's `empty` text box next to a `filled` select is one box, filled. The PIN 5 and PIN 3 payment
   slips need an entry per category radio (A, B, C), each with its own select.
-- **The A/B/C tendina's option strings are not in the crawl (counts only: B 64, C 91), so the recipes `supports` category A only.** Read them from an open draft (the select's options) before mapping B or C;
-  the one string we know is «69 _ 1 _ A».
+- **The A/B/C tendina's option strings are not in the crawl (counts only: B 64, C 91), so the recipes `supports` category A only.** (Lifted in round 13: the options were read on a draft, `catalogue/F839/vvf-attivita.json`.)
 - **PIN 5's professional is a person of the case** (`people: {"v": ...}` in answers.json, set as a JSON object: `answer_case.py 'people={...}'` stored a string and run.py failed on `titolare`);
   the fixture must carry that person (copy `ristorante-pin-2-fittizio`'s).
 - **The `-2` form's association is one of three radios** (onlus with its registration, an impresa commerciale, an organisation without profit), each with a `when` on `ask.suolo_natura`; the radio
@@ -853,6 +852,34 @@ only PIN 4, whose four sections (the derogated rules, the technical annexes, the
 - **The portal's host is `suap.impresainungiorno.gov.it`**: `www.impresainungiorno.gov.it/fnsuap/cmd/home` is a 404 page «Non Trovato» and its origin holds no runner (check.js says the host).
 - **Not run on the portal:** PIN 3 and 5 with a B or C activity (the tendina strings), the other approaches (engineering, other deroga variants), PIN 5's «modifica attività esistente» with the
   five aspects beyond those two cases' picks, PIN 6 with a B/C activity, and the SCIA date of PIN 3 (the person's). The other 26 short pratiche have five or more sections missing.
+
+**Round 13 (2026-11-17): PIN 4 (the request for a derogation), and the VV.F. tendina's B and C options** (SUAP fillable 282 → 283, run 211 → 212; 26 pratiche are short at least one section, all with five or more
+sections missing; docs/coverage.md). One new rehearsal, `pin-4-deroga-fittizio` (in `suap-unrouted.yaml`), filled in 92 s; eight B and C cases of PIN 3, 4, 5 and 6 (`answers-b.json`, `answers-c.json` beside each
+rehearsal's `answers.json`: six filled in 86-100 s, PIN 6's two stopped, below). What the portal taught:
+
+- **The tendina's options are read, and the code alone selects.** On a payment slip (PIN 3-6) the select «attività - sotto classe - categoria - descrizione» lists a different set per category radio:
+  A 18, B 63, C 90 options (the crawl's 19, 64, 91 count «Selezionare un valore»). They are in `catalogue/F839/vvf-attivita.json` as codes («69 _ 1 _ A», «69 _ 2 _ B», «69 _ 3 _ C»: the restaurant-sized
+  premises), each followed on the portal by «: description». The code alone matched in all six B and C runs. To read them again (the portal may add one): open any made-up draft from Pratiche in
+  bozza (by its name: the list on a page opened before a run does not show the new draft, and the first APRI opened a PIN 3 draft, not the PIN 4 just run: reload `/fnsuap/cmd/home` and read the names), open «distinta di versamento», click the category's radio and run
+  `bench/vvf_tendina.js` in the page (it reads the option codes of the select the radio just filled). The radios are custom boxes: click them with the pane's `computer` click at the
+  full-frame coordinates (a `scale: 0.5` screenshot's coordinates are half of them: a click at those landed on nothing), and a script's `click()` on the input did not change the choice. Don't save: leave the draft by navigating to `/fnsuap/cmd/home` (no dialog came up; whether the changed radio was kept was not looked at, and these are made-up drafts).
+- **PIN 3, 4 and 5 no longer refuse category B and C**: the `supports` line is gone from their recipes (`test_gen`: no category refusal, B and C answers on file with a code from the list, a filled run each).
+- **PIN 6 with B or C cannot run on made-up data.** Those categories ask for the Comando's opinion on the project (protocol and date: «in data», «prot. n.»), and the portal looks it up at Salva among the
+  approved projects: «non risulta alcun progetto con il numero protocollo risposta e data indicati». Both boxes carry `made_up_stops: true` with its reason (as the company's Registro Imprese check), so
+  pre-flight lists them and `rerun.py` won't send the case. A real filer types a real protocol and date: the entry is unchanged. The two stopped runs are in PIN 6's `runs.json` as `stopped`.
+- **PIN 4's «distinta di versamento» differs from PIN 3 and 5's**: its approach select has four options (Standard, DM 09-05-2007, RTO/RTV soluzione alternativa, in deroga: no «conforme»), «Nuova» and
+  «Esistente» sit under the category radios, and the pair «risultano individuate» / «non risultano riportate nell'Allegato I» comes first: the first is ticked, the second (with its own «euro»,
+  left by its context, «attività non rientrante») is not prepared. The activity's tendina is not in PIN 4's crawl (the first radio reveals it): `on_page: true`, found by the label the other slips use,
+  and the run filled it (A, B and C).
+- **The professional's registration in the Ministry's lists is required.** The section «dichiarazione relativa al professionista» has a box «iscritto negli elenchi del Ministero dell'Interno ... n° codice
+  iscrizione M.I.»: left empty, the first run stopped on «il valore e obbligatorio» (`not kept []`, the gap named the box). The vault has no field for it, so it is the ask `vvf4_codice_mi` (the form's
+  fire professional's code, as «NA12345A001»). The same section's office province is a select and the comune's list follows it: province first, then comune (as the SCIA's asseverazione).
+- **A textarea's label changes as it fills** («400 Caratteri restanti» counts down): the entry names it by its context (the heading above it), which `label:` matches as well as the box's own text.
+- **Pane and shell, for the next bundle**: `rerun.py` takes one spec per argument, and in zsh `"$n:answers-b.json"` is the history modifier `:a`, not text («pin-3-rinnovo-fittizionswers-b.json»): write
+  `"${n}:answers-b.json:rehearsals/${n}/fixture.json"` (rerun.py now says which spec names no rehearsal). A batch of specs still needs `--values` (any fixture: each spec carries its own). A bundle of eight
+  took about 12 minutes; poll in calls of 40 s.
+- **Not run on the portal:** PIN 4 with the in-deroga approach on a B or C activity beyond the two cases' picks, PIN 3 and 5 with other B or C activities than «69 _ 2 _ B» and «69 _ 3 _ C», PIN 6 with B or C
+  and a real protocol, and PIN 4's engineering and alternative approaches.
 
 ## What the portal does that bit us
 

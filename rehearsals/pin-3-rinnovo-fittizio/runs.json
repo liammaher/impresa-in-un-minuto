@@ -12,5 +12,19 @@
   "result": "filled",
   "seconds": 97.6,
   "browser": "pane"
+ },
+ {
+  "date": "2026-11-17",
+  "answers": "answers-b.json",
+  "result": "filled",
+  "seconds": 93.6,
+  "browser": "pane"
+ },
+ {
+  "date": "2026-11-17",
+  "answers": "answers-c.json",
+  "result": "filled",
+  "seconds": 90.7,
+  "browser": "pane"
  }
 ]

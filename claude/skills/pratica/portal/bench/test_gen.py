@@ -2519,7 +2519,7 @@ def _():
 def _():
     a = (HERE / "answer_case.py").read_text(encoding="utf-8")
     r = (HERE / "rerun.py").read_text(encoding="utf-8")
-    assert 'json.loads(value) if value[:1] == "["' in a
+    assert 'json.loads(value) if value[:1] in ("[", "{")' in a  # parse_value (round 12 added the object case)
     assert "looks like several runs in one argument" in r
 
 
@@ -2739,12 +2739,43 @@ def _():
         assert not any("vvf_scia_data" in json.dumps(f) for sec in g["sections"] for f in sec["fields"]), name
 
 
-@case("round 12: PIN 3 and PIN 5 prepare category A only (the tendina's B and C options are not in the crawl) and refuse B and C in their recipes")
+@case("round 13: PIN 3, 4 and 5 no longer refuse category B and C (the tendina's codes were read on a draft: vvf-attivita.json), and each has B and C answers filled on the portal; PIN 6's B and C stop on the Comando's register")
 def _():
-    for name in ("pin-3-rinnovo-fittizio", "pin-3-rinnovo-deroga-fittizio", "pin-5-nulla-osta-fittizio", "pin-5-nulla-osta-esistente-fittizio"):
+    codes = json.loads((HERE.parent / "catalogue" / "F839" / "vvf-attivita.json").read_text())
+    assert (len(codes["A"]), len(codes["B"]), len(codes["C"])) == (18, 63, 90), {k: len(v) for k, v in codes.items() if k != "note"}
+    assert "69 _ 1 _ A" in codes["A"] and "69 _ 2 _ B" in codes["B"] and "69 _ 3 _ C" in codes["C"]
+    for name in ("pin-3-rinnovo-fittizio", "pin-3-rinnovo-deroga-fittizio", "pin-4-deroga-fittizio", "pin-5-nulla-osta-fittizio", "pin-5-nulla-osta-esistente-fittizio"):
         sup = gen.load_yaml(REH / name / "recipe.yaml").get("supports") or []
-        cat = [x for x in sup if x.get("value") == "{{ask.vvf_categoria}}"]
-        assert len(cat) == 1 and cat[0]["in"] == ["a"], (name, cat)
+        assert not [x for x in sup if x.get("value") == "{{ask.vvf_categoria}}"], name
+    for name in ("pin-3-rinnovo-fittizio", "pin-4-deroga-fittizio", "pin-5-nulla-osta-fittizio", "pin-6-verifiche-fittizio"):
+        for cat in "bc":
+            a = json.loads((REH / name / f"answers-{cat}.json").read_text())
+            assert a["vvf_categoria"] == cat and a["vvf_allegato"] in codes[cat.upper()], (name, cat)
+            runs = [r for r in json.loads((REH / name / "runs.json").read_text()) if r["answers"] == f"answers-{cat}.json"]
+            assert runs and runs[-1]["result"] == ("stopped" if name.startswith("pin-6") else "filled"), (name, cat, runs[-1:])
+    # PIN 6's «prot. n.» and «in data» (the Comando's opinion, asked for B and C) are looked up among the approved projects: made-up values stop there.
+    steps = generated("pin-6-verifiche-fittizio")
+    stops = [f for sec in steps["sections"] for f in sec["fields"] if f.get("made_up_stops") and "Comando" in f.get("made_up", "")]
+    assert len(stops) == 2 and {f["value"] for f in stops} == {"{{ask.vvf_parere_data|date_it}}", "{{ask.vvf_parere_protocollo}}"}, stops
+
+
+ROUND13 = "suap-common-prevenzione-incendi-pin-4-istanza-di-deroga-al-rispetto-dell"
+
+
+@case("round 13: PIN 4 (the request for a derogation) has a rehearsal generated from its own crawl and filled on the portal, with the professional's M.I. code, the derogated rule's five boxes and the payment slip's tendina found on the page")
+def _():
+    name = "pin-4-deroga-fittizio"
+    assert gen.load_yaml(REH / name / "recipe.yaml")["crawl"] == ROUND13
+    g = generated(name)
+    labels = [f.get("label", "") for sec in g["sections"] for f in sec["fields"]]
+    for want in ("Disposizione", "Descrizione della situazione da derogare", "Valutazione del rischio aggiuntivo", "Misure tecniche che si ritengono idonee",
+                 "iscritto negli elenchi del Ministero dell'Interno", "n° civico", "attività - sotto classe - categoria - descrizione"):
+        assert any(l.startswith(want) for l in labels), want
+    # The tendina is not in the crawl (the first radio reveals it): a field with no crawl id, found on the page by its label.
+    sel = [f for sec in g["sections"] for f in sec["fields"] if f.get("label", "").startswith("attività - sotto classe")]
+    assert len(sel) == 3 and not any(f.get("id") for f in sel), sel
+    runs = json.loads((REH / name / "runs.json").read_text())
+    assert runs[-1]["result"] == "filled" and any(r["answers"] == "answers.json" and r["result"] == "filled" for r in runs), runs
 
 
 @case("round 12: a `people` answer that is not an object (answer_case.py once stored people={...} as a string) is refused with a message, and answer_case.py reads an object as JSON")
@@ -2763,6 +2794,20 @@ def _():
         raise AssertionError("a string `people` was accepted")
     run.Values({"people": {"v": "valerio"}}, fields={})
     run.Values({}, fields={})
+
+
+ROUND13_SECTIONS = ["Disposizioni normative alle quali si richiede deroga", "dichiarazione relativa agli allegati tecnici", "dichiarazione relativa al professionista"]
+
+
+@case("round 13: none of the round's new entries comes before a longer-named one, and each of its section names has an entry")
+def _():
+    names = [e["section"] for e in gen.load_yaml(HERE.parent / "dictionary" / "fnsuap.yaml")["sections"]]
+    norm = lambda x: re.sub(r"\s+", " ", x.lower()).strip()
+    for want in ROUND13_SECTIONS:
+        idx = [i for i, n in enumerate(names) if norm(n) == norm(want)]
+        assert idx, f"no entry for {want!r}"
+        later = [n for n in names[idx[-1] + 1:] if norm(n).startswith(norm(want)) and norm(n) != norm(want)]
+        assert not later, f"{want!r} comes before the longer {later[:2]}"
 
 
 ROUND12_SECTIONS = [

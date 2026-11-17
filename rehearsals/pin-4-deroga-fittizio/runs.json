@@ -1,0 +1,23 @@
+[
+ {
+  "date": "2026-11-17",
+  "answers": "answers.json",
+  "result": "filled",
+  "seconds": 92.1,
+  "browser": "pane"
+ },
+ {
+  "date": "2026-11-17",
+  "answers": "answers-b.json",
+  "result": "filled",
+  "seconds": 92.9,
+  "browser": "pane"
+ },
+ {
+  "date": "2026-11-17",
+  "answers": "answers-c.json",
+  "result": "filled",
+  "seconds": 99.6,
+  "browser": "pane"
+ }
+]
