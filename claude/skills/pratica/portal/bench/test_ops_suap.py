@@ -159,6 +159,32 @@ def _():
     assert text == "" and len(out) == 1 and out[0]["name"] == "x-combo" and len(out[0]["also"]) == 1 and "check" not in out[0], out
 
 
+@case("drift records a check `like` a crawl older than the variants as same when only a scelta's new sections differ")
+def _():
+    import tempfile
+    tmp = Path(tempfile.mkdtemp())
+    (tmp / "sections").mkdir()
+    sec = lambda n, f, **k: {"section": n, "fingerprint": f, **k}
+    (tmp / "sections" / "suap-x-old.json").write_text(json.dumps({"sections": [sec("A", "f1"), sec("B", "f2")]}))
+    check = lambda name, sections: {"crawled": "2026-11-17T00:00:00Z", "name": name, "like": "suap-x-old", "sections": sections}
+    export = tmp / "export.json"
+    export.write_text(json.dumps({
+        "crawl:check:y-aside": check("y-aside", [sec("A", "f1"), sec("B", "f2"), sec("Procura", "f9", scelta="procura")]),
+        "crawl:check:y-changed": check("y-changed", [sec("A", "f1"), sec("B", "fX"), sec("Procura", "f9", scelta="procura")]),
+        "crawl:check:y-newplain": check("y-newplain", [sec("A", "f1"), sec("B", "f2"), sec("C", "f3")]),
+        "crawl:check:y-gone": check("y-gone", [sec("A", "f1")]),
+    }))
+    keep = catalogue.CAT, catalogue.SECTIONS, catalogue.SAME
+    catalogue.CAT, catalogue.SECTIONS, catalogue.SAME = tmp, tmp / "sections", tmp / "same.json"
+    try:
+        catalogue.cmd_drift(argparse.Namespace(export=str(export), digests=False))
+        got = json.loads((tmp / "same.json").read_text())
+    finally:
+        catalogue.CAT, catalogue.SECTIONS, catalogue.SAME = keep
+    assert got["same"] == {"y-aside": "suap-x-old"}, got
+    assert set(got["different"]) == {"y-changed", "y-newplain", "y-gone"}, got
+
+
 if not all(results):
     sys.exit(1)
 print(f"\n{len(results)} ok")

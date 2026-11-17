@@ -576,7 +576,7 @@ def cmd_drift(args):
         if not key.startswith("crawl:check:"):
             continue
         r = r if isinstance(r, dict) else json.loads(r)
-        name, like = r["name"], r.get("like")
+        name, like, aside = r["name"], r.get("like"), False
         if r.get("error"):
             out.append(f"{name}: not checked ({r['error']})")
             continue
@@ -587,11 +587,19 @@ def cmd_drift(args):
         now = {s["section"]: s.get("fingerprint") for s in r["sections"] if not s.get("skipped") and not s.get("error")}
         diff = sorted(f"gone: {n}" for n in old if n not in now) + sorted(f"new: {n}" for n in now if n not in old)
         diff += sorted(f"changed: {n}" for n in now if n in old and now[n] != old[n])
+        if like and diff:
+            # A stored crawl older than the variants lacks the sections a scelta adds (the procura's), which a check lists:
+            # the same pratica when those are all that differs, as drift --digests reads it (2026-11-17: 22 of the first
+            # bundle's 39 "differed" for that alone, the 011 crawls being older than the variants). A changed or gone
+            # section, or a new one no scelta adds, stays a difference.
+            scelte = {x["section"] for x in r["sections"] if x.get("scelta")}
+            if all(d.startswith("new: ") and d[5:] in scelte for d in diff):
+                diff, aside = [], True
         if like:
             # The same operation in another sector: the same pratica, or one to crawl itself.
             same["same" if not diff else "different"][name] = like if not diff else {"like": like, "differences": diff}
             (same["different" if not diff else "same"]).pop(name, None)
-            out.append(f"{name}: " + (f"same pratica as {like}" if not diff else f"differs from {like}, crawl it: " + "; ".join(diff)))
+            out.append(f"{name}: " + (f"same pratica as {like}" + (" (its scelte's sections aside)" if aside else "") if not diff else f"differs from {like}, crawl it: " + "; ".join(diff)))
             continue
         drift["pratiche"][name] = {"checked": r["crawled"][:10], "differences": diff}
         out.append(f"{name}: " + ("same as the stored crawl" if not diff else "; ".join(diff)))

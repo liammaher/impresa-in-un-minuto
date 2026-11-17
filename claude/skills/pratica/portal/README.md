@@ -1687,6 +1687,8 @@ pair whose crawl is stored, or that same.json lists `same`; a pair whose path an
 crawl. A stored crawl has no `operation` key, so its path is read from `pratica` (a combination, or a
 crawl named in prose, stands in for no path). A summary goes to stderr; `--all` is every pair as before
 (no skipping, no checks). `bench/test_ops_suap.py` holds the counts on the real catalogue.
+A check is "same" when only the sections a scelta adds (the procura's) are new: a stored crawl older than the variants lacks them
+(2026-11-17: 22 of the first bundle's 39, sector 074 against the 011 crawls); a changed or gone section stays "different".
 
 Which two operations the wizard takes together is recorded in `sue-wizard.json` `pairs` (wizard.js
 `pairs`, catalogue/README.md). Probed 2026-11-03, all 190: the wizard takes any two of different
