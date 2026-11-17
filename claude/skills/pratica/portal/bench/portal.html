@@ -10,6 +10,7 @@
      widget's hide() fades it out slowly, as PrimeFaces 11's does; ?slot=signed (or =plain) adds
      an attachments slot the portal says is required, taking only signed files (or plain ones);
      ?more=1 a slot as the portal draws it, with its "+" for more files;
+     ?ro=1 makes Denominazione readonly (a box the portal fills itself);
      ?off=1 switches Impresa esecutrice off, greyed until a choice the steps don't make; ?deroga=1
      adds two tick boxes, each with a box of no text of its own beside it, titled "(specificare)",
      as the permesso's deroga draws them: the cell before it is the tick box's label; ?req=1 adds
@@ -71,6 +72,7 @@ if (location.search.includes("calendar=1")) {
   document.addEventListener("mousedown", (e) => { if (!cal.contains(e.target)) cal.style.display = "none"; });
 }
 // By its label's row: the server's ?flaky=1 cut checks that box's id is gone from the whole page.
+if (location.search.includes("ro=1")) document.getElementById("form:r0c1:dynaForm:den_txt").readOnly = true; // a box the portal fills itself (PIN 3's «L'attività principale»)
 if (location.search.includes("off=1")) document.getElementById("impresa-label").closest("tr").querySelector("input").disabled = true;
 if (location.search.includes("rename=1")) document.getElementById("impresa-label").textContent = "Ditta esecutrice";
 if (location.search.includes("deroga=1")) {

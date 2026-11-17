@@ -2739,6 +2739,32 @@ def _():
         assert not any("vvf_scia_data" in json.dumps(f) for sec in g["sections"] for f in sec["fields"]), name
 
 
+@case("round 12: PIN 3 and PIN 5 prepare category A only (the tendina's B and C options are not in the crawl) and refuse B and C in their recipes")
+def _():
+    for name in ("pin-3-rinnovo-fittizio", "pin-3-rinnovo-deroga-fittizio", "pin-5-nulla-osta-fittizio", "pin-5-nulla-osta-esistente-fittizio"):
+        sup = gen.load_yaml(REH / name / "recipe.yaml").get("supports") or []
+        cat = [x for x in sup if x.get("value") == "{{ask.vvf_categoria}}"]
+        assert len(cat) == 1 and cat[0]["in"] == ["a"], (name, cat)
+
+
+@case("round 12: a `people` answer that is not an object (answer_case.py once stored people={...} as a string) is refused with a message, and answer_case.py reads an object as JSON")
+def _():
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("answer_case", HERE / "answer_case.py")
+    ac = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(ac)
+    assert ac.parse_value('{"v": "valerio"}') == {"v": "valerio"} and ac.parse_value('["a", "b"]') == ["a", "b"]
+    assert ac.parse_value("") == "" and ac.parse_value("true") == "true" and ac.parse_value("a{b}") == "a{b}"
+    try:
+        run.Values({"people": '{"v": "valerio"}'}, fields={})
+    except run.StepError as e:
+        assert "people" in str(e) and "object" in str(e), e
+    else:
+        raise AssertionError("a string `people` was accepted")
+    run.Values({"people": {"v": "valerio"}}, fields={})
+    run.Values({}, fields={})
+
+
 ROUND12_SECTIONS = [
     "dati del delegato", "OGGETTO DELLA RICHIESTA", "informazioni generali", "Dichiarazione del responsabile dell'attività",
     "dichiarazione relativa all'asseverazione", "ulteriori dichiarazioni", "Attività svolte nell'ambito dell'iniziativa di tipo commerciale/promozionale", "dichiarazione finalità",
