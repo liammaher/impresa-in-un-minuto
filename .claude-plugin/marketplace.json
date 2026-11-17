@@ -12,8 +12,8 @@
       "source": {
         "source": "github",
         "repo": "liammaher/impresa-in-un-minuto",
-        "ref": "plugin-v0.8.1",
-        "sha": "6ee2654930b73dad68f6923990a57c9d60679e75"
+        "ref": "plugin-v0.8.2",
+        "sha": "ab74951c296e043fb8deaef5054acd0857c08789"
       }
     }
   ]
