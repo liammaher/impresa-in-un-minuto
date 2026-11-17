@@ -7,7 +7,7 @@ The single list of what the plugin ships, written by `claude/skills/pratica/port
 | | |
 |---|---|
 | Plugin version | 0.8.0 (`plugin/impresa-in-un-minuto/.claude-plugin/plugin.json`) |
-| Repo commit | `1127d432bd976ca1a9e163781cd1d017a37eeb9c` plus uncommitted changes |
+| Repo commit | `084dc89d9874f92b78f1f33467d2ffa3c71635fe` plus uncommitted changes |
 | Generated | 2026-11-17 |
 | Sportelli shipped | SUE (building works), SUAP (businesses), as `plugin/build.yaml` `sportelli` says |
 | Not shipped | none |
@@ -30,9 +30,9 @@ Per pratica on the portal, as coverage.md counts them:
 | Sportello | Mapped | Fillable | Run on the portal |
 |---|---:|---:|---:|
 | SUE (building works) | 104 | 104 | 102 |
-| SUAP (businesses) | 309 | 282 | 211 |
+| SUAP (businesses) | 309 | 283 | 212 |
 
-The plugin carries 386 steps files for 317 pratiche on the portal (a few steps files share one pratica, filled with other choices); 380 of the 386 have a run that filled the draft. The rows below are per steps file.
+The plugin carries 387 steps files for 318 pratiche on the portal (a few steps files share one pratica, filled with other choices); 381 of the 387 have a run that filled the draft. The rows below are per steps file.
 
 ## Pratiche
 
@@ -109,10 +109,11 @@ The plugin carries 386 steps files for 317 pratiche on the portal (a few steps f
 | `napoli/comune/insegna-esercizio` | SCIA per il rinnovo di impianti pubblicitari a carattere permanente | `insegna-rinnovo-scia-fittizio` | yes | yes | yes | `r3487df` `rc0f612` |
 | `napoli/comune/insegna-esercizio` | SCIA per installazione insegna di esercizio | `insegna-ristorante-scia-fittizio` | yes | yes | yes | `r3487df` `rc0f612` `rcef9c4` `ra6788d` `r449d35` `r9b0e62` |
 | `napoli/comune/insegna-esercizio` | Richiedere l'autorizzazione per la modifica del messaggio pubblicitario (ECCETTO INSEGNE) | `messaggio-modifica-fittizio` | yes | yes | yes | `r3487df` `rc0f612` `rad9d56` |
-| `napoli/comune/insegna-esercizio` | PIN 3 - Attestazione di rinnovo periodico di conformità antincendio | `pin-3-rinnovo-deroga-fittizio` | yes | yes | yes | `r3487df` `rc0f612` `rd4a796` `r7c17b2` |
-| `napoli/comune/insegna-esercizio` | PIN 3 - Attestazione di rinnovo periodico di conformità antincendio | `pin-3-rinnovo-fittizio` | yes | yes | yes | `r3487df` `rc0f612` `rd4a796` `r7c17b2` |
-| `napoli/comune/insegna-esercizio` | PIN 5 - Istanza di Nulla osta di fattibilità | `pin-5-nulla-osta-esistente-fittizio` | yes | yes | yes | `r3487df` `rc0f612` `r091b5a` `rd4a796` `rad9d56` |
-| `napoli/comune/insegna-esercizio` | PIN 5 - Istanza di Nulla osta di fattibilità | `pin-5-nulla-osta-fittizio` | yes | yes | yes | `r3487df` `rc0f612` `r091b5a` `rd4a796` `rad9d56` |
+| `napoli/comune/insegna-esercizio` | PIN 3 - Attestazione di rinnovo periodico di conformità antincendio | `pin-3-rinnovo-deroga-fittizio` | yes | yes | yes | `r3487df` `rc0f612` `r7c17b2` |
+| `napoli/comune/insegna-esercizio` | PIN 3 - Attestazione di rinnovo periodico di conformità antincendio | `pin-3-rinnovo-fittizio` | yes | yes | yes | `r3487df` `rc0f612` `r7c17b2` |
+| `napoli/comune/insegna-esercizio` | PIN 4 - Istanza di deroga al rispetto della normativa antincendio | `pin-4-deroga-fittizio` | yes | yes | yes | `r3487df` `rc0f612` `rae0781` `rad9d56` |
+| `napoli/comune/insegna-esercizio` | PIN 5 - Istanza di Nulla osta di fattibilità | `pin-5-nulla-osta-esistente-fittizio` | yes | yes | yes | `r3487df` `rc0f612` `r091b5a` `rad9d56` |
+| `napoli/comune/insegna-esercizio` | PIN 5 - Istanza di Nulla osta di fattibilità | `pin-5-nulla-osta-fittizio` | yes | yes | yes | `r3487df` `rc0f612` `r091b5a` `rad9d56` |
 | `napoli/comune/insegna-esercizio` | PIN 6 - Istanza di verifiche in corso d'opera | `pin-6-verifiche-fittizio` | yes | yes | yes | `r3487df` `rc0f612` `rad9d56` |
 | `napoli/comune/insegna-esercizio` | PIN 7 - Variazione della titolarità (voltura) | `pin-7-titolarita-fittizio` | yes | yes | yes | `r3487df` `rc0f612` |
 | `napoli/comune/insegna-esercizio` | Richiedere l'autorizzazione per la pubblicità/propaganda fonica | `pubblicita-fonica-fittizia` | yes | yes | yes | `r3487df` `rc0f612` `rcad36b` `rad9d56` |
@@ -431,9 +432,9 @@ What a steps file turns away, in the words the person reads (Italian), by the id
 
 | Id | Rows | Refusal |
 |---|---:|---|
-| `r3487df` | 279 | Per ora per una ditta individuale o una srl, srls, snc, sas o spa. |
-| `rc0f612` | 274 | Gli altri soci o amministratori presentano le proprie dichiarazioni antimafia come allegati firmati (art. 85 D.Lgs. 159/2011): non lo preparo ancora. |
-| `rad9d56` | 159 | L'esenzione ONLUS è cessata con il regime ONLUS il 1° gennaio 2026, salvo per un periodo d'imposta iniziato prima di tale data: un'ex ONLUS iscritta al RUNTS è esente come ets. |
+| `r3487df` | 280 | Per ora per una ditta individuale o una srl, srls, snc, sas o spa. |
+| `rc0f612` | 275 | Gli altri soci o amministratori presentano le proprie dichiarazioni antimafia come allegati firmati (art. 85 D.Lgs. 159/2011): non lo preparo ancora. |
+| `rad9d56` | 160 | L'esenzione ONLUS è cessata con il regime ONLUS il 1° gennaio 2026, salvo per un periodo d'imposta iniziato prima di tale data: un'ex ONLUS iscritta al RUNTS è esente come ets. |
 | `r62ab7e` | 54 | I tecnici del modulo paesaggistico: se l'architetto che presenta la pratica è il suo tecnico, il portale mostra il blocco di un altro tecnico («+») senza nome né codice fiscale, quindi un secondo tecnico non si può indicare. È un difetto del portale: chiedi al SUE. |
 | `r0fd9b2` | 48 | Impianti di idrogeno, GNL/GNC, rifiuti o le facciate e coperture di edifici civili aprono altre voci della SCIA antincendio, che non preparo ancora. |
 | `r2f044d` | 48 | Per le attività di categoria B e C la SCIA antincendio segue l'approvazione del progetto da parte dei Vigili del Fuoco (con il suo numero di pratica): non la preparo ancora. |
@@ -535,7 +536,6 @@ What a steps file turns away, in the words the person reads (Italian), by the id
 | `rce7d4c` | 4 | Con ambulanza o vigili del fuoco il modulo chiede altro: per ora non lo preparo. |
 | `rcef9c4` | 4 | Un'insegna su un edificio vincolato richiede una propria autorizzazione, che non preparo ancora. |
 | `rd0c697` | 4 | È la pratica di un negozio non alimentare: un negozio che vende alimenti presenta quella del settore alimentare (con la notifica Reg. 852). |
-| `rd4a796` | 4 | Per le attività di categoria B e C le voci del modulo (la tendina delle attività) non le ho ancora lette sul portale: non la preparo ancora. |
 | `rd73b69` | 4 | I requisiti del Piano (accessibilità, un sistema di sicurezza, il punteggio minimo dell'area) devono essere tutti rispettati (artt. 7, 9, 12): l'autorizzazione sarebbe respinta. |
 | `rdb61f5` | 4 | Se chi risponde è un'altra persona, il modulo ne chiede il nome e il telefono: per ora non lo preparo. |
 | `r0537f6` | 3 | Chi ha già avviato altre locazioni turistiche o brevi deve indicare i loro codici (CUSR e CIN) e il modulo ricorda quando serve una SCIA: per ora non lo preparo. |
@@ -593,6 +593,7 @@ What a steps file turns away, in the words the person reads (Italian), by the id
 | `ra04be2` | 1 | Per disinfestazione, derattizzazione e sanificazione il modulo chiede anche il preposto alla gestione tecnica, con i suoi requisiti: per ora non lo preparo. |
 | `ra14d94` | 1 | Un telo su un bene pubblico o del Comune ha altre caselle (contratto, titolo): per ora non lo preparo. |
 | `raa1d7e` | 1 | Se il referente dell'AUA è un'altra persona, il modulo ne chiede i dati e un documento: per ora non lo preparo. |
+| `rae0781` | 1 | Per la richiesta di deroga preparo l'approccio standard e la soluzione in deroga: l'ingegneria della sicurezza e la soluzione alternativa aprono altre voci che non ho ancora letto. |
 | `rafa59d` | 1 | Il modulo dell'accertamento prevede solo proprietà, comproprietà, amministratore del condominio o altro diritto reale: un conduttore (inquilino) non rientra in nessuno di questi. |
 | `rb01162` | 1 | Il modulo prevede solo proprietà, comproprietà, amministratore del condominio o altro diritto reale: un conduttore (inquilino) non rientra in nessuno di questi. |
 | `rb481ae` | 1 | Una modifica che il modulo elenca solo come "Altro" per ora non la preparo. |

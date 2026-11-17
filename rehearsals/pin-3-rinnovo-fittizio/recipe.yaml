@@ -38,5 +38,4 @@ supports:
     in: [ditta_individuale, srl, srls, snc, sas, spa]
     else: "Per ora per una ditta individuale o una srl, srls, snc, sas o spa."
   - {when: "{{ask.altri_soggetti|not}}", else: "Gli altri soci o amministratori presentano le proprie dichiarazioni antimafia come allegati firmati (art. 85 D.Lgs. 159/2011): non lo preparo ancora."}
-  - {value: "{{ask.vvf_categoria}}", in: [a], else: "Per le attività di categoria B e C le voci del modulo (la tendina delle attività) non le ho ancora lette sul portale: non la preparo ancora."}
   - {value: "{{ask.vvf_approccio}}", in: [standard, conforme, deroga], else: "Per il rinnovo preparo l'approccio standard, la soluzione conforme e quella in deroga: l'ingegneria della sicurezza (apre un allegato) e la soluzione alternativa non le preparo ancora."}

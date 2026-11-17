@@ -222,5 +222,15 @@ def _():
     assert json.loads(out.stdout.strip().splitlines()[-1])["reloaded"] is None, out.stdout
 
 
+@case("round 13: a spec that names no rehearsal (zsh read \"$n:answers.json\" as the :a modifier) is refused with a message naming it, not a traceback; vvf_tendina.js parses")
+def _():
+    import subprocess
+    out = subprocess.run([sys.executable, str(HERE / "rerun.py"), "--values", str(HERE.parents[4] / "rehearsals" / "pin-4-deroga-fittizio" / "fixture.json"), "--out", tempfile.mkdtemp(),
+                          "pin-3-rinnovo-fittizionswers-b.json:rehearsals/x/fixture.json"], capture_output=True, text=True, timeout=60)
+    assert out.returncode != 0 and "Traceback" not in out.stderr and "no rehearsal named" in out.stderr and "${n}" in out.stderr, out.stderr[-400:]
+    js = subprocess.run(["node", "--check", str(HERE / "vvf_tendina.js")], capture_output=True, text=True, timeout=30)
+    assert js.returncode == 0, js.stderr
+
+
 print(f"{sum(results)}/{len(results)} passed")
 sys.exit(0 if all(results) else 1)

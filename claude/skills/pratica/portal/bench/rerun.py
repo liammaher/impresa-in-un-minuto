@@ -189,7 +189,7 @@ def main():
     if a.record:
         return record(json.loads(sys.stdin.read() if str(a.record) == "-" else a.record.read_text()), a.answers, a.date)
     if not (a.values and a.out):
-        ap.error("--values and --out are required to build a batch")
+        ap.error("--values and --out are required to build a batch (--values any fixture: a NAME:ANSWERS.json:VALUES.json spec carries its own)")
     names = a.rehearsals or sorted(d.name for d in REHEARSALS.iterdir()
                                    if (d / "portal-steps.generated.yaml").exists() and (d / a.answers).exists())
     if a.bundle and len(names) > MAX_BUNDLE:
@@ -206,6 +206,10 @@ def main():
         name, _, answers = item.partition(":")
         answers, _, own = answers.partition(":")
         d = REHEARSALS / name
+        if not d.is_dir():
+            # zsh reads "$n:answers.json" as the history modifier :a and drops the colon: "pin-3-rinnovo-fittizionswers.json" (2026-11-17).
+            ap.error(f"{item[:80]!r}: no rehearsal named {name!r} (rehearsals/). Spell a spec NAME:ANSWERS.json:VALUES.json, and in zsh write "
+                     "\"${n}:answers.json\", not \"$n:answers.json\" (the shell reads :a as a modifier)")
         answers = answers or a.answers
         usual = a.answers  # the answers file this rehearsal's plain name stands for
         if answers == a.answers and not (d / answers).exists() and (d / "answers.json").exists():

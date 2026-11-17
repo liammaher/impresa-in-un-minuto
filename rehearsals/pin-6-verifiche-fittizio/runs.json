@@ -5,5 +5,19 @@
   "result": "filled",
   "seconds": 110.3,
   "browser": "pane"
+ },
+ {
+  "date": "2026-11-17",
+  "answers": "answers-b.json",
+  "result": "stopped",
+  "seconds": 52.6,
+  "browser": "pane"
+ },
+ {
+  "date": "2026-11-17",
+  "answers": "answers-c.json",
+  "result": "stopped",
+  "seconds": 53.8,
+  "browser": "pane"
  }
 ]
