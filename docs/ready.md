@@ -6,8 +6,8 @@ The single list of what the plugin ships, written by `claude/skills/pratica/port
 
 | | |
 |---|---|
-| Plugin version | 0.8.0 (`plugin/impresa-in-un-minuto/.claude-plugin/plugin.json`) |
-| Repo commit | `084dc89d9874f92b78f1f33467d2ffa3c71635fe` plus uncommitted changes |
+| Plugin version | 0.8.1 (`plugin/impresa-in-un-minuto/.claude-plugin/plugin.json`) |
+| Repo commit | `d674e24577d2a8f1c735b077abf853ecf1fe5516` |
 | Generated | 2026-11-17 |
 | Sportelli shipped | SUE (building works), SUAP (businesses), as `plugin/build.yaml` `sportelli` says |
 | Not shipped | none |

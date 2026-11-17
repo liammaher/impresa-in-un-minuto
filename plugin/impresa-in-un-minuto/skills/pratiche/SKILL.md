@@ -1,9 +1,18 @@
 ---
 name: pratiche
-description: Per chi queste pratiche le presenta già (tecnici e professionisti: architetti, geometri, ingegneri, commercialisti, consulenti; Claude compila, il controllo è loro). Prepara una pratica del {{copertura}} su impresainungiorno a partire dai documenti del cliente - {{pratiche}} - come bozza controllata che si ferma prima di dichiarazioni, firma, pagamento e invio. Risponde anche su quale pratica serve a un caso e con quali documenti, e fa vedere una prova su una CILA con dati inventati. Da usare quando {{chi}} chiede, in italiano o in inglese, di preparare, compilare o presentare una pratica a {{città}} («prepara una CILA», «compila la SCIA»), chiede cosa serve per un caso, o vuole vedere come funziona con una prova su dati inventati («fammi vedere una prova», «fai una prova», «fai tu come esempio»).
+description: Per chi queste pratiche le presenta già (tecnici e professionisti: architetti, geometri, ingegneri, commercialisti, consulenti; Claude compila, il controllo è loro). Prepara una pratica del {{copertura}} su impresainungiorno a partire dai documenti del cliente - {{pratiche}} - come bozza controllata che si ferma prima di dichiarazioni, firma, pagamento e invio. Risponde anche su quale pratica serve a un caso e con quali documenti, fa un solo controllo di una cartella vera, senza aprire il portale, e fa vedere una prova su una CILA con dati inventati. Da usare quando {{chi}} chiede, in italiano o in inglese, di preparare, compilare o presentare una pratica a {{città}} («prepara una CILA», «compila la SCIA»), di controllare una cartella di documenti prima di compilare («solo un controllo», «cosa manca»), chiede cosa serve per un caso, o vuole vedere come funziona con una prova su dati inventati («fammi vedere una prova», «fai una prova», «fai tu come esempio»).
 ---
 
 # Pratiche a {{città}}
+<!-- no-vault -->
+
+**First, on the first reply of the conversation in which they hand over a job**: your very first
+words, before any tool or document, are this and nothing else:
+«Leggo io i documenti: i loro dati passano da questa conversazione e poi sul portale. Password e
+SPID mai. Posso sbagliare: il controllo finale è tuo.» Then work in silence until the one message.
+Not a word of plan or progress in between («Single job…», «Sto leggendo…»): neither Italian nor
+English, only that line and, at the end, the message.
+<!-- /no-vault -->
 
 The user is a **tecnico** (architetto, geometra, ingegnere) filing for clients in {{città}} with a
 procura. You prepare the draft on impresainungiorno; they log in with their own SPID, then make
@@ -32,6 +41,10 @@ your questions): `${CLAUDE_SKILL_DIR}/prova.md` at once. A test asks nothing.
   **tu** («scrivimi», «controlla», «il tuo SPID»), never Lei. Short sentences, one idea each. No
   paragraphs: a line per point. **One message per moment**, as short as it can be: never say twice
   what a line above or a tool's message already says.
+- **No narration between tools.** Never «Sto leggendo i documenti», «Continuo con il controllo»,
+  «Ora inserisco i dati»: the tecnico reads your words, not your steps. The only words before the one
+  message are the first time's line on how their data travels (step 0) and, with the Prova or a
+  compilation, the lines those steps give.
 - **Lead with what is done**, then their step. A question is answered with a word or a pick.
 <!-- vault -->
 - **The program on their computer reads the documents, never you**: "Dai documenti", never
@@ -39,7 +52,10 @@ your questions): `${CLAUDE_SKILL_DIR}/prova.md` at once. A test asks nothing.
 <!-- /vault -->
 <!-- no-vault -->
 - **You read the documents yourself**, and every fact says which one it comes from ("Dalla
-  visura: …"). Say how their data travels once, the first time (step 0), never again.
+  visura: …"). **The first time**, the very first words of your reply, before any tool call or
+  document, are step 0's line on how their data travels («Leggo io i documenti: i loro dati
+  passano da questa conversazione e poi sul portale. Password e SPID mai. Posso sbagliare: il
+  controllo finale è tuo.»). Not «Sto leggendo…»: that is narration. Never again after that.
 <!-- /no-vault -->
 - **A refusal names the exact case** ("la SCIA in sanatoria per l'art. 36-bis c. 1"), never the
   whole pratica, says what you can prepare instead, and whether it is the portal's flaw (then
@@ -173,6 +189,26 @@ and "Ho già un caso vero"; without it, add "Scrivi «sì», o dimmi il tuo caso
 `prova.md`. Never force it: when they come with a real job and don't call it a test, start the
 job, and offer the Prova only if they hesitate or lack the documents.
 
+## A check only
+
+Someone who wants to see what Impresa in un minuto makes of their own folder before they commit to
+a filing says so («solo un controllo», «dimmi cosa manca», «cosa leggi dai miei documenti»), or
+hesitates at the first message. It is their real job, with no portal, no login and nothing made up:
+step 0 and steps 1-3 as they are, up to pre-flight, and then, in place of the one message's
+questions, one short report (a line each, no lists of boxes):
+
+1. The verdict and what you understood (points 1-3 of the one message).
+2. **I file**: which of their files the sportello would refuse and why, grouped («5 file non sono
+   PDF/A né firmati digitalmente: elaborati, relazione, assenso, notifica, documento d'identità»),
+   and which are fine.
+3. **I dati**: how many details no document holds and whose they are, counted («61: 20 tuoi e dello
+   studio, 7 del committente, …»), never listed; and how many questions are left.
+4. Last, in these words: «Non ho aperto il portale e non ho compilato nulla. Se vuoi andare
+   avanti, scrivimi «procedi»: ti faccio le domande.»
+
+On «procedi», the one message of step 3. A check that finds the case refused (`unsupported`, a
+status that isn't `available`) is that refusal, as always.
+
 ## What this skill has
 
 `${CLAUDE_SKILL_DIR}` in a command is this skill's folder (should a command show a `$` variable
@@ -197,7 +233,8 @@ is, in one line, wait for "fatto", and run the command again. Never install Pyth
   (`grep -i proroga "${CLAUDE_SKILL_DIR}/catalog.json"`), never read them whole: they are long.
 - `library/`: what the law asks for each procedure (`procedures/`), which pratica a case is
   (`rules/`), where to go (`offices/`). `reference/schema.json`: every field.
-- `portal/run.py`, `portal/route.py`, `intake/intake.py`, `review.py`, `check.py`, `report.py`
+- `portal/run.py`, `portal/route.py`, `intake/intake.py`, `review.py`, `check.py`, `nota.py` (the form of
+  missing details, step 3), `report.py`
   (a problem report, below); for the page,
   `portal/preview_text.js` and `portal/attachments.js` (step 5).
 
@@ -228,25 +265,47 @@ confirmation each) or have them type them in the archive's page (`pvault ui`).
 ## 0. The folder of jobs
 
 Impresa in un minuto installs nothing and keeps nothing of its own: the details live in files in the
-tecnico's folder of jobs (the folder open in this session, one subfolder per job; each command
-below runs in the job's subfolder).
+tecnico's folder, never outside the folder open in this session. Look at that folder first. It is
+one of two things, and you never ask which:
 
-- `../studio.json`, at the folder's root: the studio (`business.*`) and the tecnico (the slug
-  `tecnico`: `"tecnico:identity.first_name"`), written once, kept for every job.
-- `values.json`, in the job's subfolder: what the tecnico tells you about the job's people that
+- **A single job**: the client's documents sit in it (PDF, `.p7m`, a scan or a photo, a Word file),
+  or in a `docs` subfolder of it. The open folder is the job.
+- **A folder of jobs**: only subfolders, one per job, each with its documents. The job is the
+  one the tecnico names (the only one, if there is one).
+
+| | A single job | A folder of jobs |
+|---|---|---|
+| the work folder: every command below runs in it | `impresa-in-un-minuto/` inside the open folder (`mkdir -p` it) | the job's subfolder |
+| the documents (`docs` in the commands below) | `..` (`../docs` if they sit in a `docs` subfolder) | `docs/` in the job's subfolder |
+| the studio file (`../studio.json` in the commands below) | `studio.json` in the work folder | `../studio.json`, at the folder's root |
+
+So a single job puts nothing of its own anywhere else: one subfolder that holds all the files the
+runner writes, the studio file included, and that the tecnico can delete when they are done. Never
+write to the open folder's parent, nor into the documents' folder itself. In a single job read every
+`docs` below as the documents' folder and every `../studio.json` as `studio.json`; the commands
+that take the job's folder (`review.py`) find it by themselves.
+
+- The studio file: the studio (`business.*`) and the tecnico (the slug
+  `tecnico`: `"tecnico:identity.first_name"`), written once. In a folder of jobs it serves every
+  job; a single job keeps its own, so another folder asks for it again (say it once, in one line,
+  with the first message's other questions: «con una cartella dei lavori, una sottocartella per
+  lavoro, me li dai una volta sola»).
+- `values.json`, in the work folder: what the tecnico tells you about the job's people that
   the documents don't hold (`"bianchi:identity.first_name"`).
 - What the documents hold: the intake writes what it reads to `run/intake/private/values.json`;
   what you read in them that it missed or got wrong goes into the job's `values.json`, which wins
   over it.
 
-When it doesn't exist, create `../studio.json` as `{"tecnico:ruolo.tipo": "titolare"}` (this
+When it doesn't exist, create the studio file as `{"tecnico:ruolo.tipo": "titolare"}` (this
 makes `tecnico` the `t:` role; without it pre-flight lists none of their details) and
-`values.json` as `{}`. The first time, say once, in one line, how their data travels: "Leggo io i
-documenti: i loro dati passano da questa conversazione e poi sul portale. Password e SPID mai.
-Posso sbagliare: il controllo finale è tuo." It
-goes in the one message (step 3), right after the verdict, never before it. The first
+`values.json` as `{}`. How their data travels is said once per conversation, **before you open a
+single document**, as the first words of your reply (the top of this skill); it is then not in the
+one message (step 3), and never said again. (The Prova, which reads nothing of theirs, skips it.)
+A single job's own line, after you have looked at the folder, goes in the one message (step 3):
+"I miei file di lavoro, con i dati letti dai documenti, stanno tutti nella sottocartella
+«impresa-in-un-minuto» di questa cartella: quando hai finito puoi cancellarla." The first
 pratica's pre-flight lists the studio's and the tecnico's details under `missing`: ask for them
-once, in one message, and write them into `../studio.json`.
+once, in one message, and write them into the studio file.
 
 Before each pre-flight and each compilation, check and merge the two files:
 
@@ -313,21 +372,26 @@ conosce."
 
 ## 2. The documents
 
-The job's folder holds the client's documents (`docs/`: visura, atto or contratto, relazione
-tecnica, elaborati, ricevute, documento d'identità).
+The documents' folder (step 0's table) holds the client's documents (visura, atto or contratto,
+relazione tecnica, elaborati, ricevute, documento d'identità). The files in it are never moved,
+renamed or converted, and nothing of yours is written into it but a copy of a document they attached
+to the conversation (below).
 
 **Documents attached to the conversation** (uploaded, dragged in) belong in that folder, not
 here. Both of these can hold at once:
 
 - An attachment that is a file on this computer (its path is in the message, or in the uploads
-  folder): copy it with `cp` into the job's `docs/` (`mkdir -p Bianchi/docs`, the subfolder
-  named after the client), unchanged (never converted or renamed). Say where in one line of
-  the one message: "Ho copiato i documenti nella cartella Bianchi, sottocartella docs." Never name
-  the folder they were uploaded to, nor any path ("caricati/", "uploads/").
+  folder): copy it with `cp` into the documents' folder, unchanged (never converted or renamed).
+  In a folder of jobs that is the job's `docs/` (`mkdir -p Bianchi/docs`, the subfolder named after
+  the client) and you say, in one line of the one message: "Ho copiato i documenti nella cartella
+  Bianchi, sottocartella docs." In a single job it is the open folder itself: "Ho copiato i
+  documenti in questa cartella." Never name the folder they were uploaded to, nor any path
+  ("caricati/", "uploads/").
 - An attachment whose content you were shown (a PDF or a photo in the conversation): read it
   like any document. The portal still needs the file itself to attach it, so unless you could
   copy it, ask for it in the folder: "Per allegarli al portale mi servono i file: salvali nella
-  cartella Bianchi, sottocartella docs, e scrivimi «fatto»."
+  cartella Bianchi, sottocartella docs, e scrivimi «fatto»." (a single job: "salvali in questa
+  cartella").
 
 Then run the intake on the folder; it reads the usual documents (visura, atto, contratto,
 relazione, ricevute) and says the words each value comes from:
@@ -366,11 +430,12 @@ and page it comes from: the one message cites them, and so does the check after 
 neither: the one message says what each says (its point 4).
 
 <!-- no-vault -->
-**The tecnico's note.** A text file in the job's folder or its `docs/` (`.txt`, `.md`: what a
+**The tecnico's note.** A text file in the job's own folder (a single job: the open folder; a folder
+of jobs: the job's subfolder or its `docs/`) (`.txt`, `.md`: what a
 client's document never is) is the tecnico's own note for this job: what no document holds (the
 client's email and phone, the owner's legale rappresentante, the firms) and their answers in their
 words ("nessun altro adempimento", "il progettista sono io"). Read it like their request: its
-details go into the job's `values.json` (or `../studio.json`, the studio's), then `check.py`. In
+details go into the job's `values.json` (or the studio file, the studio's), then `check.py`. In
 the one message it is "la tua nota" ("Dalla tua nota: i recapiti e le due imprese"), never a file
 name; only with several text files in the folder, say once which one you took.
 <!-- /no-vault -->
@@ -444,7 +509,9 @@ one message asks only what no document holds.
      (dichiarazioni, firma, pagamento, invio); provata sul portale con dati di prova." (A refusal
      or a status other than `available` is its own verdict: send that instead, and stop.)
 <!-- no-vault -->
-     The first time, right after it: the line on how their data travels (step 0).
+     The first time, if you did not say it before reading (the top of this skill), the line on how
+     their data travels comes right here, after the verdict: it is never left out. A single job,
+     the first time: one line more, step 0's «I miei file di lavoro… puoi cancellarla».
 <!-- /no-vault -->
   2. What you understood, in at most two sentences of prose (never a list): only the facts that
      decide the pratica, each with the document it comes from. Then one short line of which kinds
@@ -454,12 +521,24 @@ one message asks only what no document holds.
   3. route.py's `message`, as your proposal: "Propongo una CILA (art. 6-bis DPR 380/2001)." The
      choice is the tecnico's: they sign the asseverazione. It names the pratica only, and the
      article is the one route.py's `message` gives (the library's), never one you add or change.
-  4. Only where the documents and a proposal disagree (a sanzione's receipt, but works proposed
+  4. Only where the documents and an answer disagree (a sanzione's receipt, but works proposed
      as not started): one sentence each, at most two, with what the document shows and which
-     question it bears on, never the answer it suggests.
+     question it bears on, never the answer it suggests. A document that contradicts a
+     **proposal** (the notifica names two firms, the proposal says 1) leaves no proposal standing:
+     it is asked, as one more question of the message, with the document's fact in it («La
+     notifica preliminare indica due imprese: quante lavorano in cantiere?»), its options as the
+     proposal's own `question` gives them; the other proposals are counted without it («Per il
+     resto propongo il caso più comune (4 risposte)»). Their reply goes into `answers.json` under
+     the proposal's `key` (`fonti`: "Tua risposta"), then pre-flight again; never a sentence that
+     says what the document shows and proposes the opposite.
   5. The open questions and the proposals: **Asking**, below.
+<!-- no-vault -->
+  6. When pre-flight's `files` holds problems: one line, only how many and what the sportello wants,
+     so the wall isn't a surprise two replies later: «5 dei tuoi file vanno sistemati prima (il
+     SUE di Napoli li vuole PDF/A e firmati digitalmente): ti dico quali dopo le risposte.»
+<!-- /no-vault -->
   Everything else waits for **After they answer**: the details no document holds, the files and
-  what is wrong with them (PDF/A, signatures, names), Napoli's annexes, the intake's `notes`, the
+  which are wrong (PDF/A, signatures, names), Napoli's annexes, the intake's `notes`, the
   documents you didn't recognise. Never a field id or a role code. The whole of it, before the
   questions, looks like this and is no longer:
 
@@ -595,18 +674,44 @@ grouped, a line each, what you have ticked:
   ○ Elaborati grafici: stato di fatto, progetto, comparativo
   Dati
   ✓ Immobile (dalla visura)
-  ○ Tuoi e dello studio: una volta sola, valgono per le prossime pratiche
+  ○ Tuoi e dello studio: non cambiano da una pratica all'altra
 
 A file with a `problem` is "○ … da sistemare" and the fix is said once under the list (for the
 sportello's refusals: PDF/A, the digital signature, plain names). A detail you could propose from
 a document is "✓ … (dalla visura)": they correct it in one reply if it's wrong. Then one line on
-how to give the rest (the files in the job's `docs/`, the details in a message), and, last: "Se è
+how to give the rest (the files in the documents' folder, the details in a message), and, last: "Se è
 solo una prova, scrivi «prova»: invento io il resto." (then `prova.md`). A follow-up the answers
 opened, or an `error`, is asked as before, with the tool.
 <!-- no-vault -->
 The first time a folder comes incomplete, add one line before the last: "La prossima volta può
 scrivere questi dati in una nota nella cartella del lavoro (un file di testo): con i documenti
 completi, ti basterà un «sì»."
+
+**Many details missing** (more than eight in `missing`): never list them in the chat, and never ask
+for them one by one. Save pre-flight's output (`... preflight ... > run/preflight.json`; it still
+prints JSON, so read the file), then write them a form, in the work folder:
+
+```sh
+sh "${CLAUDE_SKILL_DIR}/py" "${CLAUDE_SKILL_DIR}/nota.py" template run/preflight.json --out dati-da-compilare.txt --map run/nota.json --pratica "<the pratica's short name>"
+```
+
+It is a text file, a numbered line for each detail by whose it is, the portal's own label before an
+«=» they write after. Say, in place of the checklist's «Dati» lines and in these words: «Mi mancano
+<N> dati che non stanno nei documenti. Li ho messi in un file da compilare, «dati-da-compilare.txt»
+(nella sottocartella impresa-in-un-minuto; nella cartella del lavoro, con una cartella dei lavori):
+scrivi il valore dopo il «=» di ogni riga, salvalo e scrivimi «fatto». I tuoi e quelli dello studio
+non cambiano da una pratica all'altra.» Never open that file yourself and never read it as their note. When they
+say «fatto»:
+
+```sh
+sh "${CLAUDE_SKILL_DIR}/py" "${CLAUDE_SKILL_DIR}/nota.py" read dati-da-compilare.txt --map run/nota.json --studio <the studio file> --values values.json
+```
+
+It puts each value in the studio file or the job's `values.json`, held to the same checks as
+`check.py`, and prints what is still empty and each value that doesn't fit, by its label («Da
+correggere, …»): ask that one again, in one plain question, with what it printed. Then `check.py`
+(step 0) and pre-flight again; what is still missing goes in the chat if it is a few details, in a
+new form if it is many. With eight or fewer, the chat, as before.
 <!-- /no-vault -->
 - The replies go under each `key` of `questions` (dates YYYY-MM-DD, files as paths; a clicked
   option as its value in `options`, never its label; a checklist as the list of its ticked items'
@@ -617,7 +722,7 @@ completi, ti basterà un «sì»."
   into the archive (`pvault set <id> <value>`), never into a file.
 <!-- /vault -->
 <!-- no-vault -->
-  into `../studio.json` when it is the studio's or the tecnico's (no slug, or `tecnico:`), else
+  into the studio file when it is the studio's or the tecnico's (no slug, or `tecnico:`), else
   into the job's `values.json`; then `check.py` again.
 <!-- /no-vault -->
   Then pre-flight again: what is still open (an `error`, a follow-up they didn't give, what a
@@ -842,7 +947,7 @@ sh "${CLAUDE_SKILL_DIR}/py" "${CLAUDE_SKILL_DIR}/portal/run.py" page --steps "${
 ```
 <!-- /no-vault -->
 
-The closing lines asked them to save the signed files in the job's folder: when they say «ho firmato»,
+The closing lines asked them to save the signed files in the documents' folder: when they say «ho firmato»,
 find them there (the new `.p7m` files), match each to its slot by its name, and ask in one line only
 for one you can't place or that is missing. Write the signed files' paths into `answers.json` first
 (pre-flight with `--after-declarations` says which keys). It opens the draft by its name and attaches those files alone. It carries no
@@ -882,7 +987,7 @@ explains (step 5), a script that fails, or the tecnico saying something of Impre
 Then offer once, in one line, after saying what happened: "Se vuoi, preparo una segnalazione per
 chi sviluppa Impresa in un minuto: la leggi prima di inviarla." Nothing more unless they say yes.
 
-On a yes, write `run/segnalazione.json` (in the job's folder; with no job, in the folder you are
+On a yes, write `run/segnalazione.json` (in the work folder; with no job, in the folder you are
 in), in Italian:
 
 - `title`: the pratica and what went wrong, in a few words ("CILA: la compilazione si ferma in

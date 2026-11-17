@@ -153,15 +153,34 @@ def quadri_to_open(out, attached):
                               and not re.match(r"gestione degli allegati", a["section"], re.I)))
 
 
+WORK_FOLDER = "impresa-in-un-minuto"  # where a single job's own files go (SKILL.md, step 0)
+
+
+def job_folder(out):
+    """The folder whose files the portal's are matched to: the run's parent, or, when that is the
+    work folder a single job keeps its files in, the folder that holds the documents (its parent)."""
+    parent = Path(out).resolve().parent
+    return parent.parent if parent.name == WORK_FOLDER else parent
+
+
+def online_only(st):
+    """A file whose bytes aren't on this computer (OneDrive, iCloud, Dropbox «files on demand»):
+    reading it would download it. A run attached only files it could read, so none of these was."""
+    return st.st_size > 0 and bool(getattr(st, "st_flags", 0) & 0x40000000                      # macOS SF_DATALESS
+                                   or getattr(st, "st_file_attributes", 0) & (0x1000 | 0x400000))  # Windows OFFLINE, RECALL_ON_DATA_ACCESS
+
+
 def job_hashes(out, job):
-    """The sha256 of each file of the job (not the run's own folder, not hidden files)."""
+    """The sha256 of each file of the job (not the run's own folder, not hidden files, not a file
+    that is only online)."""
     local = set()
     for p in sorted(job.rglob("*")):
         # Not the run's own folder, not hidden files; a file that can't be read is skipped.
         if out in p.parents or any(part.startswith(".") for part in p.relative_to(job).parts):
             continue
         try:
-            if p.is_file() and p.stat().st_size <= 50 * 2**20:
+            st = p.stat()
+            if p.is_file() and st.st_size <= 50 * 2**20 and not online_only(st):
                 local.add(hashlib.sha256(p.read_bytes()).hexdigest())
         except OSError:
             continue
@@ -374,7 +393,7 @@ def main():
                     "read so far don't hold (the skill opens each and runs attachments.js there), and stop")
     ap.add_argument("--prova", action="store_true", help="the skill's Prova: made-up data, the check's ✅, who did what")
     ap.add_argument("--job", type=Path, help="the job's folder, whose files the portal's are matched to "
-                    "(default: OUT's parent)")
+                    "(default: OUT's parent; when that is a single job's impresa-in-un-minuto/ folder, its parent)")
     a = ap.parse_args()
     report = json.loads((a.out / "report.json").read_text())
     if "rows" in report:  # fill.py's form
@@ -388,7 +407,7 @@ def main():
     if a.quadri:
         print(json.dumps({"quadri": quadri_to_open(a.out.resolve(), report.get("attached"))}, ensure_ascii=False))
         return 0
-    job = (a.job or a.out.resolve().parent).resolve()
+    job = (a.job or job_folder(a.out)).resolve()
     print(json.dumps(summary(report, a.out.resolve(), job, a.prova), indent=1, ensure_ascii=False))
     return 0
 

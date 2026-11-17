@@ -475,11 +475,49 @@ def suap_end_to_end():
     assert not rb["routed"] and "Dogane" in rb["unsupported"][0], rb
 
 
+def word_relazione():
+    """A relazione tecnica written as a Word file (the tecnico's own, before it is signed as a PDF)
+    is read like its PDF: the same kind, its text for the facts; any other zip is no document."""
+    import io
+    import zipfile
+    body = ("<w:document><w:body><w:p><w:r><w:t>RELAZIONE TECNICA</w:t></w:r></w:p>"
+            "<w:p><w:r><w:t>Il sottoscritto asseveratore descrive le opere: manutenzione straordinaria &amp; impianti, "
+            "senza modifiche strutturali.</w:t></w:r></w:p>"
+            "<w:tbl><w:tr><w:tc><w:p><w:r><w:t>Foglio</w:t></w:r></w:p></w:tc><w:tc><w:p><w:r><w:t>12</w:t></w:r></w:p></w:tc></w:tr></w:tbl>"
+            "</w:body></w:document>")
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w") as z:
+        z.writestr("word/document.xml", body)
+    d = TMP / "word"
+    d.mkdir(parents=True, exist_ok=True)
+    (d / "Relazione.docx").write_bytes(buf.getvalue())
+    t = intake.text_of(d / "Relazione.docx")
+    assert "RELAZIONE TECNICA" in t and "manutenzione straordinaria & impianti" in t, t
+    assert "Foglio   " in t and "12" in t, t  # a table's cells apart, as a PDF's columns
+    assert intake.kind_of(Path("Relazione.docx"), t) == "relazione", intake.kind_of(Path("Relazione.docx"), t)
+    (d / "Altro.docx").write_bytes(b"PK\x03\x04 not a docx")
+    assert intake.text_of(d / "Altro.docx") == ""
+    # What a reader sees: a tracked deletion, a field's code and tab-stop settings are not text.
+    revised = ('<w:p><w:pPr><w:tabs><w:tab w:val="left" w:pos="720"/></w:tabs></w:pPr><w:r><w:t xml:space="preserve">Foglio </w:t></w:r>'
+               '<w:del w:id="1"><w:r><w:delText>12</w:delText></w:r></w:del><w:ins w:id="2"><w:r><w:t>14</w:t></w:r></w:ins>'
+               '<w:r><w:instrText> PAGE </w:instrText></w:r><w:r><w:t xml:space="preserve"> particella 100</w:t></w:r></w:p>')
+    z = io.BytesIO()
+    with zipfile.ZipFile(z, "w") as zf:
+        zf.writestr("word/document.xml", "<w:document><w:body>" + revised + "</w:body></w:document>")
+    assert intake.docx_text(z.getvalue()).strip() == "Foglio 14 particella 100", intake.docx_text(z.getvalue())
+    # A corrupt zip or one that inflates past the cap is unread, never a crash of the whole scan.
+    big = io.BytesIO()
+    with zipfile.ZipFile(big, "w", zipfile.ZIP_DEFLATED) as zf:
+        zf.writestr("word/document.xml", "<w:t>" + "a" * (intake.DOCX_MAX + 10) + "</w:t>")
+    assert intake.docx_text(big.getvalue()) == ""
+    assert intake.docx_text(b"PK\x03\x04" + b"\x00" * 30) == ""
+
+
 def main():
     tests = [kinds_and_unread, values_match_fixture, nothing_personal_for_claude, both_readers_agree, router_facts, notes, stato_legittimo_titles,
              wrong_account_and_signed_files, parsers, end_to_end, napoli_annexes, accept_never_replaces,
              suap_kinds_and_values, suap_made_up_leaves_the_register_out, suap_nothing_personal_for_claude, suap_proposes_only_what_a_document_says,
-             suap_negations_read_as_negations, suap_end_to_end]
+             suap_negations_read_as_negations, suap_end_to_end, word_relazione]
     try:
         for t in tests:
             t()

@@ -3049,7 +3049,7 @@ def run(steps, values, out, cdp=None, profile=None, close=False, resume=None, wh
             # kept apart and goes to them, never into the conversation.
             (out / "report.json").write_text(json.dumps(report, indent=2, ensure_ascii=False))
             private(out, shown, held)
-            said = review.summary(report | shown, out.resolve(), out.resolve().parent)["message"]
+            said = review.summary(report | shown, out.resolve(), review.job_folder(out))["message"]
             if said:
                 print(said, flush=True)
             print(json.dumps({k: report.get(k) for k in ("result", "error", "wizard_seconds", "total_seconds")}),
