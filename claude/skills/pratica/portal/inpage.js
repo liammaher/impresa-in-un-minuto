@@ -29,7 +29,8 @@
 //   __pv.startSealed(procedure, sealed)  as start, with the values sealed under a code the
 //                                  person types into a box on the page (run.py page, not --plain)
 //   __pv.look()                    the page with no value in it: each visible box's id, label
-//                                  and whether it holds anything, the portal's messages. A
+//                                  and whether it holds anything (`readonly: true` on a text box the
+//                                  portal fills itself), the portal's messages. A
 //                                  stopped run's report carries it as `snapshot`
 //   __pv.held()                    what the reports leave out (the values each section typed,
 //                                  what a failed read-back wanted and found, the declarations'
@@ -92,7 +93,7 @@
   }
   const scrub = (s) => secrets.reduce((t, rx) => t.replace(rx, "‹value›"), String(s));
   // Why a read-back failed, without what it wanted or found.
-  const redact = (c) => ({ label: c.label, why: c.hidden ? "hidden by a later choice" : c.got === null ? "missing" : c.got === "" || c.got === "unchecked" ? "empty" : "different" });
+  const redact = (c) => ({ label: c.label, why: c.hidden ? "hidden by a later choice" : c.ro ? "read-only: the portal fills it itself (`leave` it in the dictionary)" : c.got === null ? "missing" : c.got === "" || c.got === "unchecked" ? "empty" : "different" });
   function publicReport() {
     const out = { ...report };
     delete out.kept;
@@ -728,7 +729,9 @@
     const got = e ? e.value : null;
     let ok = norm(got) === norm(f.typed);
     if (!ok && f.kind === "number") ok = parseFloat(got) === parseFloat(f.typed);
-    return { label: f.label || f.id, want: f.typed, got, ok };
+    // A readonly box the portal fills itself (PIN 3's payment slip «L'attività principale» echoes the declaration's activity,
+    // 2026-11-17) reads back empty or different whatever is typed: the entry must `leave` it, so the report says so, not "empty".
+    return { label: f.label || f.id, want: f.typed, got, ok, ...(!ok && e && e.readOnly ? { ro: true } : {}) };
   }
 
   // A field named by its label instead of an id: the portal numbers ids by row, so they
@@ -1197,6 +1200,7 @@
         const slot = kind === "file" || /file_dropzone/.test(e.id) ? slotOf(e) : null;
         return { id: e.id.replace(/^.*dynaForm:/, ""), label: slot ? scrub(norm(slot.title)).slice(0, 80) : label(e), kind, state,
           ...(kind === "select" ? { options: e.options.length } : {}),
+          ...(e.readOnly && kind === "text" && !/calendar_input/.test(e.id) ? { readonly: true } : {}),
           ...(!slot && flagged(e) ? { required: true } : {}),
           ...(slot && slot.accepts.length ? { accepts: slot.accepts.join(";"), required: slot.required } : {}) };
       });

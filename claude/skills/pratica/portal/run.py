@@ -661,6 +661,10 @@ class Values:
         asks is the steps file's `asks:`, for the defaults of what answers leave out."""
         self.vault, self.fields = vault, fields
         self.answers, self.asks = answers, asks or {}
+        # `people` maps a job's roles to people (answers.json {"v": "valerio"}): a string there (2026-11-17, a shell-quoted
+        # `answer_case.py people=...` stored one) crashed pre-flight on `.get` far from the cause.
+        if not isinstance(self.answers.get("people") or {}, dict):
+            raise StepError(f'answers.json "people" must be an object mapping roles to people, e.g. {{"v": "valerio"}}; it is {type(self.answers["people"]).__name__}')
         self.cache = {}
         self._titolare_slug = None
 

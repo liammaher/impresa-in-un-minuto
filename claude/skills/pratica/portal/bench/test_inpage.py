@@ -230,6 +230,15 @@ def main():
             stops(fill(browser, base, steps(base), answers), "fresh load of the draft: not kept")
         case("a value the portal shows but never stores stops the run", dropped)
 
+        def dropped_readonly():
+            # A readonly box the portal fills itself (PIN 3's payment slip «L'attività principale», 2026-11-17) said "empty" and cost
+            # three reruns of reordering before `resume` + readOnly showed what it was: the report names it now.
+            PORTAL.reset(drop=True)
+            r = fill(browser, base, steps(base, start="/portal.html?ro=1"), answers)
+            stops(r, "read-only: the portal fills it itself")
+            assert '"why":"empty"' not in r["error"].replace(" ", ""), r["error"]
+        case("a value typed into a readonly box the portal never keeps is reported as read-only, not empty", dropped_readonly)
+
         def wrong_label():
             PORTAL.reset()
             st = steps(base)

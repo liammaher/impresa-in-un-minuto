@@ -16,6 +16,12 @@ PORTAL = Path(__file__).resolve().parent.parent
 ROOT = PORTAL.parents[3]
 
 
+def parse_value(value):
+    """A KEY=VALUE's value: a list or an object is JSON (`people={"v": "valerio"}`: 2026-11-17 it was stored as the string, and run.py
+    failed on it), anything else the text itself."""
+    return json.loads(value) if value[:1] in ("[", "{") else value
+
+
 def main():
     if len(sys.argv) < 2:
         sys.exit(__doc__)
@@ -24,7 +30,7 @@ def main():
     for kv in sys.argv[2:]:
         key, _, value = kv.partition("=")
         # A group's answer is a list of ask keys: KEY='["a","b"]' (JSON) sets it, so no hand edit is needed (round 9: ten answers files).
-        answers[key] = json.loads(value) if value[:1] == "[" else value
+        answers[key] = parse_value(value)
     (folder / "answers.json").write_text(json.dumps(answers, ensure_ascii=False, indent=1) + "\n")
     steps = folder / "portal-steps.generated.yaml"
     g = subprocess.run([sys.executable, str(PORTAL / "gen.py"), str(folder / "recipe.yaml"), "--out", str(steps)], capture_output=True, text=True)

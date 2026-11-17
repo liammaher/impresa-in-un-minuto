@@ -364,7 +364,11 @@ pvAlready ? "a batch is already running in this tab: nothing started" : `started
     # timers past that (2026-11-01), so then it answers at once and the caller waits outside.
     (a.out / "results.js").write_text("""if (!document.hidden) await new Promise((r) => setTimeout(r, 35000));
 const done = JSON.parse(sessionStorage.getItem("pv-batch") || "[]");
+// The page was reloaded under the batch (the person, or another chat on the same login, used the portal in this tab,
+// 2026-11-17): window state (the queue, the runner) is gone, `done` may be short and `running` false. sessionStorage's last report says where it was.
+const lastReport = (() => { try { return JSON.parse(sessionStorage.getItem("pv-report") || "null"); } catch (e) { return null; } })();
 JSON.stringify({ done: done.length, of: (window.pvBatch || []).length, running: !!window.pvBatchBusy,
+  reloaded: !window.__pv && lastReport ? { note: "the page was reloaded: re-arm the same bundle (pick it again) and rerun what is not in done", last: { result: lastReport.result, error: lastReport.error || null, at: lastReport.at && lastReport.at.section, url: lastReport.url } } : null,
   halted: window.pvBatchHalted || null,
   // Runs that never reached the portal and aren't in done: rerun them (a bundle of what's left).
   unreached: JSON.parse(sessionStorage.getItem("pv-batch-unreached") || "[]").filter((u) => !done.some((d) => d.name === u.name)),

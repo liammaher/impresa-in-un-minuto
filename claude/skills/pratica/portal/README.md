@@ -823,6 +823,37 @@ variazione-superficie,variazione-titolo}-fittizia`, `scarichi-voltura-2-{,legale
   know), and the five of sixteen aspects PIN 6 maps are the only ones offered.
 - **Still short (30):** the one-off occupation's `-2` form (three sections), the other four-section and longer ones. `bench/gaps.py --max 4` lists them.
 
+**Round 12 (2026-11-17): PIN 3, PIN 5 and the one-off occupation's `-2` form** (SUAP fillable 279 → 282, run 208 → 211; 27 are short at least one section; `bench/gaps.py --max 4` now lists
+only PIN 4, whose four sections (the derogated rules, the technical annexes, the professional, the payment slip) are the next cheap ones). Seven rehearsals (`pin-5-nulla-osta-{,esistente-}fittizio`,
+`pin-3-rinnovo-{,deroga-}fittizio`, `suolo-pubblico-temporanea-2-{onlus,impresa,nonprofit}-fittizio`), all in `suap-unrouted.yaml`. Four bundles: the first held all seven (five filled in
+70-110 s each, both PIN 3 stopped), then three of the two PIN 3 cases. `dati del delegato` (PIN 3 and 5) is one entry that leaves its boxes. What the portal taught:
+
+- **A box only the person's own ticks enable is the person's.** PIN 3's «con la/e SCIA» (a date) and «relative e/o ricomprese all'attività principale di:» stay switched off until the responsabile
+  ticks «l'assenza di variazione»: the run stopped on «switched off (a choice before it, which the steps file doesn't make...)». The ticks are declarations, so the entry `leave`s the boxes with them and
+  the recipe's `yours` says the person ticks and types them. No answer for the date is asked.
+- **A box the portal fills itself is `readonly`.** PIN 3's payment slip «L'attività principale» echoes the activity typed in the declaration above: typed, it read back `empty` (`not kept ... "why":
+  "empty"`), and moving it to the end of the section did not help. Found by `await __pv.resume({})` on the stopped run and reading the box's `readOnly` in the frame. The runner now says it:
+  a read-back that fails on a `readOnly` box reports `why: "read-only: the portal fills it itself (`leave` it in the dictionary)"`, and `look()` marks such a box `readonly: true`
+  (a calendar's input is readonly too and is left out); `test_inpage.py` holds it (`?ro=1` on the fake portal). A fill is not refused up front: some readonly boxes take a typed value and keep it.
+- **A select is a text box plus a select in the crawl** (`:combo_focus` and `:combo_input`): the snapshot's `empty` text box next to a `filled` select is one box, filled. The PIN 5 and PIN 3 payment
+  slips need an entry per category radio (A, B, C), each with its own select.
+- **The A/B/C tendina's option strings are not in the crawl (counts only: B 64, C 91), so the recipes `supports` category A only.** Read them from an open draft (the select's options) before mapping B or C;
+  the one string we know is «69 _ 1 _ A».
+- **PIN 5's professional is a person of the case** (`people: {"v": ...}` in answers.json, set as a JSON object: `answer_case.py 'people={...}'` stored a string and run.py failed on `titolare`);
+  the fixture must carry that person (copy `ristorante-pin-2-fittizio`'s).
+- **The `-2` form's association is one of three radios** (onlus with its registration, an impresa commerciale, an organisation without profit), each with a `when` on `ask.suolo_natura`; the radio
+  labels hold a comma, so they are quoted (gen.py: «quote a label with a comma»). All three filled in 71-91 s.
+- **Another session in the same pane breaks a run.** A fifth try ended on the portal's `cmd/error` page and the top page went back to the home list; the person was using the portal from another
+  chat. Not a bug: wait, re-arm the same bundle (the pick box: the reload cleared it, the loaded bundle and the queue), rerun unchanged. `results.js` now answers `reloaded: {note, last}` when the
+  page has no runner but sessionStorage holds a last report (the symptom was `done` 0, `running` false and nothing else); `test_rerun.py` holds it in node.
+- **A queue file can arrive altered.** `queue-0.js` (non-ASCII values: «⁴», accented letters) failed its own length-and-hash check when sent through the pane's tool call, and said so
+  («arrived changed: send it again, or use --bundle»): use the one `--bundle` file and the pick box, which the page checks by sha256, instead of sending queue files through the conversation.
+- **`answer_case.py people={"v": "valerio"}` stored a string**, and pre-flight crashed on `.get` in run.py far from the cause. It reads a value starting with `[` or `{` as JSON now
+  (`parse_value`), and `run.Values` refuses a `people` that is not an object with a message naming it (`test_gen.py`, round 12).
+- **The portal's host is `suap.impresainungiorno.gov.it`**: `www.impresainungiorno.gov.it/fnsuap/cmd/home` is a 404 page «Non Trovato» and its origin holds no runner (check.js says the host).
+- **Not run on the portal:** PIN 3 and 5 with a B or C activity (the tendina strings), the other approaches (engineering, other deroga variants), PIN 5's «modifica attività esistente» with the
+  five aspects beyond those two cases' picks, PIN 6 with a B/C activity, and the SCIA date of PIN 3 (the person's). The other 26 short pratiche have five or more sections missing.
+
 ## What the portal does that bit us
 
 - **Street names without their particles.** The location's street lookup and the Comune's

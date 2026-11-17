@@ -197,5 +197,30 @@ def _():
     assert got == {"r": "refused", "started": False, "halted": got["halted"]} and "runner" in got["halted"], got
 
 
+@case("results.js says when the page was reloaded under the batch (2026-11-17: another chat used the portal, the queue was gone, `done` 0 and `running` false)")
+def _():
+    msg, q = batch("ristorante-fittizio")
+    assert msg is None, msg
+    res = (batch.out / "results.js").read_text()
+    assert "reloaded" in res and "pv-report" in res, "results.js doesn't read the last report of a reloaded page"
+    if not shutil.which("node"):
+        return
+    import subprocess
+    body = res.split("\n", 1)[1]  # the first line waits 35 s while the pane shows the page
+    harness = (
+        "global.window = {}; global.document = {hidden: true};\n"
+        "const ss = {'pv-report': JSON.stringify({result: 'stopped', error: 'Attestato: 0 fields with this label', at: {section: 'distinta di versamento'}, url: 'https://x/cmd/error'})};\n"
+        "global.sessionStorage = {getItem: (k) => ss[k] ?? null};\n"
+        "console.log((0, eval)(" + json.dumps(body) + "));\n"
+    )
+    out = subprocess.run(["node", "-e", harness], capture_output=True, text=True, timeout=30)
+    got = json.loads(out.stdout.strip().splitlines()[-1]) if out.stdout.strip() else out.stderr
+    assert got["reloaded"] and got["reloaded"]["last"]["at"] == "distinta di versamento" and got["done"] == 0 and not got["running"], got
+    # a live runner (the page was not reloaded): no such note
+    harness = harness.replace("global.window = {};", "global.window = {__pv: {}};")
+    out = subprocess.run(["node", "-e", harness], capture_output=True, text=True, timeout=30)
+    assert json.loads(out.stdout.strip().splitlines()[-1])["reloaded"] is None, out.stdout
+
+
 print(f"{sum(results)}/{len(results)} passed")
 sys.exit(0 if all(results) else 1)
