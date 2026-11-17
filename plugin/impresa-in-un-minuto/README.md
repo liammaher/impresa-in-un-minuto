@@ -37,8 +37,9 @@ documenti, basta dire «è una prova, inventa i dati».
 - Per ogni lavoro Claude ti dice prima se la pratica è **coperta dall'automazione** (la prepara per
   intero), se ha **solo indicazioni** (non la compila) o se **non è coperta**, e perché. Poi tu
   confermi, e solo allora si comincia.
-- **Coperta** vuol dire: compilata sul portale vero con dati di prova, rileggendo ogni valore.
-  Nessuna pratica reale è ancora stata inviata con Impresa in un minuto.
+- **Coperta** vuol dire: compilata sul portale vero con dati di prova, rileggendo ogni valore. Una
+  pratica reale (una CILA per lavori già eseguiti, SUE di Napoli, 17 novembre 2026) è stata compilata
+  anche con questi strumenti; nessuna pratica reale è ancora stata inviata con Impresa in un minuto.
 - Le regole vengono dalla biblioteca delle procedure, ogni fatto con la sua fonte. Ciò che la
   biblioteca non copre, Claude lo dice.
 

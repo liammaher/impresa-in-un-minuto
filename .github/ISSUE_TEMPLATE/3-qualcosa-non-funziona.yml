@@ -28,7 +28,7 @@ body:
       options:
         - Cowork
         - Claude desktop, Code
-        - Claude Code nel terminale / in a terminal
+        - Claude Code nel terminale
         - pvault da solo / on its own
     validations:
       required: true

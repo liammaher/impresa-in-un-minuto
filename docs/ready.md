@@ -7,7 +7,7 @@ The single list of what the plugin ships, written by `claude/skills/pratica/port
 | | |
 |---|---|
 | Plugin version | 0.8.2 (`plugin/impresa-in-un-minuto/.claude-plugin/plugin.json`) |
-| Repo commit | `4134a02493833bcf44be12a2c697ae06e160a68a` |
+| Repo commit | `f6e658e748f053c247686e4652e924a70b2cf71b` plus uncommitted changes |
 | Generated | 2026-11-17 |
 | Sportelli shipped | SUE (building works), SUAP (businesses), as `plugin/build.yaml` `sportelli` says |
 | Not shipped | none |
@@ -21,7 +21,7 @@ The three claims, as [coverage.md](coverage.md) states them:
   `runs.json` (the README's run table) that **filled** the draft: every value read back on a fresh load, with made-up
   people. Never declared, paid, signed or sent: that is the person's, by design.
 
-No real case has been checked by an architect who files these pratiche (level 5). Every row below stops short of it.
+On 2026-11-17 the runner was used on one real pratica: a CILA for works already done (art. 6-bis, comma 5) at Napoli's SUE, from a real dossier with real signed files. It filled the draft; a review against the dossier then found three values to correct (the catasto category, the date of the works, a file in the wrong attachment slot), corrected before filing. It has not been sent (Firma e invio is the person's), and no real case has been checked by an architect who files these pratiche (level 5). The rows below are counted from the made-up runs, so every row stops short of level 5.
 
 ## Counts
 

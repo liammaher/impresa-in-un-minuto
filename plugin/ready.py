@@ -95,7 +95,7 @@ def yes(flag):
     return "yes" if flag else "no"
 
 
-def render(rows, *, version, commit, dirty, today, desks, counts, names, claims, no_real_case):
+def render(rows, *, version, commit, dirty, today, desks, counts, names, claims, real_case):
     """The page. counts: scoreboard's (sportello, mapped, fillable, run) per carried sportello;
     names: scoreboard.NAMES; claims: its CLAIMS text."""
     shipped = [names[d] for d in names if d in desks]
@@ -117,7 +117,7 @@ def render(rows, *, version, commit, dirty, today, desks, counts, names, claims,
         f"| Sportelli shipped | {', '.join(shipped)}, as `plugin/build.yaml` `sportelli` says |",
         f"| Not shipped | {', '.join(apart) + ': mapped in the repo, not in the plugin' if apart else 'none'} |", "",
         "The three claims, as [coverage.md](coverage.md) states them:", "", claims.rstrip("\n"), "",
-        f"{no_real_case} Every row below stops short of it.", "",
+        f"{real_case} The rows below are counted from the made-up runs, so every row stops short of level 5.", "",
         "## Counts", "",
         "Per pratica on the portal, as coverage.md counts them:", "",
         "| Sportello | Mapped | Fillable | Run on the portal |", "|---|---:|---:|---:|",
@@ -171,7 +171,7 @@ def generate(today=None):
     dirty = bool(git("status", "--porcelain", "--untracked-files=no", "--", ".", ":!docs/coverage.md", ":!docs/ready.md"))
     return render(rows, version=json.loads(MANIFEST.read_text())["version"], commit=git("rev-parse", "HEAD") or "unknown",
                   dirty=dirty, today=today, desks=desks, counts=counts, names=scoreboard.NAMES,
-                  claims=scoreboard.CLAIMS, no_real_case=scoreboard.NO_REAL_CASE)
+                  claims=scoreboard.CLAIMS, real_case=scoreboard.REAL_CASE)
 
 
 def write(today=None):

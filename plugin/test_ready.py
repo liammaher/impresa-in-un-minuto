@@ -37,7 +37,7 @@ REH = {"a-fittizia": {"run": True}, "b-fittizia": {"run": False}}
 
 def page(rows, **over):
     args = dict(version="9.9.9", commit="abc123", dirty=False, today="2026-01-02", desks={"sue"},
-                counts=[("sue", 2, 1, 1)], names=scoreboard.NAMES, claims=scoreboard.CLAIMS, no_real_case="No real case yet.")
+                counts=[("sue", 2, 1, 1)], names=scoreboard.NAMES, claims=scoreboard.CLAIMS, real_case="One real case.")
     return ready.render(rows, **(args | over))
 
 
