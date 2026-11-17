@@ -29,7 +29,8 @@ Nell'app Claude per computer, senza terminale:
 2. Clicca **Aggiungi** (Add), poi **Aggiungi marketplace** (Add marketplace) e **Aggiungi da un repository**
    (Add from a repository), scrivi `liammaher/impresa-in-un-minuto` nella casella, scegline la voce nell'elenco sotto e
    clicca **Sincronizza** (Sync).
-3. Apri Impresa in un minuto, tra i **Nuovi plugin**, e clicca **Aggiungi** (Add).
+3. Cerca **impresa in un minuto** nella casella di ricerca dei plugin e clicca **+** (Add). Dopo
+   **Sincronizza** non sempre compare tra i **Nuovi plugin**: se non lo vedi, cercalo per nome.
 4. Per aggiornarlo (Impresa in un minuto cambia quando cambia il portale): **Aggiungi** → **Gestisci marketplace**
    (Manage marketplaces) → **⋯** accanto a impresa-in-un-minuto → **Verifica aggiornamenti** (Check for updates).
    Fallo ogni tanto e prima di una pratica importante. Un avviso che propone **Concedi accesso** a
