@@ -29,6 +29,8 @@ prove one.
 """
 
 import argparse
+import html
+import io
 import json
 import os
 import re
@@ -36,6 +38,7 @@ import shutil
 import subprocess
 import sys
 import unicodedata
+import zipfile
 import zlib
 from pathlib import Path
 
@@ -130,11 +133,46 @@ def readable(text):
     return len(t) >= 20 and sum(c.isalpha() for c in t) >= 10 and plain / len(t) > 0.9
 
 
+DOCX_TOKEN = re.compile(r"<w:t(?: [^>]*)?>(.*?)</w:t>|(</w:p>)|(</w:tr>)|(</w:tc>)|<w:tab\s*/>|<w:br\b[^>]*/>", re.S)
+DOCX_MAX = 30 * 2**20  # the document's own XML, uncompressed: a real relazione is well under 5 MB
+
+
+def docx_text(raw):
+    """A .docx's text, a paragraph a line, a table's cells apart by 3 spaces as a PDF's columns are
+    (cells() splits there). Only the text a reader sees: `w:t` runs, so a tracked deletion
+    (`w:delText`), a field's code (`w:instrText`) and the paragraph settings are left out.
+    "" for any other zip, a corrupt, encrypted or oversized one, or one with no document."""
+    try:
+        with zipfile.ZipFile(io.BytesIO(raw)) as z:
+            if z.getinfo("word/document.xml").file_size > DOCX_MAX:
+                return ""
+            xml = z.read("word/document.xml").decode("utf-8", "replace")
+    except Exception:  # noqa: BLE001  a file the intake can't read is "unread", never a crash of the scan
+        return ""
+    parts = []
+    for m in DOCX_TOKEN.finditer(xml):
+        if m[1] is not None:
+            parts.append(html.unescape(m[1]))
+        elif m[2] or m[3]:
+            parts.append("\n")
+        elif m[4]:  # a cell's last paragraph ends the cell, not a line
+            if parts and parts[-1] == "\n":
+                parts[-1] = "   "
+            else:
+                parts.append("   ")
+        else:
+            parts.append("   ")  # a tab or a line break inside a paragraph
+    return "".join(parts)
+
+
 def text_of(path):
     """A file's text, or "" when it has none the intake can read (a scan, an image)."""
     raw = path.read_bytes()
     if path.name.lower().endswith(".p7m"):
         raw = run.p7m_content(raw) or b""
+    if raw.startswith(b"PK"):  # a Word file: the relazione is often one, before it is signed as a PDF
+        t = docx_text(raw)
+        return t if readable(t) else ""
     if not raw.startswith(b"%PDF"):
         return ""
     t = pdf_text(raw)

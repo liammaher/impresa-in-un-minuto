@@ -863,6 +863,8 @@
      "id": "r10c1p12reg:calendar_input",
      "kind": "date",
      "value": "{{ask.vvf_parere_data|date_it}}",
+     "made_up_stops": true,
+     "made_up": "the portal looks the Comando's opinion up (protocol and date) among the approved projects at Salva (\"non risulta alcun progetto con il numero protocollo risposta e data indicati\"): a made-up one stops there (run 2026-11-17, PIN 6 with a category B and C activity)",
      "when": "{{ask.vvf_categoria|in_b__c}}",
      "label": "in data"
     },
@@ -870,6 +872,8 @@
      "id": "r10c2p14reg:txt",
      "kind": "text",
      "value": "{{ask.vvf_parere_protocollo}}",
+     "made_up_stops": true,
+     "made_up": "the portal looks the Comando's opinion up (protocol and date) among the approved projects at Salva (\"non risulta alcun progetto con il numero protocollo risposta e data indicati\"): a made-up one stops there (run 2026-11-17, PIN 6 with a category B and C activity)",
      "when": "{{ask.vvf_categoria|in_b__c}}",
      "max": 10,
      "label": "prot. n."
