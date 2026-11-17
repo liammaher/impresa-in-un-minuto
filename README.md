@@ -40,6 +40,9 @@ aggiunga l'amministratore: arriva a tutti. Se dopo **Verifica aggiornamenti** ve
 vecchia, rimuovi il marketplace (**Rimuovi**, stesso menu), chiudi e riapri l'app e aggiungilo di nuovo
 (punto 2).
 
+Non caricare un file zip e non usare **Code › Download ZIP** di GitHub: scarica il codice, non il plugin, e Claude
+lo rifiuta («Plugin failed validation: plugin.json must be at .claude-plugin/plugin.json»). Si installa solo dal marketplace.
+
 Poi apri nell'app la cartella dei tuoi lavori, con una sottocartella per ogni lavoro. I dati dello
 studio li chiede Claude alla prima pratica, una volta sola. Serve Python 3 sul computer: su un Mac che
 non lo ha, alla prima pratica macOS propone di installare gli strumenti per sviluppatori di Apple, che

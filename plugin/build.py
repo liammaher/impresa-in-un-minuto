@@ -95,10 +95,8 @@ def sportelli():
 SPORTELLO_NAMES = {"sue": "SUE", "suap": "SUAP"}
 # What each carried sportello adds to the texts' {{pratiche}} (what is prepared) and {{chi}} (who asks).
 SPORTELLO_PRATICHE = {
-    "sue": "CILA, CIL, SCIA, permesso di costruire, sanatorie, autorizzazione paesaggistica, agibilità, inizio e fine "
-           "lavori, proroghe, volture",
-    "suap": "SCIA per aprire, trasferire, ampliare, subentrare, sospendere o chiudere un negozio, un bar o ristorante, "
-            "un acconciatore o un'estetista",
+    "sue": "CILA, SCIA, permesso di costruire, sanatorie, agibilità, inizio e fine lavori, proroghe",
+    "suap": "SCIA per aprire, trasferire o chiudere un negozio, un bar, un acconciatore",
 }
 SPORTELLO_CHI = {"sue": "un architetto, un geometra o un ingegnere", "suap": "il titolare di un'impresa"}
 
@@ -177,7 +175,23 @@ def select_vault(plugin, vault):
             said = re.search(r"pvault|" + SETUP_SKILL, text)
             if said:
                 sys.exit(f"{f.relative_to(plugin)}: says {said.group(0)!r} outside a <!-- vault --> part")
+        if f.name == "SKILL.md":
+            check_description(text, f.relative_to(plugin))
         f.write_text(text)
+
+
+# claude.ai cuts a skill's description to 1024 characters and warns about it on the marketplace's sync
+# ("Sincronizzato con avvisi", 2026-11-17: the 0.8.1 pratiche skill said 1309 once its placeholders were filled).
+DESCRIPTION_MAX = 1024
+
+
+def check_description(text, name):
+    """Stops a build whose skill description, placeholders filled, is over what claude.ai keeps."""
+    front = text.split("---")[1]
+    said = next((line for line in front.splitlines() if line.startswith("description:")), None)
+    if said is not None and len(said[len("description:"):].strip()) > DESCRIPTION_MAX:
+        sys.exit(f"{name}: description is {len(said[len('description:'):].strip())} characters, "
+                 f"claude.ai keeps {DESCRIPTION_MAX}: shorten it")
 
 
 def select_download(plugin, download):
