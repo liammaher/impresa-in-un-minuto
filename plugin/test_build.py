@@ -58,6 +58,14 @@ def main():
         said = next(line for line in front.splitlines() if line.startswith("description:"))
         plain = re.sub(r"«[^»]*»", "", said)  # what the tecnico may type, quoted, is theirs
         assert not english.search(plain), f"{skill.name}: English in its description: {english.search(plain).group(0)!r}"
+        # claude.ai keeps 1024 characters of it (2026-11-17: 0.8.1 shipped 1309, its placeholders filled): the
+        # text with each sportello alone and with all of them, as a build carries them.
+        text = (skill / "SKILL.md").read_text()
+        for desks in (["sue"], ["suap"], list(build.SPORTELLO_NAMES)):
+            filled = build.with_scope(text, skill.name, desks)
+            kept = next(line for line in filled.split("---")[1].splitlines() if line.startswith("description:"))
+            assert len(kept[len("description:"):].strip()) <= build.DESCRIPTION_MAX, \
+                f"{skill.name} ({'+'.join(desks)}): description over {build.DESCRIPTION_MAX} characters"
 
     with tempfile.TemporaryDirectory() as tmp:
         for vault in (True, False):
