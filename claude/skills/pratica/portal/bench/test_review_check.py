@@ -96,6 +96,31 @@ def main():
         check("a file whose bytes no job file has (one in run/ doesn't count)",
               r["warnings"] == ["Allegato «Procura speciale»: il file sul portale (x.pdf) non è nessuno dei tuoi file."], r)
     with tempfile.TemporaryDirectory() as t:
+        # A single job: the open folder holds the documents, the runner's files sit in its impresa-in-un-minuto/.
+        job = Path(t) / "Cantiere Via Fontana"
+        out = job / "impresa-in-un-minuto" / "run"
+        (out / "private").mkdir(parents=True)
+        (job / "relazione.pdf").write_bytes(b"%PDF relazione")
+        (out / "report.json").write_text(json.dumps(REPORT))
+        (out / "private" / "shown.json").write_text(json.dumps(SHOWN))
+        (out / "portal-files.json").write_text(json.dumps({"files": [good]}))
+        r = json.loads(subprocess.run([sys.executable, "-I", str(REVIEW), str(out)], capture_output=True, text=True).stdout)
+        check("a single job: the files are matched to the open folder's, not to the work folder's (no stray warning)",
+              r["warnings"] == [], r)
+    # A file that is only online (OneDrive, iCloud, Dropbox) is never read: reading it would download it.
+    sys.path.insert(0, str(REVIEW.parent))
+    sys.dont_write_bytecode = True
+    import review as review_mod  # noqa: PLC0415
+
+    class Stat:
+        def __init__(self, size, **kw):
+            self.st_size = size
+            self.__dict__.update(kw)
+    check("a macOS dataless file and a Windows recall-on-access file are online only; a normal, an empty and a sparse-looking one are not",
+          review_mod.online_only(Stat(9, st_flags=0x40000000)) and review_mod.online_only(Stat(9, st_file_attributes=0x400000))
+          and not review_mod.online_only(Stat(9, st_blocks=8)) and not review_mod.online_only(Stat(0, st_flags=0x40000000))
+          and not review_mod.online_only(Stat(9, st_blocks=0)), None)
+    with tempfile.TemporaryDirectory() as t:
         r = build(Path(t))
         check("nothing checked against the documents (the archive's flow): no warning made up", r["warnings"] == [], r)
     with tempfile.TemporaryDirectory() as t:

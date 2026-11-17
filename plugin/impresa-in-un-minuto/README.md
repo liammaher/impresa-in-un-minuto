@@ -68,8 +68,9 @@ Poi scrivi «Configura Impresa in un minuto»: Claude prepara il tuo archivio pr
 computer. Lì restano i dati tuoi, dello studio e dei clienti; Claude non li vede mai.
 <!-- /vault -->
 <!-- no-vault -->
-Poi apri nell'app la cartella dei tuoi lavori, con una sottocartella per ogni lavoro. I dati dello
-studio li chiede Claude alla prima pratica, una volta sola.
+Poi apri nell'app la cartella del lavoro (quella con i documenti del cliente) oppure la cartella
+dei tuoi lavori, con una sottocartella per ogni lavoro. I dati dello studio li chiede Claude alla
+prima pratica; con la cartella dei lavori, una volta sola.
 <!-- download -->
 Non serve installare altro: se sul computer non c'è Python, alla prima pratica Impresa in un minuto ne scarica
 uno (circa 25 MB, verificato), una volta sola.
@@ -84,9 +85,15 @@ installalo da python.org.
 ## Come si usa
 
 1. Metti i documenti di ogni lavoro in una cartella, una per lavoro: visura, atto o contratto,
-   documento d'identità, relazione tecnica, elaborati. Meglio non allegarli alla conversazione:
-   se lo fai, Claude li copia nella cartella, o ti chiede di salvarli lì.
+   documento d'identità, relazione tecnica, elaborati. Apri nell'app quella cartella (o la
+   cartella che contiene tutti i lavori). I documenti non si toccano: Claude non li sposta e non li
+   rinomina; i suoi file di lavoro stanno in una sola
+   sottocartella, «impresa-in-un-minuto», che puoi cancellare a lavoro finito. Meglio non allegare
+   i documenti alla conversazione: se lo fai, Claude li copia nella cartella, o ti chiede di
+   salvarli lì.
 2. Scrivi una riga: «CILA per il signor Bianchi, i documenti sono nella cartella Bianchi».
+   Se vuoi solo vedere cosa legge Claude dai tuoi documenti, senza aprire il portale, scrivi «solo un
+   controllo»: ti dice cosa ha capito, quali file il SUE rifiuterebbe e quanti dati mancano.
 <!-- vault -->
 3. Claude risponde con un solo messaggio: se la pratica è coperta, cosa dicono i documenti,
    quale pratica propone, le poche domande. Rispondi una volta, conferma con Touch ID (o Windows
@@ -96,6 +103,8 @@ installalo da python.org.
 <!-- no-vault -->
 3. Claude risponde con un solo messaggio: se la pratica è coperta, cosa dicono i documenti,
    quale pratica propone, le poche domande. Rispondi una volta.
+   Se mancano molti dati (i tuoi, del cliente, delle imprese), Claude non te li chiede in chat: ti
+   dà un file di testo da compilare, riga per riga, e poi scrivi «fatto».
 4. Accedi con SPID nel browser dell'app e scrivi a Claude «fatto». Claude compila la bozza: non
    toccare la pagina finché non ti scrive, tranne il riquadro in cui scegli i file del lavoro. Poi
    confronta l'anteprima del portale con i documenti.
@@ -114,7 +123,9 @@ server.
 <!-- /vault -->
 <!-- no-vault -->
 Nella cartella dei tuoi lavori su questo computer, nella conversazione con Claude e sul portale.
-Impresa in un minuto non ha un server suo.
+Impresa in un minuto non ha un server suo. Con un solo lavoro aperto, i dati che Claude legge dai
+documenti restano in chiaro nella sottocartella «impresa-in-un-minuto» di quella cartella: se la
+cartella è sincronizzata (Dropbox, OneDrive, Drive), lo sono anche loro. Cancellala a lavoro finito.
 **Claude legge i documenti del lavoro**, compila la bozza e la confronta con essi: i dati dei
 clienti (nomi, codici fiscali, indirizzi, dati catastali) passano quindi dalla conversazione con
 Claude, come ogni documento che tu vi apri. Claude te lo dice alla prima pratica. Se un cliente
