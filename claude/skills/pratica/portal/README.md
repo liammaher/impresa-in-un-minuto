@@ -912,10 +912,18 @@ rules table: each is in `suap-unrouted.yaml`. Two reasons differ from the siblin
 workshop, and the medium shop's say it refuses over 250 m² of sales area (rule `vicinato-oltre-250-mq`). The hotel's recipes say so too (no `attivita`);
 the take-over of a hotel is derived from the shop's, as the portal has no lodging take-over to copy.
 
+- **What this round put in code.** `bench/remaining.py` is the recount that took a by-hand script (own SUAP crawls that are
+  fillable, not an alias, named by no recipe: 58 before this round, 48 after) and prints, for each, the filled rehearsal of the
+  same operation in the nearest sector number as the template to derive from (a hint: the hotel's take-over would point at a
+  restaurant's, so check the kind of business; the operations with no sibling are the hand-written ones; the Dogane communication has one, `alcolici-ristorante-fittizio`). `rerun.py` refuses to
+  overwrite a bundle. `test_route.py` now holds `suap-unrouted.yaml` to two more facts: no rehearsal twice (yaml reads the last one only; a substring check for a
+  duplicate passed `sospensione-media-fittizia` because `proroga-sospensione-media-fittizia` contains it, so the test compares whole keys), and a reason that says the recipe's procedure id "names no page in
+  library/procedures" is true. That second check found four reasons that were false since the list was written (2026-11-12): the workshop's and the bakery's
+  closure and take-over said it of `cessazione-` and `subingresso-attivita-commerciale`, pages that exist and that the table
+  cites; they now say what is true (the table has no `attivita` for a workshop).
 - **Not run (48 own crawls, no rehearsal):** the tattooist's change of premises, sectors 02, 03, 15, 16, 17, 19 (the entrusting of a department, the
   area and goods reductions, the Dogane communication, the concession), 20 and 56, sector 06's opening, move and change of premises, the 60 and 61
-  registration notices, an enlargement, the sign's SCIA and PIN 2 and 3 GPL (`suap-common-*`). The hand-written recipes (Dogane communication,
-  temporary shop, reducing the area or goods, PIN 2 GPL, the tattooist) are left for last.
+  registration notices, an enlargement, the sign's SCIA and PIN 2 and 3 GPL (`suap-common-*`). The hand-written recipes (temporary shop, reducing the area or goods, PIN 2 GPL, the tattooist) are left for last.
 
 ## What the portal does that bit us
 
@@ -1598,6 +1606,10 @@ after another, nothing touched between them:
     --values <values.json> --out <dir> [rehearsal ...]
 ```
 
+Build a bundle **once**, with every spec of the batch: a second build with other specs rewrote the `--out` folder and the
+Desktop file the person had already been asked to pick (2026-11-18, bundle 1 of the SUAP mapping), so `rerun.py` now refuses an
+existing `--bundle` file or a non-empty `--out` folder unless `--overwrite` (`test_rerun.py`). A new batch takes new paths.
+
 Hide the pane (Cmd+Shift+B) rather than close it: closing it ends the SPID session and drops a
 loaded bundle, so the person signs in and picks the file again (2026-11-01, twice).
 In the pane, on the portal's origin and logged in: `check.js` (it names which of `runner.js`
@@ -1636,9 +1648,13 @@ A batch has no fetch.js (its steps aren't a released plugin's): it needs the pic
 A hidden pane slows the page's timers, so a script waiting inside the page outlasts the 45 s
 call limit (2026-11-01): `results.js` and catalogue.py's `status.js` wait only while the page
 shows and otherwise answer at once, so while it's hidden, wait between polls outside the page
-(the pane's `wait` actions in one batch, then `results.js`).
+(the pane's `wait` actions in one batch, then `results.js`). A plain `await new Promise(r => setTimeout(r, 42000))` inside each
+`javascript_tool` call, then reading `sessionStorage`'s `pv-batch`, carried a whole bundle of 10 (about 14 minutes, a run
+every 75-98 s) (2026-11-18): that is the poll to use when `results.js` answers at once.
 The pane's profile, and so the SPID session, is the same for every session of the app: before a
 batch, check that no other chat is running the portal (2026-11-03: one was, with its own batches).
+Look at the pane before asking the person to sign in: navigated to `/fnsuap/cmd/home` it shows "Pratiche in bozza" when the
+session from an earlier chat is still good (2026-11-18: it was, and no SPID login was needed); only a sign-in page means asking.
 The file box `pick.js` shows lives in the page: anything that reloads it (`__crawl.slotsOf` leaves the page on
 Pratiche in bozza, a navigation, the portal's own reloads) removes it, and the person finds nowhere to pick
 (2026-11-11): look at the pane, and put the box back (the same `pick.js` text; its sha256 is the bundle's, so a

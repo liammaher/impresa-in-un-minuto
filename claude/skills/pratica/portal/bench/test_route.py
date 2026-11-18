@@ -577,6 +577,18 @@ def suap_wedge_cells_and_their_reasons():
     assert not (set(unrouted) & reached), f"reached now, take them off suap-unrouted.yaml: {sorted(set(unrouted) & reached)}"
     assert not (suap - reached - set(unrouted)), f"neither reached nor explained: {sorted(suap - reached - set(unrouted))}"
     assert all(len(r) > 40 for r in unrouted.values()), "a reason says what the table or the library lacks"
+    # A key twice in the file is read as the last one only (yaml): the first reason would be silently dropped.
+    keys = [l.split(":")[0] for l in (HERE.parent / "catalogue" / "F839" / "suap-unrouted.yaml").read_text().splitlines()
+            if l and not l.startswith(("#", " "))]
+    assert len(keys) == len(set(keys)), f"a rehearsal twice in suap-unrouted.yaml: {sorted({k for k in keys if keys.count(k) > 1})}"
+    # "names no page in library/procedures" is a claim about the recipe's procedure id: it holds, or the reason is false
+    # (2026-11-18: four workshop and bakery closures and take-overs said it of cessazione- and subingresso-attivita-commerciale,
+    # pages that exist and that the table cites).
+    for name, reason in unrouted.items():
+        if "names no page" in reason:
+            proc = resolved(load_yaml(REHEARSALS / name / "recipe.yaml"))["procedure"]
+            assert not (HERE.parents[4] / "library" / "procedures" / f"{proc}.yaml").exists(), \
+                f"{name}: its reason says {proc} names no page in library/procedures, and the page exists"
     cells = {  # what the person says
         "shop, non-food": {"attivita": "vicinato_non_alimentare", "zona": "c", "superficie_vendita_mq": 40, "fatti": []},
         "shop, food, no tables": {"attivita": "vicinato_alimentare", "zona": "c", "superficie_vendita_mq": 40,

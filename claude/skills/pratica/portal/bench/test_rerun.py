@@ -11,7 +11,9 @@ No browser, vault or network. Each case was learned on the real portal (2026-11-
   - a SUAP rehearsal answers in answers.json (the SUE's in answers-p6.json): named alone it is found, and
     recorded under its own file;
   - values that are the rehearsal's own fixture.json are what its run is recorded on (no "@" in the name);
-  - a client company with a REA can't pass the portal's check with made-up data: refused, not sent.
+  - a client company with a REA can't pass the portal's check with made-up data: refused, not sent;
+  - a second build into the same --out folder or over the same --bundle file is refused (2026-11-18: a second run with
+    other specs clobbered a Desktop bundle the person had been asked to pick), unless --overwrite.
 """
 import io
 import json
@@ -230,6 +232,25 @@ def _():
     assert out.returncode != 0 and "Traceback" not in out.stderr and "no rehearsal named" in out.stderr and "${n}" in out.stderr, out.stderr[-400:]
     js = subprocess.run(["node", "--check", str(HERE / "vvf_tendina.js")], capture_output=True, text=True, timeout=30)
     assert js.returncode == 0, js.stderr
+
+
+@case("a second build into the same --out folder, or over the same --bundle file, is refused unless --overwrite (a Desktop bundle was clobbered 2026-11-18)")
+def _():
+    import subprocess
+    out, bundle = Path(tempfile.mkdtemp()), Path(tempfile.mkdtemp()) / "bundle.js"
+    spec = f"{OWN}:answers.json:rehearsals/{OWN}/fixture.json"
+    argv = [sys.executable, str(HERE / "rerun.py"), "--values", str(REH / OWN / "fixture.json"), "--out", str(out), "--bundle", str(bundle)]
+    first = subprocess.run([*argv, spec], capture_output=True, text=True, timeout=300, cwd=ROOT)
+    assert first.returncode == 0 and bundle.exists(), first.stderr[-400:]
+    kept = bundle.read_text()
+    again = subprocess.run([*argv, spec], capture_output=True, text=True, timeout=300, cwd=ROOT)
+    assert again.returncode != 0 and "already exists" in again.stderr and "--overwrite" in again.stderr and "Traceback" not in again.stderr, again.stderr[-400:]
+    assert bundle.read_text() == kept  # refused before anything was written
+    # a new bundle path with the same --out folder is refused too (the folder is what a half-picked batch reads)
+    other = subprocess.run([*argv[:-1], str(bundle.with_name("other.js")), spec], capture_output=True, text=True, timeout=300, cwd=ROOT)
+    assert other.returncode != 0 and "--out folder" in other.stderr, other.stderr[-400:]
+    forced = subprocess.run([*argv, "--overwrite", spec], capture_output=True, text=True, timeout=300, cwd=ROOT)
+    assert forced.returncode == 0, forced.stderr[-400:]
 
 
 print(f"{sum(results)}/{len(results)} passed")

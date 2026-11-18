@@ -185,6 +185,8 @@ def main():
     ap.add_argument("--record", type=Path, help="record.js's output: add each run to its rehearsal's runs.json, and stop")
     ap.add_argument("--date", default=date.today().isoformat(), help="--record: the batch's date")
     ap.add_argument("--bundle", type=Path, help="also write everything the pane needs as one file here (pick.js loads it)")
+    ap.add_argument("--overwrite", action="store_true",
+                    help="build into an --out folder that holds files, or over an existing --bundle file (refused otherwise)")
     a = ap.parse_args()
     if a.record:
         return record(json.loads(sys.stdin.read() if str(a.record) == "-" else a.record.read_text()), a.answers, a.date)
@@ -195,6 +197,13 @@ def main():
     if a.bundle and len(names) > MAX_BUNDLE:
         # More than about a dozen runs overflow the pane's storage (README, "Checking them all"): one bundle per dozen, one file pick each.
         ap.error(f"--bundle holds at most {MAX_BUNDLE} runs, {len(names)} given: split them into bundles of {MAX_BUNDLE}")
+    if not a.overwrite:
+        # A second build with other specs replaced the first one's folder and Desktop file under the person's feet
+        # (2026-11-18: bundle 1 of the SUAP mapping was clobbered): build once with the full list, or name a new path.
+        for path, what in ((a.bundle, "bundle file"), (a.out, "--out folder")):
+            if path and path.exists() and (path.is_file() or any(path.iterdir())):
+                ap.error(f"the {what} {path} already exists: build the batch once with every spec, or give another path "
+                         "(--overwrite replaces it, and with it what the person may have picked already)")
     fields = run.fields_of(a.values.read_text())
     (a.out / "steps").mkdir(parents=True, exist_ok=True)
     stored, sources, origin, queue, failed = {}, {}, None, [], []
