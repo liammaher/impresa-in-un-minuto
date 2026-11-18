@@ -2294,6 +2294,87 @@
    ],
    "like": "suap-003-subentrare-nell-esercizio-dell-attivita"
   },
+  "suap-034-cessare-l-attivita": {
+   "differences": [
+    "gone: dichiarazione del rispetto dei Regolamenti del Comune",
+    "gone: dichiarazione dell'insegna dell'esercizio",
+    "gone: dichiarazione dell'ubicazione dell'attività agrituristica",
+    "gone: dichiarazione relativa alla cessazione dell'attività",
+    "new: Oggetto della comunicazione",
+    "new: Qualifica e dati del procuratore",
+    "new: dati catastali",
+    "new: dichiarazione relativa ai diritti di segreteria/istruttori",
+    "new: normative comunali",
+    "new: ubicazione dell'attività"
+   ],
+   "like": "suap-003-cessare-l-attivita"
+  },
+  "suap-034-notifica-ai-fini-della-registrazione-avvio-attivit": {
+   "differences": [
+    "gone: notifica avvio e inizio attività",
+    "gone: ubicazione dello stabilimento",
+    "new: inizio dell'attività",
+    "new: notifica ai sensi dell'art. 6, Reg. CE n. 852/2004"
+   ],
+   "like": "suap-060-notifica-ai-fini-della-registrazione-avvio-attivit"
+  },
+  "suap-034-presentare-l-aggiornamento-della-registrazione-imp": {
+   "differences": [
+    "gone: ubicazione dello stabilimento"
+   ],
+   "like": "suap-060-presentare-l-aggiornamento-della-registrazione-imp"
+  },
+  "suap-034-presentare-l-aggiornamento-della-registrazione-imp-2": {
+   "differences": [
+    "gone: ubicazione dello stabilimento"
+   ],
+   "like": "suap-060-presentare-l-aggiornamento-della-registrazione-imp-2"
+  },
+  "suap-034-presentare-l-aggiornamento-della-registrazione-imp-3": {
+   "differences": [
+    "gone: ubicazione dello stabilimento"
+   ],
+   "like": "suap-060-presentare-l-aggiornamento-della-registrazione-imp-4"
+  },
+  "suap-034-subentrare-nell-esercizio-dell-attivita": {
+   "differences": [
+    "gone: Dichiarazione per il possesso dei requisiti per la definizione della classificazione dell'azienda agrituristica",
+    "gone: Manodopera impiegata nell'attività agrituristica",
+    "gone: dati catastali",
+    "gone: dichiarazione antimafia D.LGS. 159/2011",
+    "gone: dichiarazione del rispetto dei Regolamenti del Comune",
+    "gone: dichiarazione del tipo di attività esercitate nell'azienda agrituristica",
+    "gone: dichiarazione dell'ubicazione dell'attività agrituristica",
+    "gone: dichiarazione della data di inizio della nuova attività",
+    "gone: dichiarazione della denominazione dell'attività precedente",
+    "gone: dichiarazione della modalità di subingresso",
+    "gone: dichiarazione di conoscenza di obblighi per il richiedente",
+    "gone: dichiarazione di disponibilità dei terreni e degli edifici",
+    "gone: dichiarazione di esenzione da una qualsiasi causa ostativa per l'attività agrituristica previste dall'art.6 della L.20.02.2006 n. 96",
+    "gone: dichiarazione di obbligo di affissione della classificazione dell'agriturismo",
+    "gone: dichiarazione di possesso di certificazione di Imprenditore Agricolo Professionale",
+    "gone: dichiarazione di svolgimento di attività agrituristica",
+    "gone: dichiarazione di utilizzo di edifici nel fondo",
+    "gone: dichiarazione per il possesso del certificato di conformità edilizia ed agibilità",
+    "gone: dichiarazione relativa al periodo di apertura",
+    "gone: dichiarazione relativa all'accessibilità da parte di persone disabili",
+    "gone: dichiarazione relativa all'insegna/denominazione attività",
+    "gone: dichiarazione relativa alla Prevenzione Incendi",
+    "gone: dichiarazione relativa alla presentazione dell'intervento",
+    "gone: dichiarazione relativa alla qualifica di imprenditore agricolo",
+    "new: Dichiarazione di Autocertificazione Antimafia",
+    "new: Qualifica e dati del procuratore",
+    "new: Rispetto dei limiti acustici",
+    "new: carta di esercizio e attestazione dei requisiti",
+    "new: dati dell'impresa a cui si subentra",
+    "new: dichiarazione relativa ai diritti di segreteria/istruttori",
+    "new: dichiarazione relativa al posteggio e ai settori merceologici dei prodotti venduti",
+    "new: dichiarazione relativa al subingresso",
+    "new: dichiarazione relativa alla posizione INAIL ed iscrizione all'Albo",
+    "new: ubicazione dell'attività"
+   ],
+   "like": "suap-003-subentrare-nell-esercizio-dell-attivita"
+  },
   "suap-035-ampliamento-di-superficie": {
    "differences": [
     "gone: Ampliamento dell' esercizio di somministrazione di alimenti e bevande",
@@ -6163,6 +6244,7 @@
   "suap-033-variazione-sede-legale-di-una-impresa-che-conduce": "suap-060-variazione-sede-legale-di-una-impresa-che-conduce",
   "suap-033-variazione-titolarita-di-uno-stabilimento-registra": "suap-060-variazione-titolarita-di-uno-stabilimento-registra",
   "suap-033-variazioni-significative-allo-stato-dei-luoghi": "suap-060-variazioni-significative-allo-stato-dei-luoghi",
+  "suap-034-avvio-delle-attivita": "suap-060-avvio-delle-attivita",
   "suap-035-aggiunzione-di-linee-d-attivita-in-uno-stabiliment": "suap-060-aggiunzione-di-linee-d-attivita-in-uno-stabiliment",
   "suap-035-aggiunzione-linee-dattivita": "suap-060-aggiunzione-linee-dattivita",
   "suap-035-avvio-delle-attivita": "suap-060-avvio-delle-attivita",
