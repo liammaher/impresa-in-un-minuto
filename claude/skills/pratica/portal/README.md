@@ -901,6 +901,22 @@ table, the tattooist's included: its `estetista` excludes tattoo and piercing): 
   take over, change of people, reduce area or goods, temporary shop, the Dogane communication), the 60 and 61 registration notices, an enlargement,
   the sign's SCIA and PIN 2 and 3 GPL (`suap-common-*`).
 
+**Round 15 (2026-11-18): ten more rehearsals for crawls that had none, all filled** (close, take over and change of people for sector 06, the food
+workshop with a food shop; close, suspend, take over and change of people for sector 19, the shop up to 400 m² gross; close, suspend and take over
+for sector 54, the hotel; 75-98 s each, one bundle of 10, recorded in `runs.json`; no value moved, no box loose, no gap, nothing unreached). Each
+came from `bench/derive_recipe.py` with a sibling of the same operation (sector 05's workshop recipes, the shops', the B&B's, the bakery's and the
+food shop's change of people) and was `ready` at once. Sector 17 had no close, suspend, take-over or change-of-people crawl left, so it is not in
+this bundle. The pane was already signed in from the earlier session (the draft list showed), so no SPID login was asked. None is reached by the
+rules table: each is in `suap-unrouted.yaml`. Two reasons differ from the siblings' wording, which says "no library procedure": the
+`cessazione-` and `subingresso-attivita-commerciale` pages do exist, so the workshop's close and take-over say that the table has no `attivita` for a
+workshop, and the medium shop's say it refuses over 250 m² of sales area (rule `vicinato-oltre-250-mq`). The hotel's recipes say so too (no `attivita`);
+the take-over of a hotel is derived from the shop's, as the portal has no lodging take-over to copy.
+
+- **Not run (48 own crawls, no rehearsal):** the tattooist's change of premises, sectors 02, 03, 15, 16, 17, 19 (the entrusting of a department, the
+  area and goods reductions, the Dogane communication, the concession), 20 and 56, sector 06's opening, move and change of premises, the 60 and 61
+  registration notices, an enlargement, the sign's SCIA and PIN 2 and 3 GPL (`suap-common-*`). The hand-written recipes (Dogane communication,
+  temporary shop, reducing the area or goods, PIN 2 GPL, the tattooist) are left for last.
+
 ## What the portal does that bit us
 
 - **Street names without their particles.** The location's street lookup and the Comune's
