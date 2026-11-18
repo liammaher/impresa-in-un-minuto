@@ -881,6 +881,26 @@ rehearsal's `answers.json`: six filled in 86-100 s, PIN 6's two stopped, below).
 - **Not run on the portal:** PIN 4 with the in-deroga approach on a B or C activity beyond the two cases' picks, PIN 3 and 5 with other B or C activities than «69 _ 2 _ B» and «69 _ 3 _ C», PIN 6 with B or C
   and a real protocol, and PIN 4's engineering and alternative approaches.
 
+**Round 14 (2026-11-18): twelve rehearsals for crawls that had none, all filled** (suspend and close for the workshop, the dry cleaner, the
+self-service laundry, the cleaning firm and the tattooist; change of people for the two laundries; 49-81 s each, one bundle of 12, recorded in
+`runs.json`; no value moved, no box loose, no gap). The recount behind them: the scoreboard counts 1,148 SUAP crawls and 1,119 fillable, but
+only 309 are crawls of their own: the other 839 are same-fingerprint copies in `catalogue/F839/same.json` (the stage 2 sweep, #142), so
+"fillable" grew from 283 to 1,119 without a new pratica. Of the own crawls, 212 are run and **70 had no rehearsal** (now 58). Each rehearsal came
+from `bench/derive_recipe.py` with a sibling of the same operation (the shops' close and suspend for the workshop, the laundries and the cleaning
+firm; the beautician's for the tattooist; the cleaning firm's change of people for the laundries) and needed no answer by hand: pre-flight said
+ready at once. None is reached by the rules table (suspension and change of people are refused, and none of these trades is an `attivita` of the
+table, the tattooist's included: its `estetista` excludes tattoo and piercing): each is in `suap-unrouted.yaml` with its reason.
+
+- **A hidden pane polls at once.** The pane can be "displayed" for `tabs_context` while `document.hidden` is true; `results.js` then skips its
+  35 s wait, so a poll returns immediately and a run looks stuck (the first half of this bundle was polled that way). Wait in the call itself (a
+  plain 40 s `setTimeout`) and the run goes on, slower.
+- **The change-of-people recipes of a laundry say `procedure: napoli/comune/scia-tatuatore-piercer`**, copied from the cleaning firm's, which has
+  said so since it was derived: the id is only the steps file's key (the bundle held three procedures at once without a clash), not a claim about
+  the law; the library has no page for it. Fix it with the recipes' ids if the bundle ever keys on a library page.
+- **Not run (58 own crawls, no rehearsal):** the tattooist's change of premises, sectors 02, 03, 06, 15, 16, 17, 19, 20, 54, 56 (suspend, close,
+  take over, change of people, reduce area or goods, temporary shop, the Dogane communication), the 60 and 61 registration notices, an enlargement,
+  the sign's SCIA and PIN 2 and 3 GPL (`suap-common-*`).
+
 ## What the portal does that bit us
 
 - **Street names without their particles.** The location's street lookup and the Comune's
