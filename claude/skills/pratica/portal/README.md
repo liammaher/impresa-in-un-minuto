@@ -925,6 +925,33 @@ the take-over of a hotel is derived from the shop's, as the portal has no lodgin
   area and goods reductions, the Dogane communication, the concession), 20 and 56, sector 06's opening, move and change of premises, the 60 and 61
   registration notices, an enlargement, the sign's SCIA and PIN 2 and 3 GPL (`suap-common-*`). The hand-written recipes (temporary shop, reducing the area or goods, PIN 2 GPL, the tattooist) are left for last.
 
+**Round 16 (2026-11-19): eight more rehearsals, all filled** (the close of a shop over 400 m², sector 20; the opening of a food workshop with its own
+food shop, sector 06; the enlargement in zones A and B, sector 61; the entrusting of a department of a medium shop, sector 19; the Dogane communication
+for the sale of alcohol for a non-food shop, a food shop and a medium shop, sectors 16, 17 and 19; the food shop's opening with the sign's SCIA, sector 17;
+64-113 s each, one bundle of 8, recorded in `runs.json`; no value moved, no box loose, no gap, nothing unreached; the portal's warnings were the made-up PEC
+and the made-up address and cadastral data in every run). The pane had to be signed in with SPID once (the home page showed the SPID login). Each came from
+`bench/derive_recipe.py` with a sibling of the same operation and the same kind of business and was `ready` at once; all eight are in `suap-unrouted.yaml`
+(the alcohol rule, the 250 m² rule, the acoustic nulla osta in zones A and B, no `attivita` for a workshop, no event for a department; `vendita-alcolici`
+and `scia-panificio` name no page in `library/procedures`). 40 own crawls are left without a rehearsal.
+
+- **Derived, not ready at once, so not run (4):** sector 20's move without enlargement and its concentration (the crawl has the fire-safety professional's
+  "Asseverazione" and the sector 19 template's fixture has no `valerio`: derive again with `--fixture negozio-pin-2-fittizio` and `people: {v: valerio}`
+  in the answers, as the PIN 2 rehearsals do), and sector 06's change of premises and structural variations (they ask `attivita_852`, and the structural
+  variations also `variazioni`, which the pool of the other rehearsals' answers had no value for: a person's answers, not the sibling's).
+- **Not derived because the only sibling is another kind of business:** sector 02 (farm sales) from the bakery's suspension, sector 04's and 56's «interventi»
+  crawls from a shop's and a restaurant's, the Dogane communication for the agriturismo (03) and the hotel (54) from the restaurant's.
+- **A `-interventi` crawl was taken with its tick on.** `derive_recipe.py` copies the interventi screen with no ticks unless `--tick` names them, so
+  `suap-017-aprire-l-attivita-interventi` first gave a recipe that would have skipped the sign's sections on the portal. It wants
+  `--tick "in caso di attività che preveda insegna esterna (dove è prevista la SCIA)"` and then no `scelte:` line, as the shop's template has none (the
+  crawl's sections are the ticked ones; `scelte:` is for a crawl taken with nothing ticked). Check the wizard's interventi line against the template's.
+- **Mechanics.** `remaining.py` and `test_route.py` (9 minutes now) want the pratica venv's Python (the system one has no yaml). In the tool's zsh, build the
+  specs in an array (`specs+=("${n}:answers.json:rehearsals/${n}/fixture.json")`), since an unquoted `$N` is not split. The bundle's file box wants the file on
+  the Desktop (`~/Desktop/suap-bundle-round16.js`).
+- **Not run (40 own crawls, no rehearsal):** the four above; sectors 02 (suspension), 03 and 54 (Dogane), 04 and 56 (interventi), the tattooist's change of premises,
+  the concession (sectors 15, 16, 17, 19), the temporary shop (16, 17), the reduction of the area and of the goods (16, 17, 19), the 060 and 061 registration
+  notices (seven each: notification of opening, four updates, reactivation, change of registered office), the sign's SCIA and PIN 2 (and GPL) and PIN 3 GPL
+  (`suap-common-*`). The hand-written recipes (temporary shop, reductions, PIN 2 GPL, the tattooist) are left for last.
+
 ## What the portal does that bit us
 
 - **Street names without their particles.** The location's street lookup and the Comune's
