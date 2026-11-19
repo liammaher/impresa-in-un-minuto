@@ -1,0 +1,25 @@
+{
+ "extras": [],
+ "attivita_852": [
+  "forno",
+  "pane"
+ ],
+ "descrizione": "PROVA NON INVIARE - apertura laboratorio vicinat generato",
+ "oggetto": "Aprire l'attività: pratica di prova con dati inventati.",
+ "consumo_sul_posto": "false",
+ "in_centro_commerciale": "false",
+ "diritti_euro": "120",
+ "stagionale": "false",
+ "in_ccn": "false",
+ "responsabile_produzione_altro": "false",
+ "diritti_esente": false,
+ "bollo_esenzione": "no",
+ "bollo_marche": false,
+ "superficie_vendita_mq": "40",
+ "solo_distributori": "false",
+ "anche_ingrosso": "false",
+ "superficie_alimentare_mq": "0",
+ "superficie_non_alimentare_mq": "40",
+ "superficie_monopolio_mq": "0",
+ "in_factory_outlet": "false"
+}

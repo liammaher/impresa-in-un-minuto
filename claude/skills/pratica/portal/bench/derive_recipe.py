@@ -19,6 +19,9 @@ portal in the pane (README, "The wedge's cells run on the portal"). What it chan
 - a `suap-common-*` crawl (advertising, public land: no sector index in its name) is taken under the wizard's sector the crawl names, and
   the template's own asks that mean nothing for another pratica are dropped (TEMPLATE_ONLY); pre-flight's "no field reads asks.X: drop it" drops the
   ask and its `yours` lines and goes again;
+- the interventi screen is copied with no ticks: a crawl named `*-interventi` was taken with a tick on (the sign's SCIA), so give it `--tick`
+  and delete the `scelte:` line it writes (the shop's template has none: the crawl's sections are the ticked ones). A sector-20 crawl has the
+  fire-safety professional's section: its fixture wants `valerio` (`--fixture negozio-pin-2-fittizio`, answers `people: {v: valerio}`);
 - the fixture is copied from --fixture (default: the template's own, else the family's: README).
 Then, unless --no-fill, it generates the steps file and runs pre-flight, answering what it asks from the values the other
 rehearsals use (a choice, a date, a file), up to four rounds, and prints what is left for a person: a case's own answers
