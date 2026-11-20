@@ -2477,7 +2477,7 @@ input.addEventListener("change", async () => {{
   if (got !== "{sha}") {{ msg.textContent = "Non è il file giusto: scegli «{path.stem}» nella cartella Download."; return; }}
   input.disabled = true;
   try {{ window.pvPicked = String(await (0, eval)(text)); msg.textContent = "Caricato."; setTimeout(() => box.remove(), 3000); }}
-  catch (e) {{ window.pvPicked = "error " + e.message; msg.textContent = "Non sono riuscito ad avviarla: scrivilo a Claude."; }}
+  catch (e) {{ window.pvPicked = "error " + e.message; msg.textContent = "Non sono riuscito ad avviarla: scrivilo nella chat."; }}
 }});
 "box shown: the person picks {path.name}, then poll __pv.wait()"
 """)
@@ -2570,7 +2570,7 @@ def show_code(code, give_up=None):
     window stays until they close it, so run.py can return. give_up (tests): seconds."""
     text = (f"Scrivi questo codice nel riquadro che compare sulla pagina del portale:\n\n{pretty_code(code)}\n\n"
             "Tieni aperta questa finestra fino alla fine della compilazione. Non dirlo a nessuno, "
-            "nemmeno a Claude.")
+            "nemmeno nella chat.")
     if sys.platform == "darwin":
         script = (f'display dialog {json.dumps(text)} with title "Impresa in un minuto" buttons {{"Fatto"}} default button "Fatto"'
                   + (f" giving up after {give_up}" if give_up else ""))
@@ -2751,11 +2751,15 @@ def published(path):
     """Where GitHub serves this file of the released plugin (its tag, on two hosts that let any
     page fetch it), or [] when it isn't in an installed plugin (the repo's own copy)."""
     path = Path(path).resolve()
-    root = next((r for r in path.parents if (r / ".claude-plugin" / "plugin.json").is_file()), None)
-    if root is None:
+    # Claude's manifest, or the openai build's at the plugin's root (plugin/build.py --target): the two
+    # builds carry these files byte for byte the same, so both fetch them from the one plugin-v tag.
+    found = next(((r, m) for r in path.parents for m in (r / ".claude-plugin" / "plugin.json", r / "plugin.json")
+                  if m.is_file() and (m.parent == r / ".claude-plugin" or (r / "skills").is_dir())), None)
+    if found is None:
         return []
+    root, manifest_file = found
     try:
-        manifest = json.loads((root / ".claude-plugin" / "plugin.json").read_text())
+        manifest = json.loads(manifest_file.read_text())
         repo = re.fullmatch(r"https://github\.com/([\w.-]+/[\w.-]+?)(?:\.git)?/?", manifest["repository"])[1]
         tag = "plugin-v" + manifest["version"]
     except (OSError, ValueError, KeyError, TypeError):

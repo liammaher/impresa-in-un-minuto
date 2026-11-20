@@ -5,6 +5,12 @@ it, the Impresa in un minuto plugin, as the release's commit on the `plugin` bra
 tagged plugin-v<version> and pinned by its commit SHA, so a moved tag installs nothing else.
 
   pin_marketplace.py --version 0.4.1 --commit <40 hex of plugin-v0.4.1's commit> [--out FILE]
+  pin_marketplace.py --target openai --version 0.4.1 --commit <40 hex of plugin-openai-v0.4.1's commit>
+
+`--target openai` writes .agents/plugins/marketplace.json, Codex's (`codex plugin marketplace add
+liammaher/impresa-in-un-minuto`, the ChatGPT desktop app): the same marketplace name, its one entry the
+release's commit on the `plugin-openai` branch as a `url` source with its tag and SHA. Codex reads our
+.claude-plugin/marketplace.json too, but skips its entry: it has no `github` source (tried 2026-11-20).
 
 A git source, not the release's zip (`archive`, Claude Code only): the Claude app (chat, Cowork)
 syncs only `github`, `url`, `git-subdir` and `./` sources (claude.com/docs/plugins/org-sync); with
@@ -61,18 +67,48 @@ def marketplace(version, commit, repo=REPO, vault=True):
     }
 
 
+def openai_category():
+    """The listing's category, as the openai build's manifest says it (build.py)."""
+    sys.path.insert(0, str(HERE))
+    import build
+    return build.OPENAI_CATEGORY
+
+
+def openai_marketplace(version, commit, repo=REPO):
+    """Codex's marketplace (developers.openai.com/plugins/build/plugins): each entry needs its policy
+    and category; the source is the plugin-openai branch's commit, pinned as the Claude one is."""
+    return {
+        "name": "impresa-in-un-minuto",
+        "interface": {"displayName": DISPLAY_NAME},
+        "plugins": [{
+            "name": "impresa-in-un-minuto",
+            "source": {"source": "url", "url": f"https://github.com/{repo}.git",
+                       "ref": f"plugin-openai-v{version}", "sha": commit},
+            "policy": {"installation": "AVAILABLE", "authentication": "ON_INSTALL"},
+            "category": openai_category(),
+        }],
+    }
+
+
+OUT = {"claude": HERE.parent / ".claude-plugin" / "marketplace.json",
+       "openai": HERE.parent / ".agents" / "plugins" / "marketplace.json"}
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     ap.add_argument("--version", required=True)
     ap.add_argument("--commit", required=True, help="the plugin branch's commit for this version")
-    ap.add_argument("--out", type=Path, default=HERE.parent / ".claude-plugin" / "marketplace.json")
+    ap.add_argument("--target", choices=sorted(OUT), default="claude", help="whose marketplace (default claude)")
+    ap.add_argument("--out", type=Path, help="default: the target's marketplace file in this repository")
     a = ap.parse_args()
     if not re.fullmatch(r"\d+\.\d+\.\d+([-+][0-9A-Za-z.-]+)?", a.version):
         ap.error(f"--version {a.version!r} isn't a version like 0.1.0")
     if not re.fullmatch(r"[0-9a-f]{40}", a.commit):
         ap.error("--commit must be a full commit SHA, 40 lower-case hex characters")
+    a.out = a.out or OUT[a.target]
     a.out.parent.mkdir(parents=True, exist_ok=True)
-    a.out.write_text(json.dumps(marketplace(a.version, a.commit, vault=vault()), indent=2, ensure_ascii=False) + "\n")
+    made = marketplace(a.version, a.commit, vault=vault()) if a.target == "claude" else openai_marketplace(a.version, a.commit)
+    a.out.write_text(json.dumps(made, indent=2, ensure_ascii=False) + "\n")
     print(a.out)
     return 0
 

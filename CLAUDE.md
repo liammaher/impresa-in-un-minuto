@@ -150,6 +150,11 @@ plugin/              the Impresa in un minuto plugin for Cowork (docs/design/pac
                      `sportelli` (`[sue]`) which pratiche, rules tables and library procedures go in.
                      `--cowork-test` keeps the Cowork test skill, `--evals` adds evals/ (how Claude
                      follows the skill, `claude plugin eval`); a release has neither.
+                     `--target openai` builds it for Codex and the ChatGPT desktop app (docs/design/openai-platform.md),
+                     a check only there for now (its browser can't fill a page): a text's `<!-- claude -->` /
+                     `<!-- openai -->` parts (a description's: `metadata: openai-description`), then `<skill-dir>`
+                     and ChatGPT for Claude's names, refused where only Claude's apps have the thing; published to
+                     `plugin-openai` (`.agents/plugins/marketplace.json`).
                      The skill's report.py: a Impresa in un minuto fault as a link to the bug form, filled in,
                      refused if it holds a job's value (test_report.py); the tecnico submits it
                      ready.py writes docs/ready.md, the one list of what the plugin ships (a row per

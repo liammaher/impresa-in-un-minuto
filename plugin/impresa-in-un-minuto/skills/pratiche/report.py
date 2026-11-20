@@ -26,8 +26,9 @@ from urllib.parse import quote, urlencode
 FORM = "https://github.com/liammaher/impresa-in-un-minuto/issues/new"
 TEMPLATE = "3-qualcosa-non-funziona.yml"
 SKILL = Path(__file__).resolve().parent
-PLUGIN_JSON = SKILL.parents[1] / ".claude-plugin" / "plugin.json"
-DOVE = ("Cowork", "Claude desktop, Code", "Claude Code nel terminale")
+# The plugin's manifest: Claude's, or the openai build's at the plugin's root (build.py --target).
+PLUGIN_JSONS = (SKILL.parents[1] / ".claude-plugin" / "plugin.json", SKILL.parents[1] / "plugin.json")
+DOVE = ("Cowork", "Claude desktop, Code", "Claude Code nel terminale", "ChatGPT desktop, Codex", "Codex nel terminale")
 TEXTS = ("title", "cosa", "atteso", "output")
 # GitHub answers 414 past its limit; well under it, so a browser and a proxy take it too.
 MAX_URL = 6000
@@ -105,7 +106,8 @@ def system():
 
 def version():
     try:
-        return "impresa-in-un-minuto " + json.loads(PLUGIN_JSON.read_text())["version"]
+        manifest = next((f for f in PLUGIN_JSONS if f.is_file()), PLUGIN_JSONS[0])
+        return "impresa-in-un-minuto " + json.loads(manifest.read_text())["version"]
     except (OSError, ValueError, KeyError):
         return "impresa-in-un-minuto (versione sconosciuta)"
 

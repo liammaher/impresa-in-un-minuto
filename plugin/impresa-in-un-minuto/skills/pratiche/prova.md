@@ -3,6 +3,7 @@
 A test run, for a tecnico who wants to see Impresa in un minuto work before a real job, or who calls a job
 of theirs a test. `${CLAUDE_SKILL_DIR}` is this skill's folder, as in SKILL.md.
 
+<!-- claude -->
 **Which test.** Decide from their words alone, and ask nothing:
 - **The Prova**, every time the pratica they name is a CILA, or they name none ("una prova",
   "fammi vedere", "a client's renovation", "una pratica"). What they say about the client or the
@@ -62,7 +63,8 @@ real filing's details (the c/c, the order of the signatures, the PEC receipt).
    > Poi, in circa 2 minuti, compilo una CILA inventata (manutenzione straordinaria in un appartamento, lavori già in corso, per un locatario, con due imprese) e la rileggo dal portale. Non spunto dichiarazioni, non pago, non firmo, non invio.
 
    The parenthesis says what the case is, so they can hold what appears on the portal to it; never its
-   names, codici fiscali, addresses or figures. Before saying the portal is open «qui accanto», check that the browser pane is showing (`tabs_context` says
+   names, codici fiscali, addresses or figures.
+   Before saying the portal is open «qui accanto», check that the browser pane is showing (`tabs_context` says
    displayed or hidden). If hidden, add one line after the others: «Se non vedi il portale, premi Cmd+Shift+B
    (Ctrl+Shift+B su Windows) o clicca l'icona del globo.»
    As it is, a word not changed, added or left out (but for that line): nothing before, nothing after, no card.
@@ -148,3 +150,11 @@ while you prepare:
 7. `page` with `--made-up --plain`, then as the Prova's steps 3 and 4 (the line while it fills, the closing lines,
    the answers with `run.py details ... --made-up` only if asked). Never mention PDF/A, a digital signature, the diritti, the
    procura or a second compilation: a test draft is never sent.
+<!-- /claude -->
+<!-- openai -->
+**In ChatGPT there is no test on the portal, for now** (SKILL.md, at the top: a check only). Whatever
+test they ask for, your whole reply is these two lines, nothing before or after:
+  «In ChatGPT, per ora, non compilo il portale, nemmeno per una prova: controllo le cartelle dei lavori.
+  Dammi la cartella di un tuo lavoro e scrivimi «solo un controllo»: ti dico quale pratica serve, quali file lo sportello rifiuterebbe e quali dati mancano.»
+Never make up a case for it, and never open the portal.
+<!-- /openai -->

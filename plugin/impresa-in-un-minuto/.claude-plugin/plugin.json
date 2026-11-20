@@ -9,5 +9,10 @@
   "homepage": "https://liammaher.github.io/impresa-in-un-minuto/",
   "repository": "https://github.com/liammaher/impresa-in-un-minuto",
   "license": "MIT",
+  "metadata": {
+    "openai": {
+      "description": "Per tecnici e professionisti (architetti, geometri, ingegneri, commercialisti, consulenti) che queste pratiche le presentano già: controlla la cartella di un lavoro per una pratica del {{copertura}} su impresainungiorno e ti dice quale pratica serve, quali file lo sportello rifiuterebbe e quali dati mancano. In ChatGPT, per ora, non compila il portale. Non è una consulenza: ChatGPT può sbagliare. Con la biblioteca pratiche-napoli di regole e procedure."
+    }
+  },
   "keywords": ["impresa-in-un-minuto", "italia", "napoli", "sue", "cila", "scia", "architetti", "pratiche"]
 }
