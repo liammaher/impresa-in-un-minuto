@@ -195,6 +195,58 @@ def people_fix(d, answers, fixture_text):
     return None
 
 
+GENERIC_ATTACHMENTS = "Allega quanto chiede la schermata degli allegati dopo aver spuntato le dichiarazioni"
+# A crawl's declarations (the sections the runner skips: the person ticks them), as the `yours` line names them.
+DECLARATIONS = [(r"46 e 47", "consapevolezza (artt. 46-47)"), (r"privacy", "informativa privacy"), (r"art\. ?6", "art. 6 Reg. 852/2004"),
+                (r"tasse comunali", "tasse comunali"), (r"art\. ?75|75 del d\.?p\.?r", "art. 75 DPR 445/2000"), (r"onorabilit", "requisiti di onorabilità"),
+                (r"altre dichiarazioni", "altre dichiarazioni"), (r"normative comunali", "norme del Comune di Napoli (normative comunali)")]
+
+
+def generic_attachments(text):
+    """The attachments screen isn't read (the header says so), so the template's own list of documents is a claim about another form's:
+    the restaurant opening's «planimetria quotata e ricevuta ASL» stood in the Reg. 852 notification's recipe until 2026-11-20."""
+    return re.sub(r'^  - "Allega[^\n]*\n', f'  - "{GENERIC_ATTACHMENTS}"\n', text, flags=re.M)
+
+
+def declaration_labels(crawl):
+    """The declarations the person ticks on this crawl's draft, in the words of the `yours` line, in the crawl's order."""
+    out = []
+    for sec in crawl["sections"]:
+        # «normative comunali» is read, not skipped, but the person ticks its declaration too.
+        if not sec.get("skipped") and not re.search(r"normative comunali", sec["section"], re.I):
+            continue
+        label = next((lab for pat, lab in DECLARATIONS if re.search(pat, sec["section"], re.I)), None)
+        out.append(label or _norm(sec["section"]).lower())
+    return list(dict.fromkeys(out))
+
+
+def declarations_line(text, crawl):
+    """The `Spunta tu le dichiarazioni:` line of the template's `yours`, made to name this crawl's declarations. A declaration the
+    template names that this crawl doesn't show is dropped, one it shows is added, and anything the line says that is no declaration
+    of the list (an observed detail: «la casella di presa d'atto sotto la PEC») stays. 2026-11-20: the Reg. 852 notifications said
+    «requisiti di onorabilità, altre dichiarazioni, art. 75» that none of their crawls has."""
+    m = re.search(r'^(  - "Spunta tu le dichiarazioni: )([^"\n]*)(".*)$', text, flags=re.M)
+    if not m:
+        return text
+    known = [lab for _, lab in DECLARATIONS]
+    items = [i.strip() for i in m[2].split(", ")]
+    is_known = lambda i: any(i == k or i.startswith(k) for k in known)  # noqa: E731  ("requisiti di onorabilità e professionali")
+    want = declaration_labels(crawl)
+    kept = [i for i in items if not is_known(i)]
+    return text[:m.start()] + m[1] + ", ".join(want + kept) + m[3] + text[m.end():]
+
+
+def refusal_only_asks(steps_text):
+    """The asks of a steps file that nothing but a `supports:` line reads: refusals (a case the pratica doesn't take). A recipe derived
+    from another form keeps that form's (an opening's alcohol, music and sign; a bakery's ovens and flour): each is the person's to
+    keep or drop (`--drop-ask`), since it refuses a case the new pratica may not have."""
+    import yaml
+    data = yaml.safe_load(steps_text)
+    rest = json.dumps({k: v for k, v in data.items() if k not in ("supports", "asks", "groups", "yours")}, ensure_ascii=False)
+    return [k for k in (data.get("asks") or {}) if not re.search(r"ask\.%s\b" % re.escape(k), rest)
+            and any(re.search(r"ask\.%s\b" % re.escape(k), json.dumps(x, ensure_ascii=False)) for x in data.get("supports", []))]
+
+
 def derive(new, template, crawl_name, fixture=None, ticks=(), facts=None, handles=(), drop=(), also=()):
     crawl = json.loads((PORTAL / "catalogue" / "F839" / "sections" / f"{crawl_name}.json").read_text())
     m = re.search(r"› ([^›]+?) \(sector (.+)\)$", crawl["pratica"])
@@ -255,6 +307,7 @@ def derive(new, template, crawl_name, fixture=None, ticks=(), facts=None, handle
     # title cut at 60 characters read as English to bench/test_gen.py's check of what the tecnico reads.
     text = drop_asks(text, tuple(TEMPLATE_ONLY.get(template, ())) + tuple(drop))
     text = unsign(text, crawl_name, SHORT.get(idx) or COMMON_SHORT.get(sector) or short_sector(sector))
+    text = declarations_line(generic_attachments(text), crawl)
     text = re.sub(r"^title: .*$", "title: " + json.dumps(f"{op}, {SHORT.get(idx) or COMMON_SHORT.get(sector) or short_sector(sector)}, SUAP Napoli", ensure_ascii=False), text, flags=re.M)
     header = (f"# {op} ({sector}), as gen.py writes its steps file from the batch crawl\n# (catalogue/F839/sections/{crawl_name}.json), for the made-up business of this folder's fixture.json.\n"
               f"# Derived from rehearsals/{template} (bench/derive_recipe.py): no `rules:` and no `after:`; the attachments and payment screens are not read.\n")
@@ -372,6 +425,11 @@ def main():
     print("then: add it to catalogue/F839/suap-unrouted.yaml with its reason unless route.py reaches it (bench/test_route.py fails otherwise), regen.py, a bundle")
     if not a.no_fill:
         print(json.dumps(fill(folder), ensure_ascii=False))
+        steps = folder / "portal-steps.generated.yaml"
+        if steps.exists():
+            only = refusal_only_asks(steps.read_text(encoding="utf-8"))
+            if only:
+                print(f"CHECK: asks that only refuse, kept from {a.template}: {', '.join(only)} (does this pratica have such a case? else --drop-ask)")
 
 
 if __name__ == "__main__":

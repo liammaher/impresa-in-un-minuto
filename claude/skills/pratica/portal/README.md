@@ -983,6 +983,40 @@ showed the login); the first run took 148 s (the tab was reported hidden for par
   sign's SCIA and PIN 2 (and GPL) and PIN 3 GPL (`suap-common-*`). None has a sibling of the same kind of business: sector 02, 04, 56, 03 and 54 only have another
   kind's, the rest need a recipe by hand (the registration notices are worth a look at their crawls first).
 
+**Round 18 (2026-11-20): the 14 Reg. 852 and GISA notices of sectors 60 and 61, all filled** (the restaurant and bar sectors, zones not protected and protected; each
+form once per sector: the notification of opening, of a take-over, of a change of the type of activity, of a suspension and of a closure (the portal's «RAD: ALTRE ESIGENZE
+connesse con l'esercizio dell'attività › Notifica ai fini della registrazione impresa alimentare»), and the GISA reactivation of activities suspended voluntarily
+(procedura n. 4) and change of the registered office of a company that runs a registered stabilimento (procedura n. 3); 53-68 s each, two bundles of 7, recorded in
+`runs.json`; no value moved, no box loose, no gap, nothing skipped or unreached; the portal's warnings were the made-up PEC, address and cadastral data). The 060 and 061
+crawls of a form have the same sections, so the sector is the wizard's choice and the answers' `descrizione`. All 14 are in `suap-unrouted.yaml`. Own crawls with no
+rehearsal: 36 → **22**. The seven 060 forms are canonical crawls that 279 of the same-fingerprint copies in `same.json` point at (`suap-060-riattivazione...` 46,
+`...variazione-sede-legale...` 44, the five notifications 37-38 each): of the 55 canonical crawls the 839 copies point at, 40 had a filled run, now 47.
+
+- **Templates by family, then by sections.** The two GISA forms come from `stabilimento-titolarita-ristorante` (same parent «Comunicazione per linee d'attività...», 79% of the
+  sections); the notifications from the same sector's own opening, take-over, suspension and closure rehearsals, whose crawls they share sections with (the take-over
+  notification's «notifica di subingresso» is `same_as` `suap-060-subentrare-...`); the change of type from the opening notification, because its «nuova tipologia» section
+  reads the `attivita_852` group. `closer_siblings`' WARNING named a workshop's or a shop's recipe (sector 05, 17) for the opening, take-over and closure notifications of both sectors: its crawls are closer by
+  sections, the business kind decided, and a recipe derived from it would have needed the restaurant's fixture and answers anyway. It is advice, not a refusal.
+- **A template of another form brings its own claims, and `ready` says nothing about them.** All fourteen were `ready` at once; reading them found, from the bakery's
+  structural change, `supports` lines that would have refused every restaurant («è la pratica di un panificio: devono valere le voci forno», «la somministrazione non è di un
+  panificio»), refusals of ovens over 116 kW, flour, basements and a sign, the bakery's `attivita_852` and a `diritti_euro` question about a bakery; from the restaurant
+  opening, refusals for alcohol, music and a sign, and the centro storico's «Piano 2026» group, disability access, security and CG 1 score asks, a rule of 20 m² of sales
+  area, «Fai firmare al tuo tecnico il CS 1 e il CG 1» and «non aprire prima che arrivi l'autorizzazione». None of those belongs to a notification filed alone. Now in code
+  (`derive_recipe.py`, `test_derive.py`): the template's own list of attachments becomes the generic line (the attachments screen isn't read, so a list of documents is a
+  claim about another form: «planimetria quotata e ricevuta ASL» came from the opening); the declarations line is made from what the new crawl shows (a take-over
+  notification has no «requisiti di onorabilità», «altre dichiarazioni» or art. 75), keeping an observed detail the line had («la casella di presa d'atto sotto la PEC»);
+  and the asks that only a `supports` line reads are printed (`CHECK:`) for the person to keep or drop with `--drop-ask`. The rest (a bakery's wording, answers that
+  mean another business) is read by hand; the answers keep keys no field reads (`zona`, `fatti`, `stagionale`, the opening's `titolo_attivita_*`), harmless, as in every derived rehearsal.
+- **Why none is routed.** The library's `napoli/asl-napoli-1/registrazione-attivita-alimentare` describes the notification's four boxes (opening, take-over, change of type,
+  closure or suspension), but the table (`alimenti-notifica`) adds it only as `also` to an opening or a move, never as a pratica of its own, and has no event for its updates
+  (suspension is refused: `sospensione-non-coperta`). Routing the five notifications would mean an event in the table for filing the notification alone, with the page's
+  boxes as its sourced claims: left for a decision. Reactivation and the registered-office change are named in that page only as exempt from the sanitary fee.
+- **zsh and `--fixture`.** `${4:+--fixture $4}` in a script is one word in zsh, and `set -- $spec` doesn't split: four of the fourteen failed on argparse. Call `derive_recipe.py`
+  from a function with every argument written out.
+- **Not run (22 own crawls, no rehearsal):** sector 02 (suspension), 03 and 54 (Dogane), 04 and 56 («interventi»), the tattooist's change of premises, the concession (15, 16, 17,
+  19), the temporary shop (16, 17), the reduction of the area and of the goods (16, 17, 19), the sign's SCIA and PIN 2 (and GPL) and PIN 3 GPL (`suap-common-*`). Eight of the
+  fifteen canonicals that stood for unrun forms are left (Dogane 13 copies, the two reductions 12 each, sector 02's suspension 11, the three sector 03 forms and the tattooist 1 each).
+
 ## What the portal does that bit us
 
 - **Street names without their particles.** The location's street lookup and the Comune's
