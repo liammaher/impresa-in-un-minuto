@@ -1,0 +1,26 @@
+[
+ {
+  "date": "2026-11-20",
+  "answers": "answers.json",
+  "result": "filled",
+  "seconds": 103.3,
+  "browser": "pane",
+  "note": "Both Si/No facts of «ulteriori dichiarazioni» answered Si (zona A, vincolo paesaggistico): read back on a fresh load; the Si opens no box or section, the attachments screen is not read."
+ },
+ {
+  "date": "2026-11-20",
+  "answers": "answers-vincolo.json",
+  "result": "filled",
+  "seconds": 105.7,
+  "browser": "pane",
+  "note": "Vincolo paesaggistico Si, zona A No."
+ },
+ {
+  "date": "2026-11-20",
+  "answers": "answers-zona-a.json",
+  "result": "filled",
+  "seconds": 106.6,
+  "browser": "pane",
+  "note": "Zona A Si, vincolo paesaggistico No."
+ }
+]

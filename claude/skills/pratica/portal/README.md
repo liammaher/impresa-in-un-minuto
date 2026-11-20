@@ -1111,10 +1111,22 @@ On 2026-11-20: **1,634 boxes in 268 crawls: 346 filled on the portal, 2 a case w
   atmospheric-emission forms' lists; those are not a restaurant's or a shop's. The wedge's own are in `--only suap-060-aprire-l-attivita` (71 boxes: 12 filled, 6 mapped, 48 not
   mapped): the dehors' occupation period (seasonal, annual renewal, closing day, other), the days of the week and «orari diversi giorno per giorno», a private area for public use, and, in the
   «interventi» screen, the options of «vincolo ambientale» (art. 146 or the art. 149 exclusion, with or without the Soprintendenza's authorization, ordinary or simplified) and «vincolo
-  monumentale». Those are the next cases to write for the wedge (a restaurant in a protected area is the likeliest real one); the bollo's 17 options come next.
+  monumentale». Those are the next cases to write for the wedge (a restaurant in a protected area is the likeliest real one: see the next bullet for what that turned out to be); the bollo's 17 options come next.
 - **`sue_steps`, `ticked`, `entries` and `filled` take the sportello** (`"sue"` by default: the SUE table is unchanged, `table_current` holds it); `test_schema_branches.py` has `suap_choices`.
   `test_schema_branches` takes 4½ minutes now. The steps files are built, not committed, and `gen.ensure()` took about a minute per rehearsal here: copy `portal-steps.generated.yaml`
   from a worktree that has them (the lock names their sha256, so a stale copy is rewritten, none were).
+- **The protected-area sign, run on the portal (same day, three runs, all filled: 103, 106 and 107 s, nothing moved or loose, the portal's warnings the made-up PEC and address).** The
+  «vincolo ambientale» and «vincolo monumentale» sections above are in the crawls of the sign *inside an opening* (`…-interventi`) and of the stand-alone «installazione di mezzi pubblicitari - SCIA»,
+  not in the restaurant's stand-alone sign SCIA (`…-scia-4`, `insegna-ristorante-scia-fittizio`): read on a draft of it, its section list has none, and its «ulteriori dichiarazioni» holds two Si/No facts,
+  «L'installazione ricade in zona A di P.R.G.» and «…in area sottoposta a vincolo paesaggistico». **Si on either opens no box and no section** (the radios swap, nothing else), so the filing is the same; what
+  differs is the person's, from the library's `insegna-esercizio` (verified): in a landscape-protected area the SCIA is ineffective until the authorization. `rehearsals/insegna-ristorante-vincolo-fittizio`
+  (three answers files: both Si, vincolo only, zona A only) is the plain recipe with those asks answerable: `insegna_vincolo` is now the landscape vincolo alone and adds a line to `yours`;
+  `insegna_zona_a` is no longer refused (the plain recipe's «altre condizioni» has no source, and the library finds no specific rule for the centro storico); a building protected as a cultural asset is
+  its own ask, `insegna_bene_culturale`, still refused (the Soprintendenza's art. 49 authorization comes first, and the form has no box for it). The 48 recipes that carry `insegna_vincolo` and `insegna_zona_a`
+  as refusals, and `derive_combos.py`, which writes them, are unchanged: lifting them is one decision, not made here. Not read: the attachments screen under a vincolo Si (it may add a slot for the authorization),
+  and the opening-with-sign's `vincolo ambientale` options (art. 149, already held or applied for, ordinary or simplified) and `vincolo monumentale`: those still have no case.
+- **Reading a draft by hand.** Choosing the sector in the wizard by clicks or `span.click()` did not register (the page said «Deve essere selezionato almeno un elemento»): the runner is the way to a draft. `read_draft.js`
+  loses `window.__draft` at every navigation, a section link included: click the link in one call, wait, then paste the helper's body (no click in it) and read.
 - **Not done:** the counter does not yet say which of a box's *revealed* boxes a case saw (it counts boxes, not paths), and it is not in `docs/` (a `--write` waits for the numbers to be read against a case).
 
 ## What the portal does that bit us
