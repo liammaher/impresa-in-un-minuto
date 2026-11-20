@@ -1,0 +1,27 @@
+{
+ "extras": [],
+ "attivita_852": [
+  "ristorazione",
+  "ristorante"
+ ],
+ "acustica_impatto_doc": "rehearsals/ristorante-centro-storico-fittizio/files/impatto-acustico.pdf",
+ "descrizione": "PROVA NON INVIARE - notifica modifica tipo 9d5085 generato",
+ "bollo_marche": false,
+ "oggetto": "Presentare l'aggiornamento della registrazione impresa alimentare - modifica della tipologia di attività: pratica di prova con dati inventati.",
+ "insegna": "Pizzeria Fittizia",
+ "superficie_somministrazione_mq": "35",
+ "in_centro_commerciale": "false",
+ "diritti_euro": "420",
+ "piano": [
+  "accessibile",
+  "sicurezza",
+  "punteggio"
+ ],
+ "zona": "a",
+ "fatti": [],
+ "stagionale": "false",
+ "diritti_esente": false,
+ "bollo_esenzione": "no",
+ "notifica_852_protocollo": "PG/2026/0777778",
+ "notifica_852_data": "2026-03-02"
+}

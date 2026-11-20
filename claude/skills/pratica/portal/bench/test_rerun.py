@@ -208,7 +208,7 @@ def _():
     if not shutil.which("node"):
         return
     import subprocess
-    body = res.split("\n", 1)[1]  # the first line waits 35 s while the pane shows the page
+    body = res.split("setTimeout(r, 35000));\n", 1)[1]  # the statement that waits 35 s while the pane shows the page
     harness = (
         "global.window = {}; global.document = {hidden: true};\n"
         "const ss = {'pv-report': JSON.stringify({result: 'stopped', error: 'Attestato: 0 fields with this label', at: {section: 'distinta di versamento'}, url: 'https://x/cmd/error'})};\n"
@@ -301,6 +301,22 @@ def _():
     data = json.loads(out)
     assert data["now"] == {"run": "x/answers", "result": "running", "at": "dati catastali", "sections": 3}, data
     assert data["hidden"] is True and data["running"] is True and data["done"] == 0, data
+
+
+@case("results.js gives the record once the batch has ended, ready for --record, and doesn't wait 35 s for nothing (2026-11-20)")
+def _():
+    res = (built() / "results.js").read_text()
+    body = res[:res.rindex("\nJSON.stringify(") + 1] + "return " + res[res.rindex("\nJSON.stringify(") + 1:]
+    fake = ("globalThis.document = {hidden: false}; const store = {'pv-batch': JSON.stringify([{name: 'a/answers', result: 'filled', total_seconds: 61.2, moved: [], loose: []},"
+            "{name: 'b/answers', result: 'stopped', total_seconds: 12, error: 'x', at: {section: 's'}}])};"
+            "globalThis.sessionStorage = {getItem: (k) => store[k] ?? null}; globalThis.window = globalThis; window.pvBatch = [1, 2]; window.pvBatchBusy = false;")
+    import time
+    t0 = time.time()
+    code, out = node(fake + "(async () => { %s })().then(console.log)" % body)
+    assert time.time() - t0 < 20, "waited for a batch that had ended"
+    data = json.loads(out)
+    assert data["record"] == [{"name": "a/answers", "result": "filled", "total_seconds": 61.2}, {"name": "b/answers", "result": "stopped", "total_seconds": 12}], data
+    assert data["running"] is False and data["filled"] == 1, data
 
 
 print(f"{sum(results)}/{len(results)} passed")

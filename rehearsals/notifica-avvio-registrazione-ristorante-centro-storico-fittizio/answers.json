@@ -1,0 +1,25 @@
+{
+ "extras": [],
+ "attivita_852": [
+  "ristorazione",
+  "ristorante"
+ ],
+ "acustica_impatto_doc": "rehearsals/ristorante-centro-storico-fittizio/files/impatto-acustico.pdf",
+ "descrizione": "PROVA NON INVIARE - notifica avvio registr e88bb9 generato",
+ "bollo_marche": false,
+ "oggetto": "Notifica ai fini della registrazione - avvio attività/trasferimento: pratica di prova con dati inventati.",
+ "insegna": "Pizzeria Fittizia",
+ "superficie_somministrazione_mq": "35",
+ "in_centro_commerciale": "false",
+ "diritti_euro": "420",
+ "piano": [
+  "accessibile",
+  "sicurezza",
+  "punteggio"
+ ],
+ "zona": "a",
+ "fatti": [],
+ "stagionale": "false",
+ "diritti_esente": false,
+ "bollo_esenzione": "no"
+}
