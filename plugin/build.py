@@ -2,8 +2,8 @@
 """Build the Impresa in un minuto plugin for Cowork: plugin/impresa-in-un-minuto plus the runner, the rehearsals'
 steps files and the library (library/), as one installable file.
 
-  build.py [--library DIR] [--out DIR] [--connector URL] [--vault on|off] [--python-download on|off]
-           [--cowork-test] [--evals]
+  build.py [--library DIR] [--out DIR] [--target claude|openai] [--connector URL] [--vault on|off]
+           [--python-download on|off] [--cowork-test] [--evals]
 
 Writes OUT/impresa-in-un-minuto/ (default plugin/dist) and OUT/impresa-in-un-minuto.plugin (the same, zipped), then
 pre-flights the test fixture with the built plugin through its launcher (sh py, which picks this
@@ -20,6 +20,11 @@ Prova, a draft on the real portal with nothing of the tecnico's, and the build's
 --cowork-test keeps the Cowork test skill, for whoever runs those tests (it adds a 3 MB PDF): a
 release leaves it out. --evals adds plugin/evals/ (how Claude follows the skill, for
 `claude plugin eval`), with the made-up case as their job (evals/_job/); a release leaves them out too.
+--target says which agent the plugin is for (docs/design/openai-platform.md): `claude` (default, the
+Claude app and Cowork) is the plugin as it has always been; `openai` (Codex, the ChatGPT desktop app) writes
+a root plugin.json and mcp.json instead of .claude-plugin/ and .mcp.json, keeps each text's
+`<!-- openai -->` parts and drops its `<!-- claude -->` ones (the other way for claude), and goes to
+plugin/dist/openai/ unless --out says otherwise.
 """
 
 import argparse
@@ -70,6 +75,16 @@ MARKER = re.compile(r"^<!-- (/?)(vault|no-vault) -->$")
 DOWNLOAD = re.compile(r"^<!-- (/?)(download|no-download) -->$")
 DOWNLOAD_SH = re.compile(r"^# <(/?)(download|no-download)>$")
 LAUNCHER = "skills/pratiche/py"
+# The third switch, the target: a text's `<!-- claude -->` ... `<!-- /claude -->` and `<!-- openai -->` ...
+# `<!-- /openai -->` parts are kept only for that target. A text with none is the same for both.
+TARGETS = ("claude", "openai")
+# What OpenAI's manifests and MCP config name as their schemas (Agent Plugins 1.0.0,
+# developers.openai.com/plugins/build/plugins, read 2026-11-20).
+OPENAI_PLUGIN_SCHEMA = "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json"
+OPENAI_MCP_SCHEMA = "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json"
+# Claude's variable for a skill's own folder: OpenAI's docs name no equivalent for skills (the spike,
+# docs/design/openai-platform.md, decides what replaces it), so the openai build keeps it and says so.
+SKILL_DIR_VAR = "${CLAUDE_SKILL_DIR}"
 
 
 def switch(key):
@@ -192,6 +207,42 @@ def check_description(text, name):
     if said is not None and len(said[len("description:"):].strip()) > DESCRIPTION_MAX:
         sys.exit(f"{name}: description is {len(said[len('description:'):].strip())} characters, "
                  f"claude.ai keeps {DESCRIPTION_MAX}: shorten it")
+
+
+def select_target(plugin, target):
+    """The hand-written texts for this build's target: the parts of the other target go, with every
+    marker line. A text with no markers is untouched, so the claude build stays what it was."""
+    for f in sorted(plugin.rglob("*.md")):
+        text = f.read_text()
+        kept = text
+        for t in TARGETS:
+            kept = keep(kept, t == target, t, re.compile(rf"^<!-- (/?)({t}) -->$"), f.relative_to(plugin))
+        if kept != text:
+            f.write_text(kept)
+
+
+def openai_manifest(manifest):
+    """The root plugin.json OpenAI reads, from the one hand-written manifest (.claude-plugin/plugin.json),
+    so the name and version have one source. Only the portable fields: OpenAI's own settings
+    (extensions.com.openai) wait for what the spike finds the desktop app needs."""
+    out = {"$schema": OPENAI_PLUGIN_SCHEMA}
+    for key in ("name", "version", "description", "author", "homepage", "repository", "license", "keywords"):
+        if key in manifest:
+            out[key] = manifest[key]
+    name = out.get("name", "")
+    if not re.fullmatch(r"[a-z0-9]+(-[a-z0-9]+)*", name) or len(name) > 64:
+        sys.exit(f"plugin name {name!r}: OpenAI wants at most 64 characters, lower case, digits, single hyphens")
+    if len(out.get("description", "")) > 4000 or len(out.get("author", {}).get("name", "")) > 120:
+        sys.exit("plugin.json: description over 4000 characters or author name over 120 (OpenAI's limits)")
+    return out
+
+
+def connector_config(target, url):
+    """The connector as the target's MCP config names it: Claude's .mcp.json says `http`, OpenAI's
+    mcp.json `streamable-http`. No auth: the connector is read-only and takes no personal data."""
+    server = {"type": "http" if target == "claude" else "streamable-http", "url": url}
+    config = {"mcpServers": {"impresa-in-un-minuto": server}}
+    return config if target == "claude" else {"$schema": OPENAI_MCP_SCHEMA} | config
 
 
 def select_download(plugin, download):
@@ -343,7 +394,8 @@ def build_flags(a):
     """What this build was asked for besides the sources, as live.py compares it with what it asks for."""
     return {"vault": vault_default() if a.vault is None else a.vault == "on",
             "python_download": switch("python_download") if a.python_download is None else a.python_download == "on",
-            "evals": a.evals, "cowork_test": a.cowork_test, "connector": a.connector, "pvault": a.pvault_version}
+            "evals": a.evals, "cowork_test": a.cowork_test, "connector": a.connector, "pvault": a.pvault_version,
+            "target": a.target}
 
 
 def git_head():
@@ -605,7 +657,8 @@ def check_private(plugin, terms):
 def main():
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     ap.add_argument("--library", type=Path, default=os.environ.get("PRATICHE_NAPOLI_DIR") or REPO / "library")
-    ap.add_argument("--out", type=Path, default=HERE / "dist")
+    ap.add_argument("--out", type=Path, help="where to write the build (default plugin/dist; for --target openai plugin/dist/openai)")
+    ap.add_argument("--target", choices=TARGETS, default="claude", help="the agent this build is for (default claude)")
     ap.add_argument("--pvault-version", help="the pvault release the setup skill installs, e.g. 0.1.0 (with --pvault-checksums)")
     ap.add_argument("--pvault-checksums", type=Path, help="that release's checksums.txt")
     ap.add_argument("--connector", help="the Impresa in un minuto connector's https URL (connector/): the plugin brings it")
@@ -615,6 +668,7 @@ def main():
     ap.add_argument("--cowork-test", action="store_true", help="keep the Cowork test skill (a release leaves it out)")
     ap.add_argument("--evals", action="store_true", help="add plugin/evals/ for `claude plugin eval` (a release leaves them out)")
     a = ap.parse_args()
+    a.out = a.out or (HERE / "dist" if a.target == "claude" else HERE / "dist" / a.target)
     vault = vault_default() if a.vault is None else a.vault == "on"
     download = switch("python_download") if a.python_download is None else a.python_download == "on"
     if a.connector and not re.fullmatch(r"https://[^\s/]+(/\S*)?", a.connector):
@@ -636,12 +690,17 @@ def main():
     select_vault(plugin, vault)  # before anything else goes in: only the hand-written texts
     manifest_file = plugin / ".claude-plugin" / "plugin.json"
     manifest_file.write_text(with_scope(manifest_file.read_text(), "plugin.json"))
+    manifest = json.loads(manifest_file.read_text())
+    if a.target == "openai":  # its manifest at the root, generated from the one hand-written; no Claude one beside it
+        (plugin / "plugin.json").write_text(as_json(openai_manifest(manifest)) + "\n")
+        shutil.rmtree(manifest_file.parent)
+    select_target(plugin, a.target)
     select_download(plugin, download)
     # The licence and notices travel with the plugin: it bundles the library's CC BY-SA texts.
     for name in ("LICENSE", "NOTICE.md"):
         shutil.copy2(REPO / name, plugin / name)
     if a.connector:  # without one the skill uses coverage.json, as of the build
-        (plugin / ".mcp.json").write_text(as_json({"mcpServers": {"impresa-in-un-minuto": {"type": "http", "url": a.connector}}}))
+        (plugin / (".mcp.json" if a.target == "claude" else "mcp.json")).write_text(as_json(connector_config(a.target, a.connector)))
     if a.pvault_version:  # without one the setup skill says there is no release to install from
         write_pvault_release(plugin / "skills" / SETUP_SKILL, a.pvault_version, a.pvault_checksums)
     skill = plugin / "skills" / "pratiche"
@@ -649,7 +708,6 @@ def main():
     copy_runner(skill, desks, a.library)
     catalog = copy_pratiche(skill, a.library, desks)
     copy_library(a.library, skill, catalog, desks)
-    manifest = json.loads((plugin / ".claude-plugin" / "plugin.json").read_text())
     # The guides: the procedures the plugin's library copy holds, the carried sportelli's only.
     coverage = write_coverage(skill, catalog, skill / "library", manifest["version"])
     make_test_case(skill)
@@ -669,13 +727,17 @@ def main():
     check_private(plugin, private_terms())
     (a.out / "build.json").write_text(json.dumps({"sources": sources_digest(a.library), "version": manifest["version"],
                                                   "git": git_head(), "flags": build_flags(a)}, indent=1) + "\n")
-    zipped = a.out / f"{manifest['name']}.plugin"
+    if a.target == "openai":  # the spike has not said yet what stands for the variable in a skill's commands
+        left = sum(f.read_text().count(SKILL_DIR_VAR) for f in plugin.rglob("*.md"))
+        if left:
+            print(f"note: {left} uses of {SKILL_DIR_VAR} left in the texts (docs/design/openai-platform.md)", file=sys.stderr)
+    zipped = a.out / (f"{manifest['name']}.plugin" if a.target == "claude" else f"{manifest['name']}-{manifest['version']}-openai.zip")
     with zipfile.ZipFile(zipped, "w", zipfile.ZIP_DEFLATED) as z:
         for f in sorted(plugin.rglob("*")):
             if f.is_file() and "__pycache__" not in f.parts and f.name != ".DS_Store":
                 z.write(f, f.relative_to(plugin))
     counts = {s: sum(e["status"] == s for e in coverage) for s in ("available", "paused", "mapped", "guide", "coming")}
-    print(f"{zipped}: {manifest['name']} {manifest['version']}, {'with' if vault else 'no'} archive, {'with' if download else 'no'} Python download{', Cowork test' if a.cowork_test else ''}{', evals' if a.evals else ''}, {len(catalog)} pratiche, "
+    print(f"{zipped}: {manifest['name']} {manifest['version']} for {a.target}, {'with' if vault else 'no'} archive, {'with' if download else 'no'} Python download{', Cowork test' if a.cowork_test else ''}{', evals' if a.evals else ''}, {len(catalog)} pratiche, "
           f"{zipped.stat().st_size // 1024} KB; coverage {counts}")
     return 0
 
