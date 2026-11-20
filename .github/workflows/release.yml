@@ -176,6 +176,23 @@ jobs:
           commit=$(python3 plugin/publish_plugin.py --version "$PLUGIN_VERSION" --dir "$RUNNER_TEMP/plugin/impresa-in-un-minuto" --push)
           echo "PLUGIN_COMMIT=$commit" >> "$GITHUB_ENV"
 
+      # The same plugin for Codex and the ChatGPT desktop app (build.py --target openai): attached as
+      # impresa-in-un-minuto-<version>-openai.zip and published to the plugin-openai branch (tag
+      # plugin-openai-v<version>), where .agents/plugins/marketplace.json points. Without the archive only:
+      # the setup skill has no OpenAI wording yet, so a build with it stops. A failure here leaves the Claude
+      # release as it is: the pin step below then pins only the Claude marketplace.
+      - name: Build, attach and publish the plugin for OpenAI
+        if: env.VAULT != 'true'
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          python3 plugin/build.py --target openai --out "$RUNNER_TEMP/plugin-openai"
+          gh release upload "$TAG" "$RUNNER_TEMP/plugin-openai/impresa-in-un-minuto-$PLUGIN_VERSION-openai.zip"
+          commit=$(python3 plugin/publish_plugin.py --target openai --version "$PLUGIN_VERSION" --dir "$RUNNER_TEMP/plugin-openai/impresa-in-un-minuto" --push)
+          echo "PLUGIN_OPENAI_COMMIT=$commit" >> "$GITHUB_ENV"
+
       # The marketplace file in the repository points at one release's commit of the plugin branch.
       # A pull request moves it to this one. If the repository doesn't let Actions open pull
       # requests, the release still stands: run plugin/pin_marketplace.py by hand.
@@ -188,11 +205,15 @@ jobs:
         run: |
           set -euo pipefail
           python3 plugin/pin_marketplace.py --version "$PLUGIN_VERSION" --commit "$PLUGIN_COMMIT"
+          if [ -n "${PLUGIN_OPENAI_COMMIT:-}" ]; then
+            python3 plugin/pin_marketplace.py --target openai --version "$PLUGIN_VERSION" --commit "$PLUGIN_OPENAI_COMMIT"
+          fi
           branch="release/marketplace-$PLUGIN_VERSION"
           git checkout -b "$branch"
           git add .claude-plugin/marketplace.json
+          if [ -n "${PLUGIN_OPENAI_COMMIT:-}" ]; then git add .agents/plugins/marketplace.json; fi
           git commit -m "Marketplace: point at the $PLUGIN_VERSION plugin"
           git push origin "$branch"
           gh pr create --base main --head "$branch" \
             --title "Marketplace: point at the $PLUGIN_VERSION plugin" \
-            --body "Pins .claude-plugin/marketplace.json to plugin-v$PLUGIN_VERSION (commit $PLUGIN_COMMIT on the plugin branch). Merge it and adding the marketplace liammaher/impresa-in-un-minuto gives this release. Its checks wait for approval (the workflow opened it): press Approve workflows to run, or gh api -X POST repos/$GITHUB_REPOSITORY/actions/runs/RUN_ID/approve; once they pass, an ordinary merge."
+            --body "Pins .claude-plugin/marketplace.json to plugin-v$PLUGIN_VERSION (commit $PLUGIN_COMMIT on the plugin branch)${PLUGIN_OPENAI_COMMIT:+, and .agents/plugins/marketplace.json (Codex) to plugin-openai-v$PLUGIN_VERSION (commit $PLUGIN_OPENAI_COMMIT)}. Merge it and adding the marketplace liammaher/impresa-in-un-minuto gives this release. Its checks wait for approval (the workflow opened it): press Approve workflows to run, or gh api -X POST repos/$GITHUB_REPOSITORY/actions/runs/RUN_ID/approve; once they pass, an ordinary merge."

@@ -17,6 +17,7 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 sys.dont_write_bytecode = True
 import build  # noqa: E402
+import yaml  # noqa: E402
 
 TEXT = "a\n<!-- vault -->\nb\n<!-- /vault -->\n<!-- no-vault -->\nc\n<!-- /no-vault -->\nd\n"
 
@@ -161,11 +162,12 @@ def main():
             plugin = Path(tmp) / target
             shutil.copytree(HERE / "impresa-in-un-minuto", plugin)
             (plugin / "skills" / "pratiche" / "EXTRA.md").write_text(text)
-            before = {f: f.read_text() for f in plugin.rglob("*.md") if f.name != "EXTRA.md"}
+            marked = re.compile(r"^<!-- /?(?:claude|openai) -->$", re.M)
+            unmarked = [f for f in plugin.rglob("*.md") if f.name != "EXTRA.md" and not marked.search(f.read_text())]
+            before = {f: f.read_text() for f in unmarked}
             build.select_target(plugin, target)
             assert (plugin / "skills" / "pratiche" / "EXTRA.md").read_text() == want, target
-            assert before == {f: f.read_text() for f in plugin.rglob("*.md") if f.name != "EXTRA.md"}, \
-                f"{target}: a text with no target marker changed"
+            assert before == {f: f.read_text() for f in unmarked}, f"{target}: a text with no target marker changed"
         for bad in ("<!-- openai -->\nx\n", "x\n<!-- /claude -->\n", "<!-- claude -->\n<!-- claude -->\n"):
             plugin = Path(tmp) / "bad"
             shutil.rmtree(plugin, ignore_errors=True)
@@ -180,6 +182,60 @@ def main():
     # No text carries a target marker the build wouldn't understand (a typo like `<!-- open-ai -->` stays in).
     for f in (HERE / "impresa-in-un-minuto").rglob("*.md"):
         assert not re.search(r"^<!-- /?(?:claude|openai)\b(?! -->)", f.read_text(), re.M), f
+    # The openai build's words: OpenAI's <skill-dir> for Claude's variable, the assistant as ChatGPT, and a
+    # stop on what only Claude's apps have.
+    said = build.openai_words('sh "${CLAUDE_SKILL_DIR}/py": Claude compila. claude-plugin, Claudette', "t")
+    assert said == 'sh "<skill-dir>/py": ChatGPT compila. claude-plugin, Claudette', said
+    for bad in ("usa Claude in Chrome", "dall'app Claude", "(Cowork's sandbox)", "AskUserQuestion", "`tabs_context`",
+                "${CLAUDE_PLUGIN_ROOT}", "In Claude disattiva", "Claude Code nel terminale", "the Claude desktop app"):
+        try:
+            build.openai_words(f"a\n{bad}\n", "t")
+        except SystemExit as e:
+            assert str(e).startswith("t:2:"), e
+        else:
+            raise AssertionError(f"a Claude-only name passed: {bad!r}")
+    # Every hand-written text, as the openai build keeps it (without the archive, as build.yaml ships it),
+    # says nothing only Claude's apps have: the openai build doesn't stop on one, and names no Claude.
+    with tempfile.TemporaryDirectory() as tmp:
+        plugin = Path(tmp) / "openai"
+        shutil.copytree(HERE / "impresa-in-un-minuto", plugin)
+        build.select_vault(plugin, False)
+        build.select_target(plugin, "openai")
+        shutil.rmtree(plugin / "skills" / build.TEST_SKILL)  # as the build does before openai_texts
+        build.openai_texts(plugin)
+        for f in plugin.rglob("*.md"):
+            text = f.read_text()
+            assert "CLAUDE_" not in text and not re.search(r"\bClaude\b", text), f
+            assert "<!--" not in text or "<!-- download" in text or "<!-- no-download" in text, f
+        skill = (plugin / "skills" / "pratiche" / "SKILL.md").read_text()
+        assert "`<skill-dir>` is this SKILL.md's directory" in skill, "the openai skill says what <skill-dir> is"
+        # A check only in ChatGPT: its in-app browser reads a page but can't fill one (2026-11-20). Nothing
+        # tells the model to log in, compile or show a test on the portal, and nothing promises it to them.
+        assert "**In ChatGPT: a check only, for now.**" in skill and "## 4. The compilation" not in skill, \
+            "the openai skill has no compilation"
+        for f, said in ((plugin / "skills" / "pratiche" / "SKILL.md", skill),
+                        (plugin / "skills" / "pratiche" / "prova.md", (plugin / "skills" / "pratiche" / "prova.md").read_text()),
+                        (plugin / "README.md", (plugin / "README.md").read_text())):
+            for promise in ("Entra con il tuo SPID", "Vuoi vedere una CILA di prova", "run.py\" page",
+                            "Fammi vedere una prova", "tab.playwright"):
+                assert promise not in said, (f.name, promise)
+        front = yaml.safe_load(skill.split("---")[1])
+        assert set(front) == {"name", "description"} and "non compila il portale" in front["description"], front
+        readme = (plugin / "README.md").read_text()
+        assert "codex plugin marketplace add liammaher/impresa-in-un-minuto" in readme and "non compila il portale" in readme
+    # The claude build keeps every Claude part as it was.
+    with tempfile.TemporaryDirectory() as tmp:
+        plugin = Path(tmp) / "claude"
+        shutil.copytree(HERE / "impresa-in-un-minuto", plugin)
+        build.select_target(plugin, "claude")
+        skill = (plugin / "skills" / "pratiche" / "SKILL.md").read_text()
+        assert "never Claude in Chrome" in skill and "<skill-dir>" not in skill and "a check only, for now" not in skill
+        assert "## 4. The compilation" in skill and "Entra con il tuo SPID" in skill
+        front = yaml.safe_load(skill.split("---")[1])
+        assert set(front) == {"name", "description"} and "Claude compila" in front["description"], front
+        raw = (HERE / "impresa-in-un-minuto" / "skills" / "pratiche" / "SKILL.md").read_text().split("---", 2)[1]
+        assert skill.split("---", 2)[1] == re.sub(r"\nmetadata:\n  openai-description: .*\n", "\n", raw), \
+            "the claude build's frontmatter is the hand-written one, less ChatGPT's description"
     # OpenAI's manifest: the portable fields of the hand-written one, nothing of Claude's.
     manifest = json.loads(build.with_scope((HERE / "impresa-in-un-minuto" / ".claude-plugin" / "plugin.json").read_text(), "plugin.json"))
     out = build.openai_manifest(manifest)
@@ -189,9 +245,10 @@ def main():
                         "keywords", "extensions"}, out
     assert "displayName" not in out, "displayName is Claude's; OpenAI's goes under extensions.com.openai.interface"
     openai = out["extensions"]["com.openai"]
+    assert "Claude" not in out["description"] and "non compila il portale" in out["description"], out["description"]
     assert openai["requires_local_executor"] is True, "the runner's scripts need the desktop app: desktop only"
     face = openai["interface"]
-    assert face["displayName"] == manifest["displayName"] and face["longDescription"] == manifest["description"] \
+    assert face["displayName"] == manifest["displayName"] and face["longDescription"] == out["description"] == build.openai_words(manifest["metadata"]["openai"]["description"], "t") \
         and face["developerName"] == manifest["author"]["name"] and face["websiteURL"] == manifest["homepage"], face
     assert face["category"] in {"Productivity", "Creativity", "Developer Tools", "Business & Operations", "Data & Analytics",
                                 "Communication", "Education & Research", "Security", "Finance", "Healthcare", "Travel",
@@ -200,7 +257,7 @@ def main():
     assert set(face) <= {"displayName", "longDescription", "developerName", "category", "defaultPrompt", "websiteURL"}, \
         "a listing text the hand-written manifest doesn't hold would escape test_english and test_voice"
     for bad in ({**manifest, "name": "Impresa_In_Un_Minuto"}, {**manifest, "name": "a" * 65},
-                {**manifest, "description": "x" * 1025}, {**manifest, "displayName": "x" * 81}):
+                {**manifest, "metadata": {"openai": {"description": "x" * 1025}}}, {**manifest, "displayName": "x" * 81}):
         try:
             build.openai_manifest(bad)
         except SystemExit:

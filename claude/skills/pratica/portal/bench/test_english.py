@@ -16,6 +16,7 @@ words is not looked at either (a label is the portal's).
   ~/.cache/pratica-portal/venv/bin/python -I claude/skills/pratica/portal/bench/test_english.py
 """
 import ast
+import json
 import re
 import sys
 from pathlib import Path
@@ -73,9 +74,10 @@ def yaml_strings(node, key=""):
 
 
 def frontmatter_description(path):
+    """The skill's description, and ChatGPT's (`metadata: openai-description`, plugin/build.py) after it."""
     m = re.match(r"---\n(.*?)\n---", path.read_text(), re.S)
-    d = re.search(r"^description:\s*(.*)$", m.group(1), re.M) if m else None
-    return d.group(1) if d else ""
+    said = re.findall(r"^(?:description|  openai-description):\s*(.*)$", m.group(1), re.M) if m else []
+    return "\n".join(said)
 
 
 def main():
@@ -87,7 +89,9 @@ def main():
 
     n = 0
     look("plugin README", (PLUGIN / "README.md").read_text())
-    look("plugin description", re.search(r'"description":\s*"(.*)"', (PLUGIN / ".claude-plugin" / "plugin.json").read_text()).group(1))
+    manifest = json.loads((PLUGIN / ".claude-plugin" / "plugin.json").read_text())
+    look("plugin description", manifest["description"])
+    look("plugin description for ChatGPT", manifest.get("metadata", {}).get("openai", {}).get("description", ""))
     for sk in sorted(SKILLS.glob("*/SKILL.md")):
         if sk.parent.name == "cowork-test":  # the maintainers' own test: a release ships neither it nor its text
             continue

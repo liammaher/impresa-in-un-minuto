@@ -1,7 +1,7 @@
 {
   "name": "impresa-in-un-minuto",
   "displayName": "Impresa in un minuto",
-  "version": "0.8.2",
+  "version": "0.8.3",
   "description": "Per tecnici e professionisti (architetti, geometri, ingegneri, commercialisti, consulenti) che queste pratiche le presentano già: Claude compila le pratiche del {{copertura}} su impresainungiorno dai documenti del cliente, e tu controlli. Si ferma ai passi che spettano solo a te (accesso con SPID, dichiarazioni, firma, pagamento, invio). Non è una consulenza: Claude può sbagliare. Con la biblioteca pratiche-napoli di regole e procedure.",
   "author": {
     "name": "Liam Maher"
@@ -9,5 +9,10 @@
   "homepage": "https://liammaher.github.io/impresa-in-un-minuto/",
   "repository": "https://github.com/liammaher/impresa-in-un-minuto",
   "license": "MIT",
+  "metadata": {
+    "openai": {
+      "description": "Per tecnici e professionisti (architetti, geometri, ingegneri, commercialisti, consulenti) che queste pratiche le presentano già: controlla la cartella di un lavoro per una pratica del {{copertura}} su impresainungiorno e ti dice quale pratica serve, quali file lo sportello rifiuterebbe e quali dati mancano. In ChatGPT, per ora, non compila il portale. Non è una consulenza: ChatGPT può sbagliare. Con la biblioteca pratiche-napoli di regole e procedure."
+    }
+  },
   "keywords": ["impresa-in-un-minuto", "italia", "napoli", "sue", "cila", "scia", "architetti", "pratiche"]
 }

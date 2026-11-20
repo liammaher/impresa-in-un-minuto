@@ -1,15 +1,35 @@
 ---
 name: pratiche
 description: Per chi queste pratiche le presenta già (tecnici e professionisti; Claude compila, il controllo è loro). Prepara una pratica del {{copertura}} su impresainungiorno dai documenti del cliente - {{pratiche}} - come bozza controllata che si ferma prima di dichiarazioni, firma, pagamento e invio. Risponde anche su quale pratica serve e con quali documenti, controlla una cartella senza aprire il portale e fa vedere una prova su una CILA con dati inventati. Da usare quando {{chi}} chiede, in italiano o in inglese, di preparare, compilare o presentare una pratica a {{città}} («prepara una CILA»), di controllare una cartella («solo un controllo», «cosa manca»), cosa serve per un caso, o di vedere una prova («fammi vedere una prova», «fai una prova»).
+metadata:
+  openai-description: Per chi queste pratiche le presenta già (tecnici e professionisti). Controlla la cartella di un lavoro per una pratica del {{copertura}} su impresainungiorno - {{pratiche}} - e dice quale pratica serve, cosa dicono i documenti, quali file lo sportello rifiuterebbe e quali dati mancano, senza aprire il portale. In ChatGPT, per ora, non compila il portale. Da usare quando {{chi}} chiede, in italiano o in inglese, di controllare una cartella («solo un controllo», «cosa manca»), quale pratica serve a {{città}} e con quali documenti, o di preparare, compilare o presentare una pratica («prepara una CILA»).
 ---
 
 # Pratiche a {{città}}
+<!-- openai -->
+
+**In ChatGPT: a check only, for now.** ChatGPT's in-app browser can read a page but not fill one,
+so here you never open, log in to or fill the portal, and you prepare no draft. Every job is
+**A check only** (below): step 0, then steps 1-3 up to the check, then that report. Steps 4 to 7
+(the compilation) are not in this skill here, and neither is the Prova on the portal (`prova.md`
+says what to do instead). Where anything below says otherwise, this wins: never offer a login, a
+compilation, a draft or a test on the portal. The check still writes its files where step 0 says,
+in the work folder (`impresa-in-un-minuto/` inside the open folder): never in a temporary folder or
+anywhere else on the computer, since that subfolder is the one place the tecnico is told the
+documents' data sits. Its report ends with the line step «A check only» gives, in those words.
+<!-- /openai -->
 <!-- no-vault -->
 
 **First, on the first reply of the conversation in which they hand over a job**: your very first
 words, before any tool or document, are this and nothing else:
+<!-- claude -->
 «Leggo io i documenti: i loro dati passano da questa conversazione e poi sul portale. Password e
 SPID mai. Posso sbagliare: il controllo finale è tuo.» Then work in silence until the one message.
+<!-- /claude -->
+<!-- openai -->
+«Leggo io i documenti: i loro dati passano da questa conversazione. Il portale non lo apro.
+Posso sbagliare: il controllo finale è tuo.» Then work in silence until the report.
+<!-- /openai -->
 Not a word of plan or progress in between («Ho trovato un solo lavoro…», «Sto leggendo…»): neither Italian nor
 English, only that line and, at the end, the message.
 <!-- /no-vault -->
@@ -152,10 +172,16 @@ your questions): `${CLAUDE_SKILL_DIR}/prova.md` at once. A test asks nothing.
 - **No guesses.** Every value comes from a document or the tecnico. A value you can't read for
   sure (a blurred scan, two documents that disagree) is asked, with what each document says.
 <!-- /no-vault -->
+<!-- claude -->
 - **The built-in browser** of the Claude desktop app, never Claude in Chrome.
+<!-- /claude -->
+<!-- openai -->
+- **No browser.** The portal is never opened from here, not even to look (see the top).
+<!-- /openai -->
 
 ## The flow, as the tecnico lives it
 
+<!-- claude -->
 1. The studio's details, once (step 0).
 2. They say the job in one line and hand over the folder (documents attached here instead: step 2).
 3. You answer in **one short message**: the verdict, what you understood, the pratica you
@@ -182,6 +208,14 @@ Between 3 and 7 they hear nothing from you but the login, the code and those few
 <!-- no-vault -->
 Between 3 and 7 they hear nothing from you but the login and those few lines.
 <!-- /no-vault -->
+<!-- /claude -->
+<!-- openai -->
+1. The studio's details, once (step 0).
+2. They say the job in one line and hand over the folder (documents attached here instead: step 2).
+3. You answer in **one short message**, the report of **A check only**: the verdict and what you
+   understood, the files the sportello would refuse, the details missing, counted. Nothing opens.
+4. They fix the folder and ask again: the check again, the same report.
+<!-- /openai -->
 
 ## La prova
 
@@ -189,6 +223,13 @@ Between 3 and 7 they hear nothing from you but the login and those few lines.
 the real portal in a few minutes, with no questions and none of a real filing's rules; a test of
 another pratica the same way.
 
+<!-- openai -->
+**When they come without a job** ("come funziona?", "ciao", "cosa fa?"), your whole reply is these
+two lines, nothing before or after:
+  "Controllo le cartelle delle pratiche del {{copertura}} per chi le presenta già: ti dico quale pratica serve, cosa leggo dai documenti, quali file lo sportello rifiuterebbe e quali dati mancano.
+  Dammi la cartella di un lavoro e scrivimi «solo un controllo». In ChatGPT, per ora, il portale non lo compilo."
+<!-- /openai -->
+<!-- claude -->
 **When they come without a job** ("come funziona?", "ciao", "cosa fa?"), the Prova is the answer:
 seeing it beats any description. Your whole reply is these two lines, nothing before or after,
 no list of features or steps:
@@ -200,6 +241,7 @@ With the clickable-options tool, the second line is its question, "Sì, fammelo 
 and "Ho già un caso vero"; without it, add "Scrivi «sì», o dimmi il tuo caso." On yes,
 `prova.md`. Never force it: when they come with a real job and don't call it a test, start the
 job, and offer the Prova only if they hesitate or lack the documents.
+<!-- /claude -->
 
 ## A check only
 
@@ -215,16 +257,31 @@ questions, one short report (a line each, no lists of boxes):
    and which are fine.
 3. **I dati**: how many details no document holds and whose they are, counted («61: 20 tuoi e dello
    studio, 7 del committente, …»), never listed; and how many questions are left.
+<!-- claude -->
 4. Last, in these words: «Non ho aperto il portale e non ho compilato nulla. Se vuoi andare
    avanti, scrivimi «procedi»: ti faccio le domande.»
 
-On «procedi», the one message of step 3. A check that finds the case refused (`unsupported`, a
+On «procedi», the one message of step 3.
+<!-- /claude -->
+<!-- openai -->
+4. Last, in these words: «Non ho aperto il portale e non ho compilato nulla: in ChatGPT, per ora,
+   Impresa in un minuto controlla soltanto.»
+
+If they ask to go on, to compile or to file, say that again in one line, and nothing else.
+<!-- /openai -->
+A check that finds the case refused (`unsupported`, a
 status that isn't `available`) is that refusal, as always.
 
 ## What this skill has
 
+<!-- claude -->
 `${CLAUDE_SKILL_DIR}` in a command is this skill's folder (should a command show a `$` variable
 there instead of a path, put this skill's base directory in its place). Scripts run through
+<!-- /claude -->
+<!-- openai -->
+`${CLAUDE_SKILL_DIR}` is this SKILL.md's directory: in every command, put its absolute path in its
+place, and resolve this skill's relative file paths from it. Scripts run through
+<!-- /openai -->
 `sh "${CLAUDE_SKILL_DIR}/py"`, never `python3` directly: it uses the computer's own Python 3.9+
 (no packages needed).
 <!-- download -->
@@ -267,7 +324,9 @@ that `setup` printed):
   (`setup`, step 3).
 - confirmations off (`pvault touchid status`; Windows: `pvault hello status`): `pvault setup`
   turns them on, on the same page. Without them you can't read the archive at all.
+<!-- claude -->
 - no shell on their computer (Cowork's sandbox): **The folder, without the archive** at the end.
+<!-- /claude -->
 
 The first time, the studio's details may be missing (the check lists them under `missing`):
 ask for them once, in one message, and save each with `pvault set <id> <value>` (one
@@ -563,7 +622,12 @@ one message asks only what no document holds.
   > La ricevuta della sanzione (333 €) è per una CILA tardiva: tienine conto alla domanda 1.
 
 **Asking.** If you have a tool that asks multiple-choice questions with clickable options
+<!-- claude -->
 (AskUserQuestion, or the app's clickable options), ask the check's `questions` with it, after
+<!-- /claude -->
+<!-- openai -->
+(the app's clickable options), ask the check's `questions` with it, after
+<!-- /openai -->
 the short message. Each question's `options` and `labels` (Italian, as written), `items` (a
 checklist: several can be true), `how` and `only_if` (a follow-up, under the question it hangs on)
 are in the JSON:
@@ -757,6 +821,7 @@ Only when it says `ready` go on. From here they hear nothing from you but the lo
 closing lines.
 <!-- /no-vault -->
 
+<!-- claude -->
 ## 4. The compilation
 
 <!-- vault -->
@@ -974,8 +1039,10 @@ When they say it is sent ("inviata"), read the procedure's `deadline` and `after
 date they sent it: the controls, the start or end of the works, the catasto within 30 days).
 Then offer, in one line, the pratica that usually follows (the fine lavori, the agibilità; its
 line in `catalog.json`), and stop.
+<!-- /claude -->
 
 <!-- vault -->
+<!-- claude -->
 ## The folder, without the archive
 
 Only where the archive can't be reached (Cowork's sandbox, until it can): the job's values go
@@ -989,6 +1056,7 @@ show the code window):
 ```sh
 sh "${CLAUDE_SKILL_DIR}/py" "${CLAUDE_SKILL_DIR}/check.py" ../studio.json values.json --out run/values.json
 ```
+<!-- /claude -->
 <!-- /vault -->
 
 ## When Impresa in un minuto itself goes wrong
@@ -1007,7 +1075,12 @@ in), in Italian:
 - `cosa`: what they asked, the pratica (its title in `catalog.json`), the step, and what happened; a
   section's and a box's label as the portal shows it. `atteso`: what should have happened.
 - `output`: the runner's `error` and `at`, or a script's last lines. Never `snapshot`.
+<!-- claude -->
 - `dove`: `Claude desktop, Code`, `Cowork` or `Claude Code nel terminale`.
+<!-- /claude -->
+<!-- openai -->
+- `dove`: `ChatGPT desktop, Codex` or `Codex nel terminale`.
+<!-- /openai -->
 
 **Never anything of the job**: no name (of the client, the tecnico, the studio, a firm), codice
 fiscale, address, catasto, date, amount, file name or path. Write "il cognome del committente",

@@ -82,13 +82,22 @@ TARGETS = ("claude", "openai")
 # developers.openai.com/plugins/build/plugins, read 2026-11-20).
 OPENAI_PLUGIN_SCHEMA = "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json"
 OPENAI_MCP_SCHEMA = "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json"
-# The listing's category, one of OpenAI's fixed list, and its starter prompt: the Prova, as the skill's
-# description has the tecnico ask for it.
+# The listing's category, one of OpenAI's fixed list, and its starter prompt: a check, as the skill's
+# description has the tecnico ask for it (in ChatGPT there is no compilation yet, nor a Prova).
 OPENAI_CATEGORY = "Business & Operations"
-OPENAI_DEFAULT_PROMPT = "fammi vedere una prova"
-# Claude's variable for a skill's own folder: OpenAI's docs name no equivalent for skills (the spike,
-# docs/design/openai-platform.md, decides what replaces it), so the openai build keeps it and says so.
+OPENAI_DEFAULT_PROMPT = "solo un controllo: cosa manca nella cartella di questo lavoro?"
+# Claude's variable for a skill's own folder. OpenAI has none for skills; its own skills write
+# `<skill-dir>`, say once that it is the SKILL.md's directory, and the model puts the path in (tried in
+# Codex on 2026-11-20: docs/design/openai-platform.md). The openai build writes that instead.
 SKILL_DIR_VAR = "${CLAUDE_SKILL_DIR}"
+OPENAI_SKILL_DIR = "<skill-dir>"
+# The assistant's name in the openai build's texts: the plugin runs in Codex in the ChatGPT desktop app.
+OPENAI_ASSISTANT = "ChatGPT"
+# What only Claude's apps have. A text the openai build keeps may not name one: such a part gets its own
+# words for each target (`<!-- claude -->` / `<!-- openai -->`), and the build stops on one left over.
+# After those, every other "Claude" in a text is the assistant, and the openai build names it OPENAI_ASSISTANT.
+CLAUDE_ONLY = re.compile(r"\bClaude (?:in Chrome|Code|desktop|app\b)|\bapp Claude\b|\bCowork\b|AskUserQuestion|"
+                         r"tabs_context|Cmd\+Shift\+B|claude\.ai|\b[Ii]n Claude\b|migliorare Claude|CLAUDE_(?!SKILL_DIR\})")
 
 
 def switch(key):
@@ -221,8 +230,45 @@ def select_target(plugin, target):
         kept = text
         for t in TARGETS:
             kept = keep(kept, t == target, t, re.compile(rf"^<!-- (/?)({t}) -->$"), f.relative_to(plugin))
+        if f.name == "SKILL.md":
+            kept = skill_description(kept, target)
         if kept != text:
             f.write_text(kept)
+
+
+# A skill's description for ChatGPT, in its frontmatter: comment markers would break the YAML, so it is
+# `metadata: openai-description`, which the build moves into `description` for openai and drops for both.
+OPENAI_DESCRIPTION = re.compile(r"^description: .*\n((?:(?!---).*\n)*?)metadata:\n  openai-description: (.*)\n", re.M)
+
+
+def skill_description(text, target):
+    """A SKILL.md with its description for this target, and no openai-description left."""
+    m = OPENAI_DESCRIPTION.search(text.split("---", 2)[1] + "\n") if text.startswith("---") else None
+    if m is None:
+        return text
+    front = text.split("---", 2)[1]
+    said = m.group(2) if target == "openai" else front[m.start():].split("\n", 1)[0][len("description: "):]
+    front = front[:m.start()] + f"description: {said}\n" + m.group(1) + front[m.end():].lstrip("\n")
+    return "---" + front.rstrip("\n") + "\n---" + text.split("---", 2)[2]
+
+
+def openai_words(text, name):
+    """A text as the openai build says it: OpenAI's `<skill-dir>` for Claude's variable, and the
+    assistant named OPENAI_ASSISTANT. Stops on a name only Claude's apps have (CLAUDE_ONLY)."""
+    for n, line in enumerate(text.splitlines(), 1):
+        if m := CLAUDE_ONLY.search(line):
+            sys.exit(f"{name}:{n}: {m.group()!r} is Claude's: give that part its own words for each target "
+                     "(<!-- claude --> / <!-- openai -->)")
+    return re.sub(r"\bClaude\b", OPENAI_ASSISTANT, text.replace(SKILL_DIR_VAR, OPENAI_SKILL_DIR))
+
+
+def openai_texts(plugin):
+    """The openai build's texts (select_target has already kept their openai parts)."""
+    for f in sorted(plugin.rglob("*.md")):
+        text = f.read_text()
+        said = openai_words(text, f.relative_to(plugin))
+        if said != text:
+            f.write_text(said)
 
 
 def openai_manifest(manifest):
@@ -233,6 +279,11 @@ def openai_manifest(manifest):
     for key in ("name", "version", "description", "author", "homepage", "repository", "license", "keywords"):
         if key in manifest:
             out[key] = manifest[key]
+    # ChatGPT's own description (a check only there), kept in the same hand-written manifest under
+    # `metadata`, which Claude doesn't read; else Claude's, in ChatGPT's words.
+    said = manifest.get("metadata", {}).get("openai", {}).get("description") or manifest.get("description")
+    if said is not None:
+        out["description"] = openai_words(said, "plugin.json description")
     name = out.get("name", "")
     if not re.fullmatch(r"[a-z0-9]+(-[a-z0-9]+)*", name) or len(name) > 64:
         sys.exit(f"plugin name {name!r}: OpenAI wants at most 64 characters, lower case, digits, single hyphens")
@@ -687,6 +738,8 @@ def main():
     ap.add_argument("--evals", action="store_true", help="add plugin/evals/ for `claude plugin eval` (a release leaves them out)")
     a = ap.parse_args()
     a.out = a.out or (HERE / "dist" if a.target == "claude" else HERE / "dist" / a.target)
+    if (a.cowork_test or a.evals) and a.target != "claude":
+        ap.error("--cowork-test and --evals are Claude's (Cowork, `claude plugin eval`): only with --target claude")
     vault = vault_default() if a.vault is None else a.vault == "on"
     download = switch("python_download") if a.python_download is None else a.python_download == "on"
     if a.connector and not re.fullmatch(r"https://[^\s/]+(/\S*)?", a.connector):
@@ -709,10 +762,19 @@ def main():
     manifest_file = plugin / ".claude-plugin" / "plugin.json"
     manifest_file.write_text(with_scope(manifest_file.read_text(), "plugin.json"))
     manifest = json.loads(manifest_file.read_text())
+    if a.target == "claude" and manifest.get("metadata", {}).pop("openai", None) is not None:
+        if not manifest["metadata"]:  # ChatGPT's description is for the openai build alone
+            del manifest["metadata"]
+        manifest_file.write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "\n")
     if a.target == "openai":  # its manifest at the root, generated from the one hand-written; no Claude one beside it
         (plugin / "plugin.json").write_text(as_json(openai_manifest(manifest)) + "\n")
         shutil.rmtree(manifest_file.parent)
     select_target(plugin, a.target)
+    if a.target == "openai":
+        shutil.rmtree(plugin / "skills" / TEST_SKILL)  # Cowork's tests: never in an openai build (--cowork-test refused)
+        openai_texts(plugin)
+    for f in plugin.rglob("SKILL.md"):  # each target's own description (and ChatGPT's name) is held again
+        check_description(f.read_text(), f.relative_to(plugin))
     select_download(plugin, download)
     # The licence and notices travel with the plugin: it bundles the library's CC BY-SA texts.
     for name in ("LICENSE", "NOTICE.md"):
@@ -739,16 +801,16 @@ def main():
     if a.cowork_test:
         make_pdf(plugin / "skills" / TEST_SKILL / "planimetria-3mb.pdf", 3 * 1024 * 1024)
     else:  # the tests that decided the design, never the customer's
-        shutil.rmtree(plugin / "skills" / TEST_SKILL)
+        shutil.rmtree(plugin / "skills" / TEST_SKILL, ignore_errors=True)
     if not re.fullmatch(r"[a-z0-9-]+", manifest["name"]):
         sys.exit(f"plugin name {manifest['name']!r} isn't kebab-case")
     check_private(plugin, private_terms())
     (a.out / "build.json").write_text(json.dumps({"sources": sources_digest(a.library), "version": manifest["version"],
                                                   "git": git_head(), "flags": build_flags(a)}, indent=1) + "\n")
-    if a.target == "openai":  # the spike has not said yet what stands for the variable in a skill's commands
-        left = sum(f.read_text().count(SKILL_DIR_VAR) for f in plugin.rglob("*.md"))
-        if left:
-            print(f"note: {left} uses of {SKILL_DIR_VAR} left in the texts (docs/design/openai-platform.md)", file=sys.stderr)
+    if a.target == "openai":  # what the build put in after openai_texts (the library, the catalog) says none either
+        for f in plugin.rglob("*.md"):
+            if SKILL_DIR_VAR in (text := f.read_text()) or re.search(r"\bClaude\b", text):
+                sys.exit(f"{f.relative_to(plugin)}: names Claude or {SKILL_DIR_VAR} in the openai build")
     zipped = a.out / (f"{manifest['name']}.plugin" if a.target == "claude" else f"{manifest['name']}-{manifest['version']}-openai.zip")
     with zipfile.ZipFile(zipped, "w", zipfile.ZIP_DEFLATED) as z:
         for f in sorted(plugin.rglob("*")):

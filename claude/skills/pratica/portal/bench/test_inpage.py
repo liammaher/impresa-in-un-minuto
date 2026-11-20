@@ -1230,6 +1230,13 @@ def main():
                 "https://raw.githubusercontent.com/o/p/plugin-v1.2.3/skills/s/inpage.js",
                 "https://cdn.jsdelivr.net/gh/o/p@plugin-v1.2.3/skills/s/inpage.js"], run.published(plugin / "skills" / "s" / "inpage.js")
             assert run.published(Path(run.__file__).with_name("inpage.js")) == []
+            # The openai build (plugin/build.py --target openai): its manifest at the root, the same files
+            # served from the same plugin-v tag.
+            oai = tmp / "plugin-openai"
+            (oai / "skills" / "s").mkdir(parents=True, exist_ok=True)
+            (oai / "plugin.json").write_text(json.dumps({"version": "1.2.3", "repository": "https://github.com/o/p"}))
+            (oai / "skills" / "s" / "inpage.js").write_text("")
+            assert run.published(oai / "skills" / "s" / "inpage.js") == run.published(plugin / "skills" / "s" / "inpage.js")
             assert "fetch.js" not in run.page_files(steps(base), vals, source=src)
             # A run.js copied by hand that lost a value starts nothing (2026-11-07 on the portal:
             # four `false` dropped, and the run looked for a box this case hasn't).

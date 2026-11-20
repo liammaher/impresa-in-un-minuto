@@ -71,6 +71,29 @@ def main():
 
         src = pin_marketplace.marketplace("0.1.1", second)["plugins"][0]["source"]
         assert src == {"source": "github", "repo": "liammaher/impresa-in-un-minuto", "ref": "plugin-v0.1.1", "sha": second}, src
+
+        # The openai build (manifest at the root) on its own branch and tag, beside the Claude one.
+        def built_openai(root, version):
+            (root / "skills" / "s").mkdir(parents=True)
+            (root / "plugin.json").write_text(json.dumps({"$schema": "x", "name": "impresa-in-un-minuto", "version": version}))
+            (root / "skills" / "s" / "SKILL.md").write_text(f"openai v{version}\n")
+            return root
+        try:
+            publish_plugin.publish("0.1.2", built(tmp / "c3", "0.1.2"), push=True, target="openai")
+        except SystemExit:
+            print("ok: a Claude build published as openai is refused")
+        else:
+            raise AssertionError("published a Claude build to the openai branch")
+        oai = publish_plugin.publish("0.1.1", built_openai(tmp / "o1", "0.1.1"), push=True, target="openai")
+        assert git("rev-parse", "plugin-openai", cwd=remote) == oai and git("rev-parse", "plugin", cwd=remote) == second
+        assert git("rev-parse", "plugin-openai-v0.1.1^{commit}", cwd=remote) == oai
+        assert git("show", f"{oai}:skills/s/SKILL.md", cwd=remote) == "openai v0.1.1"
+        made = pin_marketplace.openai_marketplace("0.1.1", oai)
+        entry = made["plugins"][0]
+        assert made["name"] == pin_marketplace.marketplace("0.1.1", second)["name"], "one marketplace name for both"
+        assert entry["source"] == {"source": "url", "url": "https://github.com/liammaher/impresa-in-un-minuto.git",
+                                   "ref": "plugin-openai-v0.1.1", "sha": oai}, entry
+        assert {"installation", "authentication"} <= entry["policy"].keys() and entry["category"], entry
     print("ok: publish and pin")
 
 

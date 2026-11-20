@@ -29,6 +29,8 @@ body:
         - Cowork
         - Claude desktop, Code
         - Claude Code nel terminale
+        - ChatGPT desktop, Codex
+        - Codex nel terminale
         - pvault da solo / on its own
     validations:
       required: true
