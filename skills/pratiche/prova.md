@@ -49,7 +49,7 @@ real filing's details (the c/c, the order of the signatures, the PEC receipt).
    ```
    (`pwd` prints the Prova's folder on the error output, and `page`'s own lines go to `run/page.txt`: stdout is
    empty.) No card in the Prova: what it would say, the closing lines say. `<name>` is `prova` in the fallback of
-   SKILL.md, step 4.3 (with `--made-up --plain`, as here). Pre-flight says `ready` (the build checks it);
+   SKILL.md, step 4.3 (with `--made-up --plain`, as here). The check says `ready` (the build checks it);
    its warnings are the Prova's own, never for the tecnico. If it isn't ready, that is Impresa in un minuto's
    fault: SKILL.md, **When Impresa in un minuto itself goes wrong**.
 2. Then say only this, and in the same turn open the portal (SKILL.md, step 4.1, without sending its
@@ -59,7 +59,8 @@ real filing's details (the c/c, the order of the signatures, the PEC receipt).
    > Poi, in circa 2 minuti, compilo una CILA inventata (manutenzione straordinaria in un appartamento, lavori già in corso, per un locatario, con due imprese) e la rileggo dal portale. Non spunto dichiarazioni, non pago, non firmo, non invio.
 
    The parenthesis says what the case is, so they can hold what appears on the portal to it; never its
-   names, codici fiscali, addresses or figures. Before saying the portal is open «qui accanto», check that the browser pane is showing (`tabs_context` says
+   names, codici fiscali, addresses or figures.
+   Before saying the portal is open «qui accanto», check that the browser pane is showing (`tabs_context` says
    displayed or hidden). If hidden, add one line after the others: «Se non vedi il portale, premi Cmd+Shift+B
    (Ctrl+Shift+B su Windows) o clicca l'icona del globo.»
    As it is, a word not changed, added or left out (but for that line): nothing before, nothing after, no card.
@@ -120,21 +121,21 @@ while you prepare:
    of use, no terre e rocce, works not started), and run it again until `routed`. Never show its
    questions or its `message`. Then its `answers` start `answers.json`.
 1. `descrizione` in the job's `answers.json` first: "PROVA NON INVIARE - " and the pratica
-   (pre-flight with `--made-up` refuses a draft named otherwise, before it says anything else).
+   (the check with `--made-up` refuses a draft named otherwise, before it says anything else).
 2. The studio and the tecnico: the Prova's `studio.json`, read with the Read tool
    (`${CLAUDE_SKILL_DIR}/prova/studio.json`) and written with the Write tool as the job's own
    `studio.json`, used in place of `../studio.json` (`check.py studio.json values.json`). Never
    write the tecnico's own `../studio.json` with made-up data.
-3. Pre-flight with `--made-up`. Answer every open question yourself: the proposals as proposed,
+3. The check with `--made-up`. Answer every open question yourself: the proposals as proposed,
    the rest with the simplest case that keeps the pratica. Never ask, and never list what you
    chose.
 4. Invent every value it lists under `missing`, plainly fictitious ("Prova" in the names), into
    the job's `values.json`. `check.py` checks a codice fiscale's control character and date and a
    partita IVA's check digit: when it refuses one, make a valid one and run it again.
 5. Files: `sh "${CLAUDE_SKILL_DIR}/py" "${CLAUDE_SKILL_DIR}/prova.py" --files docs` puts the
-   Prova's made-up PDFs in the job's `docs/` and prints them; for each file pre-flight asks for,
+   Prova's made-up PDFs in the job's `docs/` and prints them; for each file the check asks for,
    the one closest by name, its path in `answers.json`.
-6. Pre-flight again with `--made-up`, until `ready`. A `made_up_stops` entry (a company client
+6. The check again with `--made-up`, until `ready`. A `made_up_stops` entry (a company client
    registered with the Registro Imprese, which the portal checks) means made-up data can't pass
    there: say so in one line and make the client a private person instead.
 7. `page` with `--made-up --plain`, then as the Prova's steps 3 and 4 (the line while it fills, the closing lines,

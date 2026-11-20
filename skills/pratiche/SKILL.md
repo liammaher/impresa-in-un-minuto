@@ -9,7 +9,7 @@ description: Per chi queste pratiche le presenta già (tecnici e professionisti;
 words, before any tool or document, are this and nothing else:
 «Leggo io i documenti: i loro dati passano da questa conversazione e poi sul portale. Password e
 SPID mai. Posso sbagliare: il controllo finale è tuo.» Then work in silence until the one message.
-Not a word of plan or progress in between («Single job…», «Sto leggendo…»): neither Italian nor
+Not a word of plan or progress in between («Ho trovato un solo lavoro…», «Sto leggendo…»): neither Italian nor
 English, only that line and, at the end, the message.
 
 The user is a **tecnico** (architetto, geometra, ingegnere) filing for clients in Napoli with a
@@ -52,19 +52,31 @@ your questions): `${CLAUDE_SKILL_DIR}/prova.md` at once. A test asks nothing.
   nothing is missing on their side). Then their choices, in one to three short lines.
 - Building-law words are theirs and stay: CILA, SCIA, asseverazione, titolo abilitativo,
   art. 6-bis DPR 380/2001, diritti di segreteria, procura, elaborati grafici.
-- **Software words never reach them.** Say instead:
+- **English and software words never reach them.** Every English word in these instructions,
+  outside the «quoted» Italian, is for you only: **never repeat one to the tecnico**, not even
+  once, not even in brackets. Before you send a message, read it for English words. Say instead:
 
   | Never | Say |
   |---|---|
-  | steps file, pre-flight, runner, run.js, check.js, script | (nothing: say what happens) |
+  | steps file, pre-flight, preflight, the check (as a name), runner, run.js, check.js, script | (nothing: say what is checked or what happens, e.g. «controllo che i documenti bastino») |
   | draft | bozza |
-  | run, fill | compilazione, compilo |
+  | run, fill, filling | compilazione, compilo |
+  | slot | spazio per l'allegato |
+  | skill, connector, MCP | Impresa in un minuto |
+  | made-up, test data | di prova, inventati |
+  | report, bug, error, warning | segnalazione, segnalazione, qualcosa non va, attenzione |
+  | job, case, folder | lavoro, caso, cartella |
+  | ready, missing, blocked | pronta, mancano, bloccata |
   | studio.json, values.json | i dati dello studio, i dati del lavoro |
   | slug, field id, JSON, hash, sha256, .js, a path | (never) |
   | browser pane, built-in browser | il browser dell'app |
   | unsupported, refused | non posso prepararla, perché … |
 
-- The tools' messages (`message` of route.py and pre-flight), questions, refusals, defects and the
+  Words Italians use every day stay (file, email, PDF, PDF/A, SPID, PEC, online, browser, plugin,
+  server, open source, upload, download ...). Only this project's own jargon and plain English words
+  are out.
+
+- The tools' messages (`message` of route.py and the check), questions, refusals, defects and the
   tecnico's end steps (`yours`) are already in Italian, addressed as tu: **give them as
   written** (their options and the law they cite too). Only the runner's own reasons for a stop
   (`error` in a report) are English: they are for you to fix, never to quote. Never show a field
@@ -78,7 +90,7 @@ your questions): `${CLAUDE_SKILL_DIR}/prova.md` at once. A test asks nothing.
   pratica, another comune, another ente (Genio Civile, Soprintendenza, ASL, Catasto, Agenzia delle
   Entrate, Regione) or a pratica whose status isn't `available` is **not covered by the
   automation**: say so first, in one line, and open nothing. A property outside Napoli is refused
-  by the intake's `notes` and by pre-flight; when the documents don't say where it is, ask.
+  by the intake's `notes` and by the check; when the documents don't say where it is, ask.
 - **Coperta** means: filled on the real portal with made-up data, every value read back. No real
   pratica has been sent through Impresa in un minuto yet: the verdict says so (step 3).
 - **Facts come from the library, each with its source** in brackets after it ("(DD 501/2026)").
@@ -123,7 +135,7 @@ your questions): `${CLAUDE_SKILL_DIR}/prova.md` at once. A test asks nothing.
    compilation will use, and they say «sì» once (step 3, **A complete folder**). Then 6.
 4. They answer: nothing opens before it. Then, in one more short message, the details and files
    still missing.
-5. The files are checked (pre-flight again). Nothing else to ask, unless they changed a proposal.
+5. The files are checked (the check again). Nothing else to ask, unless they changed a proposal.
 6. They log in with SPID in the app's browser; you fill (step 4).
 7. You check the draft against the documents; then a few lines here: it is done, what to check,
    what is left to them (step 5). No file.
@@ -154,7 +166,7 @@ job, and offer the Prova only if they hesitate or lack the documents.
 Someone who wants to see what Impresa in un minuto makes of their own folder before they commit to
 a filing says so («solo un controllo», «dimmi cosa manca», «cosa leggi dai miei documenti»), or
 hesitates at the first message. It is their real job, with no portal, no login and nothing made up:
-step 0 and steps 1-3 as they are, up to pre-flight, and then, in place of the one message's
+step 0 and steps 1-3 as they are, up to the check, and then, in place of the one message's
 questions, one short report (a line each, no lists of boxes):
 
 1. The verdict and what you understood (points 1-3 of the one message).
@@ -166,7 +178,8 @@ questions, one short report (a line each, no lists of boxes):
 4. Last, in these words: «Non ho aperto il portale e non ho compilato nulla. Se vuoi andare
    avanti, scrivimi «procedi»: ti faccio le domande.»
 
-On «procedi», the one message of step 3. A check that finds the case refused (`unsupported`, a
+On «procedi», the one message of step 3.
+A check that finds the case refused (`unsupported`, a
 status that isn't `available`) is that refusal, as always.
 
 ## What this skill has
@@ -225,17 +238,17 @@ that take the job's folder (`review.py`) find it by themselves.
   over it.
 
 When it doesn't exist, create the studio file as `{"tecnico:ruolo.tipo": "titolare"}` (this
-makes `tecnico` the `t:` role; without it pre-flight lists none of their details) and
+makes `tecnico` the `t:` role; without it the check lists none of their details) and
 `values.json` as `{}`. How their data travels is said once per conversation, **before you open a
 single document**, as the first words of your reply (the top of this skill); it is then not in the
 one message (step 3), and never said again. (The Prova, which reads nothing of theirs, skips it.)
 A single job's own line, after you have looked at the folder, goes in the one message (step 3):
 "I miei file di lavoro, con i dati letti dai documenti, stanno tutti nella sottocartella
 «impresa-in-un-minuto» di questa cartella: quando hai finito puoi cancellarla." The first
-pratica's pre-flight lists the studio's and the tecnico's details under `missing`: ask for them
+pratica's check lists the studio's and the tecnico's details under `missing`: ask for them
 once, in one message, and write them into the studio file.
 
-Before each pre-flight and each compilation, check and merge the two files:
+Before each check and each compilation, check and merge the two files:
 
 ```sh
 sh "${CLAUDE_SKILL_DIR}/py" "${CLAUDE_SKILL_DIR}/check.py" ../studio.json values.json --out run/values.json
@@ -336,7 +349,7 @@ Before step 1 the same without `--steps`. A `notes` line saying the property isn
 di Napoli is the verdict: send it and stop. Of what the intake wrote, read `run/intake/intake.json`
 first: each file's kind (`riconosciuti` the kinds in Italian, `non_riconosciuti` how many files have none),
 the fields filled (ids, not values), `unread` files (scans and photos: you read those yourself,
-below), `notes` (in Italian), and `proposals` with the document and words each comes from. Take them now, so pre-flight doesn't ask
+below), `notes` (in Italian), and `proposals` with the document and words each comes from. Take them now, so the check doesn't ask
 them again: `sh "${CLAUDE_SKILL_DIR}/py" "${CLAUDE_SKILL_DIR}/intake/intake.py" accept run/intake --into answers.json`
 (it adds the client's and the owner's roles to `people`). They are shown in the one message, and
 the tecnico's "ok" confirms them with the rest; a correction goes into `answers.json`.
@@ -346,7 +359,7 @@ a PDF's pages as they look, a scan or a photo as an image), the intake's `unread
 can't read scans. Never pull text out of a file in the shell (`strings`, `grep`, `pdftotext`, a
 script): a real PDF's text is compressed and a scan has none, so you would miss what is there. Hold each value the intake took
 (`run/intake/private/values.json`) to its document. Where it is wrong, or a document holds a field
-the intake left empty (pre-flight's `missing` names them, with their ids: step 3), write the value
+the intake left empty (the check's `missing` names them, with their ids: step 3), write the value
 into the job's `values.json`, then `check.py` again. Keep, for each value you take, the document
 and page it comes from: the one message cites them, and so does the check after the compilation
 (step 5). Where two documents disagree (the visura and the deed give two subalterni), take
@@ -362,16 +375,16 @@ the one message it is "la tua nota" ("Dalla tua nota: i recapiti e le due impres
 name; only with several text files in the folder, say once which one you took.
 
 **Answers come from the intake and from the tecnico's own words, never from your reading.** A
-document you read yourself never answers one of pre-flight's questions: what it says is a fact in
+document you read yourself never answers one of the check's questions: what it says is a fact in
 what you understood ("dalla notifica preliminare: due imprese"), and the question stays theirs. An
 amount, a date or a choice in a document can be stale or another case's (an old receipt's
 diritti), so only the tecnico's word settles it. What the tecnico wrote plainly, in their request
 or their note ("nessun altro adempimento", "il progettista sono io"), answers the question it
 names: write it into `answers.json` under its `key`, and under `fonti` where it comes from
 (`{"fonti": {"<key>": "Tua nota"}}`, or "Tua richiesta"); never one you infer from their words.
-Do it before the first pre-flight, for every question their words answer: what they wrote
+Do it before the first check, for every question their words answer: what they wrote
 isn't then proposed back to them as «le propongo io», and the summary's «Da controllare» keeps
-only what no word of theirs settles. To find which keys their words answer, run pre-flight
+only what no word of theirs settles. To find which keys their words answer, run the check
 once and read its `proposals` against the request and the note.
 Write nothing else into `answers.json` but the intake's proposals (they carry their documents
 already) and their replies. Nothing is answered until they confirm it: the one message shows
@@ -382,7 +395,7 @@ The roles: `t:` is the tecnico; the others are people that `answers.json` names 
 `people` (the entry's `notes` say which: `{"people": {"c": "bianchi"}}` makes the client
 `bianchi`).
 
-## 3. Pre-flight, before anything opens
+## 3. The check, before anything opens
 
 After `check.py` (step 0):
 
@@ -392,7 +405,7 @@ sh "${CLAUDE_SKILL_DIR}/py" "${CLAUDE_SKILL_DIR}/portal/run.py" preflight --step
 ```
 
 Leave out `--values run/intake/private/values.json` when the intake didn't run (here and
-below). Pre-flight prints JSON and exits 0 only when `ready`. Run it once before the one message:
+below). The check prints JSON and exits 0 only when `ready`. Run it once before the one message:
 fill from the documents what its `missing` names (step 2), `check.py`, and run it again, so the
 one message asks only what no document holds.
 
@@ -425,10 +438,10 @@ one message asks only what no document holds.
      notifica preliminare indica due imprese: quante lavorano in cantiere?»), its options as the
      proposal's own `question` gives them; the other proposals are counted without it («Per il
      resto propongo il caso più comune (4 risposte)»). Their reply goes into `answers.json` under
-     the proposal's `key` (`fonti`: "Tua risposta"), then pre-flight again; never a sentence that
+     the proposal's `key` (`fonti`: "Tua risposta"), then the check again; never a sentence that
      says what the document shows and proposes the opposite.
   5. The open questions and the proposals: **Asking**, below.
-  6. When pre-flight's `files` holds problems: one line, only how many and what the sportello wants,
+  6. When the check's `files` holds problems: one line, only how many and what the sportello wants,
      so the wall isn't a surprise two replies later: «5 dei tuoi file vanno sistemati prima (il
      SUE di Napoli li vuole PDF/A e firmati digitalmente): ti dico quali dopo le risposte.»
   Everything else waits for **After they answer**: the details no document holds, the files and
@@ -445,7 +458,7 @@ one message asks only what no document holds.
   > La ricevuta della sanzione (333 €) è per una CILA tardiva: tienine conto alla domanda 1.
 
 **Asking.** If you have a tool that asks multiple-choice questions with clickable options
-(AskUserQuestion, or the app's clickable options), ask pre-flight's `questions` with it, after
+(AskUserQuestion, or the app's clickable options), ask the check's `questions` with it, after
 the short message. Each question's `options` and `labels` (Italian, as written), `items` (a
 checklist: several can be true), `how` and `only_if` (a follow-up, under the question it hangs on)
 are in the JSON:
@@ -460,12 +473,12 @@ are in the JSON:
 - A short header for each (at most 12 characters: "Paesaggio", "Terre/rocce").
 - The proposals: one question, "Per il resto propongo il caso più comune (<n> risposte). Va
   bene?", options "Sì, va bene" and "Voglio rivederle"; on the
-  second, list them, a line each, as pre-flight's `message` has them.
+  second, list them, a line each, as the check's `message` has them.
 - Free text and dates are not choices: ask them in the text after the call. Files: **After they
   answer**.
 - A radio list (one answer) gets a preselected first option only when a document supports it
   (say which in its description); with nothing behind it, no option goes first as "consigliata".
-Without such a tool, after the short message send pre-flight's `short` **as it is**: its numbered
+Without such a tool, after the short message send the check's `short` **as it is**: its numbered
 questions (but the files they ask for) and the proposals in one line to confirm with «ok». A
 question's lettered follow-ups may shrink to a few words under it, keeping their letters. Nothing
 else from `message` yet: the files and the details wait for **After they answer**. On
@@ -475,7 +488,7 @@ Never answer a question for them, in either form: what a document says about one
 point 2, and the question stays theirs; only their own words answer one (step 2), shown for them
 to confirm (a test is the one exception: `prova.md`).
 
-**A complete folder.** Pre-flight gives `riepilogo` when nothing is left to ask but its
+**A complete folder.** The check gives `riepilogo` when nothing is left to ask but its
 proposals: no question, no detail missing, every file as the sportello takes it. It is short on
 purpose, so it is read rather than waved through: first "Dai tuoi documenti" (up to three lines, the
 documents' own words behind the answers that decide the pratica, each with its document; the tecnico
@@ -487,7 +500,7 @@ understood), without point 3: the card's heading is the pratica, with its articl
 not as a «Propongo» line and then again in the card. Point 2 is one short sentence here (who the client
 is and where the works are, with the document): the works, their state and the title are in
 «Dai tuoi documenti», never said twice. At most one line for each document that can't be read or disagrees
-with an answer (point 4), then pre-flight's `card` ("Cosa succede", three lines: the pratica and why
+with an answer (point 4), then the check's `card` ("Cosa succede", three lines: the pratica and why
 it is this one, what you do, and that it stays a draft) **as it is**, a blank line, and `riepilogo`
 **as it is**. The card is generated from the steps file: never shorten it, add to it or word it
 yourself. No clickable question, no checklist,
@@ -495,18 +508,18 @@ nothing else: nothing opens before their reply.
 - «dettagli»: `riepilogo_dettagli` as it is (every answer, a line each with its source). Their «sì»
   after it confirms the same answers.
 - «sì» («ok», «va bene», «procedi»): their confirmation of every line. Run `confirm` with the
-  `riepilogo_id` of the summary they read, and the same values as pre-flight:
+  `riepilogo_id` of the summary they read, and the same values as the check:
   ```sh
   sh "${CLAUDE_SKILL_DIR}/py" "${CLAUDE_SKILL_DIR}/portal/run.py" confirm --steps "${CLAUDE_SKILL_DIR}/pratiche/<name>.json" \
     --answers answers.json --values run/values.json --values run/intake/private/values.json --riepilogo <riepilogo_id>
   ```
-  It writes the proposals into `answers.json` and prints pre-flight again: exit 0, `ready`, go
+  It writes the proposals into `answers.json` and prints the check again: exit 0, `ready`, go
   straight to step 4 (its login line is your next message). Exit 4: the answers are no longer
   those of the summary they read; send its new `riepilogo` and ask again (none: its `message`,
   as in **Asking**). Exit 3: something is still open; its `message`, as in **After they
   answer**. Never write the proposals into `answers.json` yourself.
 - A change ("le parti comuni sono condominiali"): into `answers.json` (`fonti`: "Tua risposta"),
-  pre-flight again, and its new `card` and `riepilogo` (or the questions the change opened) as the
+  the check again, and its new `card` and `riepilogo` (or the questions the change opened) as the
   next message.
 - Anything else they ask: answer it (a box or an answer: **Asked what goes in a box**, below), and ask
   again for «sì».
@@ -515,7 +528,7 @@ nothing else: nothing opens before their reply.
 any point before the compilation and after it. An expert asks it to check you, so the answer is
 the runner's own plan, never your memory of the documents (a plausible answer that differs from
 what the runner types is the one mistake that costs their trust):
-- A box: run `plan` (no browser; the same values and answers as pre-flight) and read the row of that box
+- A box: run `plan` (no browser; the same values and answers as the check) and read the row of that box
   (`section | box | value`):
   ```sh
   sh "${CLAUDE_SKILL_DIR}/py" "${CLAUDE_SKILL_DIR}/portal/run.py" plan --steps "${CLAUDE_SKILL_DIR}/pratiche/<name>.json" \
@@ -523,7 +536,7 @@ what the runner types is the one mistake that costs their trust):
   ```
   Answer in one line: the value, then where it comes from (the document, or "tua nota", "tua risposta",
   "calcolata dalle regole"). «In "In qualità di": Altro, specificare «Locatario», dal contratto di locazione.»
-- An answer (the pratica's questions): `run.py details` (the same arguments as pre-flight), its line:
+- An answer (the pratica's questions): `run.py details` (the same arguments as the check), its line:
   the answer and its source. One you proposed says so, and why ("L'ho proposto io: nei documenti non
   c'è un altro progettista, quindi ho messo che sei tu. Se non è così, dimmelo."); a change is the
   bullet above.
@@ -532,7 +545,7 @@ what the runner types is the one mistake that costs their trust):
   page to answer.
 - One line, no list of other boxes, no offer of more. Asked about several, a line each.
 
-**After they answer**, the answers in `answers.json`, then pre-flight again. Built from the
+**After they answer**, the answers in `answers.json`, then the check again. Built from the
 answers, its `files`, its questions that ask for a file and its `missing` are what this pratica
 needs now: show them as one checklist,
 grouped, a line each, what you have ticked:
@@ -557,7 +570,7 @@ scrivere questi dati in una nota nella cartella del lavoro (un file di testo): c
 completi, ti basterà un «sì»."
 
 **Many details missing** (more than eight in `missing`): never list them in the chat, and never ask
-for them one by one. Save pre-flight's output (`... preflight ... > run/preflight.json`; it still
+for them one by one. Save the check's output (`... preflight ... > run/preflight.json`; it still
 prints JSON, so read the file), then write them a form, in the work folder:
 
 ```sh
@@ -579,7 +592,7 @@ sh "${CLAUDE_SKILL_DIR}/py" "${CLAUDE_SKILL_DIR}/nota.py" read dati-da-compilare
 It puts each value in the studio file or the job's `values.json`, held to the same checks as
 `check.py`, and prints what is still empty and each value that doesn't fit, by its label («Da
 correggere, …»): ask that one again, in one plain question, with what it printed. Then `check.py`
-(step 0) and pre-flight again; what is still missing goes in the chat if it is a few details, in a
+(step 0) and the check again; what is still missing goes in the chat if it is a few details, in a
 new form if it is many. With eight or fewer, the chat, as before.
 - The replies go under each `key` of `questions` (dates YYYY-MM-DD, files as paths; a clicked
   option as its value in `options`, never its label; a checklist as the list of its ticked items'
@@ -588,7 +601,7 @@ new form if it is many. With eight or fewer, the chat, as before.
   they answered. A detail of `missing` goes under its `id`:
   into the studio file when it is the studio's or the tecnico's (no slug, or `tecnico:`), else
   into the job's `values.json`; then `check.py` again.
-  Then pre-flight again: what is still open (an `error`, a follow-up they didn't give, what a
+  Then the check again: what is still open (an `error`, a follow-up they didn't give, what a
   changed proposal adds) is its new `message`.
 - `files`: each slot's `for` (its name), whether the file `exists`, and its `problem` (at
   Napoli's SUE, DD 501/2026: not PDF/A, not signed digitally, or a name with spaces, accents or
@@ -634,7 +647,7 @@ step 3 says how. Never send them a file, never ask them to download or save one,
    ```
    Send it as it is, so they read it while they log in.
 2. Say, in one line, the compilation and the check after it: "Compilo e poi confronto con i tuoi
-   documenti: non toccare la pagina." With pre-flight's `pick` (the page will ask for the job's files
+   documenti: non toccare la pagina." With the check's `pick` (the page will ask for the job's files
    in a box) end it: "…: non toccare la pagina, tranne il riquadro per i file." This line is the only
    notice of the check: say nothing more until the closing lines (step 5).
 3. Run each script as **one** JavaScript call on the portal's page, its text exactly as the
@@ -740,7 +753,7 @@ sh "${CLAUDE_SKILL_DIR}/py" "${CLAUDE_SKILL_DIR}/portal/run.py" page --steps "${
 The closing lines asked them to save the signed files in the documents' folder: when they say «ho firmato»,
 find them there (the new `.p7m` files), match each to its slot by its name, and ask in one line only
 for one you can't place or that is missing. Write the signed files' paths into `answers.json` first
-(pre-flight with `--after-declarations` says which keys). It opens the draft by its name and attaches those files alone. It carries no
+(the check with `--after-declarations` says which keys). It opens the draft by its name and attaches those files alone. It carries no
 other value, so there is **no code** this time: they choose the signed files once in the box on
 the page. Same calls as step 4, from `check.js`, saving the report to `run2/report.json`; then
 `review.py run2` and its `message`, as in step 5.
@@ -770,7 +783,7 @@ in), in Italian:
 - `cosa`: what they asked, the pratica (its title in `catalog.json`), the step, and what happened; a
   section's and a box's label as the portal shows it. `atteso`: what should have happened.
 - `output`: the runner's `error` and `at`, or a script's last lines. Never `snapshot`.
-- `dove`: `Claude desktop, Code`, `Cowork` or `Claude Code nel terminale / in a terminal`.
+- `dove`: `Claude desktop, Code`, `Cowork` or `Claude Code nel terminale`.
 
 **Never anything of the job**: no name (of the client, the tecnico, the studio, a firm), codice
 fiscale, address, catasto, date, amount, file name or path. Write "il cognome del committente",

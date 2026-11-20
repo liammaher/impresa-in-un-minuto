@@ -32,8 +32,10 @@ documenti, basta dire «è una prova, inventa i dati».
 - Per ogni lavoro Claude ti dice prima se la pratica è **coperta dall'automazione** (la prepara per
   intero), se ha **solo indicazioni** (non la compila) o se **non è coperta**, e perché. Poi tu
   confermi, e solo allora si comincia.
-- **Coperta** vuol dire: compilata sul portale vero con dati di prova, rileggendo ogni valore.
-  Nessuna pratica reale è ancora stata inviata con Impresa in un minuto.
+- **Coperta** vuol dire: compilata sul portale vero con dati di prova, rileggendo ogni valore. Una
+  pratica reale (una CILA per lavori già eseguiti, SUE di Napoli, 17 novembre 2026) è stata compilata
+  anche con questi strumenti; nessuna pratica reale è ancora stata inviata con Impresa in un minuto.
+
 - Le regole vengono dalla biblioteca delle procedure, ogni fatto con la sua fonte. Ciò che la
   biblioteca non copre, Claude lo dice.
 
@@ -47,7 +49,8 @@ Nell'app Claude per computer, senza terminale:
 2. Clicca **Aggiungi** (Add), poi **Aggiungi marketplace** (Add marketplace) e **Aggiungi da un repository**
    (Add from a repository), scrivi `liammaher/impresa-in-un-minuto` nella casella, scegline la voce nell'elenco sotto e
    clicca **Sincronizza** (Sync).
-3. Apri Impresa in un minuto, tra i **Nuovi plugin**, e clicca **Aggiungi** (Add).
+3. Cerca **impresa in un minuto** nella casella di ricerca dei plugin e clicca **+** (Add). Dopo
+   **Sincronizza** non sempre compare tra i **Nuovi plugin**: se non lo vedi, cercalo per nome.
 4. Per aggiornarlo (Impresa in un minuto cambia quando cambia il portale): **Aggiungi** → **Gestisci marketplace**
    (Manage marketplaces) → **⋯** accanto a impresa-in-un-minuto → **Verifica aggiornamenti** (Check for updates).
    Fallo ogni tanto e prima di una pratica importante. Un avviso che propone **Concedi accesso** a
@@ -100,8 +103,10 @@ cartella è sincronizzata (Dropbox, OneDrive, Drive), lo sono anche loro. Cancel
 clienti (nomi, codici fiscali, indirizzi, dati catastali) passano quindi dalla conversazione con
 Claude, come ogni documento che tu vi apri. Claude te lo dice alla prima pratica. Se un cliente
 non vuole che i suoi documenti passino da Claude, non usare Impresa in un minuto per quel lavoro.
+
 Password, PIN e accesso SPID mai: l'accesso al portale lo fai tu.
-Sei titolare del trattamento dei dati dei tuoi clienti. In Claude disattiva «Aiuta a
+Sei titolare del trattamento dei dati dei tuoi clienti.
+In Claude disattiva «Aiuta a
 migliorare Claude» (Impostazioni → Privacy) e usa il browser dell'app, non Claude in Chrome.
 
 ## Prima di usarlo
