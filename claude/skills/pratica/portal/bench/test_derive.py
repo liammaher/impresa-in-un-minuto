@@ -162,5 +162,27 @@ def _():
     assert dr.drop_asks(text, ("accessibile",)) == text.replace("  accessibile: {group: piano, type: yes_no, item: \"Accessibile\"}\n", "")  # one ask left: the group stays
 
 
+@case("a template that extends another recipe is refused: its copy would keep the other's crawl and operation (2026-11-20, the temporary shop)")
+def _():
+    # negozio-procura-fittizio has no `crawl:` or flow-style wizard lines of its own; derived from, the temporary shop's recipe opened
+    # the plain shop's pratica and pre-flight said `ready`. Refused before anything is written.
+    try:
+        dr.derive("test-never-written", "negozio-procura-fittizio", "suap-016-aprire-lattivita-di-temporary-shop")
+    except SystemExit as e:
+        assert "extends" in str(e), e
+    else:
+        raise AssertionError("derived from a recipe that extends another")
+    assert not (REH / "test-never-written").exists()
+
+
+@case("the procuratore's section, which the crawler's ticked option adds to the 016 crawls only, is no reason to call another template closer")
+def _():
+    # The non-food shop's Dogane communication (016, ticked) and the medium shop's (019, not): for the audiovisual concession (015) the
+    # shop's was named "closer" the other way round, by that one section.
+    assert "qualifica e dati del procuratore" not in dr.sections_of("suap-016-comunicazione-all-agenzia-delle-dogane-per-la-vend")
+    assert dr.closer_siblings("alcolici-negozio-fittizio", "suap-015-comunicazione-per-lo-svolgimento-di-attivita-conce") == [], \
+        dr.closer_siblings("alcolici-negozio-fittizio", "suap-015-comunicazione-per-lo-svolgimento-di-attivita-conce")
+
+
 print(f"{sum(results)}/{len(results)} passed")
 sys.exit(0 if all(results) else 1)

@@ -1,0 +1,18 @@
+[
+ {
+  "date": "2026-11-20",
+  "answers": "answers-alimentare.json",
+  "result": "stopped",
+  "seconds": 41.1,
+  "browser": "pane",
+  "note": "stopped on «Alimentare» in the non-food sector's form: the portal does not keep the box ticked (twice, 41 s each); the case is kept as the proof"
+ },
+ {
+  "date": "2026-11-20",
+  "answers": "answers.json",
+  "result": "filled",
+  "seconds": 57.3,
+  "browser": "pane",
+  "note": "«Non alimentare» ticked; run with the draft named «... non al» (the same values otherwise)"
+ }
+]

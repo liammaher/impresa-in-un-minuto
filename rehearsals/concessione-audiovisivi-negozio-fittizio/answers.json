@@ -1,0 +1,13 @@
+{
+ "extras": [],
+ "descrizione": "PROVA NON INVIARE - concessione audiovisivi nego generato",
+ "oggetto": "Comunicazione per lo svolgimento di attività concernenti prodotti audiovisivi: pratica di prova con dati inventati.",
+ "diritti_euro": "0",
+ "diritti_esente": false,
+ "telemaco_user": "PROVA001",
+ "audiovisivi": [
+  "av_vendita",
+  "av_noleggio"
+ ],
+ "audiovisivi_dal": "2026-12-01"
+}

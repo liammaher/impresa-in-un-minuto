@@ -1192,7 +1192,22 @@ def non_food_shops_propose_all_non_food():
     assert food["asks"]["superficie_non_alimentare_mq"]["propose"] == "0"
 
 
+def portal_keeps_alimentare_unticked():
+    """The goods-sector reduction in the non-food shop's form (2026-11-20, rehearsals/riduzione-settore-negozio-fittizio): the portal
+    did not keep «Alimentare» ticked, twice, and ticked «Non alimentare»; the dictionary's section refuses the first before any run."""
+    reh = HERE.parents[4] / "rehearsals" / "riduzione-settore-negozio-fittizio"
+    steps = yaml.safe_load((reh / "portal-steps.generated.yaml").read_text())
+    fixture = dict(json.loads((reh / "fixture.json").read_text())["fields"])
+    for name, refused in (("answers.json", False), ("answers-alimentare.json", True)):
+        answers = json.loads((reh / name).read_text())
+        r = run.preflight(steps, values(answers=answers, fields=fixture, steps=steps), made_up=True)
+        said = any("«Alimentare»" in str(u) for u in r["unsupported"])
+        assert said == refused, (name, r["unsupported"])
+        assert r["ready"] == (not refused), (name, r)
+
+
 CASES = [
+    ("a goods-sector reduction ticking «Alimentare» in the non-food form is refused: the portal does not keep it ticked", portal_keeps_alimentare_unticked),
     ("a non-food shop proposes its whole sales area as non-food, not the dictionary's 0", non_food_shops_propose_all_non_food),
     ("one procedure's three pratiche (open with a sign, move, enlarge) get three keys in the pane", one_procedure_three_pratiche),
     ("the SCIA with its answers is ready", ready),
