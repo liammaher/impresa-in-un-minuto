@@ -1,0 +1,19 @@
+{
+ "extras": [],
+ "attivita_852": [
+  "ristorazione",
+  "ristorante"
+ ],
+ "descrizione": "PROVA NON INVIARE - notifica modifica tipologia generato",
+ "oggetto": "Presentare l'aggiornamento della registrazione impresa alimentare - modifica della tipologia di attività: pratica di prova con dati inventati.",
+ "insegna": "Pizzeria Fittizia",
+ "superficie_somministrazione_mq": "35",
+ "in_centro_commerciale": "false",
+ "diritti_euro": "120",
+ "zona": "c",
+ "fatti": [],
+ "stagionale": "false",
+ "diritti_esente": false,
+ "notifica_852_protocollo": "PG/2026/0777778",
+ "notifica_852_data": "2026-03-02"
+}
