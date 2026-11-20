@@ -6216,7 +6216,13 @@ sections:
       - {kind: checkbox, label: Vendita al dettaglio}
       - {kind: text, label: superficie di vendita da mq, value: "{{ask.superficie_vendita_prima_mq}}"}
       - {kind: text, label: a mq, value: "{{ask.superficie_vendita_mq}}"}
+  # The reduction of the goods sector: «Alimentare» did not stay ticked (inpage.js: "didn't stay ticked") in the non-food shop's form, twice,
+  # 41 s each, while «Non alimentare» ticked and the draft filled (2026-11-20, rehearsals/riduzione-settore-negozio-fittizio, runs.json).
+  # The cause was not read on the draft (the 019 variation form's «Alimentare» is locked by `onclick="return false"`, README); the other
+  # sectors' forms (017, 019) have not been tried with either box, so the refusal is what was seen, in sector 016's form.
   - section: variazione del settore merceologico
+    supports:
+      - {when: "{{ask.settore_eliminato|is_non_alimentare}}", else: "Nel modulo del negozio non alimentare il portale non tiene spuntata la casella «Alimentare» (provato il 2026-11-20): qui si può ridurre solo il settore non alimentare."}
     fields:
       - {kind: text, label: in relazione all’attività di, value: "{{ask.attivita_esercitata}}"}
       - {kind: text, label: prot./n., value: "{{ask.titolo_attivita_protocollo}}"}

@@ -135,7 +135,10 @@ def sections_of(crawl_name):
     same form (2026-11-20: sector 06's move and structural variations are the shop's forms, "Dati sull'esercizio di vicinato" and
     "dati sull'entità delle variazioni", not the bakery's or the workshop's, which carry the Reg. 852 notification)."""
     c = json.loads((PORTAL / "catalogue" / "F839" / "sections" / f"{crawl_name}.json").read_text())
-    return {_norm(x["section"]).lower() for x in c["sections"]}
+    # Not the procuratore's: the crawl batch ticks the procura option on the 016 crawls (their `scelte eventuali` option is `selected`) and not
+    # on the others, so it told two forms of one kind apart (2026-11-20: the audiovisual concession was said to be closer to the medium
+    # shop's Dogane communication than to the non-food shop's, which only had the section).
+    return {_norm(x["section"]).lower() for x in c["sections"]} - {"qualifica e dati del procuratore"}
 
 
 def rehearsal_crawl(name):
@@ -273,9 +276,15 @@ def derive(new, template, crawl_name, fixture=None, ticks=(), facts=None, handle
     lines = (ROOT / "rehearsals" / template / "recipe.yaml").read_text(encoding="utf-8").split("\n")
     while lines and lines[0].startswith("#"):
         lines.pop(0)
+    # A recipe that `extends` another has no `crawl:`, `operation:` or flow-style wizard line for the rewrites below to change: the copy
+    # would keep the template's own crawl and operation (2026-11-20: a temporary shop's recipe derived from the shop-with-procura one
+    # opened the plain shop's pratica, and pre-flight said `ready`).
+    if any(ln.startswith("extends:") for ln in lines) or not any(ln.startswith("crawl:") for ln in lines):
+        raise SystemExit(f"{template} extends another recipe (or has no crawl): derive from a standalone one (a procura variant `extends` its plain recipe: make the plain one first, then the variant by hand)")
     out, skip = [], False
     for ln in lines:
-        if re.match(r"^(after|slots|rules|scelte|first):", ln) or (skip and ln[:1] in (" ", "\t")):
+        # a block list at column 0 ("first:\n- Scheda anagrafica") belongs to the key above it
+        if re.match(r"^(after|slots|rules|scelte|first):", ln) or (skip and (ln[:1] in (" ", "\t") or ln.startswith("- "))):
             skip = True
             continue
         skip = False

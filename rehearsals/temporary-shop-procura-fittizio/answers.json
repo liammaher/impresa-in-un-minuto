@@ -1,0 +1,26 @@
+{
+ "people": {
+  "c": "trattoria",
+  "cr": "luca"
+ },
+ "cliente_carica": "legale rappresentante",
+ "extras": [],
+ "descrizione": "PROVA NON INVIARE - temporary shop generato",
+ "oggetto": "Aprire l’attività di temporary shop: pratica di prova con dati inventati.",
+ "superficie_vendita_mq": "40",
+ "superficie_non_alimentare_mq": "40",
+ "in_centro_commerciale": "false",
+ "diritti_euro": "100",
+ "fatti": [],
+ "stagionale": "false",
+ "solo_distributori": "false",
+ "anche_ingrosso": "false",
+ "superficie_alimentare_mq": "0",
+ "superficie_monopolio_mq": "0",
+ "in_ccn": "false",
+ "in_factory_outlet": "false",
+ "diritti_esente": false,
+ "temporary_dal": "2026-11-20",
+ "temporary_al": "2027-01-10",
+ "documento_identita_cliente": "rehearsals/cila-fittizia/files/documento-identita-luca.pdf"
+}

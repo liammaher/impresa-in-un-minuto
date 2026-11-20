@@ -1,0 +1,12 @@
+{
+ "extras": [],
+ "descrizione": "PROVA NON INVIARE - riduzione superficie negozio generato",
+ "oggetto": "Ridurre la superficie di vendita: pratica di prova con dati inventati.",
+ "titolo_attivita_protocollo": "0777777",
+ "titolo_attivita_data": "2026-03-02",
+ "diritti_euro": "0",
+ "diritti_esente": false,
+ "superficie_vendita_mq": "40",
+ "attivita_esercitata": "negozio di cartoleria e articoli da regalo",
+ "superficie_vendita_prima_mq": "60"
+}

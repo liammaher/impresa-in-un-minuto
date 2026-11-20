@@ -1028,6 +1028,40 @@ rehearsal: 36 → **22**. The seven 060 forms are canonical crawls that 279 of t
   19), the temporary shop (16, 17), the reduction of the area and of the goods (16, 17, 19), the sign's SCIA and PIN 2 (and GPL) and PIN 3 GPL (`suap-common-*`). Eight of the
   fifteen canonicals that stood for unrun forms are left (Dogane 13 copies, the two reductions 12 each, sector 02's suspension 11, the three sector 03 forms and the tattooist 1 each).
 
+**Round 19 (2026-11-20): the five hand recipes, all filled on the portal** (the permanent sign's SCIA 78 s; the audiovisual concession 57 s, its Telemaco user section
+skipped (an optional section); a temporary shop filed by a tecnico with a procura 73 s; the reduction of a shop's sales area 61 s; the reduction of its goods sector 57 s
+once «Non alimentare» was ticked; recorded in `runs.json`; no value moved, no box loose, no gap, nothing unreached; the portal's warnings were the made-up PEC, address and
+cadastral data). The pane was still signed in from the earlier session (the draft list showed); the file was picked twice (the second bundle was the sector reduction's rerun). All five
+are in `suap-unrouted.yaml` (no event in the table for a reduction, a temporary shop or an advertising SCIA filed alone, no page in `library/procedures` for the audiovisual
+communication or the reductions: the recipes' procedure ids name none). Own crawls with no rehearsal: 22 → **17**. Scoreboard (`leverage.py`): SUAP's 1,148 mapped are 309 crawls of their own
+(265 with a filled run, 283 fillable) and 839 copies of 55 canonicals (49 run; 28 copies ride on one that isn't: Dogane 13, sector 02's suspension 11, three sector 03 forms and the
+tattooist's move 1 each); 302 of 448 sections exercised, **0 fillable crawls with no run still hold a new one**, 146 sections appear only in crawls the dictionary can't fill.
+
+- **The portal doesn't keep «Alimentare» ticked in the non-food shop's goods-sector reduction** (`variazione del settore merceologico`, sector 016): `r7c1p12reg:chk: didn't stay ticked`,
+  twice, 41 s each; «Non alimentare» ticked and the draft filled. Same symptom as the medium shops' variation form (`onclick="return false"`, above); the cause was not read on this
+  draft, and sectors 017 and 019 were not tried with either box (the food or mixed shop is where dropping «Alimentare» would make sense). In code now: a section-level `supports`
+  in `dictionary/fnsuap.yaml` refuses `settore_eliminato: Alimentare` for every recipe that uses the section, `rehearsals/riduzione-settore-negozio-fittizio/answers-alimentare.json` is the
+  recorded stop, `test_preflight.py` holds both answers files to it. The goods-sector rehearsal is therefore the one case of the table that can't drop the food sector; the sales-area one has no such box.
+- **The crawler ticks the procura option on the 016 crawls**, so «Qualifica e dati del procuratore» in a crawl says nothing about whether a recipe is a procura filing (the shop's opening has
+  it too, `selected: true` in the `scelte eventuali` screen); a plain recipe never ticks it, a procura variant `extends` its plain one and carries `as_client`, `first`, `scelte`. The
+  temporary shop was first taken for a procura filing because of that section; the run it got was a procura variant's (the client's company and its declarant, `negozio-procura-fittizio`'s
+  fixture), so the rehearsal is `temporary-shop-procura-fittizio` and the plain temporary shop has no recipe yet. In code: `derive_recipe.py` leaves that section out when it compares crawls
+  (`sections_of`: the audiovisual concession was told to derive from the medium shop's Dogane form, rather than the non-food shop's, by that one section; `test_derive.py`), and refuses a template
+  that `extends` another recipe.
+- **Deriving from a template that `extends` another produced a recipe for the wrong pratica, and `ready`.** `negozio-procura-fittizio` has no `crawl:`, `operation:` or flow-style wizard line, so
+  the copy kept the plain shop's crawl and its «Aprire l'attività» (the temporary shop's own operation is «Aprire l’attività di temporary shop», with a curly apostrophe), and block-style
+  `first:`/`scelte:` lists lost their keys (a list at column 0 wasn't skipped with its key: the YAML didn't parse). Now `derive_recipe.py` stops with a message and skips such lists with
+  their key; `test_derive.py` holds the refusal. A derived recipe still needs its `crawl:` and wizard operation read once by hand.
+- **Template and wording a derived recipe still carries** (read by hand, as the method says): the concession came from the non-food shop's Dogane communication and brought the
+  alcohol asks, answers, the «nessuna condanna per produzione illecita di alcolici» declaration and the `vendita-alcolici` procedure id; the reductions came from the shop's suspension and brought
+  its suspension dates, the «il tariffario non prevede la sospensione» wording and the `sospensione-attivita` id; a protocol number longer than 10 characters (the pool's) is refused by the
+  form. All dropped or rewritten in these five.
+- **A stopped run is recorded as it stopped, and the case that stopped stays.** `rerun.py --record` writes the stop; the files were then renamed (`answers-alimentare.json` stopped,
+  `answers.json` filled) and `runs.json`'s `answers` and `note` edited to say so. Two identical stops left one entry in `runs.json`.
+- **Not run (17 own crawls, no rehearsal):** sector 02 (suspension), 03 and 54 (Dogane), 04 and 56 («interventi»), the tattooist's change of premises, the same forms in sectors 17 and 19
+  (concession, temporary shop, the two reductions: copies by fingerprint of the five run here, nothing new to fill), and PIN 2 (and GPL) and PIN 3 GPL (`suap-common-*`). Not built: a plain
+  temporary shop and a procura variant of the others; a SUAP choice counter like the SUE's.
+
 ## What the portal does that bit us
 
 - **Street names without their particles.** The location's street lookup and the Comune's
