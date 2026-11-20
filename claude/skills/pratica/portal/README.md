@@ -1039,9 +1039,9 @@ tattooist's move 1 each); 302 of 448 sections exercised, **0 fillable crawls wit
 
 - **The portal doesn't keep «Alimentare» ticked in the non-food shop's goods-sector reduction** (`variazione del settore merceologico`, sector 016): `r7c1p12reg:chk: didn't stay ticked`,
   twice, 41 s each; «Non alimentare» ticked and the draft filled. Same symptom as the medium shops' variation form (`onclick="return false"`, above); the cause was not read on this
-  draft, and sectors 017 and 019 were not tried with either box (the food or mixed shop is where dropping «Alimentare» would make sense). In code now: a section-level `supports`
-  in `dictionary/fnsuap.yaml` refuses `settore_eliminato: Alimentare` for every recipe that uses the section, `rehearsals/riduzione-settore-negozio-fittizio/answers-alimentare.json` is the
-  recorded stop, `test_preflight.py` holds both answers files to it. The goods-sector rehearsal is therefore the one case of the table that can't drop the food sector; the sales-area one has no such box.
+  draft, and sectors 017 and 019 were not tried with either box (the food or mixed shop is where dropping «Alimentare» would make sense). **Superseded in round 20** (sectors 017 and 019 keep the box ticked; the refusal now sits in the 016 recipe's `supports`, see Round 20). It was: a section-level `supports`
+  in `dictionary/fnsuap.yaml` that refused `settore_eliminato: Alimentare` for every recipe that uses the section, `rehearsals/riduzione-settore-negozio-fittizio/answers-alimentare.json` is the
+  recorded stop, `test_preflight.py` holds both answers files to it. The non-food shop's goods-sector rehearsal is therefore the one case of the table that can't drop the food sector (a mixed shop and a medium structure can); the sales-area one has no such box.
 - **The crawler ticks the procura option on the 016 crawls**, so «Qualifica e dati del procuratore» in a crawl says nothing about whether a recipe is a procura filing (the shop's opening has
   it too, `selected: true` in the `scelte eventuali` screen); a plain recipe never ticks it, a procura variant `extends` its plain one and carries `as_client`, `first`, `scelte`. The
   temporary shop was first taken for a procura filing because of that section; the run it got was a procura variant's (the client's company and its declarant, `negozio-procura-fittizio`'s
@@ -1061,6 +1061,44 @@ tattooist's move 1 each); 302 of 448 sections exercised, **0 fillable crawls wit
 - **Not run (17 own crawls, no rehearsal):** sector 02 (suspension), 03 and 54 (Dogane), 04 and 56 («interventi»), the tattooist's change of premises, the same forms in sectors 17 and 19
   (concession, temporary shop, the two reductions: copies by fingerprint of the five run here, nothing new to fill), and PIN 2 (and GPL) and PIN 3 GPL (`suap-common-*`). Not built: a plain
   temporary shop and a procura variant of the others; a SUAP choice counter like the SUE's.
+
+**Round 20 (2026-11-20): a plain temporary shop and the goods-sector reduction in sectors 017 and 019, five runs, all filled** (the temporary shop of a non-food shop filed by the
+business itself 61 s; the reduction in sector 017, food or mixed shop, with «Non alimentare» 67 s and with «Alimentare» 68 s; in sector 019, medium structure up to 400 m², 58 s and 61 s;
+recorded in `runs.json`; no value moved, no box loose, no gap, nothing skipped or unreached; the portal's warnings were the made-up PEC, address and cadastral data). The pane had to be
+signed in with SPID first (the home page showed the login), then the file picked once. All three rehearsals are in `suap-unrouted.yaml` (no event in the table for a temporary shop or for a
+reduction of the goods sector, no page in `library/procedures` for the reduction). Own crawls with no rehearsal: 17 → **15**; `leverage.py`: 267 of 309 own crawls with a filled run (was 265),
+302 of 448 sections exercised (unchanged: the forms show sections an earlier run had filled).
+
+- **The «Alimentare» lock is sector 016's form, not the goods-sector form.** In sector 017 and in sector 019 the box stayed ticked (both runs filled and read back), so a mixed or
+  food shop can drop its food sector, and a medium structure either one. The cause is still not read on a draft: the portal may be following the sector the wizard chose («NON
+  alimentare»), which would be why only that form unticks it; that is a guess, not a finding. In code: the refusal moved from the dictionary's section (which every sector's recipe
+  shared) to `rehearsals/riduzione-settore-negozio-fittizio/recipe.yaml`'s `supports`; `test_preflight.py` holds all three recipes (016 refuses `answers-alimentare.json`, 017 and 019 don't).
+  Both answers files of each new recipe stay (`answers.json`: «Non alimentare»; `answers-alimentare.json`: «Alimentare»), each with a filled run in `runs.json`.
+- **The plain temporary shop** came from `negozio-fittizio` with `--fixture negozio-fittizio` and the crawl `suap-016-aprire-lattivita-di-temporary-shop`: `ready` at once, the same answers as
+  the procura variant less the client and the procura (`temporary-shop-procura-fittizio` stays: its fixture and `as_client` are another filing). Its draft name is «... temporary shop semplice»:
+  the generated one carried a hash and could not be told from the procura variant's in the draft list.
+- **A derived recipe carried a refusal that wasn't its own again**: the two reductions copied the template's `supports` line about «Alimentare» (found by reading the recipe by hand,
+  the method's step 3). Dropped in both before any run. A refusal that holds for one sector's form only belongs in that recipe's `supports`, never in the dictionary section other sectors
+  share (what this round moved). In code: `derive_recipe.py` now prints `CHECK: refusal kept from TEMPLATE: «...»` for each of the template's `supports` lines that isn't the
+  generic one (legal form, the other partners' antimafia), so the claim is named when the recipe is made and not only if someone reads it (`kept_refusals`, `test_derive.py`).
+- **`media-struttura-fittizia` has no `fixture.json`** (it borrows `negozio-fittizio`'s): `derive_recipe.py --fixture media-struttura-fittizia` died with a traceback after the new folder was
+  half written. It now stops first and names the rehearsals of the same family that have one (`check_fixture`, `test_derive.py`). Sector 019's own fixture is `cessazione-media-fittizia`'s,
+  used here for the reduction.
+- **One draft name per answers file, not per rehearsal.** `test_gen.py`'s «no two cases share a draft name» (its loop, run on its own: `test_gen` takes 25 minutes) found nine answers files of earlier rounds sharing one: the `answers-b/-c.json` of PIN 3, 4, 5, 6
+  and the stopped `answers-alimentare.json` of the 016 reduction had their main file's name, so two runs of one rehearsal in one batch would have been the same draft to the runner (a draft is
+  read and found by its name, the newest of it). Renamed (` b`, ` c`, ` al` before «generato»; the main file keeps its name); the runs recorded under the old names stand. A new variant's
+  answers file needs its own `descrizione` (`derive_recipe.py` makes one name per rehearsal and a hash when it is taken; a variant is written by hand).
+- **The pane's JavaScript tool takes the bundle's scripts as they are.** `pick.js` (top-level `const`, `throw`), `results.js` (top-level `await`) and `loop.js` run pasted verbatim, and a
+  second paste in the same tab redeclares without error (tried 2026-11-20): never retype `pick.js` by hand, its sha256 check is inside it, and a wrapped copy is a copy that can drift.
+  Only a poll that wants a shorter wait than `results.js`'s 35 s is written separately, to stay under the tool's 45 s.
+- **A bundle of five rehearsals took over five minutes to build** (`rerun.py` runs pre-flight on each and writes the steps files; the Bash tool's 300 s cut it off and moved it to the
+  background): start it in the background and wait on the bundle file, then check that `~/Desktop/suap-bundle-*.js` is whole before the sign-in question, so the person is never
+  asked to sign in for a bundle that isn't there.
+- **The scoreboard script is `portal/leverage.py`**, not `bench/leverage.py` (`bench/test_leverage.py` is its test).
+- **Not run (15 own crawls, no rehearsal):** sector 02 (suspension), 03 and 54 (Dogane), 04 and 56 («interventi»), the tattooist's change of premises, the concession in sectors 16, 17 and 19,
+  the temporary shop in sector 17 and the sales-area reduction in 17 and 19 (copies by fingerprint of forms already run: nothing new to fill, each a derived recipe away), and PIN 2 (and GPL) and
+  PIN 3 GPL (`suap-common-*`). Not built: a procura variant of the others; a SUAP choice counter like the SUE's (its `boxes()` and `hits()` in `schema_branches.py` read any crawl, so the
+  counter is a matter of collecting each SUAP case's planned ticks with the right fixture per rehearsal, which differs from the SUE's one fixture).
 
 ## What the portal does that bit us
 

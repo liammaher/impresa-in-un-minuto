@@ -254,7 +254,32 @@ def refusal_only_asks(steps_text):
             and any(re.search(r"ask\.%s\b" % re.escape(k), json.dumps(x, ensure_ascii=False)) for x in data.get("supports", []))]
 
 
+# The refusals every SUAP recipe of a business carries (the legal form, the other partners' antimafia): nothing to read.
+GENERIC_SUPPORTS = ("Per ora per una ditta individuale", "Gli altri soci o amministratori")
+
+
+def kept_refusals(steps_text):
+    """The `else:` wording of the template's own `supports` lines that are not the generic ones. A recipe derived from another form keeps
+    them (round 19: the reduction of a food shop's goods sector kept the non-food form's «Alimentare» refusal, which holds for sector 016's
+    form only; the concession kept the alcohol refusal), and `ready` says nothing about a claim: each is read by hand and kept or deleted."""
+    import yaml
+    data = yaml.safe_load(steps_text)
+    return [str(x.get("else")) for x in data.get("supports", []) if isinstance(x, dict) and x.get("else")
+            and not any(g in str(x["else"]) for g in GENERIC_SUPPORTS)]
+
+
+def check_fixture(fixture):
+    """--fixture names a rehearsal with a fixture.json of its own: media-struttura-fittizia borrows negozio-fittizio's and has none
+    (2026-11-20: a traceback after the new folder was half written). Said before anything is written."""
+    if fixture and not (ROOT / "rehearsals" / fixture / "fixture.json").exists():
+        words = set(re.sub(r"-fittizi[oa]$", "", fixture).split("-")) - {"struttura", "di", "e"}
+        near = sorted(p.parent.name for p in (ROOT / "rehearsals").glob("*/fixture.json") if words & set(re.sub(r"-fittizi[oa]$", "", p.parent.name).split("-")))
+        raise SystemExit(f"rehearsals/{fixture} has no fixture.json of its own: name a rehearsal that has one with --fixture"
+                         + (f" (same family: {', '.join(near[:12])})" if near else ""))
+
+
 def derive(new, template, crawl_name, fixture=None, ticks=(), facts=None, handles=(), drop=(), also=()):
+    check_fixture(fixture)
     crawl = json.loads((PORTAL / "catalogue" / "F839" / "sections" / f"{crawl_name}.json").read_text())
     m = re.search(r"› ([^›]+?) \(sector (.+)\)$", crawl["pratica"])
     if m:
@@ -443,6 +468,8 @@ def main():
             only = refusal_only_asks(steps.read_text(encoding="utf-8"))
             if only:
                 print(f"CHECK: asks that only refuse, kept from {a.template}: {', '.join(only)} (does this pratica have such a case? else --drop-ask)")
+            for line in kept_refusals(steps.read_text(encoding="utf-8")):
+                print(f"CHECK: refusal kept from {a.template}: «{line[:110]}» (is it true of this form? else delete the line in recipe.yaml, then regen.py)")
 
 
 if __name__ == "__main__":

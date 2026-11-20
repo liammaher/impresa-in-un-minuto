@@ -184,5 +184,30 @@ def _():
         dr.closer_siblings("alcolici-negozio-fittizio", "suap-015-comunicazione-per-lo-svolgimento-di-attivita-conce")
 
 
+@case("a recipe derived from another keeps its refusals, and they are listed: the non-food goods-sector reduction's «Alimentare» line (2026-11-20, sectors 017 and 019 copied it and it is false there)")
+def _():
+    text = ('supports:\n  - {value: x, else: "Per ora per una ditta individuale o una srl."}\n'
+            '  - {when: "{{ask.altri_soggetti|not}}", else: "Gli altri soci o amministratori presentano le proprie dichiarazioni."}\n'
+            '  - {when: "{{ask.settore_eliminato|is_non_alimentare}}", else: "Nel modulo del negozio non alimentare il portale non tiene spuntata la casella «Alimentare»."}\n')
+    got = dr.kept_refusals(text)
+    assert len(got) == 1 and "Alimentare" in got[0], got
+    # The real 016 recipe's steps file: its line is found, and the 017 and 019 recipes (which dropped it) have none of it.
+    for name, expect in (("riduzione-settore-negozio-fittizio", True), ("riduzione-settore-alimentari-fittizio", False), ("riduzione-settore-media-fittizia", False)):
+        steps = (REH / name / "portal-steps.generated.yaml").read_text()
+        assert any("«Alimentare»" in x for x in dr.kept_refusals(steps)) == expect, (name, dr.kept_refusals(steps))
+
+
+@case("a --fixture that has no fixture.json stops before anything is written (media-struttura-fittizia borrows negozio-fittizio's)")
+def _():
+    assert not (REH / "media-struttura-fittizia" / "fixture.json").exists()
+    try:
+        dr.derive("test-never-written", "riduzione-settore-negozio-fittizio", "suap-019-ridurre-il-settore-merceologico", fixture="media-struttura-fittizia")
+    except SystemExit as e:
+        assert "no fixture.json" in str(e) and "cessazione-media-fittizia" in str(e), e
+    else:
+        raise AssertionError("derived with a fixture that does not exist")
+    assert not (REH / "test-never-written").exists()
+
+
 print(f"{sum(results)}/{len(results)} passed")
 sys.exit(0 if all(results) else 1)

@@ -35,3 +35,4 @@ supports:
     in: [ditta_individuale, srl, srls, snc, sas, spa]
     else: "Per ora per una ditta individuale o una srl, srls, snc, sas o spa."
   - {when: "{{ask.altri_soggetti|not}}", else: "Gli altri soci o amministratori presentano le proprie dichiarazioni antimafia come allegati firmati (art. 85 D.Lgs. 159/2011): non lo preparo ancora."}
+  - {when: "{{ask.settore_eliminato|is_non_alimentare}}", else: "Nel modulo del negozio non alimentare il portale non tiene spuntata la casella «Alimentare» (provato il 2026-11-20): qui si può ridurre solo il settore non alimentare."}

@@ -1194,20 +1194,26 @@ def non_food_shops_propose_all_non_food():
 
 def portal_keeps_alimentare_unticked():
     """The goods-sector reduction in the non-food shop's form (2026-11-20, rehearsals/riduzione-settore-negozio-fittizio): the portal
-    did not keep «Alimentare» ticked, twice, and ticked «Non alimentare»; the dictionary's section refuses the first before any run."""
-    reh = HERE.parents[4] / "rehearsals" / "riduzione-settore-negozio-fittizio"
-    steps = yaml.safe_load((reh / "portal-steps.generated.yaml").read_text())
-    fixture = dict(json.loads((reh / "fixture.json").read_text())["fields"])
-    for name, refused in (("answers.json", False), ("answers-alimentare.json", True)):
-        answers = json.loads((reh / name).read_text())
-        r = run.preflight(steps, values(answers=answers, fields=fixture, steps=steps), made_up=True)
-        said = any("«Alimentare»" in str(u) for u in r["unsupported"])
-        assert said == refused, (name, r["unsupported"])
-        assert r["ready"] == (not refused), (name, r)
+    did not keep «Alimentare» ticked, twice, and ticked «Non alimentare»; that recipe's `supports` refuses the first before any run.
+    Sectors 017 (food or mixed shop) and 019 (medium structure up to 400 m²) show the same section and keep either box ticked
+    (both filled on the portal, 2026-11-20): the lock is sector 016's form, so their recipes must not carry the refusal."""
+    for rehearsal, locked in (("riduzione-settore-negozio-fittizio", True), ("riduzione-settore-alimentari-fittizio", False), ("riduzione-settore-media-fittizia", False)):
+        reh = HERE.parents[4] / "rehearsals" / rehearsal
+        steps = yaml.safe_load((reh / "portal-steps.generated.yaml").read_text())
+        fixture = dict(json.loads((reh / "fixture.json").read_text())["fields"])
+        for name in ("answers.json", "answers-alimentare.json"):
+            if not (reh / name).exists():
+                continue
+            answers = json.loads((reh / name).read_text())
+            refused = locked and name == "answers-alimentare.json"
+            r = run.preflight(steps, values(answers=answers, fields=fixture, steps=steps), made_up=True)
+            said = any("«Alimentare»" in str(u) for u in r["unsupported"])
+            assert said == refused, (rehearsal, name, r["unsupported"])
+            assert r["ready"] == (not refused), (rehearsal, name, r)
 
 
 CASES = [
-    ("a goods-sector reduction ticking «Alimentare» in the non-food form is refused: the portal does not keep it ticked", portal_keeps_alimentare_unticked),
+    ("a goods-sector reduction ticking «Alimentare» in the non-food form (016) is refused, not in sectors 017 and 019: the portal does not keep it ticked only there", portal_keeps_alimentare_unticked),
     ("a non-food shop proposes its whole sales area as non-food, not the dictionary's 0", non_food_shops_propose_all_non_food),
     ("one procedure's three pratiche (open with a sign, move, enlarge) get three keys in the pane", one_procedure_three_pratiche),
     ("the SCIA with its answers is ready", ready),
