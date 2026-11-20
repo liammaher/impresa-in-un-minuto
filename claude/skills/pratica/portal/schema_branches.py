@@ -240,11 +240,21 @@ def sue_steps(sportello="sue"):
             yield d, yaml.safe_load(f.read_text())
 
 
+def borrowed_fixture(d):
+    """The fixture a rehearsal with no fixture.json of its own ran on, from the `values` its runs.json
+    records (bench/rerun.py --record --values): a rehearsal that borrows another's is a case on it."""
+    f = d / "runs.json"
+    for r in json.loads(f.read_text()) if f.is_file() else []:
+        if r.get("values") and (ROOT / r["values"]).is_file():
+            return ROOT / r["values"]
+    return None
+
+
 def ticked(sportello="sue", skipped=None):
     """[(section, id, kind, label, (rehearsal, answers))] for each box a pre-flight-ready
     answers file of a rehearsal of this sportello ticks, and each dropdown value it chooses.
     A SUE case is held to the architect's fixture; a SUAP business has its own (the rehearsal's
-    fixture.json): one that has none is added to `skipped`, never read with another's values."""
+    fixture.json), or the one its runs.json says it ran on (`values`); one with neither is added to `skipped`, never read with another's values."""
     out = []
     os.chdir(ROOT)  # the answers name their files from the repo's root
     for d, steps in sue_steps(sportello):
@@ -252,6 +262,8 @@ def ticked(sportello="sue", skipped=None):
             fields = dict(json.loads(FIXTURE.read_text())["fields"])
         elif (d / "fixture.json").is_file():
             fields = dict(json.loads((d / "fixture.json").read_text())["fields"])
+        elif borrowed_fixture(d):
+            fields = dict(json.loads(borrowed_fixture(d).read_text())["fields"])
         else:
             if skipped is not None:
                 skipped.append(d.name)

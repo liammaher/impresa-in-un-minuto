@@ -13,6 +13,7 @@
   "result": "filled",
   "seconds": 95.9,
   "browser": "pane",
-  "note": "Run on negozio-fittizio's fixture; vincolo paesaggistico and zona A both Si in «ulteriori dichiarazioni»; nothing moved or loose, the portal's warnings the made-up PEC, address and cadastral data."
+  "note": "Run on negozio-fittizio's fixture; vincolo paesaggistico and zona A both Si in «ulteriori dichiarazioni»; nothing moved or loose, the portal's warnings the made-up PEC, address and cadastral data.",
+  "values": "rehearsals/negozio-fittizio/fixture.json"
  }
 ]

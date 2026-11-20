@@ -17,6 +17,12 @@
 // then list the section links. Without the helper, `[...document.querySelectorAll("a")]` filtered on upper-case names lists the draft's sections, and
 // `[...document.querySelectorAll("[name*='dynaForm']")]` its boxes (id, DIS, CHK, value, the text next to it): a box that stayed empty or a "Il valore è
 // obbligatorio" beside it is the stop (the hotel's doubles, the one-off occupation's area "12.00": "il numero immesso non è valido").
+// 2026-11-20 (round 21): `window.__draft` is lost at EVERY navigation, a section link's click included (the page is reloaded, not swapped): click
+// the link in one call, wait ~6 s, then paste the helper (the object below, without a call that clicks) and read. A stand-alone draft is
+// the way to a page: choosing the wizard's sector by clicks or `span.click()` did not register in the pane («Deve essere selezionato almeno un
+// elemento», "Settore selezionato" empty), so get a draft by running a rehearsal of the pratica (bench/rerun.py) and open it here. A radio is
+// switched by its visible `_clone` (`...:radio:N_clone`), not the input; SALVA on a section whose declarations are unticked answers
+// «Il valore è obbligatorio» for each (the person's declarations: never ticked for them), and that is not a stop of the section's own boxes.
 // Written 2026-11-15 for round 7 (README): it found that the VV.F. take-over's statements a) and b) are required and b) switches on the
 // previous manager's boxes, that the garage's header radio is not kept, and what the B&B variation's capacity groups need. A page that
 // navigates (open, section, required) loses the return value of the call that caused it: look at the page, then call again.

@@ -1776,7 +1776,8 @@ asks:
   reparto_alimentare_mq: {type: number, question: "La superficie di vendita del reparto per i prodotti alimentari, in m² (0 se non ne vende)"}
   reparto_non_alimentare_mq: {type: number, question: "La superficie di vendita del reparto per i prodotti non alimentari, in m² (0 se non ne vende)"}
   # The sign's SCIA (the "dove è prevista la SCIA" version): a director of works, who installs it, who drew it.
-  # (Whether it is in zone A of the PRG is a checklist item of each recipe, `insegna_zona_a`, as `insegna_vincolo` is.)
+  # (Whether it is in zone A of the PRG is `insegna_zona_a`, asked only by the recipes whose form has that Si/No (the stand-alone sign SCIA
+  # and the take-overs with a sign); the opening's sign form has no zone A box, so those recipes don't ask it. `insegna_vincolo` is the landscape vincolo alone.)
   insegna_dl: {type: yes_no, question: "È prevista la nomina di un direttore dei lavori per l'insegna?", propose: "false"}
   insegna_impresa: {type: yes_no, question: "L'insegna la installa un'impresa specializzata (anziché il titolare in economia)?"}
   installatore_denominazione: {type: text, question: "L'impresa che installa l'insegna: nome o denominazione (30 caratteri al massimo)"}
@@ -5964,11 +5965,14 @@ sections:
       # the run found the box only by its crawled id ("loose", negozio-insegna-fittizio, 2026-11-10).
       - {kind: textarea, label: Testo del messaggio pubblicitario, value: "{{ask.insegna_testo}}"}
   # The sign's landscape declaration follows `insegna_vincolo` (the recipe's checklist item) and, under it, `vincolo_ambientale`.
-  # Read from the crawls (suap-060-aprire-l-attivita-interventi, the stand-alone sign SCIA), not yet on a draft in every branch:
-  # "Soggetta ... ai sensi dell'art. 146" opens "presenta contestualmente ... istanza" (then Ordinaria or Semplificata) and
-  # "è già in possesso dell'autorizzazione paesaggistica"; the art. 149 exclusion opens nothing. The fourth radio, the Soprintendenza's
-  # parere for signs along roads, is a statement of the law and the person's. The monumentale section stays "Non soggetta": a cultural
-  # asset (`insegna_bene_culturale`) is refused in every recipe.
+  # Read from the crawls (suap-060-aprire-l-attivita-interventi, the stand-alone sign SCIA) and filled on the portal in all four
+  # branches (2026-11-20, ristorante-insegna-fittizio/answers-vincolo-*.json): "Soggetta ... ai sensi dell'art. 146" opens "presenta
+  # contestualmente ... istanza" (then Ordinaria or Semplificata) and "è già in possesso dell'autorizzazione paesaggistica"; the art. 149
+  # exclusion opens nothing. The fourth radio, the Soprintendenza's parere for signs along roads, is a statement of the law and the
+  # person's: no run stopped on it. The monumentale section stays "Non soggetta": a cultural asset (`insegna_bene_culturale`) is refused
+  # in every recipe. Every recipe with this section asks `insegna_vincolo` and `insegna_bene_culturale` (test_preflight holds it: the
+  # permanent sign ticked "Non soggetta" without asking). The sign's stand-alone SCIA form (`...-scia-4`) has no such section: its two
+  # Si/No are in "ulteriori dichiarazioni (mezzi pubblicitari)" below, and a Si there opens no box and no section.
   - section: dichiarazione relativa al vincolo ambientale
     fields:
       - {kind: radio, label: Non soggetta a tutela ambientale, when: "{{ask.insegna_vincolo|not}}"}

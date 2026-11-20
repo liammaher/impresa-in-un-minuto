@@ -1104,7 +1104,7 @@ reduction of the goods sector, no page in `library/procedures` for the reduction
 discharges, PIN 1): a restaurant or a shop files none of them, and `leverage.py` already says the 15 unrun crawls add no section, so the round counts what the runs took instead.
 `schema_branches.py suap [--only suap-060-]` lists every radio, tick and dropdown option of the crawls the SUAP recipes use (once per section and label) and what covers it: a filled
 run, a pre-flight-ready case with no recorded run, a steps file that could under a condition no case meets, or nothing; each case is read with its rehearsal's own `fixture.json`
-(the SUE's one fixture was `cila-fittizia`'s), and the 52 rehearsals that borrow another's are not counted as cases, so their boxes show as less covered than they are. 61 s.
+(the SUE's one fixture was `cila-fittizia`'s), and the rehearsals that borrow another's are counted as cases only when their `runs.json` says which fixture a run used (`values`; 52 had none, 50 after the five recorded 2026-11-20), so their boxes show as less covered than they are. After that: 354 filled. 61 s.
 On 2026-11-20: **1,634 boxes in 268 crawls: 346 filled on the portal, 2 a case with no recorded run, 397 mapped with no case, 550 on the portal and not mapped, 177 left empty, 162 the person's.**
 
 - **Most of the 550 are one checklist.** 171 are the Reg. 852 «tipologia di attività» options (`attivita_852`: a bakery ticks its own and a recipe never the other trades'), and 55 the
@@ -1135,6 +1135,11 @@ On 2026-11-20: **1,634 boxes in 268 crawls: 346 filled on the portal, 2 a case w
   signs along roads) is a statement of the law, the person's, and no run stopped on it. Not run: the other recipes of the same families (same sections by fingerprint) and the attachments screen under a vincolo. The counter after it: 349 filled (was 346), 543 not mapped (550). Tests: `test_gen` 150/153 (the two it already failed on main: a FILING line of 358 characters and pin-6's record; the run table is regenerated), `test_preflight` 48/48, `test_route` 28/28, `test_rounds` 106/106, `test_rerun` 15/15, `test_combos`, `test_derive` 19/19, `test_schema_branches` 7/7.
 - **Reading a draft by hand.** Choosing the sector in the wizard by clicks or `span.click()` did not register (the page said «Deve essere selezionato almeno un elemento»): the runner is the way to a draft. `read_draft.js`
   loses `window.__draft` at every navigation, a section link included: click the link in one call, wait, then paste the helper's body (no click in it) and read.
+- **In code from this round** (so the next one doesn't relearn it): `read_draft.js`'s header says what the last two bullets say, and that a SALVA on unticked declarations answers «Il valore è obbligatorio» for each (the
+  person's, never ticked); `bench/rerun.py --record - --values FILE` records the runs of a rehearsal with no `fixture.json` of its own (before, they carried «@fixture» and had to be written into `runs.json` by hand,
+  which left the README's run table stale: `test_gen` caught it, `runs.py --write` redraws it) and writes `"values": FILE` in the entry; `schema_branches.py suap` reads such a rehearsal's cases on that fixture;
+  `test_preflight.sign_vincolo_follows_the_answer` holds the vincolo findings above (the opening's ambientale radios by answer, the stand-alone form's Si/No, the cultural asset refused, every recipe with the section
+  asking the two facts, no zone A ask where the form has no box). A recipe's refusal that is a *gap* and not the law's hides a second thing to check: what the form fills when the refusal is gone (here a fixed «Non soggetta»).
 - **Not done:** the counter does not yet say which of a box's *revealed* boxes a case saw (it counts boxes, not paths), and it is not in `docs/` (a `--write` waits for the numbers to be read against a case).
 
 ## What the portal does that bit us
