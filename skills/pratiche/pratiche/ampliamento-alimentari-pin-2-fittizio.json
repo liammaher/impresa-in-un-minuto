@@ -1,0 +1,1756 @@
+{
+ "procedure": "napoli/comune/scia-esercizio-vicinato",
+ "title": "Variazioni strutturali, negozio alimentare o misto, SUAP Napoli",
+ "generated": "gen.py from suap-017-variazioni-strutturali-pin-2 (2026-11-14) and dictionary/fnsuap.yaml",
+ "yours": [
+  "Il professionista antincendio firma tu o per lui, con la sua firma digitale, l'asseverazione e le dichiarazioni dei Vigili del Fuoco: il portale le fa firmare al professionista, non al titolare",
+  "Paga ai Vigili del Fuoco la tariffa della categoria (€ {{ask.vvf_importo}}) e allega la copia del versamento firmata digitalmente (.p7m)",
+  "Apri la bozza in Pratiche in bozza ({{ask.descrizione}}) e confrontala con questa pagina",
+  "Spunta tu le dichiarazioni: consapevolezza (artt. 46-47), informativa privacy, requisiti di onorabilità, altre dichiarazioni, tasse comunali, art. 75 DPR 445/2000",
+  "Paga i diritti di segreteria (€ {{ask.diritti_euro}}) con pagoPA nella schermata di pagamento",
+  "Firma e invia (Firma e invio); conserva la ricevuta"
+ ],
+ "groups": {
+  "extras": {
+   "question": "Qualcuna di queste voci vale per l'attività? Spunta tutte quelle che valgono, o nessuna."
+  },
+  "fatti": {
+   "question": "Quali di queste cose valgono per l'attività? Spunta quelle vere, anche nessuna."
+  }
+ },
+ "asks": {
+  "descrizione": {
+   "type": "text",
+   "question": "Nome della bozza in Pratiche in bozza sul portale",
+   "default": "ampliamento {{business.denominazione}}"
+  },
+  "oggetto": {
+   "type": "text",
+   "question": "La pratica in una frase (300 caratteri)"
+  },
+  "titolo_attivita_protocollo": {
+   "type": "text",
+   "question": "Il numero di protocollo della SCIA (o della licenza) con cui ha avviato l'attività"
+  },
+  "titolo_attivita_data": {
+   "type": "date",
+   "question": "La sua data"
+  },
+  "diritti_euro": {
+   "type": "number",
+   "question": "I diritti SUAP in euro (colonna VCA del tariffario 2026 per un negozio alimentare non alimentare, S1: verifica)"
+  },
+  "diritti_esente": {
+   "type": "yes_no",
+   "question": "Non sono dovuti diritti: è perché il committente o i lavori sono esenti in base al tariffario del Comune, e non perché il tariffario non ne preveda per questa pratica?",
+   "propose": "false"
+  },
+  "diritti_esenzione_motivo": {
+   "type": "text",
+   "question": "Perché non sono dovuti diritti: l'esenzione e la norma del tariffario del Comune che la prevede (al massimo 300 caratteri)"
+  },
+  "superficie_vendita_mq": {
+   "type": "number",
+   "question": "La superficie di vendita in m² (dove accedono i clienti, esclusi magazzini e servizi igienici)"
+  },
+  "superficie_alimentare_mq": {
+   "type": "number",
+   "question": "Di cui, m² per il settore alimentare",
+   "propose": "0"
+  },
+  "superficie_non_alimentare_mq": {
+   "type": "number",
+   "question": "Di cui, m² per tutto il resto (non alimentare)",
+   "propose": "0"
+  },
+  "superficie_vendita_prima_mq": {
+   "type": "number",
+   "question": "La superficie di vendita prima della modifica, in m²"
+  },
+  "superficie_alimentare_prima_mq": {
+   "type": "number",
+   "question": "Di cui, m² per il settore alimentare prima della modifica"
+  },
+  "superficie_non_alimentare_prima_mq": {
+   "type": "number",
+   "question": "Di cui, m² per il settore non alimentare prima della modifica"
+  },
+  "vvf_attivita": {
+   "type": "text",
+   "question": "Che attività segnali ai Vigili del Fuoco (il tipo di attività, ad es. «ristorante»; 200 caratteri al massimo)"
+  },
+  "vvf_categoria": {
+   "type": "choice",
+   "question": "In quale categoria cade l'attività nell'elenco dell'Allegato I del DPR 151/2011 (la decide il professionista antincendio)? a; b; c",
+   "options": [
+    "a",
+    "b",
+    "c"
+   ]
+  },
+  "vvf_allegato": {
+   "type": "text",
+   "question": "Il numero, la sottoclasse e la categoria dell'attività nell'Allegato I del DPR 151/2011, come li scrive la tendina del modulo all'inizio di ogni voce (ad es. «69 _ 1 _ A»)"
+  },
+  "vvf_stato": {
+   "type": "choice",
+   "question": "L'attività è nuova (nuovo insediamento) o esistente (modifica di un'attività esistente)? nuova; esistente",
+   "options": [
+    "nuova",
+    "esistente"
+   ]
+  },
+  "vvf_modifica": {
+   "type": "yes_no",
+   "question": "Sono modifiche che non aggravano le condizioni di sicurezza già esistenti (art. 4 c. 6 del DPR 151/2011), con la dichiarazione di non aggravio?",
+   "propose": "false"
+  },
+  "vvf_parziale": {
+   "type": "yes_no",
+   "question": "È una SCIA parziale (lotto, stralcio o adeguamento parziale)? Non la preparo ancora",
+   "propose": "false"
+  },
+  "vvf_approccio": {
+   "type": "choice",
+   "question": "Con quale approccio tecnico è progettata la sicurezza antincendio? standard (modalità standard); conforme (RTO/RTV, soluzione conforme); ingegneria (DM 9 maggio 2007: serve anche la dichiarazione del responsabile sul sistema di gestione della sicurezza); deroga (RTO/RTV, soluzione in deroga). La soluzione alternativa non la preparo ancora",
+   "options": [
+    "standard",
+    "conforme",
+    "ingegneria",
+    "deroga"
+   ],
+   "propose": "standard"
+  },
+  "vvf_fotovoltaico": {
+   "type": "yes_no",
+   "question": "È prevista l'installazione di un impianto fotovoltaico presso l'attività (DL 144/2022)?",
+   "propose": "false"
+  },
+  "vvf_gsa_doc": {
+   "type": "file",
+   "question": "La dichiarazione del responsabile dell'attività sul sistema di gestione della sicurezza antincendio (DM 9 maggio 2007, art. 6) (PDF)",
+   "when": "{{ask.vvf_approccio|is_ingegneria}}"
+  },
+  "vvf_pnrr": {
+   "type": "yes_no",
+   "question": "Almeno una delle attività in progetto è finanziata o beneficia del regime del PNRR, PNC o ZES? Non lo preparo ancora",
+   "propose": "false"
+  },
+  "vvf_impianti_speciali": {
+   "type": "yes_no",
+   "question": "Gli interventi in progetto riguardano impianti di idrogeno, GNL/GNC, stoccaggio o trattamento di rifiuti, o le facciate e coperture di edifici civili? Non lo preparo ancora",
+   "propose": "false"
+  },
+  "vvf_importo": {
+   "type": "text",
+   "question": "L'importo versato ai Vigili del Fuoco per questa attività, in euro (la tariffa della categoria; il versamento lo fai tu)"
+  },
+  "vvf_versamento_numero": {
+   "type": "text",
+   "question": "Il numero dell'attestato di versamento ai Vigili del Fuoco"
+  },
+  "vvf_versamento_data": {
+   "type": "date",
+   "question": "La data dell'attestato di versamento"
+  },
+  "vvf_versamento_doc": {
+   "type": "file",
+   "question": "La copia del versamento, firmata digitalmente (.p7m): il modulo non accetta altro"
+  },
+  "vvf_doc_atti": {
+   "type": "text",
+   "question": "Quanti atti e quanti elaborati grafici ha la relazione tecnica di progetto? Scrivi due numeri, ad es. «1 4»"
+  },
+  "vvf_doc_strutture": {
+   "type": "text",
+   "question": "Quanti modelli di certificazione di elementi strutturali portanti o separanti (resistenza al fuoco) sono allegati? Un numero, 0 se nessuno"
+  },
+  "vvf_doc_prodotti": {
+   "type": "text",
+   "question": "Quante dichiarazioni sui prodotti classificati (reazione e resistenza al fuoco, dispositivi di apertura delle porte) sono allegate? Un numero, 0 se nessuna"
+  },
+  "vvf_doc_imp1": {
+   "type": "text",
+   "question": "Punto 4.I) della distinta, la produzione, trasformazione, trasporto, distribuzione e utilizzazione dell'energia elettrica: quante dichiarazioni di conformità (DC), di corretta installazione (DI) e certificazioni di rispondenza (CI) sono allegate? Tre numeri, ad es. «1 0 0»"
+  },
+  "vvf_doc_imp2": {
+   "type": "text",
+   "question": "Punto 4.II) della distinta, la protezione contro le scariche atmosferiche: quante dichiarazioni di conformità (DC), di corretta installazione (DI) e certificazioni di rispondenza (CI) sono allegate? Tre numeri, ad es. «0 0 0»"
+  },
+  "vvf_doc_imp3": {
+   "type": "text",
+   "question": "Punto 4.III) della distinta, il deposito, trasporto, distribuzione e utilizzazione di gas (anche in forma liquida), combustibili, infiammabili o comburenti, comprese le opere di evacuazione dei prodotti della combustione e di ventilazione ed aerazione: quante dichiarazioni di conformità (DC), di corretta installazione (DI) e certificazioni di rispondenza (CI) sono allegate? Tre numeri, ad es. «0 0 0»"
+  },
+  "vvf_doc_imp4": {
+   "type": "text",
+   "question": "Punto 4.IV) della distinta, il deposito, trasporto, distribuzione e utilizzazione di solidi e liquidi combustibili, infiammabili o comburenti, comprese le opere di evacuazione dei prodotti della combustione e di ventilazione ed aerazione: quante dichiarazioni di conformità (DC), di corretta installazione (DI) e certificazioni di rispondenza (CI) sono allegate? Tre numeri, ad es. «0 0 0»"
+  },
+  "vvf_doc_imp5": {
+   "type": "text",
+   "question": "Punto 4.V) della distinta, il riscaldamento, la climatizzazione, il condizionamento e la refrigerazione, comprese le opere di evacuazione dei prodotti della combustione e di ventilazione ed aerazione dei locali: quante dichiarazioni di conformità (DC), di corretta installazione (DI) e certificazioni di rispondenza (CI) sono allegate? Tre numeri, ad es. «0 0 0»"
+  },
+  "vvf_doc_imp6": {
+   "type": "text",
+   "question": "Punto 4.VI) della distinta, l'estinzione o il controllo di incendi ed esplosioni, automatico e manuale: quante dichiarazioni di conformità (DC), di corretta installazione (DI) e certificazioni di rispondenza (CI) sono allegate? Tre numeri, ad es. «0 0 0»"
+  },
+  "vvf_doc_imp7": {
+   "type": "text",
+   "question": "Punto 4.VII) della distinta, il controllo del fumo e del calore: quante dichiarazioni di conformità (DC), di corretta installazione (DI) e certificazioni di rispondenza (CI) sono allegate? Tre numeri, ad es. «0 0 0»"
+  },
+  "vvf_doc_imp8": {
+   "type": "text",
+   "question": "Punto 4.VIII) della distinta, la rivelazione di fumo, calore, gas e incendio e la segnalazione di allarme: quante dichiarazioni di conformità (DC), di corretta installazione (DI) e certificazioni di rispondenza (CI) sono allegate? Tre numeri, ad es. «0 0 0»"
+  },
+  "vvf_doc_altri": {
+   "type": "text",
+   "question": "Quanti altri documenti allegati non sono nelle voci precedenti? Un numero, 0 se nessuno"
+  },
+  "altri_soggetti": {
+   "group": "extras",
+   "type": "yes_no",
+   "item": "È una società con altri soci o amministratori oltre a chi dichiara",
+   "why": "Ciascuno presenta una propria dichiarazione antimafia firmata (art. 85 D.Lgs. 159/2011), che non preparo ancora."
+  },
+  "settori": {
+   "group": "extras",
+   "type": "yes_no",
+   "item": "Aggiunge, elimina o sostituisce un settore o prodotti speciali (tabacchi, medicinali, carburanti)",
+   "why": "Per ora preparo solo un ampliamento della superficie negli stessi settori."
+  },
+  "insegna_esterna": {
+   "group": "extras",
+   "type": "yes_no",
+   "item": "Una nuova insegna esterna",
+   "why": "Un'insegna esterna include in questa la SCIA dell'insegna: per ora non la preparo."
+  },
+  "zona": {
+   "type": "choice",
+   "question": "In quale zona del Piano del Comune si trova il locale?",
+   "options": [
+    "a",
+    "b",
+    "c"
+   ],
+   "labels": {
+    "a": "Zona A: centro storico UNESCO (aree 1 rossa, 2 arancione, 3 gialla)",
+    "b": "Zona B: buffer zone (blu)",
+    "c": "Zona C: il resto della città"
+   },
+   "how": "Dalla mappa delle zone tutelate allegata al Piano (delibera di Consiglio comunale n. 79/2026), o chiedendo al SUAP."
+  },
+  "somministrazione_particolare": {
+   "group": "fatti",
+   "type": "yes_no",
+   "item": "Il locale è in un'area di servizio autostradale, in una stazione, in una mensa aziendale, in un ospedale o in una scuola, su un mezzo di trasporto, fa catering, o serve solo gli alloggiati di una struttura ricettiva?"
+  },
+  "alcolici": {
+   "group": "fatti",
+   "type": "yes_no",
+   "item": "Venderai o servirai bevande alcoliche?"
+  },
+  "insegna": {
+   "group": "fatti",
+   "type": "yes_no",
+   "item": "Avrai un'insegna, una targa o una vetrofania?"
+  },
+  "musica": {
+   "group": "fatti",
+   "type": "yes_no",
+   "item": "Userai impianti di diffusione sonora, o farai eventi con musica o strumenti musicali?"
+  },
+  "dehors": {
+   "group": "fatti",
+   "type": "yes_no",
+   "item": "Vuoi tavoli e sedie all'aperto, su suolo pubblico?"
+  }
+ },
+ "supports": [
+  {
+   "when": "{{ask.vvf_parziale|not}}",
+   "else": "Una SCIA antincendio parziale (lotto, stralcio, adeguamento parziale) non la preparo ancora."
+  },
+  {
+   "value": "{{ask.vvf_categoria}}",
+   "in": [
+    "a"
+   ],
+   "else": "Per le attività di categoria B e C la SCIA antincendio segue l'approvazione del progetto da parte dei Vigili del Fuoco (con il suo numero di pratica): non la preparo ancora."
+  },
+  {
+   "when": "{{ask.vvf_pnrr|not}}",
+   "else": "Un'attività finanziata dal PNRR, PNC o ZES apre altre voci della SCIA antincendio, che non preparo ancora."
+  },
+  {
+   "when": "{{ask.vvf_impianti_speciali|not}}",
+   "else": "Impianti di idrogeno, GNL/GNC, rifiuti o le facciate e coperture di edifici civili aprono altre voci della SCIA antincendio, che non preparo ancora."
+  },
+  {
+   "value": "{{business.forma_giuridica}}",
+   "in": [
+    "ditta_individuale",
+    "srl",
+    "srls",
+    "snc",
+    "sas",
+    "spa"
+   ],
+   "else": "Per ora per una ditta individuale o una srl, srls, snc, sas o spa."
+  },
+  {
+   "when": "{{ask.altri_soggetti|not}}",
+   "else": "Gli altri soci o amministratori presentano le proprie dichiarazioni antimafia come allegati firmati (art. 85 D.Lgs. 159/2011): non lo preparo ancora."
+  },
+  {
+   "when": "{{ask.settori|not}}",
+   "else": "Per ora preparo solo un ampliamento della superficie negli stessi settori."
+  },
+  {
+   "when": "{{ask.insegna_esterna|not}}",
+   "else": "Un'insegna esterna non la preparo ancora."
+  },
+  {
+   "when": "{{ask.superficie_alimentare_mq|positive|not}}",
+   "else": "Questa è la pratica del negozio alimentare non alimentare."
+  }
+ ],
+ "rules": {
+  "table": "suap-napoli",
+  "facts": {
+   "attivita": "vicinato_alimentare",
+   "evento": "ampliamento",
+   "zona": "{{ask.zona}}",
+   "superficie_vendita_mq": "{{ask.superficie_vendita_mq}}",
+   "consumo_sul_posto": false,
+   "somministrazione_particolare": "{{ask.somministrazione_particolare}}",
+   "prevenzione_incendi": "true",
+   "alcolici": "{{ask.alcolici}}",
+   "insegna": "{{ask.insegna}}",
+   "musica": "{{ask.musica}}",
+   "dehors": "{{ask.dehors}}"
+  },
+  "handles": [
+   "napoli/vigili-del-fuoco/scia-prevenzione-incendi"
+  ]
+ },
+ "start": "https://suap.impresainungiorno.gov.it/fnsuap/cmd/create?comune=F839",
+ "logged_in": "https://suap.impresainungiorno.gov.it/fnsuap/",
+ "wizard": [
+  {
+   "screen": "Assegna una descrizione alla pratica",
+   "fill": {
+    "css": "input[placeholder^=\"Inserire la descrizione\"]",
+    "value": "{{ask.descrizione}}",
+    "max": 60
+   },
+   "confirm": "CONFERMA"
+  },
+  {
+   "screen": "Controlla l'accesso alla pratica",
+   "confirm": "CONFERMA"
+  },
+  {
+   "screen": "Scelta settore attività",
+   "tree": [
+    "Vicinato - settore merceologico Alimentare o Misto"
+   ],
+   "confirm": "CONFERMA"
+  },
+  {
+   "screen": "Scelta operazioni",
+   "tree": [
+    "Variazioni strutturali",
+    "PIN 2 - Segnalazione Certificata di Inizio Attività"
+   ],
+   "confirm": "CONFERMA"
+  },
+  {
+   "screen": "Scelta interventi eventuali",
+   "confirm": "CONFERMA"
+  },
+  {
+   "screen": "Scelta del destinatario della pratica",
+   "confirm": "CONFERMA"
+  },
+  {
+   "screen": "Scelte eventuali",
+   "confirm": "CONFERMA"
+  }
+ ],
+ "sections": [
+  {
+   "section": "Scheda anagrafica",
+   "open": false,
+   "fields": [
+    {
+     "id": "r1c1p1reg:radio:0_clone",
+     "kind": "radio",
+     "when": "{{business.rea|empty|not}}",
+     "label": "DITTA/SOCIETA'/IMPRESA"
+    },
+    {
+     "id": "r1c1p1reg:radio:0_clone",
+     "kind": "radio",
+     "when": "{{business.rea|empty}}",
+     "label": "DITTA/SOCIETA'/IMPRESA"
+    },
+    {
+     "id": "r2c2p4reg:radio:2_clone",
+     "kind": "radio",
+     "made_up_stops": true,
+     "made_up": "the portal looks the company's codice fiscale up in the Registro Imprese at Salva (\"Il CF inserito non è presente nel RI\"): a made-up company stops there",
+     "when": "{{business.rea|empty|not}}",
+     "label": "ISCRITTA ALLA CCIAA"
+    },
+    {
+     "id": "r8c1p16reg",
+     "kind": "select",
+     "value": "{{business.cciaa|provincia_nome}}",
+     "when": "{{business.rea|empty|not}}",
+     "label": "Camera di commercio di:"
+    },
+    {
+     "id": "r6c2p16reg:radio:3_clone",
+     "kind": "radio",
+     "when": "{{business.rea|empty}}",
+     "label": "NON ANCORA ISCRITTA"
+    },
+    {
+     "id": "r13c1p31reg:txt",
+     "kind": "text",
+     "value": "{{t:identity.first_name}}",
+     "when": "{{business.rea|empty|not}}",
+     "max": 40,
+     "label": "Nome"
+    },
+    {
+     "id": "r10c1p23reg:txt",
+     "kind": "text",
+     "value": "{{t:identity.first_name}}",
+     "when": "{{business.rea|empty}}",
+     "max": 40,
+     "label": "Nome"
+    },
+    {
+     "id": "r13c2p33reg:txt",
+     "kind": "text",
+     "value": "{{t:identity.last_name}}",
+     "when": "{{business.rea|empty|not}}",
+     "max": 40,
+     "label": "Cognome"
+    },
+    {
+     "id": "r10c2p25reg:txt",
+     "kind": "text",
+     "value": "{{t:identity.last_name}}",
+     "when": "{{business.rea|empty}}",
+     "max": 40,
+     "label": "Cognome"
+    },
+    {
+     "id": "r13c3p35reg:txt",
+     "kind": "text",
+     "value": "{{t:identity.codice_fiscale}}",
+     "when": "{{business.rea|empty|not}}",
+     "max": 16,
+     "label": "Cod.Fiscale"
+    },
+    {
+     "id": "r10c3p27reg:txt",
+     "kind": "text",
+     "value": "{{t:identity.codice_fiscale}}",
+     "when": "{{business.rea|empty}}",
+     "max": 16,
+     "label": "Cod.Fiscale"
+    },
+    {
+     "id": "r15c1p37reg",
+     "kind": "select",
+     "value": "{{t:identity.sex}}",
+     "when": "{{business.rea|empty|not}}",
+     "label": "Sesso"
+    },
+    {
+     "id": "r12c1p29reg",
+     "kind": "select",
+     "value": "{{t:identity.sex}}",
+     "when": "{{business.rea|empty}}",
+     "label": "Sesso"
+    },
+    {
+     "id": "r15c2p39reg:calendar_input",
+     "kind": "text",
+     "value": "{{t:identity.date_of_birth|date_it}}",
+     "when": "{{business.rea|empty|not}}",
+     "label": "Data nascita"
+    },
+    {
+     "id": "r12c2p31reg:calendar_input",
+     "kind": "text",
+     "value": "{{t:identity.date_of_birth|date_it}}",
+     "when": "{{business.rea|empty}}",
+     "label": "Data nascita"
+    },
+    {
+     "id": "r18c2p49reg",
+     "kind": "select",
+     "value": "{{t:identity.birth_province}}",
+     "when": "{{business.rea|empty|not}}",
+     "label": "Provincia"
+    },
+    {
+     "id": "r15c2p41reg",
+     "kind": "select",
+     "value": "{{t:identity.birth_province}}",
+     "when": "{{business.rea|empty}}",
+     "label": "Provincia"
+    },
+    {
+     "id": "r20c1p53reg",
+     "kind": "select",
+     "value": "{{t:identity.birth_comune|upper}}",
+     "when": "{{business.rea|empty|not}}",
+     "label": "Comune"
+    },
+    {
+     "id": "r17c1p45reg",
+     "kind": "select",
+     "value": "{{t:identity.birth_comune|upper}}",
+     "when": "{{business.rea|empty}}",
+     "label": "Comune"
+    },
+    {
+     "id": "r27c2p71reg",
+     "kind": "select",
+     "value": "{{t:residenza.provincia}}",
+     "when": "{{business.rea|empty|not}}",
+     "label": "Provincia",
+     "nth": 2
+    },
+    {
+     "id": "r24c2p63reg",
+     "kind": "select",
+     "value": "{{t:residenza.provincia}}",
+     "when": "{{business.rea|empty}}",
+     "label": "Provincia",
+     "nth": 2
+    },
+    {
+     "id": "r29c1p75reg",
+     "kind": "select",
+     "value": "{{t:residenza.comune|upper}}",
+     "when": "{{business.rea|empty|not}}",
+     "label": "Comune",
+     "nth": 2
+    },
+    {
+     "id": "r26c1p67reg",
+     "kind": "select",
+     "value": "{{t:residenza.comune|upper}}",
+     "when": "{{business.rea|empty}}",
+     "label": "Comune",
+     "nth": 2
+    },
+    {
+     "id": "r32c1p81reg",
+     "kind": "select",
+     "value": "{{t:residenza.indirizzo|dug}}",
+     "when": "{{business.rea|empty|not}}",
+     "label": "Toponimo (DUG)"
+    },
+    {
+     "id": "r29c1p73reg",
+     "kind": "select",
+     "value": "{{t:residenza.indirizzo|dug}}",
+     "when": "{{business.rea|empty}}",
+     "label": "Toponimo (DUG)"
+    },
+    {
+     "kind": "select",
+     "value": "{{t:residenza.indirizzo|dug_dettaglio}}",
+     "when": "{{t:residenza.indirizzo|dug_altro}}",
+     "label": "da compilare obbligatoriamente"
+    },
+    {
+     "id": "r34c1p87reg:txt",
+     "kind": "text",
+     "value": "{{t:residenza.indirizzo|street|upper}}",
+     "when": "{{business.rea|empty|not}}",
+     "max": 60,
+     "label": "Denominazione stradale"
+    },
+    {
+     "id": "r31c1p79reg:txt",
+     "kind": "text",
+     "value": "{{t:residenza.indirizzo|street|upper}}",
+     "when": "{{business.rea|empty}}",
+     "max": 60,
+     "label": "Denominazione stradale"
+    },
+    {
+     "id": "r36c1p91reg:txt",
+     "kind": "text",
+     "value": "{{t:residenza.civico}}",
+     "when": "{{business.rea|empty|not}}",
+     "max": 20,
+     "label": "Numero civico"
+    },
+    {
+     "id": "r33c1p83reg:txt",
+     "kind": "text",
+     "value": "{{t:residenza.civico}}",
+     "when": "{{business.rea|empty}}",
+     "max": 20,
+     "label": "Numero civico"
+    },
+    {
+     "id": "r36c2p93reg:txt",
+     "kind": "text",
+     "value": "{{t:residenza.cap}}",
+     "when": "{{business.rea|empty|not}}",
+     "max": 5,
+     "label": "CAP"
+    },
+    {
+     "id": "r33c2p85reg:txt",
+     "kind": "text",
+     "value": "{{t:residenza.cap}}",
+     "when": "{{business.rea|empty}}",
+     "max": 5,
+     "label": "CAP"
+    },
+    {
+     "id": "r36c3p95reg:txt",
+     "kind": "text",
+     "value": "{{t:identity.email}}",
+     "when": "{{business.rea|empty|not}}",
+     "max": 100,
+     "label": "eMail/PEC"
+    },
+    {
+     "id": "r33c3p87reg:txt",
+     "kind": "text",
+     "value": "{{t:identity.email}}",
+     "when": "{{business.rea|empty}}",
+     "max": 100,
+     "label": "eMail/PEC"
+    },
+    {
+     "id": "r36c4p97reg:number",
+     "kind": "text",
+     "value": "{{t:identity.phone|phone_it}}",
+     "when": "{{business.rea|empty|not}}",
+     "max": 12,
+     "label": "Telefono fisso/cellulare"
+    },
+    {
+     "id": "r33c4p89reg:number",
+     "kind": "text",
+     "value": "{{t:identity.phone|phone_it}}",
+     "when": "{{business.rea|empty}}",
+     "max": 12,
+     "label": "Telefono fisso/cellulare"
+    },
+    {
+     "id": "r39c1p101reg",
+     "kind": "select",
+     "value": "{{t:ruolo.tipo|carica}}",
+     "when": "{{business.rea|empty|not}}",
+     "label": "Carica"
+    },
+    {
+     "id": "r36c1p93reg",
+     "kind": "select",
+     "value": "{{t:ruolo.tipo|carica}}",
+     "when": "{{business.rea|empty}}",
+     "label": "Carica"
+    },
+    {
+     "id": "r44c1p111reg",
+     "kind": "select",
+     "value": "{{business.forma_giuridica|forma}}",
+     "when": "{{business.rea|empty|not}}",
+     "label": "Forma giuridica"
+    },
+    {
+     "id": "r41c1p103reg",
+     "kind": "select",
+     "value": "{{business.forma_giuridica|forma}}",
+     "when": "{{business.rea|empty}}",
+     "label": "Forma giuridica"
+    },
+    {
+     "id": "r42c1p107reg:txt",
+     "kind": "text",
+     "value": "{{business.denominazione}}",
+     "when": "{{business.rea|empty|not}}",
+     "max": 305,
+     "label": "Denominazione (nome della ditta"
+    },
+    {
+     "id": "r39c1p99reg:txt",
+     "kind": "text",
+     "value": "{{business.denominazione}}",
+     "when": "{{business.rea|empty}}",
+     "max": 305,
+     "label": "Denominazione (nome della ditta"
+    },
+    {
+     "id": "r44c2p113reg:txt",
+     "kind": "text",
+     "value": "{{business.codice_fiscale}}",
+     "when": "{{business.rea|empty|not}}",
+     "max": 16,
+     "label": "Codice Fiscale"
+    },
+    {
+     "id": "r41c2p105reg:txt",
+     "kind": "text",
+     "value": "{{business.codice_fiscale}}",
+     "when": "{{business.rea|empty}}",
+     "max": 16,
+     "label": "Codice Fiscale"
+    },
+    {
+     "id": "r44c3p115reg:txt",
+     "kind": "text",
+     "value": "{{business.partita_iva}}",
+     "when": "{{business.rea|empty|not}}",
+     "max": 11,
+     "label": "P.IVA"
+    },
+    {
+     "id": "r41c3p107reg:txt",
+     "kind": "text",
+     "value": "{{business.partita_iva}}",
+     "when": "{{business.rea|empty}}",
+     "max": 11,
+     "label": "P.IVA"
+    },
+    {
+     "id": "r47c2p121reg",
+     "kind": "select",
+     "value": "{{business.sede_legale_provincia}}",
+     "when": "{{business.rea|empty|not}}",
+     "label": "Provincia",
+     "nth": 3
+    },
+    {
+     "id": "r44c2p113reg",
+     "kind": "select",
+     "value": "{{business.sede_legale_provincia}}",
+     "when": "{{business.rea|empty}}",
+     "label": "Provincia",
+     "nth": 3
+    },
+    {
+     "id": "r49c1p125reg",
+     "kind": "select",
+     "value": "{{business.sede_legale_comune|upper}}",
+     "when": "{{business.rea|empty|not}}",
+     "label": "Comune",
+     "nth": 3
+    },
+    {
+     "id": "r46c1p117reg",
+     "kind": "select",
+     "value": "{{business.sede_legale_comune|upper}}",
+     "when": "{{business.rea|empty}}",
+     "label": "Comune",
+     "nth": 3
+    },
+    {
+     "id": "r52c1p131reg",
+     "kind": "select",
+     "value": "{{business.sede_legale_indirizzo|dug}}",
+     "when": "{{business.rea|empty|not}}",
+     "label": "Toponimo (DUG)",
+     "nth": 2
+    },
+    {
+     "id": "r49c1p123reg",
+     "kind": "select",
+     "value": "{{business.sede_legale_indirizzo|dug}}",
+     "when": "{{business.rea|empty}}",
+     "label": "Toponimo (DUG)",
+     "nth": 2
+    },
+    {
+     "kind": "select",
+     "value": "{{business.sede_legale_indirizzo|dug_dettaglio}}",
+     "when": "{{business.sede_legale_indirizzo|dug_altro}} {{t:residenza.indirizzo|dug_altro|not}}",
+     "label": "da compilare obbligatoriamente"
+    },
+    {
+     "kind": "select",
+     "label": "da compilare obbligatoriamente",
+     "nth": 2,
+     "value": "{{business.sede_legale_indirizzo|dug_dettaglio}}",
+     "when": "{{business.sede_legale_indirizzo|dug_altro}} {{t:residenza.indirizzo|dug_altro}}"
+    },
+    {
+     "id": "r54c1p137reg:txt",
+     "kind": "text",
+     "value": "{{business.sede_legale_indirizzo|street|upper}}",
+     "when": "{{business.rea|empty|not}}",
+     "max": 60,
+     "label": "Denominazione stradale",
+     "nth": 2
+    },
+    {
+     "id": "r51c1p129reg:txt",
+     "kind": "text",
+     "value": "{{business.sede_legale_indirizzo|street|upper}}",
+     "when": "{{business.rea|empty}}",
+     "max": 60,
+     "label": "Denominazione stradale",
+     "nth": 2
+    },
+    {
+     "id": "r54c2p139reg:txt",
+     "kind": "text",
+     "value": "{{business.sede_legale_civico}}",
+     "when": "{{business.rea|empty|not}}",
+     "max": 20,
+     "label": "Numero civico",
+     "nth": 2
+    },
+    {
+     "id": "r51c2p131reg:txt",
+     "kind": "text",
+     "value": "{{business.sede_legale_civico}}",
+     "when": "{{business.rea|empty}}",
+     "max": 20,
+     "label": "Numero civico",
+     "nth": 2
+    },
+    {
+     "id": "r54c3p141reg:txt",
+     "kind": "text",
+     "value": "{{business.sede_legale_cap}}",
+     "when": "{{business.rea|empty|not}}",
+     "max": 5,
+     "label": "CAP",
+     "nth": 2
+    },
+    {
+     "id": "r51c3p133reg:txt",
+     "kind": "text",
+     "value": "{{business.sede_legale_cap}}",
+     "when": "{{business.rea|empty}}",
+     "max": 5,
+     "label": "CAP",
+     "nth": 2
+    },
+    {
+     "id": "r56c1p143reg:txt",
+     "kind": "text",
+     "value": "{{business.telefono|phone_it}}",
+     "when": "{{business.rea|empty|not}}",
+     "max": 12,
+     "label": "Telefono fisso/Cellulare",
+     "nth": 2
+    },
+    {
+     "id": "r53c1p135reg:txt",
+     "kind": "text",
+     "value": "{{business.telefono|phone_it}}",
+     "when": "{{business.rea|empty}}",
+     "max": 12,
+     "label": "Telefono fisso/Cellulare",
+     "nth": 2
+    },
+    {
+     "id": "r56c3p147reg:txt",
+     "kind": "text",
+     "value": "{{business.pec}}",
+     "when": "{{business.rea|empty|not}}",
+     "max": 100,
+     "label": "PEC"
+    },
+    {
+     "id": "r53c3p139reg:txt",
+     "kind": "text",
+     "value": "{{business.pec}}",
+     "when": "{{business.rea|empty}}",
+     "max": 100,
+     "label": "PEC"
+    }
+   ]
+  },
+  {
+   "section": "Oggetto della pratica",
+   "fields": [
+    {
+     "id": "r2c1p2reg:txta",
+     "kind": "text",
+     "value": "{{ask.oggetto}}",
+     "max": 300,
+     "label": "descrizione sintetica"
+    }
+   ]
+  },
+  {
+   "section": "DOMICILIO DIGITALE",
+   "fields": [
+    {
+     "id": "r5c1p5reg:chk",
+     "kind": "checkbox",
+     "label": "il seguente domicilio digitale inserito in INI-PEC"
+    },
+    {
+     "id": "r7c1p7reg:txt",
+     "kind": "text",
+     "value": "{{business.pec}}",
+     "max": 9999,
+     "label": "il seguente domicilio digitale inserito in INI-PEC"
+    }
+   ]
+  },
+  {
+   "section": "DOMICILIO ELETTRONICO",
+   "theirs": [
+    "Si dichiara di essere consapevoli"
+   ],
+   "fields": [
+    {
+     "id": "r3c1p3reg:txt",
+     "kind": "text",
+     "value": "{{business.pec}}",
+     "max": 9999,
+     "label": "N.B. Inserire l'indirizzo della casella PEC"
+    }
+   ]
+  },
+  {
+   "section": "ubicazione dell'attività",
+   "fields": [
+    {
+     "id": "r2c4p8reg:txtws_input",
+     "kind": "text",
+     "value": "{{locale.cap}}",
+     "max": 5,
+     "label": "CAP"
+    },
+    {
+     "id": "r5c1p13reg:txtws_input",
+     "kind": "lookup",
+     "value": "{{locale.indirizzo}}",
+     "max": 60,
+     "label": "Via, Viale, Piazza"
+    },
+    {
+     "id": "r5c2p15reg:txtws_input",
+     "kind": "text",
+     "value": "{{locale.civico}}",
+     "max": 20,
+     "label": "n° civico"
+    },
+    {
+     "id": "r7c1p19reg:txtws_input",
+     "kind": "text",
+     "value": "{{locale.scala}}",
+     "optional": true,
+     "max": 9999,
+     "label": "scala"
+    },
+    {
+     "id": "r7c2p21reg:txtws_input",
+     "kind": "text",
+     "value": "{{locale.piano}}",
+     "optional": true,
+     "max": 10,
+     "label": "piano"
+    },
+    {
+     "id": "r7c3p23reg:txtws_input",
+     "kind": "text",
+     "value": "{{locale.interno}}",
+     "optional": true,
+     "max": 10,
+     "label": "interno"
+    }
+   ]
+  },
+  {
+   "section": "Dati catastali",
+   "fields": [
+    {
+     "id": "r1c1p1reg:radio:0_clone",
+     "kind": "radio",
+     "label": "Nuovo Catasto Edilizio Urbano"
+    },
+    {
+     "id": "r3c1p5reg:number",
+     "kind": "text",
+     "value": "{{locale.catasto_foglio}}",
+     "max": 5,
+     "label": "foglio"
+    },
+    {
+     "id": "r3c2p7reg:txt",
+     "kind": "text",
+     "value": "{{locale.catasto_particella}}",
+     "max": 5,
+     "label": "particella/mappale"
+    },
+    {
+     "id": "r3c3p9reg:number",
+     "kind": "text",
+     "value": "{{locale.catasto_subalterno}}",
+     "max": 4,
+     "label": "subalterno"
+    },
+    {
+     "id": "r5c2p15reg:txt",
+     "kind": "text",
+     "value": "{{locale.catasto_sezione}}",
+     "optional": true,
+     "max": 3,
+     "label": "sezione Urbana"
+    },
+    {
+     "id": "r8c1p23reg",
+     "kind": "select",
+     "value": "{{locale.catasto_categoria|categoria}}",
+     "label": "categoria"
+    }
+   ]
+  },
+  {
+   "section": "dati sull'entità delle variazioni",
+   "fields": [
+    {
+     "id": "r3c1p3reg:txt",
+     "kind": "text",
+     "value": "{{ask.titolo_attivita_protocollo}}",
+     "max": 10,
+     "label": "prot./n."
+    },
+    {
+     "id": "r3c2p5reg:calendar_input",
+     "kind": "date",
+     "value": "{{ask.titolo_attivita_data|date_it}}",
+     "label": "del"
+    },
+    {
+     "id": "r5c1p10reg:chk",
+     "kind": "checkbox",
+     "label": "la superficie di vendita sarà"
+    },
+    {
+     "id": "r7c2p15reg:chk",
+     "kind": "checkbox",
+     "label": "ampliata"
+    },
+    {
+     "id": "r7c3p17reg:real",
+     "kind": "number",
+     "value": "{{ask.superficie_vendita_prima_mq}}",
+     "max": 11,
+     "label": "da mq"
+    },
+    {
+     "id": "r7c4p19reg:real",
+     "kind": "number",
+     "value": "{{ask.superficie_vendita_mq}}",
+     "max": 11,
+     "label": "a mq"
+    },
+    {
+     "id": "r15c1p39reg:chk",
+     "kind": "checkbox",
+     "when": "{{ask.superficie_alimentare_mq|positive}}",
+     "label": "Alimentare"
+    },
+    {
+     "id": "r15c2p41reg:real",
+     "kind": "number",
+     "value": "{{ask.superficie_alimentare_prima_mq}}",
+     "when": "{{ask.superficie_alimentare_mq|positive}}",
+     "max": 6,
+     "label": "superficie di vendita da mq"
+    },
+    {
+     "id": "r15c3p43reg:real",
+     "kind": "number",
+     "value": "{{ask.superficie_alimentare_mq}}",
+     "when": "{{ask.superficie_alimentare_mq|positive}}",
+     "max": 6,
+     "label": "a mq",
+     "nth": 2
+    },
+    {
+     "id": "r17c1p47reg:chk",
+     "kind": "checkbox",
+     "when": "{{ask.superficie_non_alimentare_mq|positive}}",
+     "label": "Non alimentare"
+    },
+    {
+     "id": "r17c2p49reg:real",
+     "kind": "number",
+     "value": "{{ask.superficie_non_alimentare_prima_mq}}",
+     "when": "{{ask.superficie_non_alimentare_mq|positive}}",
+     "max": 6,
+     "label": "superficie di vendita da mq",
+     "nth": 2
+    },
+    {
+     "id": "r17c3p51reg:real",
+     "kind": "number",
+     "value": "{{ask.superficie_non_alimentare_mq}}",
+     "when": "{{ask.superficie_non_alimentare_mq|positive}}",
+     "max": 6,
+     "label": "a mq",
+     "nth": 3
+    },
+    {
+     "id": "r19c2p57reg:real",
+     "kind": "number",
+     "value": "{{ask.superficie_vendita_mq}}",
+     "max": 6,
+     "label": "mq"
+    }
+   ]
+  },
+  {
+   "section": "SCIA VV.F. - intestazione",
+   "fields": []
+  },
+  {
+   "section": "SCIA VV.F. - SEGNALAZIONE CERTIFICATA DI INIZIO ATTIVITA'",
+   "fields": [
+    {
+     "id": "r3c1p5reg:chk",
+     "kind": "checkbox",
+     "when": "{{ask.vvf_categoria|in_b__c}} {{ask.vvf_modifica|not}}",
+     "label": "ai progetti approvati dal Comando VV.F."
+    },
+    {
+     "id": "r4c1p7reg:chk",
+     "kind": "checkbox",
+     "when": "{{ask.vvf_categoria|is_a}} {{ask.vvf_modifica|not}}",
+     "label": "alla documentazione tecnica di progetto di cui alla asseverazione allegata (per attività di cat. A )"
+    },
+    {
+     "id": "r5c1p9reg:chk",
+     "kind": "checkbox",
+     "when": "{{ask.vvf_modifica}}",
+     "label": "alla documentazione tecnica di progetto di cui alla asseverazione allegata (per attività di cat. A,B,C in caso"
+    },
+    {
+     "id": "r9c1p15reg:txt",
+     "kind": "text",
+     "value": "{{ask.vvf_attivita}}",
+     "max": 200,
+     "label": "l'inizio, in conformità alla normativa antincendio vigente, dell'esercizio dell'attività di"
+    },
+    {
+     "id": "r11c1p17reg:chk",
+     "kind": "checkbox",
+     "when": "{{ask.vvf_parziale}}",
+     "label": "Trattasi di SCIA parziale"
+    }
+   ]
+  },
+  {
+   "section": "SCIA VV.F. - dichiarazioni",
+   "theirs": [
+    "Il sottoscritto dichiara altresì sotto la propria responsabilità"
+   ],
+   "fields": [
+    {
+     "id": "r2c1p2reg:chk",
+     "kind": "checkbox",
+     "label": "Allega alla presente l'asseverazione di cui all'art. 4 del Decreto del Ministro dell'Interno 7-8-2012"
+    },
+    {
+     "id": "r4c1p4reg:radio:0_clone",
+     "kind": "radio",
+     "label": "la sede dell'attività"
+    }
+   ]
+  },
+  {
+   "section": "INFORMAZIONE AI SOLI FINI STATISTICI",
+   "fields": [
+    {
+     "id": "r2c2p3reg:radio:1_clone",
+     "kind": "radio",
+     "when": "{{ask.vvf_pnrr|not}}",
+     "label": "NO"
+    },
+    {
+     "id": "r7c2p10reg:radio:3_clone",
+     "kind": "radio",
+     "when": "{{ask.vvf_impianti_speciali|not}}",
+     "label": "NO",
+     "nth": 2
+    }
+   ]
+  },
+  {
+   "section": "SCIA VV.F. - distinta di versamento",
+   "fields": [
+    {
+     "id": "r2c1p2reg:txt",
+     "kind": "text",
+     "value": "{{ask.vvf_versamento_numero}}",
+     "max": 30,
+     "label": "Attestato di versamento n."
+    },
+    {
+     "id": "r2c2p4reg:calendar_input",
+     "kind": "date",
+     "value": "{{ask.vvf_versamento_data|date_it}}",
+     "label": "del"
+    },
+    {
+     "id": "r4c2p10reg:real",
+     "kind": "number",
+     "value": "{{ask.vvf_importo}}",
+     "max": 10,
+     "label": "per un totale di euro"
+    },
+    {
+     "id": "r6c1p14reg:upload1_input",
+     "kind": "file",
+     "accepts": "dwf.p7m;svg.p7m;jpg.p7m;pdf.p7m",
+     "value": "{{ask.vvf_versamento_doc}}",
+     "label": "Tipologie ammesse"
+    },
+    {
+     "id": "r10c1p20reg:chk",
+     "kind": "checkbox",
+     "when": "{{ask.vvf_approccio|is_ingegneria}}",
+     "label": "In caso di utilizzo dell'approccio ingegneristico"
+    },
+    {
+     "kind": "radio",
+     "when": "{{ask.vvf_categoria|is_a}}",
+     "label": "A"
+    },
+    {
+     "kind": "select",
+     "value": "{{ask.vvf_allegato}}",
+     "when": "{{ask.vvf_categoria|is_a}}",
+     "label": "attività - sotto classe - categoria - descrizione"
+    },
+    {
+     "kind": "radio",
+     "when": "{{ask.vvf_stato|is_nuova}}",
+     "label": "Nuova"
+    },
+    {
+     "kind": "radio",
+     "when": "{{ask.vvf_stato|is_esistente}}",
+     "label": "Esistente"
+    },
+    {
+     "kind": "select",
+     "value": "Modalità Standard",
+     "when": "{{ask.vvf_approccio|is_standard}}",
+     "label": "Approccio tecnico"
+    },
+    {
+     "kind": "select",
+     "value": "RTO/RTV ⁴ soluzione conforme",
+     "when": "{{ask.vvf_approccio|is_conforme}}",
+     "label": "Approccio tecnico"
+    },
+    {
+     "kind": "select",
+     "value": "DM 09-05-2007 (ingegneria della sicurezza) ⁵",
+     "when": "{{ask.vvf_approccio|is_ingegneria}}",
+     "label": "Approccio tecnico"
+    },
+    {
+     "kind": "select",
+     "value": "RTO/RTV ⁴ soluzione in deroga",
+     "when": "{{ask.vvf_approccio|is_deroga}}",
+     "label": "Approccio tecnico"
+    },
+    {
+     "kind": "number",
+     "value": "{{ask.vvf_importo}}",
+     "max": 10,
+     "label": "euro"
+    },
+    {
+     "kind": "radio",
+     "when": "{{ask.vvf_fotovoltaico}}",
+     "label": "Si"
+    },
+    {
+     "kind": "radio",
+     "when": "{{ask.vvf_fotovoltaico|not}}",
+     "label": "No"
+    },
+    {
+     "id": "r12c1p22reg:upload1_input",
+     "kind": "file",
+     "value": "{{ask.vvf_gsa_doc}}",
+     "when": "{{ask.vvf_approccio|is_ingegneria}}",
+     "label": "Tipologie ammesse",
+     "nth": 2
+    }
+   ]
+  },
+  {
+   "section": "SCIA VV.F.  - dati per la corrispondenza",
+   "fields": []
+  },
+  {
+   "section": "SCIA VV.F. - dati del delegato",
+   "fields": []
+  },
+  {
+   "section": "ASSEVERAZIONE DEL PROFESSIONISTA AI FINI DELLA SICUREZZA ANTINCENDIO",
+   "theirs": [
+    "le normative tecniche di prevenzione incendi",
+    "l'esito dei sopralluoghi e delle verifiche effettuate",
+    "le certificazioni e le dichiarazioni, così come sintetizzate"
+   ],
+   "fields": [
+    {
+     "id": "r3c1p4reg:txt",
+     "kind": "text",
+     "value": "{{v:albo.ordine|albo_tipo}}",
+     "max": 100,
+     "label": "Titolo professionale"
+    },
+    {
+     "id": "r3c2p6reg:txt",
+     "kind": "text",
+     "value": "{{v:identity.last_name}}",
+     "max": 100,
+     "label": "Cognome"
+    },
+    {
+     "id": "r3c3p8reg:txt",
+     "kind": "text",
+     "value": "{{v:identity.first_name}}",
+     "max": 100,
+     "label": "Nome"
+    },
+    {
+     "id": "r5c1p10reg",
+     "kind": "select",
+     "value": "{{v:albo.provincia|provincia_nome}}",
+     "label": "iscritto all'Albo professionale dell'Ordine/Collegio"
+    },
+    {
+     "id": "r5c2p12reg:txt",
+     "kind": "text",
+     "value": "{{v:albo.numero}}",
+     "max": 20,
+     "label": "n. iscrizione"
+    },
+    {
+     "id": "r5c3p14reg:txt",
+     "kind": "text",
+     "value": "{{v:identity.codice_fiscale}}",
+     "max": 16,
+     "label": "C.F."
+    },
+    {
+     "id": "r7c2p20reg:txt",
+     "kind": "text",
+     "value": "{{v:residenza.indirizzo}}",
+     "max": 100,
+     "label": "indirizzo"
+    },
+    {
+     "id": "r7c3p22reg:txt",
+     "kind": "text",
+     "value": "{{v:residenza.civico}}",
+     "max": 20,
+     "label": "n. civico"
+    },
+    {
+     "id": "r9c1p26reg:txt",
+     "kind": "text",
+     "value": "{{v:residenza.cap}}",
+     "max": 5,
+     "label": "c.a.p."
+    },
+    {
+     "id": "r9c3p30reg",
+     "kind": "select",
+     "value": "{{v:residenza.provincia|provincia_nome}}",
+     "label": "provincia"
+    },
+    {
+     "id": "r9c2p28reg",
+     "kind": "select",
+     "value": "{{v:residenza.comune|upper}}",
+     "label": "comune"
+    },
+    {
+     "id": "r11c1p34reg:number",
+     "kind": "text",
+     "value": "{{v:identity.phone|phone_it}}",
+     "max": 15,
+     "label": "telefono"
+    },
+    {
+     "id": "r11c2p36reg:txt",
+     "kind": "text",
+     "value": "{{v:identity.email}}",
+     "max": 200,
+     "label": "indirizzo di posta elettronica"
+    },
+    {
+     "id": "r11c3p38reg:txt",
+     "kind": "text",
+     "value": "{{v:identity.pec}}",
+     "max": 200,
+     "label": "indirizzo di posta elettronica certificata"
+    },
+    {
+     "id": "r13c2p44reg:radio:0_clone",
+     "kind": "radio",
+     "when": "{{ask.vvf_stato|is_nuova}}",
+     "label": "nuovo insediamento"
+    },
+    {
+     "id": "r13c3p45reg:radio:1_clone",
+     "kind": "radio",
+     "when": "{{ask.vvf_stato|is_esistente}}",
+     "label": "modifica attività esistente"
+    },
+    {
+     "id": "r15c1p48reg:txt",
+     "kind": "text",
+     "value": "{{ask.vvf_attivita}}",
+     "max": 200,
+     "label": "relativi all'attività"
+    },
+    {
+     "id": "r18c2p56reg:chk",
+     "kind": "checkbox",
+     "when": "{{ask.vvf_categoria|in_b__c}} {{ask.vvf_modifica|not}}",
+     "label": "progetti approvati dal Comando VV.F."
+    },
+    {
+     "id": "r19c2p59reg:chk",
+     "kind": "checkbox",
+     "when": "{{ask.vvf_categoria|is_a}} {{ask.vvf_modifica|not}}",
+     "label": "relazione tecnica e gli elaborati grafici di progetto"
+    },
+    {
+     "id": "r20c2p62reg:chk",
+     "kind": "checkbox",
+     "when": "{{ask.vvf_modifica}}",
+     "label": "documentazione tecnica di progetto e la dichiarazione di non aggravio"
+    }
+   ]
+  },
+  {
+   "section": "DISTINTA DELLA DOCUMENTAZIONE TECNICA ALLEGATA",
+   "fields": [
+    {
+     "id": "r6c1p7reg:chk",
+     "kind": "checkbox",
+     "when": "{{ask.vvf_categoria|is_a}} {{ask.vvf_modifica|not}}",
+     "label": "Relazione tecnica ed elaborati grafici"
+    },
+    {
+     "id": "r8c2p12reg:number",
+     "kind": "number",
+     "value": "{{ask.vvf_doc_atti|w1}}",
+     "when": "{{ask.vvf_categoria|is_a}} {{ask.vvf_modifica|not}}",
+     "max": 2,
+     "label": "n. atti"
+    },
+    {
+     "id": "r8c3p14reg:number",
+     "kind": "number",
+     "value": "{{ask.vvf_doc_atti|w2}}",
+     "when": "{{ask.vvf_categoria|is_a}} {{ask.vvf_modifica|not}}",
+     "max": 2,
+     "label": "n. elaborati"
+    },
+    {
+     "id": "r11c1p23reg:chk",
+     "kind": "checkbox",
+     "when": "{{ask.vvf_modifica}}",
+     "label": "Dichiarazione di non aggravio del rischio incendio"
+    },
+    {
+     "id": "r14c1p29reg:chk",
+     "kind": "checkbox",
+     "when": "{{ask.vvf_doc_strutture|positive}}",
+     "label": "CERTIFICAZIONI DI ELEMENTI STRUTTURALI PORTANTI"
+    },
+    {
+     "id": "r16c2p33reg:number",
+     "kind": "number",
+     "value": "{{ask.vvf_doc_strutture}}",
+     "when": "{{ask.vvf_doc_strutture|positive}}",
+     "max": 2,
+     "label": "n°",
+     "nth": 3
+    },
+    {
+     "id": "r18c1p39reg:chk",
+     "kind": "checkbox",
+     "when": "{{ask.vvf_doc_prodotti|positive}}",
+     "label": "DICHIARAZIONI INERENTI I PRODOTTI CLASSIFICATI"
+    },
+    {
+     "id": "r20c2p43reg:number",
+     "kind": "number",
+     "value": "{{ask.vvf_doc_prodotti}}",
+     "when": "{{ask.vvf_doc_prodotti|positive}}",
+     "max": 2,
+     "label": "n°",
+     "nth": 4
+    },
+    {
+     "id": "r29c2p62reg:number",
+     "kind": "number",
+     "value": "{{ask.vvf_doc_imp1|w1}}",
+     "max": 2,
+     "label": "4.I)"
+    },
+    {
+     "id": "r29c3p64reg:number",
+     "kind": "number",
+     "value": "{{ask.vvf_doc_imp1|w2}}",
+     "max": 2,
+     "label": "4.I)",
+     "nth": 2
+    },
+    {
+     "id": "r29c4p66reg:number",
+     "kind": "number",
+     "value": "{{ask.vvf_doc_imp1|w3}}",
+     "max": 2,
+     "label": "4.I)",
+     "nth": 3
+    },
+    {
+     "id": "r31c2p74reg:number",
+     "kind": "number",
+     "value": "{{ask.vvf_doc_imp2|w1}}",
+     "max": 2,
+     "label": "4.II)"
+    },
+    {
+     "id": "r31c3p76reg:number",
+     "kind": "number",
+     "value": "{{ask.vvf_doc_imp2|w2}}",
+     "max": 2,
+     "label": "4.II)",
+     "nth": 2
+    },
+    {
+     "id": "r31c4p78reg:number",
+     "kind": "number",
+     "value": "{{ask.vvf_doc_imp2|w3}}",
+     "max": 2,
+     "label": "4.II)",
+     "nth": 3
+    },
+    {
+     "id": "r33c2p84reg:number",
+     "kind": "number",
+     "value": "{{ask.vvf_doc_imp3|w1}}",
+     "max": 2,
+     "label": "4.III)"
+    },
+    {
+     "id": "r33c3p86reg:number",
+     "kind": "number",
+     "value": "{{ask.vvf_doc_imp3|w2}}",
+     "max": 2,
+     "label": "4.III)",
+     "nth": 2
+    },
+    {
+     "id": "r33c4p88reg:number",
+     "kind": "number",
+     "value": "{{ask.vvf_doc_imp3|w3}}",
+     "max": 2,
+     "label": "4.III)",
+     "nth": 3
+    },
+    {
+     "id": "r35c2p94reg:number",
+     "kind": "number",
+     "value": "{{ask.vvf_doc_imp4|w1}}",
+     "max": 2,
+     "label": "4.IV)"
+    },
+    {
+     "id": "r35c3p96reg:number",
+     "kind": "number",
+     "value": "{{ask.vvf_doc_imp4|w2}}",
+     "max": 2,
+     "label": "4.IV)",
+     "nth": 2
+    },
+    {
+     "id": "r35c4p98reg:number",
+     "kind": "number",
+     "value": "{{ask.vvf_doc_imp4|w3}}",
+     "max": 2,
+     "label": "4.IV)",
+     "nth": 3
+    },
+    {
+     "id": "r37c2p104reg:number",
+     "kind": "number",
+     "value": "{{ask.vvf_doc_imp5|w1}}",
+     "max": 2,
+     "label": "4.V)"
+    },
+    {
+     "id": "r37c3p106reg:number",
+     "kind": "number",
+     "value": "{{ask.vvf_doc_imp5|w2}}",
+     "max": 2,
+     "label": "4.V)",
+     "nth": 2
+    },
+    {
+     "id": "r37c4p108reg:number",
+     "kind": "number",
+     "value": "{{ask.vvf_doc_imp5|w3}}",
+     "max": 2,
+     "label": "4.V)",
+     "nth": 3
+    },
+    {
+     "id": "r39c2p114reg:number",
+     "kind": "number",
+     "value": "{{ask.vvf_doc_imp6|w1}}",
+     "max": 2,
+     "label": "4.VI)"
+    },
+    {
+     "id": "r39c3p116reg:number",
+     "kind": "number",
+     "value": "{{ask.vvf_doc_imp6|w2}}",
+     "max": 2,
+     "label": "4.VI)",
+     "nth": 2
+    },
+    {
+     "id": "r39c4p118reg:number",
+     "kind": "number",
+     "value": "{{ask.vvf_doc_imp6|w3}}",
+     "max": 2,
+     "label": "4.VI)",
+     "nth": 3
+    },
+    {
+     "id": "r41c2p124reg:number",
+     "kind": "number",
+     "value": "{{ask.vvf_doc_imp7|w1}}",
+     "max": 2,
+     "label": "4.VII)"
+    },
+    {
+     "id": "r41c3p126reg:number",
+     "kind": "number",
+     "value": "{{ask.vvf_doc_imp7|w2}}",
+     "max": 2,
+     "label": "4.VII)",
+     "nth": 2
+    },
+    {
+     "id": "r41c4p128reg:number",
+     "kind": "number",
+     "value": "{{ask.vvf_doc_imp7|w3}}",
+     "max": 2,
+     "label": "4.VII)",
+     "nth": 3
+    },
+    {
+     "id": "r43c2p134reg:number",
+     "kind": "number",
+     "value": "{{ask.vvf_doc_imp8|w1}}",
+     "max": 2,
+     "label": "4.VIII)"
+    },
+    {
+     "id": "r43c3p136reg:number",
+     "kind": "number",
+     "value": "{{ask.vvf_doc_imp8|w2}}",
+     "max": 2,
+     "label": "4.VIII)",
+     "nth": 2
+    },
+    {
+     "id": "r43c4p138reg:number",
+     "kind": "number",
+     "value": "{{ask.vvf_doc_imp8|w3}}",
+     "max": 2,
+     "label": "4.VIII)",
+     "nth": 3
+    },
+    {
+     "id": "r46c1p143reg:number",
+     "kind": "number",
+     "value": "{{ask.vvf_doc_altri}}",
+     "max": 2,
+     "label": "n°",
+     "nth": 29
+    }
+   ]
+  },
+  {
+   "section": "Dichiarazione relativa ai diritti",
+   "fields": [
+    {
+     "id": "r2c1p2reg:radio:0_clone",
+     "kind": "radio",
+     "when": "{{ask.diritti_euro|positive|not}}",
+     "label": "non sono dovuti oneri"
+    },
+    {
+     "id": "r3c1p3reg:radio:1_clone",
+     "kind": "radio",
+     "when": "{{ask.diritti_euro|positive|not}} {{ask.diritti_esente|not}}",
+     "label": "poiché non previsti dal tariffario"
+    },
+    {
+     "id": "r3c2p4reg:radio:2_clone",
+     "kind": "radio",
+     "when": "{{ask.diritti_euro|positive|not}} {{ask.diritti_esente}}",
+     "label": "poiché esentati"
+    },
+    {
+     "id": "r5c1p7reg:txta",
+     "kind": "text",
+     "on_page": true,
+     "value": "{{ask.diritti_esenzione_motivo}}",
+     "when": "{{ask.diritti_euro|positive|not}} {{ask.diritti_esente}}",
+     "max": 300,
+     "label": "specificare la motivazione"
+    },
+    {
+     "id": "r5c1p8reg:radio:3_clone",
+     "kind": "radio",
+     "when": "{{ask.diritti_euro|positive}}",
+     "label": "sono dovuti oneri quali diritti o spese"
+    },
+    {
+     "id": "r7c1p10reg:real",
+     "kind": "number",
+     "value": "{{ask.diritti_euro}}",
+     "when": "{{ask.diritti_euro|positive}}",
+     "max": 11,
+     "label": "per un totale di Euro"
+    },
+    {
+     "id": "r8c1p13reg:radio:4_clone",
+     "kind": "radio",
+     "when": "{{ask.diritti_euro|positive}}",
+     "label": "pagamento on line"
+    }
+   ]
+  }
+ ]
+}
