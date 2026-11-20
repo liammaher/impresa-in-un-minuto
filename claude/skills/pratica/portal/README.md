@@ -1062,6 +1062,32 @@ tattooist's move 1 each); 302 of 448 sections exercised, **0 fillable crawls wit
   (concession, temporary shop, the two reductions: copies by fingerprint of the five run here, nothing new to fill), and PIN 2 (and GPL) and PIN 3 GPL (`suap-common-*`). Not built: a plain
   temporary shop and a procura variant of the others; a SUAP choice counter like the SUE's.
 
+**Round 20 (2026-11-20): a plain temporary shop and the goods-sector reduction in sectors 017 and 019, five runs, all filled** (the temporary shop of a non-food shop filed by the
+business itself 61 s; the reduction in sector 017, food or mixed shop, with «Non alimentare» 67 s and with «Alimentare» 68 s; in sector 019, medium structure up to 400 m², 58 s and 61 s;
+recorded in `runs.json`; no value moved, no box loose, no gap, nothing skipped or unreached; the portal's warnings were the made-up PEC, address and cadastral data). The pane had to be
+signed in with SPID first (the home page showed the login), then the file picked once. All three rehearsals are in `suap-unrouted.yaml` (no event in the table for a temporary shop or for a
+reduction of the goods sector, no page in `library/procedures` for the reduction). Own crawls with no rehearsal: 17 → **15**; `leverage.py`: 267 of 309 own crawls with a filled run (was 265),
+302 of 448 sections exercised (unchanged: the forms show sections an earlier run had filled).
+
+- **The «Alimentare» lock is sector 016's form, not the goods-sector form.** In sector 017 and in sector 019 the box stayed ticked (both runs filled and read back), so a mixed or
+  food shop can drop its food sector, and a medium structure either one. The cause is still not read on a draft: the portal may be following the sector the wizard chose («NON
+  alimentare»), which would be why only that form unticks it; that is a guess, not a finding. In code: the refusal moved from the dictionary's section (which every sector's recipe
+  shared) to `rehearsals/riduzione-settore-negozio-fittizio/recipe.yaml`'s `supports`; `test_preflight.py` holds all three recipes (016 refuses `answers-alimentare.json`, 017 and 019 don't).
+  Both answers files of each new recipe stay (`answers.json`: «Non alimentare»; `answers-alimentare.json`: «Alimentare»), each with a filled run in `runs.json`.
+- **The plain temporary shop** came from `negozio-fittizio` with `--fixture negozio-fittizio` and the crawl `suap-016-aprire-lattivita-di-temporary-shop`: `ready` at once, the same answers as
+  the procura variant less the client and the procura (`temporary-shop-procura-fittizio` stays: its fixture and `as_client` are another filing). Its draft name is «... temporary shop semplice»:
+  the generated one carried a hash and could not be told from the procura variant's in the draft list.
+- **A derived recipe carried a refusal that wasn't its own again**: the two reductions copied the template's `supports` line about «Alimentare» (the first claim read by hand, the
+  method's step 3). Dropped in both before any run. A template with a refusal that holds for one sector's form only should keep it in its recipe, never in the dictionary section other
+  sectors share (what this round moved).
+- **`media-struttura-fittizia` has no `fixture.json`** (it borrows `negozio-fittizio`'s): `derive_recipe.py --fixture media-struttura-fittizia` fails on the copy. Sector 019's own fixture is
+  `cessazione-media-fittizia`'s, used here for the reduction.
+- **The scoreboard script is `portal/leverage.py`**, not `bench/leverage.py` (`bench/test_leverage.py` is its test).
+- **Not run (15 own crawls, no rehearsal):** sector 02 (suspension), 03 and 54 (Dogane), 04 and 56 («interventi»), the tattooist's change of premises, the concession in sectors 16, 17 and 19,
+  the temporary shop in sector 17 and the sales-area reduction in 17 and 19 (copies by fingerprint of forms already run: nothing new to fill, each a derived recipe away), and PIN 2 (and GPL) and
+  PIN 3 GPL (`suap-common-*`). Not built: a procura variant of the others; a SUAP choice counter like the SUE's (its `boxes()` and `hits()` in `schema_branches.py` read any crawl, so the
+  counter is a matter of collecting each SUAP case's planned ticks with the right fixture per rehearsal, which differs from the SUE's one fixture).
+
 ## What the portal does that bit us
 
 - **Street names without their particles.** The location's street lookup and the Comune's

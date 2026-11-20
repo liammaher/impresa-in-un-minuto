@@ -1,0 +1,16 @@
+[
+ {
+  "date": "2026-11-20",
+  "answers": "answers.json",
+  "result": "filled",
+  "seconds": 58,
+  "browser": "pane"
+ },
+ {
+  "date": "2026-11-20",
+  "answers": "answers-alimentare.json",
+  "result": "filled",
+  "seconds": 60.7,
+  "browser": "pane"
+ }
+]
