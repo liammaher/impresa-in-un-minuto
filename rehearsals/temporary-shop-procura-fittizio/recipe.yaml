@@ -5,7 +5,7 @@
 # every 016 crawl, so the procuratore section in it says nothing about this recipe; `as_client`, `first`, `scelte`, the fixture and the client's answers are negozio-procura-fittizio's.
 # There is no plain temporary-shop recipe yet (the procura variant was run first, 2026-11-20).
 procedure: napoli/comune/scia-esercizio-vicinato
-title: "Aprire l’attività di temporary shop, negozio non alimentare, presentata da un tecnico con procura, SUAP Napoli"
+title: "Aprire l’attività di temporary shop: negozio non alimentare, presentata da un tecnico con procura, SUAP Napoli"
 comune: F839
 sportello: suap
 crawl: suap-016-aprire-lattivita-di-temporary-shop
