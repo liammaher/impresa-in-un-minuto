@@ -253,5 +253,55 @@ def _():
     assert forced.returncode == 0, forced.stderr[-400:]
 
 
+def node(js):
+    """The result of a script as the pane runs it (REPL semantics, top-level await), under a fake page."""
+    import subprocess
+    out = subprocess.run(["node", "-e", js], capture_output=True, text=True, timeout=60)
+    return out.returncode, (out.stdout + out.stderr).strip()
+
+
+def built(**kw):
+    out, bundle = Path(tempfile.mkdtemp()), Path(tempfile.mkdtemp()) / "bundle.js"
+    import subprocess
+    spec = f"{OWN}:answers.json:rehearsals/{OWN}/fixture.json"
+    r = subprocess.run([sys.executable, str(HERE / "rerun.py"), "--values", str(REH / OWN / "fixture.json"), "--out", str(out), "--bundle", str(bundle), spec],
+                       capture_output=True, text=True, timeout=300, cwd=ROOT)
+    assert r.returncode == 0, r.stderr[-400:]
+    return out
+
+
+@case("pick.js refuses the sign-in page and says so (2026-11-20: the pane starts on InfoCamere's login; the bundle path skips check.js)")
+def _():
+    pick = (built() / "pick.js").read_text()
+    page = lambda origin, host: ("globalThis.window = {}; globalThis.document = {querySelectorAll: () => [], createElement: () => ({style: {}, querySelector: () => ({addEventListener() {}})}), "
+                                 "body: {appendChild() {}}}; globalThis.location = {origin: %s, hostname: %s};" % (json.dumps(origin), json.dumps(host)))
+    code, out = node(page("https://iasu.infocamere.it", "iasu.infocamere.it") + "try { (0, eval)(%s) } catch (e) { console.log('THROWN ' + e.message) }" % json.dumps(pick))
+    assert "THROWN go to https://suap.impresainungiorno.gov.it first" in out and "sign-in" in out and "SPID" in out, out
+    # on the portal it gets as far as the box
+    code, out = node(page("https://suap.impresainungiorno.gov.it", "suap.impresainungiorno.gov.it") + "console.log((0, eval)(%s))" % json.dumps(pick))
+    assert "box shown" in out, out
+
+
+@case("check.js says the same on the sign-in page, in the same words")
+def _():
+    check = (built() / "check.js").read_text()
+    code, out = node("globalThis.localStorage = {getItem: () => null}; globalThis.location = {origin: 'https://iasu.infocamere.it', hostname: 'iasu.infocamere.it'};"
+                     "(0, eval)(%s).then(console.log)" % json.dumps(check))
+    assert out.startswith("go to https://suap.impresainungiorno.gov.it first") and "SPID" in out, out
+
+
+@case("results.js shows the run in progress and whether the tab is hidden (2026-11-20: a 148 s first run showed done 0 and nothing else)")
+def _():
+    res = (built() / "results.js").read_text()
+    body = res[:res.rindex("\nJSON.stringify(") + 1] + "return " + res[res.rindex("\nJSON.stringify(") + 1:]
+    fake = ("globalThis.document = {hidden: true}; const store = {}; globalThis.sessionStorage = {getItem: (k) => store[k] ?? null};"
+            "globalThis.window = globalThis; window.pvBatch = [1, 2]; window.pvBatchBusy = true; window.pvBatchNow = 'x/answers';"
+            "window.__pv = {last: () => ({result: 'running', at: {section: 'dati catastali'}, sections: [1, 2, 3]})};")
+    code, out = node(fake + "(async () => { %s })().then(console.log)" % body)
+    data = json.loads(out)
+    assert data["now"] == {"run": "x/answers", "result": "running", "at": "dati catastali", "sections": 3}, data
+    assert data["hidden"] is True and data["running"] is True and data["done"] == 0, data
+
+
 print(f"{sum(results)}/{len(results)} passed")
 sys.exit(0 if all(results) else 1)
