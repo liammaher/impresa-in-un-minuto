@@ -27,7 +27,6 @@
  "insegna_consenso": "false",
  "insegna_vincolo": "false",
  "insegna_grande": "false",
- "insegna_zona_a": "false",
  "orario_dalle": "12:00",
  "orario_alle": "23:30",
  "giorno_chiusura": "lunedì",
@@ -41,5 +40,6 @@
  "bollo_marche": false,
  "bollo_esenzione": "no",
  "musica": "true",
- "notifica_852_data": "2026-03-02"
+ "notifica_852_data": "2026-03-02",
+ "insegna_bene_culturale": "false"
 }

@@ -29,5 +29,6 @@
  "insegna_superficie_mq": "1.8",
  "insegna_luce": "Opaca",
  "insegna_testo": "PIZZERIA FITTIZIA",
- "insegna_monofacciale": "true"
+ "insegna_monofacciale": "true",
+ "insegna_bene_culturale": "false"
 }

@@ -28,9 +28,9 @@ asks:
   centro_storico: {group: extras, type: yes_no, item: "Si trova nel centro storico (area UNESCO o buffer zone)", why: "Lì sono ammessi solo i tipi A e B, con ombrellone a palo centrale, e può essere coinvolta la Soprintendenza: caso non ancora previsto."}
   nuovo_852: {group: extras, type: yes_no, item: "La notifica Reg. 852 dell'impresa non è ancora stata presentata", why: "In tal caso va presentato con questa pratica, un caso non ancora previsto."}
   insegna_consenso: {group: extras, type: yes_no, item: "L'insegna richiede il consenso di altri (il proprietario dell'edificio o il condominio)", why: "In quel caso il portale chiede i dati e l'assenso del proprietario: non lo preparo ancora."}
-  insegna_vincolo: {group: extras, type: yes_no, item: "L'edificio è sotto tutela paesaggistica o monumentale", why: "In quel caso l'insegna ha bisogno di una propria autorizzazione: non la preparo ancora."}
+  insegna_vincolo: {group: extras, type: yes_no, item: "L'edificio o l'area sono sottoposti a vincolo paesaggistico (parte III del D.Lgs. 42/2004)", why: "La SCIA dell'insegna vale solo dopo l'autorizzazione paesaggistica: la dichiaro nella bozza e te lo ricordo tra i tuoi passi."}
+  insegna_bene_culturale: {group: extras, type: yes_no, item: "L'edificio o l'area sono tutelati come bene culturale (parte II del D.Lgs. 42/2004)", why: "In tal caso serve prima l'autorizzazione della Soprintendenza (art. 49), caso non ancora previsto."}
   insegna_grande: {group: extras, type: yes_no, item: "Le insegne insieme superano i 5 m²", why: "Sopra i 5 m² è dovuto anche il canone unico: un pagamento a parte, che non preparo ancora."}
-  insegna_zona_a: {group: extras, type: yes_no, item: "L'installazione ricade in zona A del PRG (il centro storico)", why: "In zona A la SCIA dell'insegna ha altre condizioni, che non preparo ancora."}
   altri_soggetti: {group: extras, type: yes_no, item: "È una società con altri soci o amministratori oltre a chi dichiara", why: "Ciascuno presenta una propria dichiarazione antimafia firmata (art. 85 D.Lgs. 159/2011), che non preparo ancora."}
   descrizione: {type: text, question: "Nome della bozza in Pratiche in bozza sul portale", default: "ristorante {{business.denominazione}}"}
   alcolici: {group: extras, type: yes_no, item: "Venderà bevande alcoliche, birra e vino compresi", why: "La vendita di alcolici aggiunge a questa pratica la comunicazione alle Dogane: un caso che non preparo ancora."}
@@ -38,6 +38,7 @@ asks:
   diritti_euro: {type: number, question: "I diritti SUAP in euro", default: "120", why: "La voce del tariffario 2026 per un bar o ristorante con notifica sanitaria fuori dalle zone tutelate."}
   oggetto: {question: "La pratica in una frase (300 caratteri)"}
 yours:
+  - "Con il vincolo paesaggistico la SCIA dell'insegna vale solo dopo l'autorizzazione paesaggistica: allegala o presentala (l'ufficio cura il procedimento) e installa l'insegna solo dopo"
   - "Il professionista antincendio firma tu o per lui, con la sua firma digitale, l'asseverazione e le dichiarazioni dei Vigili del Fuoco: il portale le fa firmare al professionista, non al titolare"
   - "Paga ai Vigili del Fuoco la tariffa della categoria (€ {{ask.vvf_importo}}) e allega la copia del versamento firmata digitalmente (.p7m)"
   - "{{ask.bollo_marche,ask.bollo_esenzione|bollo_yours}}"
@@ -58,9 +59,8 @@ supports:
   - {when: "{{ask.centro_storico|not}}", else: "Un dehors nel centro storico per ora non lo preparo."}
   - {when: "{{ask.nuovo_852|not}}", else: "Presentare la notifica Reg. 852 insieme al dehors per ora non lo preparo: presenta prima l'apertura dell'attività."}
   - {when: "{{ask.insegna_consenso|not}}", else: "Un'insegna che richiede il consenso del proprietario o del condominio per ora non la preparo."}
-  - {when: "{{ask.insegna_vincolo|not}}", else: "Un'insegna su un edificio tutelato richiede una propria autorizzazione: per ora non la preparo."}
+  - {when: "{{ask.insegna_bene_culturale|not}}", else: "Un'insegna su un edificio o in un'area tutelati come bene culturale richiede prima l'autorizzazione della Soprintendenza (art. 49 D.Lgs. 42/2004): non lo preparo ancora."}
   - {when: "{{ask.insegna_grande|not}}", else: "Le insegne sopra i 5 m² pagano anche il canone unico: per ora non lo preparo."}
-  - {when: "{{ask.insegna_zona_a|not}}", else: "In zona A del PRG (il centro storico) la SCIA dell'insegna ha altre condizioni, che non preparo ancora."}
   - value: "{{business.forma_giuridica}}"
     in: [ditta_individuale, srl, srls, snc, sas, spa]
     else: "Per ora per una ditta individuale o una srl, srls, snc, sas o spa."

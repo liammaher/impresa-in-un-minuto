@@ -60,6 +60,7 @@ COMMON_SHORT = {"Esercizio di somministrazione di alimenti e bevande in zone NON
 # SCIA asks about a vincolo, zone A and a size; the dehors about a covered structure, the centro storico, music): left
 # in, pre-flight asks them of a rimozione or a renewal (2026-11-12, 8 rehearsals derived from them).
 TEMPLATE_ONLY = {"insegna-ristorante-scia-fittizio": ("insegna_vincolo", "insegna_zona_a", "insegna_grande"),
+                 "insegna-ristorante-vincolo-fittizio": ("insegna_vincolo", "insegna_zona_a", "insegna_bene_culturale", "insegna_grande"),
                  "dehors-fittizio": ("coperto", "centro_storico", "musica", "nuovo_852")}
 
 

@@ -27,7 +27,6 @@
  "insegna_consenso": "false",
  "insegna_vincolo": "false",
  "insegna_grande": "false",
- "insegna_zona_a": "false",
  "orario_dalle": "12:00",
  "orario_alle": "23:30",
  "giorno_chiusura": "lunedì",
@@ -68,5 +67,6 @@
  "vvf_doc_altri": "0",
  "people": {
   "v": "valerio"
- }
+ },
+ "insegna_bene_culturale": "false"
 }

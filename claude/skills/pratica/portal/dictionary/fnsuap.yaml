@@ -1745,6 +1745,7 @@ asks:
   albo_artigiane_sede: {type: text, question: "La Camera di commercio della sezione speciale (es. Napoli)", propose: "Napoli"}
   albo_artigiane_numero: {type: text, question: "Il numero di iscrizione all'albo delle imprese artigiane (10 caratteri al massimo)"}
   albo_artigiane_dal: {type: date, question: "La data di iscrizione all'albo delle imprese artigiane"}
+  vincolo_ambientale: {type: choice, question: "L'edificio o l'area dell'insegna sono sotto vincolo paesaggistico: quale caso vale? esclusione (rientri nei casi di esclusione dell'art. 149 del D.Lgs. 42/2004); posseduta (hai già l'autorizzazione paesaggistica o il parere della Soprintendenza, da allegare); ordinaria (presenti insieme alla SCIA l'istanza di autorizzazione paesaggistica ordinaria); semplificata (presenti insieme alla SCIA l'istanza semplificata)", options: [esclusione, posseduta, ordinaria, semplificata]}
   acustica_sorgenti: {type: choice, question: "Rumore dell'attività: nessuna (non ci sono sorgenti sonore significative); previsione (è stata presentata al Comune la previsione di impatto acustico, redatta da un tecnico abilitato); altro", options: [nessuna, previsione, altro]}
   acustica_previsione_data: {type: date, question: "La data in cui è stata presentata al Comune la previsione di impatto acustico"}
   acustica_sorgenti_altro: {type: text, question: "Cosa dichiari sul rumore, in poche parole (350 caratteri al massimo)"}
@@ -5962,9 +5963,21 @@ sections:
       # Named by its own text: the counter beside it ("300 Caratteri restanti") changes as it fills, and
       # the run found the box only by its crawled id ("loose", negozio-insegna-fittizio, 2026-11-10).
       - {kind: textarea, label: Testo del messaggio pubblicitario, value: "{{ask.insegna_testo}}"}
+  # The sign's landscape declaration follows `insegna_vincolo` (the recipe's checklist item) and, under it, `vincolo_ambientale`.
+  # Read from the crawls (suap-060-aprire-l-attivita-interventi, the stand-alone sign SCIA), not yet on a draft in every branch:
+  # "Soggetta ... ai sensi dell'art. 146" opens "presenta contestualmente ... istanza" (then Ordinaria or Semplificata) and
+  # "è già in possesso dell'autorizzazione paesaggistica"; the art. 149 exclusion opens nothing. The fourth radio, the Soprintendenza's
+  # parere for signs along roads, is a statement of the law and the person's. The monumentale section stays "Non soggetta": a cultural
+  # asset (`insegna_bene_culturale`) is refused in every recipe.
   - section: dichiarazione relativa al vincolo ambientale
     fields:
-      - {kind: radio, label: Non soggetta a tutela ambientale}
+      - {kind: radio, label: Non soggetta a tutela ambientale, when: "{{ask.insegna_vincolo|not}}"}
+      - {kind: radio, label: "Soggetta a tutela ambientale, ma rientrante", when: "{{ask.insegna_vincolo}} {{ask.vincolo_ambientale|is_esclusione}}"}
+      - {kind: radio, label: Soggetta a tutela ambientale ai sensi, when: "{{ask.insegna_vincolo}} {{ask.vincolo_ambientale|in_posseduta__ordinaria__semplificata}}"}
+      - {kind: radio, label: presenta contestualmente alla presente, when: "{{ask.insegna_vincolo}} {{ask.vincolo_ambientale|in_ordinaria__semplificata}}"}
+      - {kind: radio, label: Ordinaria, when: "{{ask.insegna_vincolo}} {{ask.vincolo_ambientale|is_ordinaria}}"}
+      - {kind: radio, label: Semplificata, when: "{{ask.insegna_vincolo}} {{ask.vincolo_ambientale|is_semplificata}}"}
+      - {kind: radio, label: è già in possesso dell'autorizzazione paesaggistica, when: "{{ask.insegna_vincolo}} {{ask.vincolo_ambientale|is_posseduta}}"}
   - section: dichiarazione relativa al vincolo monumentale
     fields:
       - {kind: radio, label: Non soggetta a tutela monumentale}

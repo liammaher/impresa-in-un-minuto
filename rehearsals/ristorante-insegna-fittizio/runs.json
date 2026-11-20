@@ -11,5 +11,37 @@
   "result": "filled",
   "seconds": 155.9,
   "browser": "pane"
+ },
+ {
+  "date": "2026-11-20",
+  "answers": "answers-vincolo-esclusione.json",
+  "result": "filled",
+  "seconds": 135.2,
+  "browser": "pane",
+  "note": "Run on pizzeria-fittizia's fixture (this recipe has none of its own), nothing moved or loose; the portal's warnings were the made-up PEC, address and cadastral data. Vincolo ambientale: «Soggetta ... ma rientrante nei casi di esclusione» (art. 149)."
+ },
+ {
+  "date": "2026-11-20",
+  "answers": "answers-vincolo-posseduta.json",
+  "result": "filled",
+  "seconds": 137.2,
+  "browser": "pane",
+  "note": "Run on pizzeria-fittizia's fixture (this recipe has none of its own), nothing moved or loose; the portal's warnings were the made-up PEC, address and cadastral data. Vincolo ambientale: «Soggetta ... art. 146» + «è già in possesso dell'autorizzazione paesaggistica»."
+ },
+ {
+  "date": "2026-11-20",
+  "answers": "answers-vincolo-ordinaria.json",
+  "result": "filled",
+  "seconds": 142.1,
+  "browser": "pane",
+  "note": "Run on pizzeria-fittizia's fixture (this recipe has none of its own), nothing moved or loose; the portal's warnings were the made-up PEC, address and cadastral data. Vincolo ambientale: «Soggetta ... art. 146» + «presenta contestualmente ... istanza» + Ordinaria."
+ },
+ {
+  "date": "2026-11-20",
+  "answers": "answers-vincolo-semplificata.json",
+  "result": "filled",
+  "seconds": 145.2,
+  "browser": "pane",
+  "note": "Run on pizzeria-fittizia's fixture (this recipe has none of its own), nothing moved or loose; the portal's warnings were the made-up PEC, address and cadastral data. Vincolo ambientale: «Soggetta ... art. 146» + «presenta contestualmente ... istanza» + Semplificata."
  }
 ]

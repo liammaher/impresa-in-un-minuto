@@ -42,7 +42,6 @@
  "insegna_consenso": "false",
  "insegna_vincolo": "false",
  "insegna_grande": "false",
- "insegna_zona_a": "false",
  "vvf_attivita": "ristorante",
  "vvf_categoria": "a",
  "vvf_allegato": "69 _ 1 _ A",
@@ -70,5 +69,6 @@
  "vvf_doc_altri": "0",
  "people": {
   "v": "valerio"
- }
+ },
+ "insegna_bene_culturale": "false"
 }
