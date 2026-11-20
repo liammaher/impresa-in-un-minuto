@@ -2869,6 +2869,16 @@ def patch_script(key, old_json, new_json, fallback):
             "})()\n")
 
 
+def wrong_origin_js(origin):
+    """A JS expression: why this page can't hold the runner (not the portal's origin), or "" on the portal. check.js and pick.js
+    both start with it: the bundle path skips check.js, so a pick.js run on the sign-in page (2026-11-20: the pane starts there
+    until the person signs in with SPID) would have loaded the batch into another origin's storage."""
+    hint = (" (this page is a sign-in: the person signs in with SPID there, and waits for the portal list of drafts; a sign-in that ends on the provider "
+            "home page did not log in: open the portal home again, and if it shows the sign-in once more, sign in again)")
+    return (f"(location.origin === {json.dumps(origin)} ? \"\" : {json.dumps('go to ' + origin + ' first: its storage holds the runner')}"
+            f" + (/sielte|spid|infocamere|poste|aruba|namirial|lepida|tim|intesa|register|infocert|teamsystem/i.test(location.hostname) ? {json.dumps(hint)} : \"\"))")
+
+
 def check_script(stored, origin, files=None, then="run.js"):
     """check.js: on the portal's page, which of runner.js and the steps the pane must still run
     (its localStorage holds something else), and whether the page is on the portal's origin,
@@ -2881,7 +2891,8 @@ def check_script(stored, origin, files=None, then="run.js"):
             f"  const want = {json.dumps(want)};\n"
             "  const stale = [];\n"
             "  for (const [k, v] of Object.entries(want)) if (await sha(localStorage.getItem(k)) !== v) stale.push(k);\n"
-            f"  if (location.origin !== {json.dumps(origin)}) return {json.dumps('go to ' + origin + ' first: its storage holds the runner')} + (/sielte|spid|infocamere|poste|aruba|namirial|lepida|tim|intesa|register|infocert|teamsystem/i.test(location.hostname) ? {json.dumps(' (this page is a sign-in: the person signs in with SPID there, and waits for the portal list of drafts; a sign-in that ends on the provider home page did not log in: open the portal home again, and if it shows the sign-in once more, sign in again)')} : \"\");\n"
+            f"  const wrong = {wrong_origin_js(origin)};\n"
+            "  if (wrong) return wrong;\n"
             f"  const files = {json.dumps(files)};\n"
             f"  return \"run \" + [...new Set(stale.map((k) => files[k]))].concat([{json.dumps(then)}]).join(\", then \");\n"
             "})()\n")

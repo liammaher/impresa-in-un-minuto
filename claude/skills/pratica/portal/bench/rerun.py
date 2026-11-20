@@ -84,14 +84,15 @@ def fnv1a(text):
     return len(units) // 2, h
 
 
-def write_bundle(out, path):
+def write_bundle(out, path, origin):
     """runner.js, the steps, the queue and loop.js as one file, and pick.js: a box on the page where
     the person picks that file. Copying a big script into the pane through the conversation can
     garble it (2026-10-30: 24,770 characters arrived for 24,000); a picked file arrives as it is.
     The box clears leftover frames that would cover it (a crawl's), checks the file by sha256,
     and loads it once: a second pick would start a second batch (loop.js refuses that too). A
     bundle is a new batch: it clears the tab's results first (fresh.js), or loop.js skips a run
-    whose name an earlier batch left there (2026-10-30: a permesso run skipped, unreported)."""
+    whose name an earlier batch left there (2026-10-30: a permesso run skipped, unreported). It refuses a
+    page that isn't the portal's (the sign-in the pane starts on, 2026-11-20): the bundle path skips check.js."""
     import hashlib
     # The queue in its own order, by number: a later run is what differs from its procedure's first,
     # so queue-10 before queue-2 broke a batch of 14 pieces (2026-10-31).
@@ -100,7 +101,9 @@ def write_bundle(out, path):
     text = "\n;\n".join(p.read_text() for p in parts)
     path.write_text(text)
     sha = hashlib.sha256(text.encode()).hexdigest()
-    (out / "pick.js").write_text(f"""if (window.pvBatchBusy) throw new Error("a batch is running in this tab: wait for it, or reload the page to stop it");
+    (out / "pick.js").write_text(f"""const wrong = {run.wrong_origin_js(origin)};
+if (wrong) throw new Error(wrong);
+if (window.pvBatchBusy) throw new Error("a batch is running in this tab: wait for it, or reload the page to stop it");
 document.querySelectorAll("iframe, #pv-pick").forEach((x) => x.remove());
 const box = document.createElement("div"); box.id = "pv-pick";
 box.style.cssText = "position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:2147483647;background:#fff;border:3px solid #1a4fd6;padding:16px 20px;font:16px sans-serif;box-shadow:0 4px 18px rgba(0,0,0,.3);border-radius:8px;max-width:520px";
@@ -342,6 +345,7 @@ if (!pvAlready) window.pvBatchRun = (async () => {
   window.pvBatchHalted = null;
   for (const [name, proc, values] of window.pvBatch || []) {
     if (done.some((d) => d.name === name)) continue;
+    window.pvBatchNow = name;
     __pv.start(proc, values);
     let r; do { r = await __pv.wait(30000); } while (r.result === "running");
     if (r.result !== "filled" && /^(the page didn't load|the portal stayed busy|signed out)/.test(r.error || "")) {
@@ -380,7 +384,10 @@ const done = JSON.parse(sessionStorage.getItem("pv-batch") || "[]");
 // The page was reloaded under the batch (the person, or another chat on the same login, used the portal in this tab,
 // 2026-11-17): window state (the queue, the runner) is gone, `done` may be short and `running` false. sessionStorage's last report says where it was.
 const lastReport = (() => { try { return JSON.parse(sessionStorage.getItem("pv-report") || "null"); } catch (e) { return null; } })();
-JSON.stringify({ done: done.length, of: (window.pvBatch || []).length, running: !!window.pvBatchBusy,
+// A run's report reaches sessionStorage only when it ends, so a first run of two minutes shows `done` 0 and nothing else (2026-11-20, a sector 20
+// pratica: 148 s, and a screenshot was the only way to see it was working): `now` is the live one, the section it is in and how many it has done.
+const live = (() => { try { const r = window.__pv && window.pvBatchBusy ? __pv.last() : null; return r && { run: window.pvBatchNow || null, result: r.result, at: r.at && (r.at.section || r.at.screen), sections: (r.sections || []).length }; } catch (e) { return null; } })();
+JSON.stringify({ done: done.length, of: (window.pvBatch || []).length, running: !!window.pvBatchBusy, now: live, hidden: document.hidden,
   reloaded: !window.__pv && lastReport ? { note: "the page was reloaded: re-arm the same bundle (pick it again) and rerun what is not in done", last: { result: lastReport.result, error: lastReport.error || null, at: lastReport.at && lastReport.at.section, url: lastReport.url } } : null,
   halted: window.pvBatchHalted || null,
   // Runs that never reached the portal and aren't in done: rerun them (a bundle of what's left).
@@ -417,7 +424,7 @@ JSON.stringify({ done: done.length, of: (window.pvBatch || []).length, running: 
         '  sessionStorage.removeItem("pv-batch"); sessionStorage.removeItem("pv-batch-unreached"); return "cleared";\n'
         '})()\n')
     if a.bundle:
-        write_bundle(a.out, a.bundle)
+        write_bundle(a.out, a.bundle, origin)
         if str(a.bundle.resolve()).startswith(("/private/tmp", "/tmp", "/private/var", "/var")):
             # The macOS file picker in the pane does not list /tmp or /var: "I don't see bundle.js" cost two rounds (2026-11-16).
             print(f"NOTE: {a.bundle} is under a temporary folder the person's file picker does not show: copy it to the Desktop "
@@ -425,8 +432,9 @@ JSON.stringify({ done: done.length, of: (window.pvBatch || []).length, running: 
     print(f"{a.out}: {len(names)} rehearsals, {len(chunks)} queue file(s). In the pane, on {origin}: "
           "check.js, then the files it names, then the queue files, loop.js, and results.js until done.")
     print("The pane closes by itself between turns and takes the login, the file box and sessionStorage (`pv-batch`) with it: "
-          "poll straight through after the pick (each call under 45 s, the pane's tool times out), and record the results "
-          "(--record) before anything else.")
+          "ask for the SPID sign-in and for the file pick as questions inside one turn (never end the turn between them), then "
+          "poll straight through after the pick (each call under 45 s, the pane's tool times out: results.js shows `now`, the section "
+          "the run is in, and `hidden`), and record the results (--record) before anything else.")
 
 
 if __name__ == "__main__":

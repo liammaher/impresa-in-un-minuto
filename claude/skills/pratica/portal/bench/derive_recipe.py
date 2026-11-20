@@ -40,6 +40,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 PORTAL = HERE.parent
+CRAWLS = PORTAL / "catalogue" / "F839" / "sections"
 ROOT = HERE.parents[4]
 sys.path.insert(0, str(PORTAL))
 sys.dont_write_bytecode = True
@@ -122,6 +123,76 @@ def drop_asks(text, keys):
         text = re.sub(r"^  %s: \{.*\n" % re.escape(key), "", text, flags=re.M)
         text = re.sub(r"^  - .*ask\.%s\b.*\n" % re.escape(key), "", text, flags=re.M)
     return text
+
+
+def sections_of(crawl_name):
+    """A crawl's section names, lower-cased: what tells which sibling it is. A crawl's `same_as` entries point at the crawl its section
+    was first read in, so two pratiche of one operation in different sectors share sections only when the portal gives them the
+    same form (2026-11-20: sector 06's move and structural variations are the shop's forms, "Dati sull'esercizio di vicinato" and
+    "dati sull'entità delle variazioni", not the bakery's or the workshop's, which carry the Reg. 852 notification)."""
+    c = json.loads((PORTAL / "catalogue" / "F839" / "sections" / f"{crawl_name}.json").read_text())
+    return {_norm(x["section"]).lower() for x in c["sections"]}
+
+
+def rehearsal_crawl(name):
+    """(crawl, operation) of a rehearsal's recipe, read from its header lines (None when it has none)."""
+    f = ROOT / "rehearsals" / name / "recipe.yaml"
+    if not f.exists():
+        return None
+    text = f.read_text(encoding="utf-8")
+    crawl, op = re.search(r"^crawl: (\S+)", text, re.M), re.search(r"^operation: (.+)$", text, re.M)
+    return (crawl[1], op[1].strip().strip("\"'")) if crawl and op else None
+
+
+def closer_siblings(template, crawl_name):
+    """Rehearsals of the template's operation whose crawl shares more sections with `crawl_name` than the template's does, best first:
+    [(score, rehearsal)], score the Jaccard index of the section names. Empty when the template is already the closest (or has no crawl)."""
+    t = rehearsal_crawl(template)
+    if not t:
+        return []
+    want = sections_of(crawl_name)
+    score = lambda c: len(want & sections_of(c)) / len(want | sections_of(c))  # noqa: E731
+    base, found = score(t[0]), {}
+    for f in sorted((ROOT / "rehearsals").glob("*/recipe.yaml")):
+        r = rehearsal_crawl(f.parent.name)
+        if r and r[1] == t[1] and r[0] != t[0] and (CRAWLS / f"{r[0]}.json").exists():
+            sc = score(r[0])
+            if sc > base + 1e-9 and (r[0] not in found or found[r[0]][0] < sc):
+                found[r[0]] = (sc, f.parent.name)
+    return sorted(found.values(), reverse=True)
+
+
+def _offered_only(question, value):
+    offered = {i["key"] for i in question.get("items", [])}
+    return [k for k in value if k in offered]
+
+
+def narrowed(question, value):
+    """A checklist's answer cut to the keys this question offers, or None when that leaves nothing or changes nothing. Another form's
+    list ("forno", "pane", ...) was refused by a workshop's with "answer with a list of the keys of the items that apply" (2026-11-20,
+    `attivita_852`, from the template's own answers as from the pool); none left means it is the person's."""
+    if question.get("type") != "checklist" or not isinstance(value, list):
+        return None
+    kept = _offered_only(question, value)
+    return kept if kept and kept != value else None
+
+
+def pooled(question, values):
+    """What the pool of other rehearsals' answers gives for a question the pre-flight asks, or None (a checklist's value narrowed)."""
+    v = values.get(question["key"])
+    if question.get("type") == "checklist" and isinstance(v, list):
+        return _offered_only(question, v) or None
+    return v
+
+
+def people_fix(d, answers, fixture_text):
+    """{"v": "valerio"} when pre-flight's only missing fields are the fire-safety professional's (`v:`), the answers give no people and the
+    fixture has him (sector 20's crawl has his "Asseverazione": 2026-11-19, ready false with no question), else None."""
+    fields = json.loads(fixture_text)["fields"]
+    if ("people" not in answers and d.get("missing") and all(m["id"].startswith("v:") for m in d["missing"])
+            and any(k.startswith("valerio:") for k, _ in fields)):
+        return {"v": "valerio"}
+    return None
 
 
 def derive(new, template, crawl_name, fixture=None, ticks=(), facts=None, handles=(), drop=(), also=()):
@@ -259,16 +330,16 @@ def fill(folder):
         answers = json.loads((folder / "answers.json").read_text())
         added = False
         for q in d["questions"]:
-            if q["key"] not in answers and q["key"] in values:
-                answers[q["key"]], added = values[q["key"]], True
+            if q["key"] not in answers and pooled(q, values) is not None:
+                answers[q["key"]], added = pooled(q, values), True
+            elif q.get("error") and narrowed(q, answers.get(q["key"])) is not None:
+                answers[q["key"]], added = narrowed(q, answers[q["key"]]), True
         for p in d["proposals"]:
             if p.get("key") and p["key"] not in answers and (p.get("key") in values or "value" in p):
                 answers[p["key"]], added = p.get("value", values.get(p["key"])), True
-        # A sector 20 crawl has the fire-safety professional's section: its `v:` fields are empty in a fixture with no `valerio`, and
-        # pre-flight says ready false with no question (2026-11-19, round 17). The PIN 2 rehearsals' fixture has him: the role goes to him.
-        if (not added and "people" not in answers and d.get("missing") and all(m["id"].startswith("v:") for m in d["missing"])
-                and any(k.startswith("valerio:") for k, _ in json.loads((folder / "fixture.json").read_text())["fields"])):
-            answers["people"], added = {"v": "valerio"}, True
+        fix = people_fix(d, answers, (folder / "fixture.json").read_text())
+        if not added and fix:
+            answers["people"], added = fix, True
         if not added:
             # `errors`: an answer the pool gave that the form refuses (a protocol number over 10 characters, 2026-11-13): the pool's first value is
             # another rehearsal's, so a question still asked with an error needs its own.
@@ -293,6 +364,9 @@ def main():
     ap.add_argument("--facts", help="the rules block's fixed facts, as YAML flow: 'attivita: somministrazione, evento: trasferimento'")
     ap.add_argument("--handles", help="the library procedures it files besides the main one, comma-separated (rules.handles)")
     a = ap.parse_args()
+    for score, name in closer_siblings(a.template, a.crawl)[:3]:
+        print(f"WARNING: {name} (crawl {rehearsal_crawl(name)[0]}) shares {score:.0%} of its sections with {a.crawl}, more than {a.template}'s: "
+              f"a closer template. Derive from it unless this one is deliberate.")
     folder = derive(a.new, a.template, a.crawl, a.fixture, a.tick, a.facts, [h for h in (a.handles or "").split(",") if h], a.drop_ask, a.also)
     print(f"wrote {folder.relative_to(ROOT)}: recipe.yaml, answers.json, fixture.json")
     print("then: add it to catalogue/F839/suap-unrouted.yaml with its reason unless route.py reaches it (bench/test_route.py fails otherwise), regen.py, a bundle")
