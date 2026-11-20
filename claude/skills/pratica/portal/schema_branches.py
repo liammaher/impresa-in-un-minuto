@@ -6,6 +6,7 @@ are the next cases to write.
   schema_branches.py choices <flattened-form.json>... --out schema/sue-choices.json
   schema_branches.py boxes --out <dir>      # each form's portal choice boxes, for the matching
   schema_branches.py table                  # writes docs/schema-branches.md
+  schema_branches.py suap [--only suap-060-] # the SUAP's choice boxes: filled on the portal, a case, mapped, nothing
 
 `choices` reads InfoCamere's forms as rehearsals/cila-fittizia/schema/flatten.py writes them:
 an xsd:choice of the dichiarazioni or the asseverazione (not the anagrafica, an address or the
@@ -230,21 +231,31 @@ def steps_fields(steps):
                 yield norm(sec["section"]), x.get("id"), "option", "*" if "{{" in v else norm(v)
 
 
-def sue_steps():
+def sue_steps(sportello="sue"):
+    """(rehearsal folder, steps) of each rehearsal of this sportello ("sue" or "suap")."""
     gen.ensure()  # the steps files are built, never committed
     for d in sorted(REHEARSALS.iterdir()):
         f, recipe = d / "portal-steps.generated.yaml", d / "recipe.yaml"
-        if f.is_file() and recipe.is_file() and gen.resolved(gen.load_yaml(recipe)).get("sportello") == "sue":
+        if f.is_file() and recipe.is_file() and gen.resolved(gen.load_yaml(recipe)).get("sportello") == sportello:
             yield d, yaml.safe_load(f.read_text())
 
 
-def ticked():
+def ticked(sportello="sue", skipped=None):
     """[(section, id, kind, label, (rehearsal, answers))] for each box a pre-flight-ready
-    answers file of a SUE rehearsal ticks, and each dropdown value it chooses."""
-    fields = dict(json.loads(FIXTURE.read_text())["fields"])
+    answers file of a rehearsal of this sportello ticks, and each dropdown value it chooses.
+    A SUE case is held to the architect's fixture; a SUAP business has its own (the rehearsal's
+    fixture.json): one that has none is added to `skipped`, never read with another's values."""
     out = []
     os.chdir(ROOT)  # the answers name their files from the repo's root
-    for d, steps in sue_steps():
+    for d, steps in sue_steps(sportello):
+        if sportello == "sue":
+            fields = dict(json.loads(FIXTURE.read_text())["fields"])
+        elif (d / "fixture.json").is_file():
+            fields = dict(json.loads((d / "fixture.json").read_text())["fields"])
+        else:
+            if skipped is not None:
+                skipped.append(d.name)
+            continue
         for a in sorted(d.glob("answers*.json")):
             values = run.Values(json.loads(a.read_text()), fields=fields, asks=steps.get("asks"))
             try:
@@ -261,11 +272,11 @@ def ticked():
     return out
 
 
-def filled():
+def filled(sportello="sue"):
     """{(rehearsal, answers file)} with a filled run on the portal recorded in its runs.json
     (bench/rerun.py --record writes them; earlier runs only where a README row names the case)."""
     out = set()
-    for d, _ in sue_steps():
+    for d, _ in sue_steps(sportello):
         f = d / "runs.json"
         for r in json.loads(f.read_text()) if f.is_file() else []:
             if r.get("result") == "filled":
@@ -273,10 +284,10 @@ def filled():
     return out
 
 
-def entries():
-    """[(section, id, kind, label, rehearsal)] for every field any SUE steps file can tick or
-    choose, whatever its condition."""
-    return [(*f, d.name) for d, steps in sue_steps() for f in steps_fields(steps)]
+def entries(sportello="sue"):
+    """[(section, id, kind, label, rehearsal)] for every field any steps file of this sportello
+    can tick or choose, whatever its condition."""
+    return [(*f, d.name) for d, steps in sue_steps(sportello) for f in steps_fields(steps)]
 
 
 def hits(box, records, peers):
@@ -413,6 +424,49 @@ def table():
 SPLIT = {("permesso_di_costruire", "009"): ["008"]}
 
 
+def suap_table():
+    """The SUAP's choice boxes against the cases its rehearsals take: every radio, tick and
+    dropdown option of the crawls its recipes use, once per section and label whatever crawl
+    shows it, and the strongest thing that covers it (a filled run on the portal, a case no run
+    recorded, a steps file that could, nothing). The SUE's table has the national forms' choices
+    to count against; the SUAP has no such list, so this counts the boxes the portal shows."""
+    skipped = []
+    ticks, mapped, leaves, runs = ticked("suap", skipped), entries("suap"), left(), filled("suap")
+    crawls = sorted({gen.resolved(gen.load_yaml(d / "recipe.yaml"))["crawl"] for d, _ in sue_steps("suap")})
+    rows, seen = [], set()
+    for name in crawls:
+        bx = boxes(name)
+        for b in bx:
+            key = (norm(b["section"]), b["kind"], norm(b["label"]))
+            if key in seen:
+                continue
+            seen.add(key)
+            st, who = status(b, ticks, mapped, leaves, bx, runs)
+            rows.append({"crawl": name, "section": b["section"], "kind": b["kind"], "label": b["label"], "state": st, "by": who})
+    return rows, len(crawls), skipped
+
+
+def suap_report(rows, ncrawls, skipped, only=""):
+    """The counts, then each box with no filled run behind it. `only` keeps the crawls whose name
+    starts with it (suap-060- is the restaurants' and bars' forms)."""
+    rows = [r for r in rows if r["crawl"].startswith(only)]
+    count = defaultdict(int)
+    for r in rows:
+        count[r["state"]] += 1
+    lines = [f"{len(rows)} choice boxes in {ncrawls} SUAP crawls with a recipe, once per section and label; "
+             f"{len(skipped)} rehearsals have no fixture.json of their own and are not counted as cases"]
+    for k in ("filled", "case", "mapped", "none", "leave", "theirs"):
+        lines.append(f"  {STATES.get(k, k):28} {count[k]:5}")
+    for k in ("case", "mapped", "none"):
+        todo = [r for r in rows if r["state"] == k]
+        if not todo:
+            continue
+        lines += ["", f"{STATES[k]} ({len(todo)}):"]
+        for r in todo:
+            lines.append(f"  [{r['kind']}] {r['section']} › {short(r['label'])}  ({r['crawl']})")
+    return "\n".join(lines)
+
+
 def required():
     """[(form, choice id, at, rehearsal, answers file)]: a choice of the national form with no
     "(nothing)" alternative (one of them must be stated), its boxes in a section the case files,
@@ -519,8 +573,13 @@ def main():
     m.add_argument("--by", required=True)
     m.add_argument("--made", required=True)
     sub.add_parser("table")
+    u = sub.add_parser("suap", help="the SUAP's choice boxes against its rehearsals' cases")
+    u.add_argument("--only", default="", help="only the crawls whose name starts with this (suap-060-)")
     sub.add_parser("required", help="cases that state none of a required choice's alternatives")
     a = ap.parse_args()
+    if a.cmd == "suap":
+        print(suap_report(*suap_table(), only=a.only))
+        return
     if a.cmd == "required":
         rows = required()
         print("\n".join(f"{f} {i} `{at}`: {r}/{ans}" for f, i, at, r, ans in rows) or "none")

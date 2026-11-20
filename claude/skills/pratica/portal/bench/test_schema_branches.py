@@ -115,8 +115,27 @@ def table_current():
     assert sb.OUT.read_text() == sb.table(), "regenerate: schema_branches.py table"
 
 
+def suap_choices():
+    """The SUAP's boxes by what covers them: a restaurant's opening ticks the sign box and a run filled it;
+    the Reg. 852 checklist's options no trade ticks are in no steps file; every box has one state, once;
+    a rehearsal with no fixture of its own is left out of the cases (a SUE fixture's values would be another business's)."""
+    rows, ncrawls, skipped = sb.suap_table()
+    assert ncrawls > 200 and len(rows) > 1000, (ncrawls, len(rows))
+    assert all(r["state"] in sb.STATES for r in rows), {r["state"] for r in rows} - set(sb.STATES)
+    keys = [(sb.norm(r["section"]), r["kind"], sb.norm(r["label"])) for r in rows]
+    assert len(keys) == len(set(keys)), "a box counted twice"
+    assert not {s for s in skipped if (sb.REHEARSALS / s / "fixture.json").is_file()}, "a fixture was not read"
+    got = {r["state"] for r in rows}
+    assert {"filled", "mapped", "none"} <= got, got
+    by = {(sb.norm(r["section"]), sb.norm(r["label"])): r["state"] for r in rows}
+    assert any(st == "filled" and "somministrazione" in sec for (sec, _), st in by.items()), "no restaurant box filled"
+    # The report names the boxes without a filled run and keeps to one family of crawls.
+    rep = sb.suap_report(rows, ncrawls, skipped, only="suap-060-")
+    assert "on the portal, not mapped" in rep and "suap-016-" not in rep, rep[:300]
+
+
 def main():
-    tests = [labels_alike, states, deeper_boxes, every_alternative_matched, required_choices, table_current]
+    tests = [labels_alike, states, deeper_boxes, every_alternative_matched, required_choices, table_current, suap_choices]
     for t in tests:
         t()
         print(f"ok  {t.__name__}")

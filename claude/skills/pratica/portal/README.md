@@ -1100,6 +1100,23 @@ reduction of the goods sector, no page in `library/procedures` for the reduction
   PIN 3 GPL (`suap-common-*`). Not built: a procura variant of the others; a SUAP choice counter like the SUE's (its `boxes()` and `hits()` in `schema_branches.py` read any crawl, so the
   counter is a matter of collecting each SUAP case's planned ticks with the right fixture per rehearsal, which differs from the SUE's one fixture).
 
+**Round 21 (2026-11-20): the SUAP choice counter, no portal run.** The cheapest gaps left (`bench/gaps.py`) are the 29 environmental forms (noise limits and derogation, waste, sludge,
+discharges, PIN 1): a restaurant or a shop files none of them, and `leverage.py` already says the 15 unrun crawls add no section, so the round counts what the runs took instead.
+`schema_branches.py suap [--only suap-060-]` lists every radio, tick and dropdown option of the crawls the SUAP recipes use (once per section and label) and what covers it: a filled
+run, a pre-flight-ready case with no recorded run, a steps file that could under a condition no case meets, or nothing; each case is read with its rehearsal's own `fixture.json`
+(the SUE's one fixture was `cila-fittizia`'s), and the 52 rehearsals that borrow another's are not counted as cases, so their boxes show as less covered than they are. 61 s.
+On 2026-11-20: **1,634 boxes in 268 crawls: 346 filled on the portal, 2 a case with no recorded run, 397 mapped with no case, 550 on the portal and not mapped, 177 left empty, 162 the person's.**
+
+- **Most of the 550 are one checklist.** 171 are the Reg. 852 «tipologia di attività» options (`attivita_852`: a bakery ticks its own and a recipe never the other trades'), and 55 the
+  atmospheric-emission forms' lists; those are not a restaurant's or a shop's. The wedge's own are in `--only suap-060-aprire-l-attivita` (71 boxes: 12 filled, 6 mapped, 48 not
+  mapped): the dehors' occupation period (seasonal, annual renewal, closing day, other), the days of the week and «orari diversi giorno per giorno», a private area for public use, and, in the
+  «interventi» screen, the options of «vincolo ambientale» (art. 146 or the art. 149 exclusion, with or without the Soprintendenza's authorization, ordinary or simplified) and «vincolo
+  monumentale». Those are the next cases to write for the wedge (a restaurant in a protected area is the likeliest real one); the bollo's 17 options come next.
+- **`sue_steps`, `ticked`, `entries` and `filled` take the sportello** (`"sue"` by default: the SUE table is unchanged, `table_current` holds it); `test_schema_branches.py` has `suap_choices`.
+  `test_schema_branches` takes 4½ minutes now. The steps files are built, not committed, and `gen.ensure()` took about a minute per rehearsal here: copy `portal-steps.generated.yaml`
+  from a worktree that has them (the lock names their sha256, so a stale copy is rewritten, none were).
+- **Not done:** the counter does not yet say which of a box's *revealed* boxes a case saw (it counts boxes, not paths), and it is not in `docs/` (a `--write` waits for the numbers to be read against a case).
+
 ## What the portal does that bit us
 
 - **Street names without their particles.** The location's street lookup and the Comune's
