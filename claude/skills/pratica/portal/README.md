@@ -952,6 +952,30 @@ and `scia-panificio` name no page in `library/procedures`). 40 own crawls are le
   notices (seven each: notification of opening, four updates, reactivation, change of registered office), the sign's SCIA and PIN 2 (and GPL) and PIN 3 GPL
   (`suap-common-*`). The hand-written recipes (temporary shop, reductions, PIN 2 GPL, the tattooist) are left for last.
 
+**Round 17 (2026-11-20): the four that round 16 derived but left, now all filled** (sector 20's move without enlargement and its concentration; sector 06's move
+and structural variations; 77-148 s each, one bundle of 4, recorded in `runs.json`; no value moved, no box loose, no gap, nothing skipped or unreached; the
+portal's warnings were the made-up PEC and the made-up address and cadastral data, as in every run). The pane had to be signed in with SPID first (the home page
+showed the login); the first run took 148 s (the tab was reported hidden for part of it, which throttles its timers), the other sector 20 run 121 s. All four are in
+`suap-unrouted.yaml` (a shop over 250 m² of sales area: `vicinato-oltre-250-mq`; a workshop with its own shop is no `attivita` of the table). `test_route` 28/28,
+`test_rerun` 11/11. 36 own crawls are left without a rehearsal (the list above less these four: `bench/remaining.py`).
+
+- **Sector 06's two were derived from the wrong sibling in round 16, and that is why they asked for a Reg. 852 list nobody had.** A crawl's sections say
+  which sibling it is: sector 06's move and structural variations have `same_as` of the shop's (`suap-017-trasferire-la-sede-dell-attivita`: "Dati sull'esercizio
+  di vicinato", "consumo immediato sul posto"; `suap-017-variazioni-strutturali`: "dati sull'entità delle variazioni"), not of the bakery's or the workshop's
+  (sectors 04 and 05 carry the Reg. 852 notification and, for the bakery, the production-cycle section). Derived from `trasferimento-laboratorio-fittizio` and
+  `variazione-strutturale-panificio-fittizio` they gave recipes asking about a bakery, a `variazioni` list with only the "Altro" item and an `attivita_852` list
+  whose pool value (another rehearsal's keys) the form refused. From `trasferimento-alimentari-fittizio` and `ampliamento-alimentari-fittizio` (with
+  `--fixture laboratorio-alimentare-fittizio`, the workshop-with-shop's own) both were `ready` at once, no question to a person. Rule of thumb: `same_as` in the
+  crawl, not the sector's name, picks the template.
+- **`ready: false` with no question, nothing unsupported and no file is a `missing` field.** Sector 20's crawl has the fire-safety professional's "Asseverazione"
+  (its fields are `v:...`), and a fixture with no `valerio` leaves them empty. `derive_recipe.py` now adds `people: {v: valerio}` itself when every missing
+  field is a `v:` one and the fixture has him (`--fixture negozio-pin-2-fittizio`), and prints `missing` when something else is empty. Tried on a scratch
+  rehearsal: `ready` at once, the same answers as the two derived by hand.
+- **Not run (36 own crawls, no rehearsal):** sector 02 (suspension), 03 and 54 (Dogane), 04 and 56 («interventi»), the tattooist's change of premises, the concession
+  (15, 16, 17, 19), the temporary shop (16, 17), the reduction of the area and of the goods (16, 17, 19), the 060 and 061 registration notices (seven each), the
+  sign's SCIA and PIN 2 (and GPL) and PIN 3 GPL (`suap-common-*`). None has a sibling of the same kind of business: sector 02, 04, 56, 03 and 54 only have another
+  kind's, the rest need a recipe by hand (the registration notices are worth a look at their crawls first).
+
 ## What the portal does that bit us
 
 - **Street names without their particles.** The location's street lookup and the Comune's

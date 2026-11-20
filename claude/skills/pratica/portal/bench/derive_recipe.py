@@ -21,7 +21,8 @@ portal in the pane (README, "The wedge's cells run on the portal"). What it chan
   ask and its `yours` lines and goes again;
 - the interventi screen is copied with no ticks: a crawl named `*-interventi` was taken with a tick on (the sign's SCIA), so give it `--tick`
   and delete the `scelte:` line it writes (the shop's template has none: the crawl's sections are the ticked ones). A sector-20 crawl has the
-  fire-safety professional's section: its fixture wants `valerio` (`--fixture negozio-pin-2-fittizio`, answers `people: {v: valerio}`);
+  fire-safety professional's section: its fixture wants `valerio` (`--fixture negozio-pin-2-fittizio`; the script then adds
+  `people: {v: valerio}` to the answers itself, and prints pre-flight's `missing` when something else is empty);
 - the fixture is copied from --fixture (default: the template's own, else the family's: README).
 Then, unless --no-fill, it generates the steps file and runs pre-flight, answering what it asks from the values the other
 rehearsals use (a choice, a date, a file), up to four rounds, and prints what is left for a person: a case's own answers
@@ -263,10 +264,16 @@ def fill(folder):
         for p in d["proposals"]:
             if p.get("key") and p["key"] not in answers and (p.get("key") in values or "value" in p):
                 answers[p["key"]], added = p.get("value", values.get(p["key"])), True
+        # A sector 20 crawl has the fire-safety professional's section: its `v:` fields are empty in a fixture with no `valerio`, and
+        # pre-flight says ready false with no question (2026-11-19, round 17). The PIN 2 rehearsals' fixture has him: the role goes to him.
+        if (not added and "people" not in answers and d.get("missing") and all(m["id"].startswith("v:") for m in d["missing"])
+                and any(k.startswith("valerio:") for k, _ in json.loads((folder / "fixture.json").read_text())["fields"])):
+            answers["people"], added = {"v": "valerio"}, True
         if not added:
             # `errors`: an answer the pool gave that the form refuses (a protocol number over 10 characters, 2026-11-13): the pool's first value is
             # another rehearsal's, so a question still asked with an error needs its own.
             return {"ready": d["ready"], "unsupported": d["unsupported"], "questions": [q["key"] for q in d["questions"]], "proposals": [p.get("key") for p in d["proposals"]],
+                    "missing": [m["id"] for m in d.get("missing", [])],
                     "errors": [[q["key"], q["error"]] for q in d["questions"] if q.get("error")],
                     "files": [f["for"] for f in d["files"] if not f["exists"]]}
         (folder / "answers.json").write_text(json.dumps(answers, ensure_ascii=False, indent=1) + "\n")
