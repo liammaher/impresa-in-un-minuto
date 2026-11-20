@@ -1011,6 +1011,17 @@ rehearsal: 36 → **22**. The seven 060 forms are canonical crawls that 279 of t
   closure or suspension), but the table (`alimenti-notifica`) adds it only as `also` to an opening or a move, never as a pratica of its own, and has no event for its updates
   (suspension is refused: `sospensione-non-coperta`). Routing the five notifications would mean an event in the table for filing the notification alone, with the page's
   boxes as its sourced claims: left for a decision. Reactivation and the registered-office change are named in that page only as exempt from the sanitary fee.
+- **What a run buys, in code now (`leverage.py`, `test_leverage.py`, the scoreboard's two new lines).** The SUAP's 1,148 «mapped» are 309 crawls of their own and 839
+  same-fingerprint copies of 55 of them, so "run 246" was out of 309 (now **260**), and a copy is proved by its canonical's run, never by its own: running the copies would
+  fill the same sections again. After this round 47 of the 55 canonicals have a run; the eight left carry 52 copies (Dogane 13, the two reductions 12 each, sector 02's
+  suspension 11, the three sector 03 forms and the tattooist 1 each). By section (fingerprint: what it shows before any choice): 294 of 448 distinct sections are exercised by
+  a filled run; **13 fillable crawls with no run still hold a new one, and 5 runs would cover them all** (the sign's SCIA 4 sections, the concession, the temporary shop and
+  the two reductions 1 each); 146 sections appear only in crawls the dictionary can't fill yet (the AUA and environmental forms, agritourism, autoriparazione), which is dictionary
+  work before any run. What no count here covers is the choices that reveal boxes (347 section fingerprints have them, 215 in run crawls): which options a run took is
+  counted for the SUE and not for the SUAP. `docs/coverage.md` and `docs/ready.md` are written at release (`make coverage`): ready.md names the commit and what the plugin
+  ships, so a data PR leaves them.
+- **`results.js` gives the batch's record.** Once the batch has ended it returns `record` (name, result, seconds), the JSON `rerun.py --record` takes, and it no longer waits
+  35 s for nothing; each bundle's closing poll used to be typed by hand.
 - **zsh and `--fixture`.** `${4:+--fixture $4}` in a script is one word in zsh, and `set -- $spec` doesn't split: four of the fourteen failed on argparse. Call `derive_recipe.py`
   from a function with every argument written out.
 - **Not run (22 own crawls, no rehearsal):** sector 02 (suspension), 03 and 54 (Dogane), 04 and 56 («interventi»), the tattooist's change of premises, the concession (15, 16, 17,

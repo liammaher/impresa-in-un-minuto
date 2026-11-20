@@ -152,5 +152,15 @@ def _():
     assert "diritti_euro" not in only and "descrizione" not in only, only
 
 
+@case("a group left with no ask under it is dropped with the asks (the centro storico opening's Piano group in a notification)")
+def _():
+    text = ('groups:\n  extras:\n    question: "Qualcuna?"\n  piano:\n    question: "I requisiti del Piano"\nasks:\n'
+            '  alcolici: {group: extras, type: yes_no, item: "Alcolici"}\n  accessibile: {group: piano, type: yes_no, item: "Accessibile"}\n'
+            '  punteggio: {group: piano, type: yes_no, item: "Punteggio"}\nyours:\n  - "x"\n')
+    out = dr.drop_asks(text, ("accessibile", "punteggio"))
+    assert "piano" not in out and "extras" in out and "alcolici" in out, out
+    assert dr.drop_asks(text, ("accessibile",)) == text.replace("  accessibile: {group: piano, type: yes_no, item: \"Accessibile\"}\n", "")  # one ask left: the group stays
+
+
 print(f"{sum(results)}/{len(results)} passed")
 sys.exit(0 if all(results) else 1)

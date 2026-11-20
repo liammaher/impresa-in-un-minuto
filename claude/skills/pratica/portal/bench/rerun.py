@@ -379,7 +379,8 @@ pvAlready ? "a batch is already running in this tab: nothing started" : `started
 """.replace("__RUNNER_SHA__", run.hashlib.sha256(stored["pv-runner"].encode()).hexdigest()))
     # Waits while the pane shows the page (the pane cuts a call at 45 s); a hidden pane slows its
     # timers past that (2026-11-01), so then it answers at once and the caller waits outside.
-    (a.out / "results.js").write_text("""if (!document.hidden) await new Promise((r) => setTimeout(r, 35000));
+    (a.out / "results.js").write_text("""// A batch that has ended has nothing to wait for (2026-11-20: the last poll of each bundle waited 35 s for nothing).
+if (!document.hidden && window.pvBatchBusy) await new Promise((r) => setTimeout(r, 35000));
 const done = JSON.parse(sessionStorage.getItem("pv-batch") || "[]");
 // The page was reloaded under the batch (the person, or another chat on the same login, used the portal in this tab,
 // 2026-11-17): window state (the queue, the runner) is gone, `done` may be short and `running` false. sessionStorage's last report says where it was.
@@ -393,6 +394,8 @@ JSON.stringify({ done: done.length, of: (window.pvBatch || []).length, running: 
   // Runs that never reached the portal and aren't in done: rerun them (a bundle of what's left).
   unreached: JSON.parse(sessionStorage.getItem("pv-batch-unreached") || "[]").filter((u) => !done.some((d) => d.name === u.name)),
   filled: done.filter((d) => d.result === "filled").length,
+  // Once the batch has ended: what `rerun.py --record` takes (name, result, seconds), so nobody types it (2026-11-20: twice by hand, six times in all).
+  record: !window.pvBatchBusy && done.length ? done.map((d) => ({ name: d.name, result: d.result, total_seconds: d.total_seconds })) : null,
   stopped: done.filter((d) => d.result !== "filled").map((d) => [d.name, d.error, d.at && d.at.section, d.gaps || []]),
   moved: done.filter((d) => (d.moved || []).length).map((d) => [d.name, d.moved]),
   loose: done.filter((d) => (d.loose || []).length).map((d) => [d.name, d.loose]),

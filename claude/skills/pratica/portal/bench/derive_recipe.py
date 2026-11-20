@@ -118,10 +118,14 @@ def wizard_answers(options):
 
 
 def drop_asks(text, keys):
-    """The recipe's ask lines named, and every `yours`/`supports` line that reads them."""
+    """The recipe's ask lines named, every `yours`/`supports` line that reads them, and a group none of the remaining asks is in
+    (the centro storico opening's «Piano 2026» group stayed in a notification's recipe with no ask under it, 2026-11-20)."""
     for key in keys:
         text = re.sub(r"^  %s: \{.*\n" % re.escape(key), "", text, flags=re.M)
         text = re.sub(r"^  - .*ask\.%s\b.*\n" % re.escape(key), "", text, flags=re.M)
+    for group in re.findall(r"^  (\w+):\n    question:", text, flags=re.M):
+        if not re.search(r"group: %s\b" % re.escape(group), text):
+            text = re.sub(r"^  %s:\n    question: [^\n]*\n" % re.escape(group), "", text, flags=re.M)
     return text
 
 

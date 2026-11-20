@@ -23,6 +23,7 @@ from pathlib import Path
 import yaml
 
 import catalogue as cat
+import leverage
 import gen
 import route
 import runs
@@ -455,6 +456,11 @@ def render(today=None):
     out.append("|---|---:|---:|---:|---:|")
     for sp, mapped, fill, run, short, drift in lines:
         out.append(f"| {NAMES[sp]} | {mapped} | {fill} | {run} | {drift} |")
+    # The SUAP's "mapped" and "fillable" count same-fingerprint copies (same.json) next to crawls of its own, and "run" only the own ones that ran:
+    # read beside the others it looked like 246 of 1,119 (2026-11-20). leverage.py says what the count is made of.
+    ran_crawls = {v["crawl"] for v in reh.values() if v["run"] and v["crawl"]}
+    alias = cat.json.loads(cat.SAME.read_text())["same"] if cat.SAME.exists() else {}
+    out += [""] + leverage.lines(leverage.compute(cat.crawls(), alias, status, ran_crawls))
     out += ["", "By section use (how much of what pratiche show the dictionary fills):", ""]
     out += [f"- {s}" for s in sections]
     out += ["", "Rehearsals with no recorded run (written, never confirmed on the portal):", ""]
