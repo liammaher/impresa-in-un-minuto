@@ -153,7 +153,64 @@ def main():
     # A table's name says its sportello (the SUAP's table stays out while it isn't carried).
     assert build.table_sportello(Path("sue-napoli-adempimenti.yaml")) == "sue"
     assert build.table_sportello(Path("suap-napoli.yaml")) == "suap"
-    print("ok: build.py's vault, python_download and sportelli switches, and private terms")
+    # The target switch: a text's parts for the other agent go with their markers; a text with none stays
+    # as it is, so the claude build is the plugin it always was.
+    text = "a\n<!-- claude -->\nb\n<!-- /claude -->\n<!-- openai -->\nc\n<!-- /openai -->\nd\n"
+    with tempfile.TemporaryDirectory() as tmp:
+        for target, want in (("claude", "a\nb\nd\n"), ("openai", "a\nc\nd\n")):
+            plugin = Path(tmp) / target
+            shutil.copytree(HERE / "impresa-in-un-minuto", plugin)
+            (plugin / "skills" / "pratiche" / "EXTRA.md").write_text(text)
+            before = {f: f.read_text() for f in plugin.rglob("*.md") if f.name != "EXTRA.md"}
+            build.select_target(plugin, target)
+            assert (plugin / "skills" / "pratiche" / "EXTRA.md").read_text() == want, target
+            assert before == {f: f.read_text() for f in plugin.rglob("*.md") if f.name != "EXTRA.md"}, \
+                f"{target}: a text with no target marker changed"
+        for bad in ("<!-- openai -->\nx\n", "x\n<!-- /claude -->\n", "<!-- claude -->\n<!-- claude -->\n"):
+            plugin = Path(tmp) / "bad"
+            shutil.rmtree(plugin, ignore_errors=True)
+            shutil.copytree(HERE / "impresa-in-un-minuto", plugin)
+            (plugin / "skills" / "pratiche" / "EXTRA.md").write_text(bad)
+            try:
+                build.select_target(plugin, "openai")
+            except SystemExit:
+                pass
+            else:
+                raise AssertionError(f"a target marker left open was kept: {bad!r}")
+    # No text carries a target marker the build wouldn't understand (a typo like `<!-- open-ai -->` stays in).
+    for f in (HERE / "impresa-in-un-minuto").rglob("*.md"):
+        assert not re.search(r"^<!-- /?(?:claude|openai)\b(?! -->)", f.read_text(), re.M), f
+    # OpenAI's manifest: the portable fields of the hand-written one, nothing of Claude's.
+    manifest = json.loads(build.with_scope((HERE / "impresa-in-un-minuto" / ".claude-plugin" / "plugin.json").read_text(), "plugin.json"))
+    out = build.openai_manifest(manifest)
+    assert out["$schema"] == build.OPENAI_PLUGIN_SCHEMA and out["name"] == manifest["name"] and out["version"] == manifest["version"], out
+    assert set(out) <= {"$schema", "name", "version", "description", "author", "homepage", "repository", "license", "keywords"}, out
+    assert "displayName" not in out, "displayName is Claude's; OpenAI's goes under extensions.com.openai.interface"
+    for bad in ({**manifest, "name": "Impresa_In_Un_Minuto"}, {**manifest, "name": "a" * 65},
+                {**manifest, "description": "x" * 4001}):
+        try:
+            build.openai_manifest(bad)
+        except SystemExit:
+            pass
+        else:
+            raise AssertionError(f"OpenAI's limits not held: {str(bad)[:60]}")
+    # The connector, as each target's config names it.
+    claude = build.connector_config("claude", "https://example.org/mcp")
+    assert claude == {"mcpServers": {"impresa-in-un-minuto": {"type": "http", "url": "https://example.org/mcp"}}}, claude
+    # The claude build's .mcp.json is the same bytes the build wrote before the target existed.
+    assert build.as_json(claude) == build.as_json(
+        {"mcpServers": {"impresa-in-un-minuto": {"type": "http", "url": "https://example.org/mcp"}}})
+    for missing in ({}, {"version": "1"}, {"name": "ok-name"}):  # a manifest short of fields is refused, not a traceback
+        try:
+            build.openai_manifest(missing)
+        except SystemExit:
+            pass
+        except KeyError:
+            raise AssertionError(f"openai_manifest({missing}) raised KeyError")
+    oai = build.connector_config("openai", "https://example.org/mcp")
+    assert oai["mcpServers"]["impresa-in-un-minuto"] == {"type": "streamable-http", "url": "https://example.org/mcp"} \
+        and oai["$schema"] == build.OPENAI_MCP_SCHEMA, oai
+    print("ok: build.py's vault, python_download, target and sportelli switches, and private terms")
     return 0
 
 

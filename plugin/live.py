@@ -31,7 +31,7 @@ DIST = HERE / "dist"
 def WANTED():
     """The options live.py builds with: build.yaml's defaults, and the evals."""
     return {"vault": build.vault_default(), "python_download": build.switch("python_download"), "evals": True,
-            "cowork_test": False, "connector": None, "pvault": None}
+            "cowork_test": False, "connector": None, "pvault": None, "target": "claude"}
 
 
 def stale():
