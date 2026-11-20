@@ -8,7 +8,11 @@ people who use Codex or the ChatGPT desktop app. Nothing here changes what a Cla
 
 - `plugin/build.py --target openai` (out: `plugin/dist/openai/`): a root `plugin.json` (Agent Plugins 1.0.0, the
   portable fields of the hand-written Claude manifest, so name and version have one source) instead of
-  `.claude-plugin/`; with `--connector URL`, `mcp.json` (`streamable-http`) instead of `.mcp.json`; the texts'
+  `.claude-plugin/`. Under `extensions.com.openai` it has `requires_local_executor: true` (the runner's scripts
+  run on the computer, so ChatGPT on the web and on phones must not offer it) and an `interface` made of the
+  manifest's own texts: display name, long description, developer, website, plus a category and the Prova as
+  the starter prompt. It has no `shortDescription` (the portable format derives one), and no icons or
+  support, privacy or terms URLs, which the public directory requires; with `--connector URL`, `mcp.json` (`streamable-http`) instead of `.mcp.json`; the texts'
   `<!-- openai -->` parts kept and their `<!-- claude -->` parts dropped (no text has either marker yet).
 - It prints how many `${CLAUDE_SKILL_DIR}` uses are left in the texts: OpenAI's docs name no equivalent for skills.
 

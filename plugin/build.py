@@ -82,6 +82,10 @@ TARGETS = ("claude", "openai")
 # developers.openai.com/plugins/build/plugins, read 2026-11-20).
 OPENAI_PLUGIN_SCHEMA = "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json"
 OPENAI_MCP_SCHEMA = "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json"
+# The listing's category, one of OpenAI's fixed list, and its starter prompt: the Prova, as the skill's
+# description has the tecnico ask for it.
+OPENAI_CATEGORY = "Business & Operations"
+OPENAI_DEFAULT_PROMPT = "fammi vedere una prova"
 # Claude's variable for a skill's own folder: OpenAI's docs name no equivalent for skills (the spike,
 # docs/design/openai-platform.md, decides what replaces it), so the openai build keeps it and says so.
 SKILL_DIR_VAR = "${CLAUDE_SKILL_DIR}"
@@ -223,8 +227,8 @@ def select_target(plugin, target):
 
 def openai_manifest(manifest):
     """The root plugin.json OpenAI reads, from the one hand-written manifest (.claude-plugin/plugin.json),
-    so the name and version have one source. Only the portable fields: OpenAI's own settings
-    (extensions.com.openai) wait for what the spike finds the desktop app needs."""
+    so the name, version and listing have one source: the portable fields, and under
+    extensions.com.openai the listing (`interface`) and the desktop-only flag."""
     out = {"$schema": OPENAI_PLUGIN_SCHEMA}
     for key in ("name", "version", "description", "author", "homepage", "repository", "license", "keywords"):
         if key in manifest:
@@ -232,8 +236,22 @@ def openai_manifest(manifest):
     name = out.get("name", "")
     if not re.fullmatch(r"[a-z0-9]+(-[a-z0-9]+)*", name) or len(name) > 64:
         sys.exit(f"plugin name {name!r}: OpenAI wants at most 64 characters, lower case, digits, single hyphens")
-    if len(out.get("description", "")) > 4000 or len(out.get("author", {}).get("name", "")) > 120:
-        sys.exit("plugin.json: description over 4000 characters or author name over 120 (OpenAI's limits)")
+    # The portal's package checks (developers.openai.com/plugins/deploy/submission-errors): 1,024 for the
+    # description, 120 for the author, 80 for the display name.
+    if len(out.get("description", "")) > 1024 or len(out.get("author", {}).get("name", "")) > 120 \
+            or len(manifest.get("displayName", "")) > 80:
+        sys.exit("plugin.json: description over 1024 characters, author name over 120 or displayName over 80 (OpenAI's limits)")
+    # No shortDescription: a portable package may leave it to be derived, and every text here is one the
+    # hand-written manifest already holds (test_english and test_voice read it there).
+    interface = {"displayName": manifest.get("displayName", name), "longDescription": out.get("description", ""),
+                 "developerName": out.get("author", {}).get("name", ""), "category": OPENAI_CATEGORY,
+                 "defaultPrompt": OPENAI_DEFAULT_PROMPT}
+    if out.get("homepage", "").startswith("https://"):  # OpenAI takes https only; homepage doesn't fill it by itself
+        interface["websiteURL"] = out["homepage"]
+    # The skill runs the runner's scripts on the computer: without the flag OpenAI would offer the plugin in
+    # ChatGPT on the web and on phones, where they can't run (developers.openai.com/plugins/deploy/desktop-only).
+    out["extensions"] = {"com.openai": {"requires_local_executor": True,
+                                        "interface": {k: v for k, v in interface.items() if v}}}
     return out
 
 

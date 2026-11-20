@@ -184,10 +184,23 @@ def main():
     manifest = json.loads(build.with_scope((HERE / "impresa-in-un-minuto" / ".claude-plugin" / "plugin.json").read_text(), "plugin.json"))
     out = build.openai_manifest(manifest)
     assert out["$schema"] == build.OPENAI_PLUGIN_SCHEMA and out["name"] == manifest["name"] and out["version"] == manifest["version"], out
-    assert set(out) <= {"$schema", "name", "version", "description", "author", "homepage", "repository", "license", "keywords"}, out
+    # Only the keys the Agent Plugins schema allows at the root (it has additionalProperties: false).
+    assert set(out) <= {"$schema", "name", "version", "description", "author", "homepage", "repository", "license",
+                        "keywords", "extensions"}, out
     assert "displayName" not in out, "displayName is Claude's; OpenAI's goes under extensions.com.openai.interface"
+    openai = out["extensions"]["com.openai"]
+    assert openai["requires_local_executor"] is True, "the runner's scripts need the desktop app: desktop only"
+    face = openai["interface"]
+    assert face["displayName"] == manifest["displayName"] and face["longDescription"] == manifest["description"] \
+        and face["developerName"] == manifest["author"]["name"] and face["websiteURL"] == manifest["homepage"], face
+    assert face["category"] in {"Productivity", "Creativity", "Developer Tools", "Business & Operations", "Data & Analytics",
+                                "Communication", "Education & Research", "Security", "Finance", "Healthcare", "Travel",
+                                "Entertainment", "Other"}, face["category"]
+    assert len(face["defaultPrompt"]) <= 128 and "\n" not in face["defaultPrompt"], face["defaultPrompt"]
+    assert set(face) <= {"displayName", "longDescription", "developerName", "category", "defaultPrompt", "websiteURL"}, \
+        "a listing text the hand-written manifest doesn't hold would escape test_english and test_voice"
     for bad in ({**manifest, "name": "Impresa_In_Un_Minuto"}, {**manifest, "name": "a" * 65},
-                {**manifest, "description": "x" * 4001}):
+                {**manifest, "description": "x" * 1025}, {**manifest, "displayName": "x" * 81}):
         try:
             build.openai_manifest(bad)
         except SystemExit:
