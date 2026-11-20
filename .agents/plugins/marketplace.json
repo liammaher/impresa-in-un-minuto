@@ -1,0 +1,22 @@
+{
+  "name": "impresa-in-un-minuto",
+  "interface": {
+    "displayName": "Impresa in un minuto"
+  },
+  "plugins": [
+    {
+      "name": "impresa-in-un-minuto",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/liammaher/impresa-in-un-minuto.git",
+        "ref": "plugin-openai-v0.8.3",
+        "sha": "7f1e5346c7a63debd4fdc3fb62f9d09276cf3b88"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Business & Operations"
+    }
+  ]
+}
