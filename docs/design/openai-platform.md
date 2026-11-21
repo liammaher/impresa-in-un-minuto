@@ -132,13 +132,14 @@ private `kept.json`), `run.py chatgpt` (the run folder: `private/chatgpt-run.jso
 `hidden` lines, and the openai texts' steps 4 to 6 and Prova. `bench/test_driver.py` runs it on test_inpage.py's fake
 portal through `bench/driver_tab.mjs`, a tab over Playwright for Node whose `evaluate` fails on any write and reads an
 email as `<redacted>`. Not yet: the second compilation (after the declarations), the check of the portal's preview
-against the documents (Claude's step 5), a draft reopened from Pratiche in bozza, and `reads.js`.
+against the documents (Claude's step 5), and `reads.js`. A draft whose address expired is reopened from Pratiche in
+bozza by its name, as inpage.js does.
 
 ## What the target does not do yet
 
 - A whole pratica run end to end in ChatGPT, recorded in `runs.json` (the driver ran the CILA's wizard and four of its
   sections on the portal, as the test module).
-- The second compilation, the preview check, reopening a draft, `reads.js` (above).
+- The second compilation, the preview check, `reads.js` (above).
 - The archive (`vault: true`): the setup skill and the vault parts have no OpenAI words.
 - The directory listing: icons, `shortDescription`, support, privacy and terms URLs, and the plugin portal's review.
 - The connector's ChatGPT side (`search`/`fetch`, origins, CORS) and a Codex run of the evals.

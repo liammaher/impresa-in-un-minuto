@@ -173,6 +173,18 @@ function pageApi(cfg) {
       const a = [...document.querySelectorAll(css)].find((x) => norm(x.textContent).startsWith(norm(name)));
       return a ? { css, nth: nthOf(css, a), text: a.textContent } : null;
     },
+    // Pratiche in bozza: the newest draft named so (its Apri), else the paginator's page p.
+    draftOpen({ name, p }) {
+      const row = [...document.querySelectorAll("tr")].find((t) => norm(t.innerText).includes(norm(name)));
+      if (row) {
+        const css = "a, button";
+        const b = [...row.querySelectorAll(css)].find((x) => norm(x.title || x.textContent) === "apri");
+        return b ? { css, nth: nthOf(css, b) } : fail(`${name}: no Apri`);
+      }
+      const next = [...document.querySelectorAll(".ui-paginator-page")].find((a) => a.textContent.trim() === String(p));
+      return next ? { page: { css: ".ui-paginator-page", nth: nthOf(".ui-paginator-page", next) } } : fail(`no draft named ${name} in Pratiche in bozza`);
+    },
+    hasOpenSection() { return !!document.querySelector("li#corrente"); },
     menuNames() { return [...document.querySelectorAll("a.linkmenu")].map((a) => a.textContent.replace(/\s+/g, " ").trim()); },
     resolve,
     // An id the crawl saw, held to the box's kind and label: else the box by its label (a move), else the id as it is.
@@ -478,11 +490,11 @@ async function attempt(tab, runDir, opts, run) {
       await fill(tab, steps, values, resume, run, held, { fs, path, priv });
       const r = run.report, at = r.at;
       if (r.result !== "stopped" || !at || n >= (opts.retries ?? 2) || /^signed out/.test(r.error || "") || !TRANSIENT.test(r.error || "")) break;
-      if (at.phase !== "section" || !r.url || /\/cmd\/error/.test(r.url)) break;
+      if (at.phase !== "section" || !r.url) break;
       run.report = { ...r, result: "running", error: undefined, snapshot: undefined, resumed: true,
         retries: (r.retries || []).concat([{ error: r.error, at }]) };
       await sleep(opts.retry_wait_ms ?? 10000);
-      resume = { ...resume, url: r.url, from: { section: at.index }, kept: r.kept || [] };
+      resume = { ...resume, url: r.url, from: { section: at.index }, kept: r.kept || [], reopen_draft: /\/cmd\/error/.test(r.url) };
     }
   } finally {
     run.report.total_seconds = +((Date.now() - t0) / 1000).toFixed(1);
@@ -736,6 +748,21 @@ async function fill(tab, steps, values, resume, run, held, { fs, path, priv }) {
     return v.name;
   }
 
+  // A draft whose address expired (the portal's /cmd/error), opened again by its name from Pratiche in bozza.
+  async function reopen(name) {
+    await act(() => tab.goto(new URL("/fnsuap/cmd/home", steps.logged_in).href));
+    for (let p = 2; ; p++) {
+      const r = need(await page("draftOpen", { name, p }));
+      if (!r.page) { await act(() => click(r, `${name}: Apri`)); break; }
+      await click(r.page, `Pratiche in bozza, page ${p}`);
+      await idle();
+    }
+    await until(() => page("hasOpenSection"), `${name}: the draft didn't open`, 60000);
+    await idle();
+    report.reopened_draft = true;
+    return (await page("state")).url;
+  }
+
   // the wizard
   async function wizard(step, value, wi) {
     report.at = { phase: "wizard", index: wi, screen: step.screen };
@@ -783,7 +810,9 @@ async function fill(tab, steps, values, resume, run, held, { fs, path, priv }) {
       if (!(await here())) await act(() => button(sec.go));
       if (!(await here())) fail(`expected the screen ${sec.section}`);
     } else if (sec.open !== false) {
-      if (!(await openSection(sec.section)) && !(await page("isOpen", sec.section))) {
+      const opened = await openSection(sec.section);
+      if (/\/cmd\/error/.test((await page("state")).url)) fail("the draft's address has expired (the portal's error page)");
+      if (!opened && !(await page("isOpen", sec.section))) {
         if (sec.optional) { (report.skipped_sections = report.skipped_sections || []).push(sec.section); return; }
         fail(`no section ${sec.section}`);
       }
@@ -922,8 +951,9 @@ async function fill(tab, steps, values, resume, run, held, { fs, path, priv }) {
   try {
     await tab.goto(resume.url || steps.start);
     await idle();
-    const url = (await page("state")).url;
+    let url = (await page("state")).url;
     if (!url.startsWith(steps.logged_in)) fail("not logged in to the portal");
+    if (resume.url && (resume.reopen_draft || /\/cmd\/error/.test(url))) url = await reopen(values.wizard[0]);
     if (/\/cmd\/error/.test(url)) fail("the draft's address has expired: open it again from Pratiche in bozza");
     const from = resume.from || {};
     for (const k of resume.kept || []) {
