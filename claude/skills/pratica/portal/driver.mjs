@@ -936,7 +936,9 @@ async function fill(tab, steps, values, resume, run, held, { fs, path, priv }) {
     delete report.at.label;
     await sweep();
     if (sec.save !== false) await act(() => button(sec.save || "Salva"));
-    const errs = await page("errors", sec.theirs || []);
+    // A slot whose file was handed over is the tecnico's: the portal's "required" under it isn't the run's error.
+    const mine = yours.filter((y) => y.section === sec.section).map((y) => y.slot);
+    const errs = await page("errors", [...(sec.theirs || []), ...mine]);
     for (const a of await page("alerts")) {
       const label = (done.find((d) => d.id === a.id) || {}).label || a.label;
       const x = { section: sec.section, label: label && run.scrub(label), text: run.scrub(a.text) };
