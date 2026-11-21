@@ -10,6 +10,10 @@
 //   __draft.required()                         press SALVA with the section as it is and list the boxes the portal calls required
 //                                              ("Il valore è obbligatorio", "deve essere selezionata almeno un'opzione"): the page re-renders
 //   __draft.text(from)                         the section's visible text from the first line containing `from`
+//   __draft.list() / page(n)                   the home list's drafts as "[type] name" / click its numbered link n (10 a page)
+//   __draft.sections()                         an open draft's section links (Dati Dichiarazioni), upper-case titles
+//   __draft.options("r2c1p2reg") / choose(frag, "tenda esterna")   a select's options / choose one and say which boxes changed (nothing saved)
+//   __draft.confirm()                          press Conferma on «Proseguire senza salvare?» (leaving a section with toggled boxes)
 //
 // Round 10 (2026-11-16): the home page's draft list is stale after a bundle's runs (the new drafts are not in it): navigate to the home page again
 // (https://suap.impresainungiorno.gov.it/fnsuap/cmd/home) before open(); that navigation drops `window.__draft`, so paste this file again after it. A click
@@ -37,6 +41,12 @@
 // register and was not investigated; the runner's `kind: checkbox` ticks them (the five dehors runs read the rows back), so read what a checkbox switches on from a run;
 // (e) radios that look like one group may be five single-radio groups with the portal's own exclusion (the dehors' period): toggle each and read the
 // others' checked/disabled state before writing a dictionary entry as «one of».
+// Round 24 (2026-11-21): the JavaScript tool evaluates your text as a REPL (the last expression is the result, top-level `await` works): a top-level
+// `return` is a SyntaxError and gives `undefined`. The home page is `cmd/home`; a pane with no tab is opened by navigating there, and navigating away from an open
+// draft needs `force` (the «Leave site?» dialog). The list of drafts showing is also the check that the pane is still signed in: read it before asking for the SPID login.
+// The home list's APRI is «Apri» in `textContent` (the page's CSS upper-cases it; `innerText` reads «APRI»): match it case-insensitively, a `/APRI/` on `textContent` finds no button and the click does nothing.
+// The helper now has list(), page(n), sections(), confirm(), options(frag) and choose(frag, text) for what each of those took by hand in rounds 22-24; every click that
+// navigates goes in a timeout, so the call returns, and the helper must be pasted again afterwards (the page is reloaded, not swapped).
 // Written 2026-11-15 for round 7 (README): it found that the VV.F. take-over's statements a) and b) are required and b) switches on the
 // previous manager's boxes, that the garage's header radio is not kept, and what the B&B variation's capacity groups need. A page that
 // navigates (open, section, required) loses the return value of the call that caused it: look at the page, then call again.
@@ -53,15 +63,60 @@ window.__draft = (() => {
     open(name) {
       const row = [...document.querySelectorAll("tr")].find((r) => r.innerText.replace(/\s+/g, " ").toLowerCase().includes(name.toLowerCase()));
       if (!row) return "no draft row with " + name;
-      [...row.querySelectorAll("button,a,input")].find((e) => /APRI/i.test(e.innerText || e.value || "")).click();
-      return "clicked APRI: wait ~8 s, then section()";
+      // APRI is a <button> around a <span>; the click navigates twice, so it goes in a timeout and the call returns first (rounds 23 and 24).
+      const apri = [...row.querySelectorAll("button,a,input")].find((e) => /APRI/i.test(e.innerText || e.textContent || e.value || ""));
+      if (!apri) return "no APRI in the row";
+      setTimeout(() => apri.click(), 50);
+      return "clicked APRI: wait ~8 s, paste this file again (the page was reloaded), then sections() or section()";
     },
     async section(name) {
       const a = [...document.querySelectorAll("a")].find((x) => x.innerText.toLowerCase().includes(name.toLowerCase()));
       if (!a) return "no section link with " + name;
-      a.click();
-      await wait(5000);
-      return "opened " + a.innerText.trim();
+      // The page is reloaded, so the helper is gone after it: click in a timeout, wait ~6 s outside, paste the file again. A section left with
+      // toggled boxes asks «Proseguire senza salvare?» first: confirm() presses Conferma (nothing is saved).
+      setTimeout(() => a.click(), 50);
+      return "clicking " + a.innerText.trim() + ": wait ~6 s (confirm() if the page asks to leave unsaved changes), paste this file again";
+    },
+    // The home list: the drafts on this page as "[type] name" (10 a page), and the numbered links under it.
+    list() {
+      return [...document.body.innerText.matchAll(/\[(\w\w)\] - ([^\n\t]*)\t/g)].map((m) => m[1] + " " + m[2]);
+    },
+    page(n) {
+      const e = [...document.querySelectorAll("a, span")].find((x) => x.textContent.trim() === String(n) && x.children.length === 0);
+      if (!e) return "no page link " + n;
+      setTimeout(() => e.click(), 50);
+      return "clicking page " + n + ": wait ~4 s, paste this file again, then list()";
+    },
+    // The section links of an open draft (Dati Dichiarazioni): upper-case titles.
+    sections() {
+      return [...document.querySelectorAll("a")].map((a) => a.innerText.trim()).filter((t) => t.length > 3 && !/^[A-Z][a-z]/.test(t));
+    },
+    // «Proseguire senza salvare?»: press the visible Conferma of the dialog (what leaving a section with toggled boxes shows).
+    confirm() {
+      const b = [...document.querySelectorAll("button, a, span")].find((x) => x.offsetParent && x.textContent.trim() === "Conferma");
+      if (!b) return "no Conferma on the page";
+      setTimeout(() => b.click(), 50);
+      return "pressed Conferma: wait ~6 s, paste this file again";
+    },
+    // A select's options, and what choosing one switches. The portal's selects are PrimeFaces combos over a <select id="...:combo_input">: setting its
+    // value and firing `change` is what a choice does on the client (the label follows). Round 24: none of the sign's 11 «Tipologia» options changed
+    // another box, on either screen. Nothing is saved; leaving asks to confirm.
+    options(frag) {
+      const s = document.querySelector(`select[id*='${frag}']`);
+      return s ? [...s.options].map((o) => o.text.trim()) : "no select with " + frag;
+    },
+    async choose(frag, optionText) {
+      const s = document.querySelector(`select[id*='${frag}']`);
+      if (!s) return "no select with " + frag;
+      const o = [...s.options].find((x) => x.text.trim().toLowerCase() === optionText.toLowerCase());
+      if (!o) return "no option " + optionText;
+      const before = state();
+      s.value = o.value;
+      s.dispatchEvent(new Event("change", { bubbles: true }));
+      await wait(2500);
+      const after = state();
+      return JSON.stringify({ now: s.options[s.selectedIndex].text.trim(), switched_on: Object.keys(after).filter((k) => after[k] && before[k] === false),
+                              switched_off: Object.keys(after).filter((k) => !after[k] && before[k]), new_boxes: Object.keys(after).filter((k) => !(k in before)) });
     },
     controls() {
       return JSON.stringify(boxes().filter((e) => !(e.type === "radio" && e.offsetParent === null))

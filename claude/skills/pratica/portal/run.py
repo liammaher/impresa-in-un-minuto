@@ -578,6 +578,9 @@ FILTERS = Filters({
     "date_it": lambda v: "/".join(reversed(v.split("-"))),
     "phone_it": lambda v: re.sub(r"^\+39|\s", "", v),
     "dug": lambda v: _split_street(v)[0],
+    # The sign's two «Tipologia» selects name the same type, but «luogo dell'installazione» spells the targa's option with the
+    # size rule the portal adds ("targa/porta targhe (solo per dimensioni superiori a 21x29,7", no closing bracket: read on a draft, round 24).
+    "insegna_luogo": lambda v: "targa/porta targhe (solo per dimensioni superiori a 21x29,7" if v.strip().lower() == "targa/porta targhe" else v.strip(),
     "dug_altro": lambda v: "true" if _split_street(v)[0] == "ALTRO" else "false",
     "dug_dettaglio": _dug_dettaglio,
     "street": lambda v: _split_street(v)[2],

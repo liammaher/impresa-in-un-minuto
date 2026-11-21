@@ -19,5 +19,31 @@
     {"title": "autorizzazione/nulla osta tecnico dell'ente proprietario della strada (diverso dal Comune)", "accepts": "signed_only"},
     {"title": "Dichiarazione programma 100", "accepts": "signed_only", "download": true},
     {"title": "Allegati liberi", "accepts": "dwf.p7m;svg.p7m;jpg.p7m;pdf.p7m;pdf;xml;dwf;svg;jpg"}
-  ]
+  ],
+  "opening_with_sign": {
+    "note": "The «Allega Documenti» screen of the restaurant's opening WITH the sign (the wizard's «attività che preveda insegna esterna»: the SCIA, the Reg. 852 notification and the sign's comunicazione in one pratica), read by hand on the made-up draft «PROVA NON INVIARE - ristorante insegna tenda» on 2026-11-21 (round 24), nothing saved or attached. 16 slots, 9 required: not the stand-alone sign's ten. Two of them are for a cultural building whose applicant wants the SUAP to acquire the Soprintendenza's nulla osta («qualora il richiedente intenda delegare il SUAP ad acquisire il Nulla Osta della Soprintendenza»: a technical report and the cadastral plan). The recipes still refuse `insegna_bene_culturale`: the monumentale radio's «Soggetta ... SI» warns to select the matching authorization in «Interventi eventuali», and none of the 37 options of the 118 crawls that have that screen is the Soprintendenza's, so the delegation cannot be shown to complete on the portal (decision of 2026-11-21: keep the refusal; it would change only if a tecnico or the SUAP confirmed that SI and these two documents suffice).",
+    "read": "2026-11-21",
+    "portal_name": "ristorante insegna tenda",
+    "rehearsal": "ristorante-insegna-fittizio",
+    "answers": "answers-tipologia-tenda.json",
+    "signed_only": "dwf.p7m;svg.p7m;jpg.p7m;pdf.p7m",
+    "slots": [
+      {"title": "Planimetria quotata dei locali", "accepts": "signed_only", "required": true},
+      {"title": "Ricevuta di pagamento della tariffa sanitaria forfettaria, per la registrazione/aggiornamento", "accepts": "signed_only", "required": true},
+      {"title": "Documenti relativi alle caratteristiche illuminotecniche del corpo illuminante, emesso in regime di sistema di qualità aziendale certificato o rilasciato da ente terzo quale l'IMQ. – LR 17/2009 art. 7 c.4 lettera a", "accepts": "signed_only"},
+      {"title": "per gli edifici oggetto di notifica o di interesse culturale, qualora il richiedente intenda delegare il SUAP ad acquisire il Nulla Osta della Soprintendenza per i Beni Paesaggistici ed Architettonici : relazione tecnica descrittiva", "accepts": "signed_only"},
+      {"title": "per gli edifici oggetto di notifica o di interesse culturale, qualora il richiedente intenda delegare il SUAP ad acquisire il Nulla Osta della Soprintendenza per i Beni Paesaggistici ed Architettonici: planimetria catastale con l'individuazione dell'edificio interessato (SI RACCOMANDA L'USO DEI FORMATI VETTORIALI ANZICHE' PDF)", "accepts": "signed_only"},
+      {"title": "autorizzazione/nulla osta tecnico dell'ente proprietario della strada (diverso dal Comune)", "accepts": "signed_only"},
+      {"title": "documentazione fotografica che illustra il punto di collocazione del mezzo pubblicitario nell'ambiente circostante", "accepts": "signed_only", "required": true},
+      {"title": "planimetria catastale aggiornata con indicazione del punto preciso dove verrà collocato l’impianto pubblicitario da installare (SI RACCOMANDA L'USO DEI FORMATI VETTORIALI ANZICHE' PDF)", "accepts": "signed_only", "required": true},
+      {"title": "progetto quotato dell'opera e relativa descrizione tecnica, dai quali sono individuabili gli elementi essenziali dell'opera e la sua eventuale collocazione sul fabbricato", "accepts": "signed_only", "required": true},
+      {"title": "per le aree soggette a tutela ambientale: relazione paesaggistica semplificata, redatta da un tecnico abilitato, secondo la normativa vigente", "accepts": "signed_only"},
+      {"title": "Modello autodichiarazione dpr 445-2000 per canoni pregressi", "accepts": "signed_only", "required": true, "download": true},
+      {"title": "Dichiarazione programma 100", "accepts": "signed_only", "required": true, "download": true},
+      {"title": "asseverazione di tecnico abilitato attestante che “Le installazioni dei mezzi pubblicitari oggetto della SCIA rispettano i requisiti di legge, dei regolamenti comunali e degli enti proprietari della strada, non interferiscono con la sicurezza stradale né con le zone vietate, e sono conformi alle norme tecniche vigenti.”", "accepts": "signed_only", "required": true},
+      {"title": "bozzetto colorato del messaggio pubblicitario", "accepts": "signed_only", "required": true},
+      {"title": "copia attestazione versamento oneri, diritti e spese", "accepts": "signed_only"},
+      {"title": "Allegati liberi", "accepts": "dwf.p7m;svg.p7m;jpg.p7m;pdf.p7m;pdf;xml;dwf;svg;jpg"}
+    ]
+  }
 }

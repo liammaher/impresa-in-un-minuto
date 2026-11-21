@@ -94,5 +94,53 @@
   "result": "filled",
   "seconds": 68.2,
   "browser": "pane"
+ },
+ {
+  "date": "2026-11-21",
+  "answers": "answers-esenzione-ets.json",
+  "result": "filled",
+  "seconds": 77.8,
+  "browser": "pane",
+  "values": "rehearsals/cila-fittizia/fixture-p6.json"
+ },
+ {
+  "date": "2026-11-21",
+  "answers": "answers-esenzione-pubblica.json",
+  "result": "filled",
+  "seconds": 75.3,
+  "browser": "pane",
+  "values": "rehearsals/cila-fittizia/fixture-p6.json"
+ },
+ {
+  "date": "2026-11-21",
+  "answers": "answers-esenzione-contadina.json",
+  "result": "filled",
+  "seconds": 80.5,
+  "browser": "pane",
+  "values": "rehearsals/cila-fittizia/fixture-p6.json"
+ },
+ {
+  "date": "2026-11-21",
+  "answers": "answers-esenzione-sportiva.json",
+  "result": "filled",
+  "seconds": 76.7,
+  "browser": "pane",
+  "values": "rehearsals/cila-fittizia/fixture-p6.json"
+ },
+ {
+  "date": "2026-11-21",
+  "answers": "answers-esenzione-onlus.json",
+  "result": "filled",
+  "seconds": 76.8,
+  "browser": "pane",
+  "values": "rehearsals/cila-fittizia/fixture-p6.json"
+ },
+ {
+  "date": "2026-11-21",
+  "answers": "answers-esenzione-partito.json",
+  "result": "filled",
+  "seconds": 76.2,
+  "browser": "pane",
+  "values": "rehearsals/cila-fittizia/fixture-p6.json"
  }
 ]

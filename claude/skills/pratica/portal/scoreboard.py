@@ -20,7 +20,10 @@ import re
 import sys
 from pathlib import Path
 
-import yaml
+try:
+    import yaml
+except ModuleNotFoundError:  # the system python3 has no PyYAML (round 24: a bare traceback cost a turn)
+    sys.exit("needs PyYAML: run it with the pratica venv's Python, ~/.cache/pratica-portal/venv/bin/python")
 
 import catalogue as cat
 import leverage

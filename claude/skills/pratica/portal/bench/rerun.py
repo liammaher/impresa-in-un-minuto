@@ -31,6 +31,9 @@ and its answers file) goes through run.py's page_files, as `run.py page` would. 
 The pane cuts a call off at 45 s: poll results.js. The values file is what `pvault get`
 prints, or a fixture as it is (rehearsals/cila-fittizia/fixture-p6.json: its "fields" are read, so a
 person added to it is in the next batch).
+With --bundle, the pick starts the loop itself (the pane's `window.pvBundle` reads «started: N queued»: do not run loop.js too); poll `window.pvBatchBusy` and
+sessionStorage `pv-batch` with in-page waits under 45 s (a run takes 100-140 s) and read each run's `moved`, `loose` and `alerts` before `--record` (2026-11-21, round 24).
+Building the bundle takes about 2 minutes for 4 runs: run it as a background job and wait for its notification.
 With --bundle, check.js's `stale` list needs no action: the bundle carries the runner and the steps and stores them itself (2026-11-21:
 check.js said the new steps were stale, only the pick was done, and the five runs used them). The pane may also still be signed in from an
 earlier turn (it was all of round 23's turn): read the home list (`document.body.innerText` on cmd/home) before asking for the SPID sign-in.

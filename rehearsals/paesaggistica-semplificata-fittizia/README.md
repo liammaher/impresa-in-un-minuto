@@ -50,5 +50,11 @@ drawings and photos, the signed procura, the bollo and diritti, signing and send
 | 2026-11-02 | pane | `answers-esenzioni.json` | **filled** in 62 s |
 | 2026-11-02 | pane | `answers-bollo-virtuale.json` | **filled** in 64 s |
 | 2026-11-03 | pane | `answers-p6.json` | **filled** in 68 s |
+| 2026-11-21 | pane | `answers-esenzione-ets.json` | **filled** in 78 s |
+| 2026-11-21 | pane | `answers-esenzione-pubblica.json` | **filled** in 75 s |
+| 2026-11-21 | pane | `answers-esenzione-contadina.json` | **filled** in 80 s |
+| 2026-11-21 | pane | `answers-esenzione-sportiva.json` | **filled** in 77 s |
+| 2026-11-21 | pane | `answers-esenzione-onlus.json` | **filled** in 77 s |
+| 2026-11-21 | pane | `answers-esenzione-partito.json` | **filled** in 76 s |
 
 <!-- /runs -->

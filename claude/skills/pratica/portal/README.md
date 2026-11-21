@@ -1199,7 +1199,7 @@ so only the bundle's pick was needed.
   unverified claim. `test_gen` holds the three drafts. Still not read: the attachments of the opening-with-sign recipes.
 - **The bollo's 17 options: none is a gap (no portal run).** They are one section (fingerprint `869752d2cea5aef3`, in 152 crawls, SUE and SUAP) whose fields only three SUE crawls hold (`sue-autorizzazione-paesaggistica-semplificata`,
   `sue-combo-cila-paesaggistica-ordinaria`, `sue-permesso-di-costruire-art-10-d-p-r-380-2001`), so the wedge counter never showed them; 179 steps files carry the section, the plain opening not (it files no provvedimento), the dehors does.
-  **7 are the exemption reasons** («per la seguente motivazione» under «Il pagamento non è dovuto poiché esentati»): mapped (`bollo_motivo`, `run.BOLLO_ESENZIONE`), but **only «cooperativa sociale» was ever run on the portal** (a SUE case,
+  **7 are the exemption reasons** («per la seguente motivazione» under «Il pagamento non è dovuto poiché esentati»): mapped (`bollo_motivo`, `run.BOLLO_ESENZIONE`), but **only «cooperativa sociale» was ever run on the portal** (**superseded in round 24: all seven were run**, see that round) (a SUE case,
   `paesaggistica-semplificata-fittizia/answers-esenzioni.json`, 2026-11-02; `-bollo-virtuale.json` is the other radio, «assolta in modo virtuale»): the other six reasons are mapped and unrun (a SUE case with a company client could run them: that is the SUE's counter's, not this one's; no SUAP case can until the legal-form refusal lets an
   association or a public body through). The SUAP counter showed them «not mapped» because the SUAP steps file's select carries no id, so its `"*"` matched none: `steps_fields` now
   also names the filter's own options. No SUAP recipe takes one, since an ETS, a sports club or a public body is none of the legal forms the recipes accept (ditta individuale, srl, srls, snc, sas, spa). **The other 10 are the dropdown
@@ -1222,7 +1222,56 @@ so only the bundle's pick was needed.
 - **Left as it was:** the 63 recipes' wording («caso non ancora previsto», «non lo preparo ancora») still reads like a gap. Changing it means regenerating 63 steps files (about an hour) for a text change; do it only
   with another change to those recipes.
 
+**Round 24 (2026-11-21): what the sign's «Tipologia» select holds.** One bundle, four runs, all filled (138, 115, 104 and 115 s, nothing moved or loose, the portal's warnings the made-up PEC, address and cadastral data); the pane was still signed in
+from round 23 (the home list showed the drafts), so only the file pick was asked. The wedge's own question (`library/rules/suap-napoli.yaml`: «Avrai un'insegna, una targa o una vetrofania?») promised three things and the dictionary
+mapped one: «Tipologia» was hardcoded to «insegna d'esercizio» on the sign's two screens.
+
+- **The select is only a value.** Read on a draft (`ristorante insegna proprietario`, nothing saved, leaving answered Conferma): «Caratteristiche del manufatto da installare» and «luogo dell'installazione» each have a «Tipologia» select of eleven
+  options (insegna d'esercizio, vetrofania, totem, preinsegna, cartello stradale pubblicitario, targa/porta targhe, tenda esterna, bacheca, impianto pubblicitario di servizio, piramide/prisma, altro), and choosing any of them
+  changes **no other box** on either screen (each box's disabled/hidden state compared before and after, 11 options × 2 screens; the select takes the new value on the client, so what the portal validates on SALVA for a type is
+  read only through the runs). The second screen spells the targa's option «targa/porta targhe (solo per dimensioni superiori a 21x29,7» (no closing bracket), the first «targa/porta targhe»: the filter `insegna_luogo` (run.py) maps one to the other.
+- **One ask, four types.** `insegna_tipologia` (default «insegna d'esercizio»: every earlier answers file plans as before, `plan_diff.py`: 0 cases plan differently) offers the insegna, a vetrofania, a targa and a tenda esterna; 42 steps files changed. Cases:
+  `ristorante-insegna-fittizio/answers-tipologia-{vetrofania,targa,tenda}.json`, run on pizzeria-fittizia's fixture, all filled. The targa's is 0.5 × 0.4 m although the portal's option says «solo per dimensioni superiori a 21x29,7» (cm): a
+  smaller one is a sign no one needs a SCIA for; the portal took it (the run saved the section and read it back).
+- **The other seven options are «a procedure no recipe maps»** (`other_procedure` in the dictionary's two entries): totem, preinsegna, cartello stradale pubblicitario, bacheca, impianto pubblicitario di servizio, piramide/prisma and «altro». That is
+  a reading, not a measurement: the wedge asks about an insegna, a targa or a vetrofania, and the options not offered by `insegna_tipologia` are not asked. A totem, a bacheca or an «altro» at the premises could be promoted with one more option and a case each.
+  The art. 65 denuncia's two boxes of «opere in cemento armato» («prevede...» and «presenta contestualmente la denuncia») are on the same list: the structures' pratica is one no recipe maps, and a sign over a door says «non prevede».
+  `schema_branches.py`'s `status` now reads `other_procedure` before «mapped», because a select whose value is an ask reads as mapped for every option it lists.
+- **The dehors' «lunedì».** `ristorante-dehors-fittizio/answers-orari-lunedi.json` is the days case with Monday open too (all seven rows), filled on the portal: the checkbox is no longer «mapped, no case yet».
+- **The wedge's counter** (`schema_branches.py suap --only suap-060-aprire-l-attivita`, 71 boxes): **41 filled (was 34), 8 not mapped (was 30), 16 a procedure no recipe maps (new count; was 0), 1 mapped with no case** (the condominium administrator, deliberately not offered).
+  The 8 left: the tenant's «non esclusiva» block (four boxes: the legal reading above, the owner's call), the three monumentale radios (the law's refusal, round 23) and the landscape section's fourth radio, the Soprintendenza's parere for signs along
+  roads, which the dictionary calls the person's statement.
+
+
+- **The bollo's seven exemption reasons: all run on the portal.** `paesaggistica-semplificata-fittizia/answers-esenzione-{ets,pubblica,contadina,sportiva,onlus,partito}.json` are `answers-esenzioni.json` (the cooperativa sociale's, run 2026-11-02)
+  with another `bollo_esenzione` (the onlus one also `bollo_onlus_esercizio: true`, or the dictionary's `supports` refuses it: the ONLUS exemption ended on 1 January 2026), on the SUE case with a company client and the P6 fixture's values
+  (`--values rehearsals/cila-fittizia/fixture-p6.json`; `run.py plan` needs `--made-up` for this rehearsal, whose file asks are the person's). One bundle, six runs, all filled (75-81 s each, nothing moved or loose, the warnings the made-up
+  PEC, address and cadastral data); `plan` shows each case choosing the option `run.BOLLO_ESENZIONE` names. The legal fit is not tested: a «piccola proprietà contadina» or a party is not a company, and the portal took each reason on a
+  company client without objecting (nothing was stopped or warned beyond the made-up data). `docs/schema-branches.md` is regenerated (321 cases, 320 with a recorded run; the permesso's «mapped, no case» 52 → 46); the SUAP counter does not move (these are SUE
+  cases, and no SUAP recipe takes an exemption). `test_gen` holds the six.
+- **The opening-with-sign's attachments: 16 slots, read on a draft (nothing saved or attached).** `catalogue/F839/sign-attachments.json`'s new `opening_with_sign` holds them (`test_gen` too): the restaurant's opening
+  with its sign is not the stand-alone sign's ten slots but sixteen, nine required (the plan of the premises, the ASL tariff receipt, the photographs, the cadastral plan with the sign's point, the quoted project, the
+  «canoni pregressi» self-declaration and «programma 100» (both downloadable models), the technician's asseverazione, the coloured sketch), all signed-only except «Allegati liberi». The steps files already name every
+  one (the crawl had them). **Two slots are for a cultural building whose applicant wants the SUAP to acquire the Soprintendenza's nulla osta** («qualora il richiedente intenda delegare il SUAP...»: a technical report and the cadastral
+  plan), which round 23 had not seen. **The refusal stands** (decision of 2026-11-21, for the owner to revisit): the monumentale radio's «Soggetta ... SI» warns to select the matching authorization in «Interventi eventuali», none
+  of the 37 options of the 118 crawls with that screen is the Soprintendenza's, so the delegation cannot be shown to complete on the portal, and whether the SUAP may be delegated for a sign on a protected building is a legal reading
+  the library does not make. It would become a mapping if a tecnico or the SUAP confirmed that SI and the two documents suffice.
+- **In code from this round** (so the next one doesn't relearn it): `read_draft.js` now has `list()`, `page(n)`, `sections()`, `confirm()`, `options(frag)` and `choose(frag, text)` (what a select's option switches, read
+  without saving) and clicks that navigate go in a timeout; its header has the JavaScript tool's REPL rule (a top-level `return` is a SyntaxError that returns `undefined`; the last expression is the result) and
+  that navigating away from an open draft needs `force`; the home list's «APRI» is «Apri» in `textContent` (the page's CSS upper-cases it, so `innerText` reads «APRI»): match it case-insensitively (a case-sensitive `/APRI/` on `textContent` found no button and the click silently did nothing). `schema_branches.py` reads `other_procedure` before «mapped» and `test_schema_branches.sign_type_options` holds the sign's 11 options on both screens
+  (the four offered filled, the seven others another procedure's); `test_gen` holds the ask, the two selects' values, the filter and the three runs. The tools' timings: `schema_branches.py suap` about a minute alone,
+  `plan_diff.py` over every rehearsal 9 minutes, `rerun.py --bundle` 2 minutes for 4 runs (a background job: wait for its notification), one portal run 100-140 s.
+
 ## What the portal does that bit us
+
+- **Selects take an option's own text, and two screens may spell one option differently.** `inpage.js`'s `select()` matches the option's value or its text (case-insensitive), or a code before a colon, nothing looser; the sign's
+  «Tipologia» is «targa/porta targhe» on one screen and «targa/porta targhe (solo per dimensioni superiori a 21x29,7» (no closing bracket) on the next, so the dictionary maps the ask through a filter per screen
+  (`insegna_luogo`). Read a select's options on a draft before writing the entry (`__draft.options()`), and what an option switches with `__draft.choose()`: setting the `<select>`'s value and firing `change` is what a choice
+  does on the client, and the portal's PrimeFaces label follows.
+- **A bundle starts itself.** Once its file is picked the pane says «started: N queued» (`window.pvBundle`) and the loop is running: do not run `loop.js`; poll `window.pvBatchBusy` and `sessionStorage` `pv-batch` with in-page
+  waits under 45 s until busy is false, then read every run's `moved`, `loose` and `alerts` before recording. The new drafts are not on the home list until the page is loaded again.
+- **A new answers file is «new, no plan» in `plan_diff.py`.** It plans on the P6 fixture, a CILA architect's, which every SUAP recipe refuses first («Per ora per una ditta individuale o una srl...»): that is not a
+  failure; the case's own run is the proof.
 
 - **Street names without their particles.** The location's street lookup and the Comune's
   stradario (`internal/napoli`, 2025) don't always name a street alike: the stradario's VIA DEI
