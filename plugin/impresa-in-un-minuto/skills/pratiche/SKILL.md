@@ -917,7 +917,8 @@ sh "${CLAUDE_SKILL_DIR}/py" "${CLAUDE_SKILL_DIR}/portal/run.py" chatgpt --steps 
 
 Leave out `--values run/intake/private/values.json` when the intake didn't run. The JavaScript tool's calls: each
 as its own call, written as here, with no `try`/`catch` around it, and never code built from a string (`eval`,
-`new Function`: the tool refuses them). A browser tab belongs to the turn that opened it: in a later turn open a new
+`new Function`: the tool refuses them). A call that answers «Kernel state was reset after inactivity. This code was
+not executed» didn't run: run the same call again. A browser tab belongs to the turn that opened it: in a later turn open a new
 one (the SPID login stays).
 
 1. Open the portal with one call of the JavaScript tool,

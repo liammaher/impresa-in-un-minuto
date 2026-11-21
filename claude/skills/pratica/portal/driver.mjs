@@ -786,12 +786,13 @@ async function fill(tab, steps, values, resume, run, held, { fs, path, priv }) {
     if (!r.already) { await click(r, f.label || f.id); await idle(); }
     // A box that opens rows renumbers itself (INPS adds its "sede di": r27 became r28, 2026-11-21): found again by its
     // label, for a few seconds, since the re-drawn rows come after the page looks idle to this view.
-    let id = f.id;
-    for (const end = Date.now() + REDRAW_MS; !(id && (await page("checked", id))) && Date.now() < end;) {
-      if (f.spec) { const r = await page("resolve", f.spec); if (!r.why) id = r.id; }
+    // Section h's redraws ran past 20 s here more than once (2026-11-21), so this one waits longer.
+    let id = f.id, found = "not looked up by its label";
+    for (const end = Date.now() + 2.25 * REDRAW_MS; !(id && (await page("checked", id))) && Date.now() < end;) {
+      if (f.spec) { const r = await page("resolve", f.spec); found = r.why || r.id; if (!r.why) id = r.id; }
       if (!(id && (await page("checked", id)))) await sleep(400);
     }
-    if (!id || !(await page("checked", id))) fail(`${f.id}: didn't stay ticked`);
+    if (!id || !(await page("checked", id))) fail(`${f.id}: didn't stay ticked (by its label now: ${found})`);
     return "checked";
   }
   async function lookup(f, value) {
