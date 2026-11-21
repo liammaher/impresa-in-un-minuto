@@ -51,7 +51,7 @@ DEHORS_DONOR = "dehors-fittizio"
 DEHORS_ASKS = ("coperto", "centro_storico", "nuovo_852")
 DEHORS_ANSWERS = ("orario_dalle", "orario_alle", "giorno_chiusura", "dehors_lunghezza_m", "dehors_larghezza_m", "dehors_mq", "area_privata_uso_pubblico")
 DONOR = "ristorante-insegna-fittizio"
-SIGN_ASKS = ("insegna_consenso", "insegna_vincolo", "insegna_grande")
+SIGN_ASKS = ("insegna_consenso", "insegna_vincolo", "insegna_bene_culturale", "insegna_grande")
 SIGN_ANSWERS = ("insegna", "insegna_titolo_tipo", "insegna_titolo_altro", "insegna_descrizione", "insegna_larghezza_m", "insegna_altezza_m",
                 "insegna_superficie_mq", "insegna_monofacciale", "insegna_luce", "insegna_testo", "immobile_proprietario")
 
@@ -206,18 +206,11 @@ def overlay(folder, tpl_has_sign, ticks, template, facts, also=()):
     s = dr.drop_asks(s, ("insegna_esterna",) + (("musica",) if NULLA in ticks and DEHORS_OP not in also else ()))
     if SIGN in ticks and not tpl_has_sign:
         asks = [l for l in donor.split("\n") if re.match(r"  (%s):" % "|".join(SIGN_ASKS), l)]
-        zone_a = ('  insegna_zona_a: {group: extras, type: yes_no, item: "L\'installazione ricade in zona A del PRG (il centro storico)", '
-                  'why: "In zona A la SCIA dell\'insegna ha altre condizioni, che non preparo ancora."}')
         sup = [l for l in donor.split("\n") if re.match(r"  - \{when: \"\{\{ask\.(%s)\|not\}\}\"" % "|".join(SIGN_ASKS), l)]
-        sup.append('  - {when: "{{ask.insegna_zona_a|not}}", else: "In zona A del PRG (il centro storico) la SCIA dell\'insegna ha altre condizioni, che non preparo ancora."}')
-        yours = [l for l in donor.split("\n") if "dichiarazioni dell'insegna" in l]
-        s = s.replace("\nasks:\n", "\nasks:\n" + "\n".join(asks + [zone_a]) + "\n", 1)
+        yours = [l for l in donor.split("\n") if "dichiarazioni dell'insegna" in l or "vincolo paesaggistico la SCIA" in l]
+        s = s.replace("\nasks:\n", "\nasks:\n" + "\n".join(asks) + "\n", 1)
         s = s.replace("\nsupports:\n", "\nsupports:\n" + "\n".join(sup) + "\n", 1)
         s = s.replace("\nyours:\n", "\nyours:\n" + "\n".join(yours) + "\n", 1)
-    elif SIGN in ticks and "insegna_zona_a" not in s:
-        s = s.replace("\nasks:\n", "\nasks:\n  insegna_zona_a: {group: extras, type: yes_no, item: \"L'installazione ricade in zona A del PRG (il centro storico)\", "
-                      "why: \"In zona A la SCIA dell'insegna ha altre condizioni, che non preparo ancora.\"}\n", 1)
-        s = s.replace("\nsupports:\n", "\nsupports:\n  - {when: \"{{ask.insegna_zona_a|not}}\", else: \"In zona A del PRG (il centro storico) la SCIA dell'insegna ha altre condizioni, che non preparo ancora.\"}\n", 1)
     if NULLA in ticks and "bollo_yours" not in s:
         s = s.replace("\nyours:\n", "\nyours:\n  - \"{{ask.bollo_marche,ask.bollo_esenzione|bollo_yours}}\"\n", 1)
     if DEHORS_OP in also:
@@ -241,7 +234,6 @@ def overlay(folder, tpl_has_sign, ticks, template, facts, also=()):
             d.setdefault(k, don[k])
         for k in SIGN_ASKS:
             d[k] = "false"
-        d["insegna_zona_a"] = "false"
         d.pop("insegna_esterna", None)
     if DEHORS_OP in also:
         dehors = json.loads((ROOT / "rehearsals" / DEHORS_DONOR / "answers.json").read_text())

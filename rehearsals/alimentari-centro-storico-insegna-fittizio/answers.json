@@ -35,7 +35,7 @@
  "insegna_consenso": "false",
  "insegna_vincolo": "false",
  "insegna_grande": "false",
- "insegna_zona_a": "false",
  "zona": "a",
- "superficie_consumo_mq": "10"
+ "superficie_consumo_mq": "10",
+ "insegna_bene_culturale": "false"
 }

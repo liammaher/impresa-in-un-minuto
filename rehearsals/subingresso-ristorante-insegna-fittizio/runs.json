@@ -5,5 +5,12 @@
   "result": "filled",
   "seconds": 101.9,
   "browser": "pane"
+ },
+ {
+  "date": "2026-11-20",
+  "answers": "answers-vincolo.json",
+  "result": "filled",
+  "seconds": 150.8,
+  "browser": "pane"
  }
 ]

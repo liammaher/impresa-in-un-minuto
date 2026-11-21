@@ -319,5 +319,35 @@ def _():
     assert data["running"] is False and data["filled"] == 1, data
 
 
+@case("record: a run on a borrowed fixture (a rehearsal with no fixture.json) is recorded with --values, one with its own fixture.json is not (2026-11-20)")
+def _():
+    real = rerun.REHEARSALS
+    tmp = Path(tempfile.mkdtemp())
+    for n, own in (("borrows", False), ("owns", True)):
+        (tmp / n).mkdir()
+        (tmp / n / "answers.json").write_text("{}")
+        (tmp / n / "answers-v.json").write_text("{}")
+        if own:
+            (tmp / n / "fixture.json").write_text("{}")
+    rerun.REHEARSALS = tmp
+    values = Path("rehearsals/pizzeria-fittizia/fixture.json")
+    batch_done = [{"name": "borrows/answers-v@fixture", "result": "filled", "total_seconds": 9.0},
+                  {"name": "borrows@fixture", "result": "filled", "total_seconds": 8.0},
+                  {"name": "borrows/answers-v@other", "result": "filled", "total_seconds": 7.0},
+                  {"name": "owns/answers-v@fixture", "result": "filled", "total_seconds": 6.0}]
+    try:
+        with redirect_stdout(io.StringIO()):
+            rerun.record(batch_done, "answers-p6.json", "2026-11-20")  # no --values: nothing with "@" is recorded
+            assert not (tmp / "borrows" / "runs.json").exists()
+            for _ in range(2):  # once per date, case and result
+                rerun.record(batch_done, "answers-p6.json", "2026-11-20", values)
+        runs = json.loads((tmp / "borrows" / "runs.json").read_text())
+        assert [(r["answers"], r["values"]) for r in runs] == [("answers-v.json", str(values)), ("answers.json", str(values))], runs
+        assert not (tmp / "owns" / "runs.json").exists(), "its own fixture.json is what its run is recorded on"
+    finally:
+        rerun.REHEARSALS = real
+        shutil.rmtree(tmp, ignore_errors=True)
+
+
 print(f"{sum(results)}/{len(results)} passed")
 sys.exit(0 if all(results) else 1)

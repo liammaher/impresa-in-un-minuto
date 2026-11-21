@@ -59,5 +59,6 @@
  "progettista_insegna_albo_provincia": "SA",
  "progettista_insegna_albo_numero": "99999",
  "insegna_dl": "false",
- "insegna_progetto_presentatore": "false"
+ "insegna_progetto_presentatore": "false",
+ "insegna_bene_culturale": "false"
 }

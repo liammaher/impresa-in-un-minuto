@@ -35,7 +35,6 @@
  "insegna_consenso": "false",
  "insegna_vincolo": "false",
  "insegna_grande": "false",
- "insegna_zona_a": "false",
  "zona": "a",
  "superficie_consumo_mq": "10",
  "vvf_attivita": "ristorante",
@@ -65,5 +64,6 @@
  "vvf_doc_altri": "0",
  "people": {
   "v": "valerio"
- }
+ },
+ "insegna_bene_culturale": "false"
 }

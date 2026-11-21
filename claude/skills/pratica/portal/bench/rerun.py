@@ -36,7 +36,8 @@ named `NAME:ANSWERS.json` runs with that answers file instead (one pratica, seve
 its own run, `NAME/ANSWERS` in the results). `NAME:ANSWERS.json:VALUES.json` runs that case on
 other values than --values' (an architect born abroad, from a copy of the fixture), so one bundle
 holds both: its result is `NAME/ANSWERS@VALUES`, which --record leaves out of runs.json (the
-repo's fixture wouldn't give that run again). In `NAME:ANSWERS.json:VALUES.json` ANSWERS is relative to the rehearsal's
+repo's fixture wouldn't give that run again), except for a rehearsal with no fixture.json of its own (it borrows one): `--record - --values THE_FILE`
+records it, with `"values": THE_FILE` in its runs.json entry (schema_branches.py then reads its cases on that fixture). In `NAME:ANSWERS.json:VALUES.json` ANSWERS is relative to the rehearsal's
 folder and VALUES to the repo's root (a wrong path is a FileNotFoundError on the doubled one); in zsh write `"${NAME}:answers.json:..."`,
 since `$NAME:a` is a history modifier and eats the colon. A bundle of more than about 12 runs is too much for the pane's
 storage: split it, each bundle costing one file pick. Values that are the rehearsal's own rehearsals/NAME/fixture.json
@@ -141,21 +142,29 @@ def compact(queue):
     return out
 
 
-def record(done, default, day):
+def record(done, default, day, values=None):
     """Each run of a batch (record.js: "pdc-fittizio/answers-deroga", or a rehearsal alone for its
     default answers file) into rehearsals/<name>/runs.json, once per date, case and result, and
-    the README's run table drawn again from it (runs.py)."""
+    the README's run table drawn again from it (runs.py).
+
+    A name with "@" ran on other values than the rehearsal's own fixture.json and is not recorded,
+    except where the rehearsal has no fixture.json of its own (the restaurant's opening with a sign
+    borrows the pizzeria's; 2026-11-20 five such runs had to be written into runs.json by hand and the
+    README's table went stale): then `values`, the file the batch ran on, is its fixture, and the run
+    is recorded with `"values": <that file>` so the record says what it ran on."""
     for d in done:
-        if "@" in d["name"]:
+        base, at, on = d["name"].partition("@")
+        name, _, stem = base.partition("/")
+        if at and not (values and on == Path(values).stem and (REHEARSALS / name).is_dir() and not (REHEARSALS / name / "fixture.json").exists()):
             print(f"{d['name']}: {d['result']}, on other values than the fixture's: not recorded")
             continue
-        name, _, stem = d["name"].partition("/")
         f = REHEARSALS / name / "runs.json"
         runs = json.loads(f.read_text()) if f.is_file() else []
         # The SUE's rehearsals answer in answers-p6.json, the SUAP's in answers.json.
         own_default = default if (REHEARSALS / name / default).exists() or not (REHEARSALS / name / "answers.json").exists() else "answers.json"
         entry = {"date": day, "answers": f"{stem}.json" if stem else own_default, "result": d["result"],
-                 **({"seconds": d["total_seconds"]} if d.get("total_seconds") else {}), "browser": "pane"}
+                 **({"seconds": d["total_seconds"]} if d.get("total_seconds") else {}), "browser": "pane",
+                 **({"values": str(values)} if at else {})}
         if not any(all(r.get(k) == entry[k] for k in ("date", "answers", "result")) for r in runs):
             runs.append(entry)
             f.write_text(json.dumps(runs, indent=1, ensure_ascii=False) + "\n")
@@ -185,14 +194,14 @@ def main():
     ap.add_argument("--values", type=Path)
     ap.add_argument("--answers", default="answers-p6.json", help="each rehearsal's answers file")
     ap.add_argument("--out", type=Path)
-    ap.add_argument("--record", type=Path, help="record.js's output: add each run to its rehearsal's runs.json, and stop")
+    ap.add_argument("--record", type=Path, help="record.js's output: add each run to its rehearsal's runs.json, and stop (with --values: the file a batch ran on, which also records the runs of rehearsals that have no fixture.json of their own)")
     ap.add_argument("--date", default=date.today().isoformat(), help="--record: the batch's date")
     ap.add_argument("--bundle", type=Path, help="also write everything the pane needs as one file here (pick.js loads it)")
     ap.add_argument("--overwrite", action="store_true",
                     help="build into an --out folder that holds files, or over an existing --bundle file (refused otherwise)")
     a = ap.parse_args()
     if a.record:
-        return record(json.loads(sys.stdin.read() if str(a.record) == "-" else a.record.read_text()), a.answers, a.date)
+        return record(json.loads(sys.stdin.read() if str(a.record) == "-" else a.record.read_text()), a.answers, a.date, a.values)
     if not (a.values and a.out):
         ap.error("--values and --out are required to build a batch (--values any fixture: a NAME:ANSWERS.json:VALUES.json spec carries its own)")
     names = a.rehearsals or sorted(d.name for d in REHEARSALS.iterdir()

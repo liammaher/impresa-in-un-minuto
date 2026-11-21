@@ -1100,6 +1100,48 @@ reduction of the goods sector, no page in `library/procedures` for the reduction
   PIN 3 GPL (`suap-common-*`). Not built: a procura variant of the others; a SUAP choice counter like the SUE's (its `boxes()` and `hits()` in `schema_branches.py` read any crawl, so the
   counter is a matter of collecting each SUAP case's planned ticks with the right fixture per rehearsal, which differs from the SUE's one fixture).
 
+**Round 21 (2026-11-20): the SUAP choice counter, no portal run.** The cheapest gaps left (`bench/gaps.py`) are the 29 environmental forms (noise limits and derogation, waste, sludge,
+discharges, PIN 1): a restaurant or a shop files none of them, and `leverage.py` already says the 15 unrun crawls add no section, so the round counts what the runs took instead.
+`schema_branches.py suap [--only suap-060-]` lists every radio, tick and dropdown option of the crawls the SUAP recipes use (once per section and label) and what covers it: a filled
+run, a pre-flight-ready case with no recorded run, a steps file that could under a condition no case meets, or nothing; each case is read with its rehearsal's own `fixture.json`
+(the SUE's one fixture was `cila-fittizia`'s), and the rehearsals that borrow another's are counted as cases only when their `runs.json` says which fixture a run used (`values`; 52 had none, 50 after the five recorded 2026-11-20), so their boxes show as less covered than they are. After that: 354 filled. 61 s.
+On 2026-11-20: **1,634 boxes in 268 crawls: 346 filled on the portal, 2 a case with no recorded run, 397 mapped with no case, 550 on the portal and not mapped, 177 left empty, 162 the person's.**
+
+- **Most of the 550 are one checklist.** 171 are the Reg. 852 «tipologia di attività» options (`attivita_852`: a bakery ticks its own and a recipe never the other trades'), and 55 the
+  atmospheric-emission forms' lists; those are not a restaurant's or a shop's. The wedge's own are in `--only suap-060-aprire-l-attivita` (71 boxes: 12 filled, 6 mapped, 48 not
+  mapped): the dehors' occupation period (seasonal, annual renewal, closing day, other), the days of the week and «orari diversi giorno per giorno», a private area for public use, and, in the
+  «interventi» screen, the options of «vincolo ambientale» (art. 146 or the art. 149 exclusion, with or without the Soprintendenza's authorization, ordinary or simplified) and «vincolo
+  monumentale». Those are the next cases to write for the wedge (a restaurant in a protected area is the likeliest real one: see the next bullet for what that turned out to be); the bollo's 17 options come next.
+- **`sue_steps`, `ticked`, `entries` and `filled` take the sportello** (`"sue"` by default: the SUE table is unchanged, `table_current` holds it); `test_schema_branches.py` has `suap_choices`.
+  `test_schema_branches` takes 4½ minutes now. The steps files are built, not committed, and `gen.ensure()` took about a minute per rehearsal here: copy `portal-steps.generated.yaml`
+  from a worktree that has them (the lock names their sha256, so a stale copy is rewritten, none were).
+- **The protected-area sign, run on the portal (same day, three runs, all filled: 103, 106 and 107 s, nothing moved or loose, the portal's warnings the made-up PEC and address).** The
+  «vincolo ambientale» and «vincolo monumentale» sections above are in the crawls of the sign *inside an opening* (`…-interventi`) and of the stand-alone «installazione di mezzi pubblicitari - SCIA»,
+  not in the restaurant's stand-alone sign SCIA (`…-scia-4`, `insegna-ristorante-scia-fittizio`): read on a draft of it, its section list has none, and its «ulteriori dichiarazioni» holds two Si/No facts,
+  «L'installazione ricade in zona A di P.R.G.» and «…in area sottoposta a vincolo paesaggistico». **Si on either opens no box and no section** (the radios swap, nothing else), so the filing is the same; what
+  differs is the person's, from the library's `insegna-esercizio` (verified): in a landscape-protected area the SCIA is ineffective until the authorization. `rehearsals/insegna-ristorante-vincolo-fittizio`
+  (three answers files: both Si, vincolo only, zona A only) is the plain recipe with those asks answerable: `insegna_vincolo` is now the landscape vincolo alone and adds a line to `yours`;
+  `insegna_zona_a` is no longer refused (the plain recipe's «altre condizioni» has no source, and the library finds no specific rule for the centro storico); a building protected as a cultural asset is
+  its own ask, `insegna_bene_culturale`, still refused (the Soprintendenza's art. 49 authorization comes first, and the form has no box for it). The 48 recipes that carry `insegna_vincolo` and `insegna_zona_a`
+  as refusals, and `derive_combos.py`, which writes them, were lifted the same day (next bullet). Not read: the attachments screen under a vincolo Si (it may add a slot for the authorization).
+- **The vincolo refusals lifted in the 48 other recipes (same day, 8 more runs, all filled: 74-151 s, nothing moved or loose, the warnings the made-up PEC, address and cadastral data).** They were two
+  different forms. **9 recipes have the Si/No** («ulteriori dichiarazioni»: the stand-alone sign and the take-overs with a sign): `insegna_vincolo` (now the landscape vincolo alone) and `insegna_zona_a`
+  are answered on the form. **40 are the opening, move and dehors combos with a sign, and fill the sign's own «vincolo ambientale» and «vincolo monumentale» sections**, which the dictionary ticked as
+  «Non soggetta» for everyone: lifting the refusal alone would have declared «Non soggetta» for a person who said Si. Their zone A question has no box at all (it was a refusal and nothing else: removed there,
+  and `derive_combos.py` no longer adds it). The dictionary's «vincolo ambientale» entry now follows `insegna_vincolo` and a new choice `vincolo_ambientale` (esclusione = art. 149, posseduta = the authorization held,
+  ordinaria / semplificata = the application filed with the SCIA); all four filled on the portal and read back (`ristorante-insegna-fittizio/answers-vincolo-*.json`), and the take-over, the food shop's and
+  the shop's sign SCIA and the permanent sign (`impianto-pubblicitario-permanente-fittizio`, which ticked «Non soggetta» without asking anything) one run each. The cultural asset stays refused in every recipe
+  (`insegna_bene_culturale`: the Soprintendenza's art. 49 authorization comes first; the monumentale section is still «Non soggetta»). The fourth radio of the ambientale section (the Soprintendenza's parere for
+  signs along roads) is a statement of the law, the person's, and no run stopped on it. Not run: the other recipes of the same families (same sections by fingerprint) and the attachments screen under a vincolo. The counter after it: 349 filled (was 346), 543 not mapped (550). Tests: `test_gen` 150/153 (the two it already failed on main: a FILING line of 358 characters and pin-6's record; the run table is regenerated), `test_preflight` 48/48, `test_route` 28/28, `test_rounds` 106/106, `test_rerun` 15/15, `test_combos`, `test_derive` 19/19, `test_schema_branches` 7/7.
+- **Reading a draft by hand.** Choosing the sector in the wizard by clicks or `span.click()` did not register (the page said «Deve essere selezionato almeno un elemento»): the runner is the way to a draft. `read_draft.js`
+  loses `window.__draft` at every navigation, a section link included: click the link in one call, wait, then paste the helper's body (no click in it) and read.
+- **In code from this round** (so the next one doesn't relearn it): `read_draft.js`'s header says what the last two bullets say, and that a SALVA on unticked declarations answers «Il valore è obbligatorio» for each (the
+  person's, never ticked); `bench/rerun.py --record - --values FILE` records the runs of a rehearsal with no `fixture.json` of its own (before, they carried «@fixture» and had to be written into `runs.json` by hand,
+  which left the README's run table stale: `test_gen` caught it, `runs.py --write` redraws it) and writes `"values": FILE` in the entry; `schema_branches.py suap` reads such a rehearsal's cases on that fixture;
+  `test_preflight.sign_vincolo_follows_the_answer` holds the vincolo findings above (the opening's ambientale radios by answer, the stand-alone form's Si/No, the cultural asset refused, every recipe with the section
+  asking the two facts, no zone A ask where the form has no box). A recipe's refusal that is a *gap* and not the law's hides a second thing to check: what the form fills when the refusal is gone (here a fixed «Non soggetta»).
+- **Not done:** the counter does not yet say which of a box's *revealed* boxes a case saw (it counts boxes, not paths), and it is not in `docs/` (a `--write` waits for the numbers to be read against a case).
+
 ## What the portal does that bit us
 
 - **Street names without their particles.** The location's street lookup and the Comune's

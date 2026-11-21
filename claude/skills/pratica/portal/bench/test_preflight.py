@@ -1212,6 +1212,58 @@ def portal_keeps_alimentare_unticked():
             assert r["ready"] == (not refused), (rehearsal, name, r)
 
 
+def sign_vincolo_follows_the_answer():
+    """The sign's landscape declaration says what the person said (2026-11-20, rehearsals/insegna-ristorante-vincolo-fittizio and
+    ristorante-insegna-fittizio/answers-vincolo-*.json, all filled on the portal). Two forms: the stand-alone sign SCIA has no vincolo
+    section, only the two Si/No of «ulteriori dichiarazioni» (zona A, then vincolo paesaggistico: Si opens nothing); the sign inside an
+    opening has the «vincolo ambientale» section, which the dictionary used to tick «Non soggetta» whatever the person said, so a
+    refusal lifted without it would have declared the opposite. A cultural asset (art. 49) is refused in both."""
+    reh = HERE.parents[4] / "rehearsals"
+    pizzeria = dict(json.loads((reh / "pizzeria-fittizia" / "fixture.json").read_text())["fields"])
+
+    def plan_of(rehearsal, name, fixture=None, **change):
+        steps = yaml.safe_load((reh / rehearsal / "portal-steps.generated.yaml").read_text())
+        fields = fixture or dict(json.loads((reh / rehearsal / "fixture.json").read_text())["fields"])
+        answers = {**json.loads((reh / rehearsal / name).read_text()), **change}
+        v = values(answers=answers, fields=fields, steps=steps)
+        r = run.preflight(steps, v, made_up=True)
+        return r, (rehearsal_plan(steps, v) if r["ready"] else [])
+
+    def labels(plan, section):
+        return [f["label"][:38] for f in plan if section in f["section"].lower()]
+
+    # Every steps file with the vincolo section asks the two facts: the permanent sign ticked «Non soggetta» without asking.
+    for d in sorted(reh.iterdir()):
+        f = d / "portal-steps.generated.yaml"
+        if f.is_file() and "dichiarazione relativa al vincolo ambientale" in f.read_text():
+            asks = yaml.safe_load(f.read_text()).get("asks", {})
+            assert "insegna_vincolo" in asks and "insegna_bene_culturale" in asks, (d.name, "must ask about the vincolo")
+        if f.is_file() and "insegna_zona_a" in yaml.safe_load(f.read_text()).get("asks", {}):
+            assert "insegna_zona_a" in json.dumps(yaml.safe_load(f.read_text())["sections"]), (d.name, "zona A has no box: no ask")
+    # The sign inside an opening: the ambientale radios by answer.
+    opening = "ristorante-insegna-fittizio"
+    expect = {"answers.json": ["Non soggetta a tutela ambientale"],
+              "answers-vincolo-esclusione.json": ["Soggetta a tutela ambientale, ma rientrante"],
+              "answers-vincolo-posseduta.json": ["Soggetta a tutela ambientale ai sensi", "è già in possesso dell'autorizzazione paesagg"],
+              "answers-vincolo-ordinaria.json": ["Soggetta a tutela ambientale ai sensi", "presenta contestualmente alla presente", "Ordinaria"],
+              "answers-vincolo-semplificata.json": ["Soggetta a tutela ambientale ai sensi", "presenta contestualmente alla presente", "Semplificata"]}
+    for name, want in expect.items():
+        r, plan = plan_of(opening, name, fixture=pizzeria)
+        assert r["ready"], (name, r)
+        assert labels(plan, "vincolo ambientale") == [w[:38] for w in want], (name, labels(plan, "vincolo ambientale"))
+        assert labels(plan, "vincolo monumentale") == ["Non soggetta a tutela monumentale"], name  # a cultural asset is refused
+    # A cultural asset, and a landscape answer given with no vincolo (the question isn't asked), in both forms.
+    for rehearsal, fixture in ((opening, pizzeria), ("insegna-ristorante-vincolo-fittizio", None)):
+        r, _ = plan_of(rehearsal, "answers.json", fixture=fixture, extras=["insegna_bene_culturale"])
+        assert any("bene culturale" in str(u) for u in r["unsupported"]), (rehearsal, r["unsupported"])
+    # The stand-alone sign: the form's two Si/No (the facts in the form's order: zona A, vincolo).
+    for name, want in (("answers.json", ["si", "si"]), ("answers-vincolo.json", ["no", "si"]), ("answers-zona-a.json", ["si", "no"])):
+        r, plan = plan_of("insegna-ristorante-vincolo-fittizio", name)
+        assert r["ready"], (name, r)
+        assert [x.lower() for x in labels(plan, "ulteriori dichiarazioni")] == want, (name, labels(plan, "ulteriori dichiarazioni"))
+        assert any("autorizzazione paesaggistica" in y for y in r["yours"]), r["yours"]
+
+
 CASES = [
     ("a goods-sector reduction ticking «Alimentare» in the non-food form (016) is refused, not in sectors 017 and 019: the portal does not keep it ticked only there", portal_keeps_alimentare_unticked),
     ("a non-food shop proposes its whole sales area as non-food, not the dictionary's 0", non_food_shops_propose_all_non_food),
@@ -1261,6 +1313,7 @@ CASES = [
     ("the SUE's diritti at the 2026 table's edges: the contributo's brackets (5,000 € in two rows), a car park's area (300-301 and 1,000-1,001 m² in none)", diritti_brackets),
     ("the diritti from the case: the contributo asked only with the prospetto, a car park's area only for one, then proposed; the onerous SCIA asked", diritti_from_the_case),
     ("two adempimenti in one pratica pay the main pratica's line alone (SUE 2-3 only on their own; no line for terre e rocce or the DAU)", diritti_main_row),
+    ("the sign's vincolo says what the person said: the opening's ambientale radios by answer, the stand-alone form's Si/No, a cultural asset refused, no recipe ticking «Non soggetta» without asking (2026-11-20)", sign_vincolo_follows_the_answer),
 ]
 
 

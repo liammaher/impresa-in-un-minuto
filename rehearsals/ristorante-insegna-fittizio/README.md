@@ -26,6 +26,10 @@ before the declarations, payment, signing and sending.
 |---|---|---|---|
 | 2026-11-10 |  | `answers.json` | **filled** in 97 s |
 | 2026-11-13 | pane | `answers.json` | **filled** in 156 s |
+| 2026-11-20 | pane | `answers-vincolo-esclusione.json` | Run on pizzeria-fittizia's fixture (this recipe has none of its own), nothing moved or loose; the portal's warnings were the made-up PEC, address and cadastral data. Vincolo ambientale: «Soggetta ... ma rientrante nei casi di esclusione» (art. 149). |
+| 2026-11-20 | pane | `answers-vincolo-posseduta.json` | Run on pizzeria-fittizia's fixture (this recipe has none of its own), nothing moved or loose; the portal's warnings were the made-up PEC, address and cadastral data. Vincolo ambientale: «Soggetta ... art. 146» + «è già in possesso dell'autorizzazione paesaggistica». |
+| 2026-11-20 | pane | `answers-vincolo-ordinaria.json` | Run on pizzeria-fittizia's fixture (this recipe has none of its own), nothing moved or loose; the portal's warnings were the made-up PEC, address and cadastral data. Vincolo ambientale: «Soggetta ... art. 146» + «presenta contestualmente ... istanza» + Ordinaria. |
+| 2026-11-20 | pane | `answers-vincolo-semplificata.json` | Run on pizzeria-fittizia's fixture (this recipe has none of its own), nothing moved or loose; the portal's warnings were the made-up PEC, address and cadastral data. Vincolo ambientale: «Soggetta ... art. 146» + «presenta contestualmente ... istanza» + Semplificata. |
 
 <!-- /runs -->
 
