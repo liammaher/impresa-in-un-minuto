@@ -3,6 +3,7 @@
  "title": "Aprire l'attività, bar o ristorante, SUAP Napoli",
  "generated": "gen.py from suap-060-aprire-l-attivita-dehors-pin-2 (2026-11-14) and dictionary/fnsuap.yaml",
  "yours": [
+  "Con il vincolo paesaggistico la SCIA dell'insegna vale solo dopo l'autorizzazione paesaggistica: allegala o presentala (l'ufficio cura il procedimento) e installa l'insegna solo dopo",
   "Il professionista antincendio firma tu o per lui, con la sua firma digitale, l'asseverazione e le dichiarazioni dei Vigili del Fuoco: il portale le fa firmare al professionista, non al titolare",
   "Paga ai Vigili del Fuoco la tariffa della categoria (€ {{ask.vvf_importo}}) e allega la copia del versamento firmata digitalmente (.p7m)",
   "{{ask.bollo_marche,ask.bollo_esenzione|bollo_yours}}",
@@ -274,6 +275,101 @@
    "question": "Il giorno di chiusura settimanale ('nessuno' se non c'è)",
    "propose": "nessuno"
   },
+  "orario_dalle2": {
+   "type": "text",
+   "question": "Se c'è una pausa, a che ora riapri la sera (hh:mm), uguale per tutti i giorni? Lascia vuoto se l'orario è continuato",
+   "default": ""
+  },
+  "orario_alle2": {
+   "type": "text",
+   "question": "E a che ora chiudi la sera (hh:mm)?",
+   "default": ""
+  },
+  "orari_diversi": {
+   "type": "yes_no",
+   "question": "Gli orari cambiano da un giorno all'altro?",
+   "default": "false"
+  },
+  "orario_lunedi": {
+   "type": "text",
+   "format": "fasce",
+   "question": "L'orario di lunedì, come 12:00-15:00 (con una pausa: 12:00-15:00, 19:00-23:30). Vuoto se è chiuso",
+   "default": ""
+  },
+  "orario_martedi": {
+   "type": "text",
+   "format": "fasce",
+   "question": "L'orario di martedì, come 12:00-15:00 (con una pausa: 12:00-15:00, 19:00-23:30). Vuoto se è chiuso",
+   "default": ""
+  },
+  "orario_mercoledi": {
+   "type": "text",
+   "format": "fasce",
+   "question": "L'orario di mercoledì, come 12:00-15:00 (con una pausa: 12:00-15:00, 19:00-23:30). Vuoto se è chiuso",
+   "default": ""
+  },
+  "orario_giovedi": {
+   "type": "text",
+   "format": "fasce",
+   "question": "L'orario di giovedì, come 12:00-15:00 (con una pausa: 12:00-15:00, 19:00-23:30). Vuoto se è chiuso",
+   "default": ""
+  },
+  "orario_venerdi": {
+   "type": "text",
+   "format": "fasce",
+   "question": "L'orario di venerdì, come 12:00-15:00 (con una pausa: 12:00-15:00, 19:00-23:30). Vuoto se è chiuso",
+   "default": ""
+  },
+  "orario_sabato": {
+   "type": "text",
+   "format": "fasce",
+   "question": "L'orario di sabato, come 12:00-15:00 (con una pausa: 12:00-15:00, 19:00-23:30). Vuoto se è chiuso",
+   "default": ""
+  },
+  "orario_domenica": {
+   "type": "text",
+   "format": "fasce",
+   "question": "L'orario di domenica, come 12:00-15:00 (con una pausa: 12:00-15:00, 19:00-23:30). Vuoto se è chiuso",
+   "default": ""
+  },
+  "dehors_periodo": {
+   "type": "choice",
+   "question": "Per quale periodo occupi l'area? annuale (la prima volta); rinnovo (di un'autorizzazione che hai già); stagionale (una stagione); chiusura (con l'area libera nel giorno di chiusura settimanale); altro",
+   "options": [
+    "annuale",
+    "rinnovo",
+    "stagionale",
+    "chiusura",
+    "altro"
+   ],
+   "default": ""
+  },
+  "dehors_rinnovo_numero": {
+   "type": "text",
+   "question": "Il numero dell'autorizzazione da rinnovare (10 caratteri al massimo)"
+  },
+  "dehors_rinnovo_data": {
+   "type": "date",
+   "question": "La data di quell'autorizzazione"
+  },
+  "dehors_chiusura_giorno": {
+   "type": "text",
+   "question": "Quale giorno di chiusura settimanale resta con l'area libera (50 caratteri al massimo)"
+  },
+  "dehors_periodo_altro": {
+   "type": "text",
+   "question": "Come occupi l'area, con l'area libera (200 caratteri al massimo)"
+  },
+  "vincolo_ambientale": {
+   "type": "choice",
+   "question": "L'edificio o l'area dell'insegna sono sotto vincolo paesaggistico: quale caso vale? esclusione (rientri nei casi di esclusione dell'art. 149 del D.Lgs. 42/2004); posseduta (hai già l'autorizzazione paesaggistica o il parere della Soprintendenza, da allegare); ordinaria (presenti insieme alla SCIA l'istanza di autorizzazione paesaggistica ordinaria); semplificata (presenti insieme alla SCIA l'istanza semplificata)",
+   "options": [
+    "esclusione",
+    "posseduta",
+    "ordinaria",
+    "semplificata"
+   ]
+  },
   "area_privata_uso_pubblico": {
    "type": "yes_no",
    "question": "Il suolo è privato ma aperto al pubblico (anziché pubblico)?",
@@ -466,20 +562,20 @@
   "insegna_vincolo": {
    "group": "extras",
    "type": "yes_no",
-   "item": "L'edificio è sotto tutela paesaggistica o monumentale",
-   "why": "In quel caso l'insegna ha bisogno di una propria autorizzazione: non la preparo ancora."
+   "item": "L'edificio o l'area sono sottoposti a vincolo paesaggistico (parte III del D.Lgs. 42/2004)",
+   "why": "La SCIA dell'insegna vale solo dopo l'autorizzazione paesaggistica: la dichiaro nella bozza e te lo ricordo tra i tuoi passi."
+  },
+  "insegna_bene_culturale": {
+   "group": "extras",
+   "type": "yes_no",
+   "item": "L'edificio o l'area sono tutelati come bene culturale (parte II del D.Lgs. 42/2004)",
+   "why": "In tal caso serve prima l'autorizzazione della Soprintendenza (art. 49), caso non ancora previsto."
   },
   "insegna_grande": {
    "group": "extras",
    "type": "yes_no",
    "item": "Le insegne insieme superano i 5 m²",
    "why": "Sopra i 5 m² è dovuto anche il canone unico: un pagamento a parte, che non preparo ancora."
-  },
-  "insegna_zona_a": {
-   "group": "extras",
-   "type": "yes_no",
-   "item": "L'installazione ricade in zona A del PRG (il centro storico)",
-   "why": "In zona A la SCIA dell'insegna ha altre condizioni, che non preparo ancora."
   },
   "altri_soggetti": {
    "group": "extras",
@@ -566,16 +662,12 @@
    "else": "Un'insegna che richiede il consenso del proprietario o del condominio per ora non la preparo."
   },
   {
-   "when": "{{ask.insegna_vincolo|not}}",
-   "else": "Un'insegna su un edificio tutelato richiede una propria autorizzazione: per ora non la preparo."
+   "when": "{{ask.insegna_bene_culturale|not}}",
+   "else": "Un'insegna su un edificio o in un'area tutelati come bene culturale richiede prima l'autorizzazione della Soprintendenza (art. 49 D.Lgs. 42/2004): non lo preparo ancora."
   },
   {
    "when": "{{ask.insegna_grande|not}}",
    "else": "Le insegne sopra i 5 m² pagano anche il canone unico: per ora non lo preparo."
-  },
-  {
-   "when": "{{ask.insegna_zona_a|not}}",
-   "else": "In zona A del PRG (il centro storico) la SCIA dell'insegna ha altre condizioni, che non preparo ancora."
   },
   {
    "value": "{{business.forma_giuridica}}",
@@ -1561,14 +1653,314 @@
    "section": "dichiarazione relativa agli orari ed ai giorni di apertura",
    "fields": [
     {
+     "id": "r1c1p1reg:radio:0_clone",
+     "kind": "radio",
+     "when": "{{ask.orari_diversi}}",
+     "label": "orari diversi giorno per giorno"
+    },
+    {
+     "id": "r3c1p3reg:chk",
+     "kind": "checkbox",
+     "when": "{{ask.orari_diversi}} {{ask.orario_lunedi|filled}}",
+     "label": "lunedì"
+    },
+    {
+     "id": "r3c2p5reg:txt",
+     "kind": "text",
+     "value": "{{ask.orario_lunedi|fascia1_dalle}}",
+     "when": "{{ask.orari_diversi}} {{ask.orario_lunedi|filled}}",
+     "max": 5,
+     "label": "dalle ore"
+    },
+    {
+     "id": "r3c3p7reg:txt",
+     "kind": "text",
+     "value": "{{ask.orario_lunedi|fascia1_alle}}",
+     "when": "{{ask.orari_diversi}} {{ask.orario_lunedi|filled}}",
+     "max": 5,
+     "label": "alle ore"
+    },
+    {
+     "id": "r3c4p9reg:txt",
+     "kind": "text",
+     "value": "{{ask.orario_lunedi|fascia2_dalle}}",
+     "when": "{{ask.orari_diversi}} {{ask.orario_lunedi|fascia2_dalle|filled}}",
+     "max": 5,
+     "label": "dalle ore",
+     "nth": 2
+    },
+    {
+     "id": "r3c5p11reg:txt",
+     "kind": "text",
+     "value": "{{ask.orario_lunedi|fascia2_alle}}",
+     "when": "{{ask.orari_diversi}} {{ask.orario_lunedi|fascia2_dalle|filled}}",
+     "max": 5,
+     "label": "alle ore",
+     "nth": 2
+    },
+    {
+     "id": "r5c1p13reg:chk",
+     "kind": "checkbox",
+     "when": "{{ask.orari_diversi}} {{ask.orario_martedi|filled}}",
+     "label": "martedì"
+    },
+    {
+     "id": "r5c2p15reg:txt",
+     "kind": "text",
+     "value": "{{ask.orario_martedi|fascia1_dalle}}",
+     "when": "{{ask.orari_diversi}} {{ask.orario_martedi|filled}}",
+     "max": 5,
+     "label": "dalle ore",
+     "nth": 3
+    },
+    {
+     "id": "r5c3p17reg:txt",
+     "kind": "text",
+     "value": "{{ask.orario_martedi|fascia1_alle}}",
+     "when": "{{ask.orari_diversi}} {{ask.orario_martedi|filled}}",
+     "max": 5,
+     "label": "alle ore",
+     "nth": 3
+    },
+    {
+     "id": "r5c4p19reg:txt",
+     "kind": "text",
+     "value": "{{ask.orario_martedi|fascia2_dalle}}",
+     "when": "{{ask.orari_diversi}} {{ask.orario_martedi|fascia2_dalle|filled}}",
+     "max": 5,
+     "label": "dalle ore",
+     "nth": 4
+    },
+    {
+     "id": "r5c5p21reg:txt",
+     "kind": "text",
+     "value": "{{ask.orario_martedi|fascia2_alle}}",
+     "when": "{{ask.orari_diversi}} {{ask.orario_martedi|fascia2_dalle|filled}}",
+     "max": 5,
+     "label": "alle ore",
+     "nth": 4
+    },
+    {
+     "id": "r7c1p23reg:chk",
+     "kind": "checkbox",
+     "when": "{{ask.orari_diversi}} {{ask.orario_mercoledi|filled}}",
+     "label": "mercoledì"
+    },
+    {
+     "id": "r7c2p25reg:txt",
+     "kind": "text",
+     "value": "{{ask.orario_mercoledi|fascia1_dalle}}",
+     "when": "{{ask.orari_diversi}} {{ask.orario_mercoledi|filled}}",
+     "max": 5,
+     "label": "dalle ore",
+     "nth": 5
+    },
+    {
+     "id": "r7c3p27reg:txt",
+     "kind": "text",
+     "value": "{{ask.orario_mercoledi|fascia1_alle}}",
+     "when": "{{ask.orari_diversi}} {{ask.orario_mercoledi|filled}}",
+     "max": 5,
+     "label": "alle ore",
+     "nth": 5
+    },
+    {
+     "id": "r7c4p29reg:txt",
+     "kind": "text",
+     "value": "{{ask.orario_mercoledi|fascia2_dalle}}",
+     "when": "{{ask.orari_diversi}} {{ask.orario_mercoledi|fascia2_dalle|filled}}",
+     "max": 5,
+     "label": "dalle ore",
+     "nth": 6
+    },
+    {
+     "id": "r7c5p31reg:txt",
+     "kind": "text",
+     "value": "{{ask.orario_mercoledi|fascia2_alle}}",
+     "when": "{{ask.orari_diversi}} {{ask.orario_mercoledi|fascia2_dalle|filled}}",
+     "max": 5,
+     "label": "alle ore",
+     "nth": 6
+    },
+    {
+     "id": "r9c1p33reg:chk",
+     "kind": "checkbox",
+     "when": "{{ask.orari_diversi}} {{ask.orario_giovedi|filled}}",
+     "label": "giovedì"
+    },
+    {
+     "id": "r9c2p35reg:txt",
+     "kind": "text",
+     "value": "{{ask.orario_giovedi|fascia1_dalle}}",
+     "when": "{{ask.orari_diversi}} {{ask.orario_giovedi|filled}}",
+     "max": 10,
+     "label": "dalle ore",
+     "nth": 7
+    },
+    {
+     "id": "r9c3p37reg:txt",
+     "kind": "text",
+     "value": "{{ask.orario_giovedi|fascia1_alle}}",
+     "when": "{{ask.orari_diversi}} {{ask.orario_giovedi|filled}}",
+     "max": 10,
+     "label": "alle ore",
+     "nth": 7
+    },
+    {
+     "id": "r9c4p39reg:txt",
+     "kind": "text",
+     "value": "{{ask.orario_giovedi|fascia2_dalle}}",
+     "when": "{{ask.orari_diversi}} {{ask.orario_giovedi|fascia2_dalle|filled}}",
+     "max": 10,
+     "label": "dalle ore",
+     "nth": 8
+    },
+    {
+     "id": "r9c5p41reg:txt",
+     "kind": "text",
+     "value": "{{ask.orario_giovedi|fascia2_alle}}",
+     "when": "{{ask.orari_diversi}} {{ask.orario_giovedi|fascia2_dalle|filled}}",
+     "max": 10,
+     "label": "alle ore",
+     "nth": 8
+    },
+    {
+     "id": "r11c1p43reg:chk",
+     "kind": "checkbox",
+     "when": "{{ask.orari_diversi}} {{ask.orario_venerdi|filled}}",
+     "label": "venerdì"
+    },
+    {
+     "id": "r11c2p45reg:txt",
+     "kind": "text",
+     "value": "{{ask.orario_venerdi|fascia1_dalle}}",
+     "when": "{{ask.orari_diversi}} {{ask.orario_venerdi|filled}}",
+     "max": 10,
+     "label": "dalle ore",
+     "nth": 9
+    },
+    {
+     "id": "r11c3p47reg:txt",
+     "kind": "text",
+     "value": "{{ask.orario_venerdi|fascia1_alle}}",
+     "when": "{{ask.orari_diversi}} {{ask.orario_venerdi|filled}}",
+     "max": 10,
+     "label": "alle ore",
+     "nth": 9
+    },
+    {
+     "id": "r11c4p49reg:txt",
+     "kind": "text",
+     "value": "{{ask.orario_venerdi|fascia2_dalle}}",
+     "when": "{{ask.orari_diversi}} {{ask.orario_venerdi|fascia2_dalle|filled}}",
+     "max": 10,
+     "label": "dalle ore",
+     "nth": 10
+    },
+    {
+     "id": "r11c5p51reg:txt",
+     "kind": "text",
+     "value": "{{ask.orario_venerdi|fascia2_alle}}",
+     "when": "{{ask.orari_diversi}} {{ask.orario_venerdi|fascia2_dalle|filled}}",
+     "max": 10,
+     "label": "alle ore",
+     "nth": 10
+    },
+    {
+     "id": "r13c1p53reg:chk",
+     "kind": "checkbox",
+     "when": "{{ask.orari_diversi}} {{ask.orario_sabato|filled}}",
+     "label": "sabato"
+    },
+    {
+     "id": "r13c2p55reg:txt",
+     "kind": "text",
+     "value": "{{ask.orario_sabato|fascia1_dalle}}",
+     "when": "{{ask.orari_diversi}} {{ask.orario_sabato|filled}}",
+     "max": 10,
+     "label": "dalle ore",
+     "nth": 11
+    },
+    {
+     "id": "r13c3p57reg:txt",
+     "kind": "text",
+     "value": "{{ask.orario_sabato|fascia1_alle}}",
+     "when": "{{ask.orari_diversi}} {{ask.orario_sabato|filled}}",
+     "max": 10,
+     "label": "alle ore",
+     "nth": 11
+    },
+    {
+     "id": "r13c4p59reg:txt",
+     "kind": "text",
+     "value": "{{ask.orario_sabato|fascia2_dalle}}",
+     "when": "{{ask.orari_diversi}} {{ask.orario_sabato|fascia2_dalle|filled}}",
+     "max": 10,
+     "label": "dalle ore",
+     "nth": 12
+    },
+    {
+     "id": "r13c5p61reg:txt",
+     "kind": "text",
+     "value": "{{ask.orario_sabato|fascia2_alle}}",
+     "when": "{{ask.orari_diversi}} {{ask.orario_sabato|fascia2_dalle|filled}}",
+     "max": 10,
+     "label": "alle ore",
+     "nth": 12
+    },
+    {
+     "id": "r15c1p63reg:chk",
+     "kind": "checkbox",
+     "when": "{{ask.orari_diversi}} {{ask.orario_domenica|filled}}",
+     "label": "domenica"
+    },
+    {
+     "id": "r15c2p65reg:txt",
+     "kind": "text",
+     "value": "{{ask.orario_domenica|fascia1_dalle}}",
+     "when": "{{ask.orari_diversi}} {{ask.orario_domenica|filled}}",
+     "max": 10,
+     "label": "dalle ore",
+     "nth": 13
+    },
+    {
+     "id": "r15c3p67reg:txt",
+     "kind": "text",
+     "value": "{{ask.orario_domenica|fascia1_alle}}",
+     "when": "{{ask.orari_diversi}} {{ask.orario_domenica|filled}}",
+     "max": 10,
+     "label": "alle ore",
+     "nth": 13
+    },
+    {
+     "id": "r15c4p69reg:txt",
+     "kind": "text",
+     "value": "{{ask.orario_domenica|fascia2_dalle}}",
+     "when": "{{ask.orari_diversi}} {{ask.orario_domenica|fascia2_dalle|filled}}",
+     "max": 10,
+     "label": "dalle ore",
+     "nth": 14
+    },
+    {
+     "id": "r15c5p71reg:txt",
+     "kind": "text",
+     "value": "{{ask.orario_domenica|fascia2_alle}}",
+     "when": "{{ask.orari_diversi}} {{ask.orario_domenica|fascia2_dalle|filled}}",
+     "max": 10,
+     "label": "alle ore",
+     "nth": 14
+    },
+    {
      "id": "r16c1p72reg:radio:1_clone",
      "kind": "radio",
+     "when": "{{ask.orari_diversi|not}}",
      "label": "oppure tutti i giorni:"
     },
     {
      "id": "r18c1p74reg:txt",
      "kind": "text",
      "value": "{{ask.orario_dalle}}",
+     "when": "{{ask.orari_diversi|not}}",
      "max": 10,
      "label": "dalle ore",
      "nth": 15
@@ -1577,9 +1969,28 @@
      "id": "r18c2p76reg:txt",
      "kind": "text",
      "value": "{{ask.orario_alle}}",
+     "when": "{{ask.orari_diversi|not}}",
      "max": 10,
      "label": "alle ore",
      "nth": 15
+    },
+    {
+     "id": "r18c3p78reg:txt",
+     "kind": "text",
+     "value": "{{ask.orario_dalle2}}",
+     "when": "{{ask.orari_diversi|not}} {{ask.orario_dalle2|filled}}",
+     "max": 10,
+     "label": "dalle ore",
+     "nth": 16
+    },
+    {
+     "id": "r18c4p80reg:txt",
+     "kind": "text",
+     "value": "{{ask.orario_alle2}}",
+     "when": "{{ask.orari_diversi|not}} {{ask.orario_dalle2|filled}}",
+     "max": 10,
+     "label": "alle ore",
+     "nth": 16
     },
     {
      "id": "r20c1p84reg:txt",
@@ -1613,28 +2024,78 @@
     {
      "id": "r1c1p1reg:radio:0_clone",
      "kind": "radio",
-     "when": "{{ask.stagionale|not}}",
+     "when": "{{ask.stagionale,ask.dehors_periodo|periodo|is_annuale}}",
      "label": "a carattere annuale (1° anno di richiesta)"
+    },
+    {
+     "id": "r3c1p3reg:radio:1_clone",
+     "kind": "radio",
+     "when": "{{ask.stagionale,ask.dehors_periodo|periodo|is_rinnovo}}",
+     "label": "a carattere annuale - rinnovo di autorizzazione"
+    },
+    {
+     "id": "r3c2p5reg:txt",
+     "kind": "text",
+     "value": "{{ask.dehors_rinnovo_numero}}",
+     "when": "{{ask.stagionale,ask.dehors_periodo|periodo|is_rinnovo}}",
+     "max": 10,
+     "label": "numero"
+    },
+    {
+     "id": "r3c3p7reg:calendar_input",
+     "kind": "date",
+     "value": "{{ask.dehors_rinnovo_data|date_it}}",
+     "when": "{{ask.stagionale,ask.dehors_periodo|periodo|is_rinnovo}}",
+     "label": "del"
     },
     {
      "id": "r5c1p9reg:radio:2_clone",
      "kind": "radio",
-     "when": "{{ask.stagionale}}",
+     "when": "{{ask.stagionale,ask.dehors_periodo|periodo|is_stagionale}}",
      "label": "a carattere stagionale"
     },
     {
      "id": "r5c2p11reg:calendar_input",
      "kind": "date",
      "value": "{{ask.dehors_dal|date_it}}",
-     "when": "{{ask.stagionale}}",
+     "when": "{{ask.stagionale,ask.dehors_periodo|periodo|is_stagionale}}",
      "label": "dal giorno"
     },
     {
      "id": "r5c3p13reg:calendar_input",
      "kind": "date",
      "value": "{{ask.dehors_al|date_it}}",
-     "when": "{{ask.stagionale}}",
+     "when": "{{ask.stagionale,ask.dehors_periodo|periodo|is_stagionale}}",
      "label": "al giorno"
+    },
+    {
+     "id": "r8c1p16reg:radio:3_clone",
+     "kind": "radio",
+     "when": "{{ask.stagionale,ask.dehors_periodo|periodo|is_chiusura}}",
+     "label": "nel giorno di chiusura settimanale"
+    },
+    {
+     "id": "r8c2p18reg:txt",
+     "kind": "text",
+     "value": "{{ask.dehors_chiusura_giorno}}",
+     "when": "{{ask.stagionale,ask.dehors_periodo|periodo|is_chiusura}}",
+     "max": 50,
+     "label": "specificare"
+    },
+    {
+     "id": "r10c1p20reg:radio:4_clone",
+     "kind": "radio",
+     "when": "{{ask.stagionale,ask.dehors_periodo|periodo|is_altro}}",
+     "label": "altro"
+    },
+    {
+     "id": "r10c2p22reg:txt",
+     "kind": "text",
+     "value": "{{ask.dehors_periodo_altro}}",
+     "when": "{{ask.stagionale,ask.dehors_periodo|periodo|is_altro}}",
+     "max": 200,
+     "label": "specificare",
+     "nth": 2
     }
    ]
   },
@@ -2588,7 +3049,43 @@
     {
      "id": "r1c1p1reg:radio:0_clone",
      "kind": "radio",
+     "when": "{{ask.insegna_vincolo|not}}",
      "label": "Non soggetta a tutela ambientale"
+    },
+    {
+     "id": "r2c1p2reg:radio:1_clone",
+     "kind": "radio",
+     "when": "{{ask.insegna_vincolo}} {{ask.vincolo_ambientale|is_esclusione}}",
+     "label": "Soggetta a tutela ambientale, ma rientrante"
+    },
+    {
+     "id": "r3c1p3reg:radio:2_clone",
+     "kind": "radio",
+     "when": "{{ask.insegna_vincolo}} {{ask.vincolo_ambientale|in_posseduta__ordinaria__semplificata}}",
+     "label": "Soggetta a tutela ambientale ai sensi"
+    },
+    {
+     "id": "r5c1p6reg:radio:3_clone",
+     "kind": "radio",
+     "when": "{{ask.insegna_vincolo}} {{ask.vincolo_ambientale|in_ordinaria__semplificata}}",
+     "label": "presenta contestualmente alla presente"
+    },
+    {
+     "id": "r7c1p9reg:radio:4_clone",
+     "kind": "radio",
+     "when": "{{ask.insegna_vincolo}} {{ask.vincolo_ambientale|is_ordinaria}}",
+     "label": "Ordinaria"
+    },
+    {
+     "id": "r7c2p10reg:radio:5_clone",
+     "kind": "radio",
+     "when": "{{ask.insegna_vincolo}} {{ask.vincolo_ambientale|is_semplificata}}",
+     "label": "Semplificata"
+    },
+    {
+     "kind": "radio",
+     "when": "{{ask.insegna_vincolo}} {{ask.vincolo_ambientale|is_posseduta}}",
+     "label": "è già in possesso dell'autorizzazione paesaggistica"
     }
    ]
   },

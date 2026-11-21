@@ -606,7 +606,8 @@ new form if it is many. With eight or fewer, the chat, as before.
 - `files`: each slot's `for` (its name), whether the file `exists`, and its `problem` (at
   Napoli's SUE, DD 501/2026: not PDF/A, not signed digitally, or a name with spaces, accents or
   signs; the fix is in the "Questi file vanno sistemati" block of `message`): the checklist's
-  documents. `pick`: they choose the files once in a box on the portal's page; say so in one line.
+  documents.
+  `pick`: they choose the files once in a box on the portal's page; say so in one line.
 - `yours` and `second_run`: what is left to them comes in the closing lines (step 5); now, at
   most one line.
 - `ready` with no `message`: nothing to ask. Say in one line what you read and the pratica, and

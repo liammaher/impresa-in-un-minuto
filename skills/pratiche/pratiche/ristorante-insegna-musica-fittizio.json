@@ -3,6 +3,7 @@
  "title": "Aprire l'attività, bar o ristorante, SUAP Napoli",
  "generated": "gen.py from suap-060-aprire-l-attivita (2026-10-28) and dictionary/fnsuap.yaml",
  "yours": [
+  "Con il vincolo paesaggistico la SCIA dell'insegna vale solo dopo l'autorizzazione paesaggistica: allegala o presentala (l'ufficio cura il procedimento) e installa l'insegna solo dopo",
   "{{ask.bollo_marche,ask.bollo_esenzione|bollo_yours}}",
   "Apri la bozza in Pratiche in bozza ({{ask.descrizione}}) e confrontala con questa pagina",
   "Spunta tu le dichiarazioni dell'insegna (ulteriori dichiarazioni, mezzi pubblicitari)",
@@ -253,6 +254,16 @@
    "type": "text",
    "question": "Chi è il proprietario dell'edificio (nome o società)"
   },
+  "vincolo_ambientale": {
+   "type": "choice",
+   "question": "L'edificio o l'area dell'insegna sono sotto vincolo paesaggistico: quale caso vale? esclusione (rientri nei casi di esclusione dell'art. 149 del D.Lgs. 42/2004); posseduta (hai già l'autorizzazione paesaggistica o il parere della Soprintendenza, da allegare); ordinaria (presenti insieme alla SCIA l'istanza di autorizzazione paesaggistica ordinaria); semplificata (presenti insieme alla SCIA l'istanza semplificata)",
+   "options": [
+    "esclusione",
+    "posseduta",
+    "ordinaria",
+    "semplificata"
+   ]
+  },
   "in_centro_commerciale": {
    "type": "yes_no",
    "question": "In centro commerciale? (yes: Si)",
@@ -275,17 +286,17 @@
    "item": "L'insegna richiede il consenso di altri (il proprietario dell'edificio o il condominio)",
    "why": "In quel caso il portale chiede i dati e l'assenso del proprietario: non lo preparo ancora."
   },
-  "insegna_zona_a": {
-   "group": "extras",
-   "type": "yes_no",
-   "item": "L'installazione ricade in zona A del PRG (il centro storico)",
-   "why": "In zona A la SCIA dell'insegna ha altre condizioni, che non preparo ancora."
-  },
   "insegna_vincolo": {
    "group": "extras",
    "type": "yes_no",
-   "item": "L'edificio è sotto tutela paesaggistica o monumentale",
-   "why": "In quel caso l'insegna ha bisogno di una propria autorizzazione: non la preparo ancora."
+   "item": "L'edificio o l'area sono sottoposti a vincolo paesaggistico (parte III del D.Lgs. 42/2004)",
+   "why": "La SCIA dell'insegna vale solo dopo l'autorizzazione paesaggistica: la dichiaro nella bozza e te lo ricordo tra i tuoi passi."
+  },
+  "insegna_bene_culturale": {
+   "group": "extras",
+   "type": "yes_no",
+   "item": "L'edificio o l'area sono tutelati come bene culturale (parte II del D.Lgs. 42/2004)",
+   "why": "In tal caso serve prima l'autorizzazione della Soprintendenza (art. 49), caso non ancora previsto."
   },
   "insegna_grande": {
    "group": "extras",
@@ -362,12 +373,8 @@
    "else": "Un'insegna che richiede il consenso del proprietario o del condominio per ora non la preparo."
   },
   {
-   "when": "{{ask.insegna_zona_a|not}}",
-   "else": "In zona A del PRG (il centro storico) la SCIA dell'insegna ha altre condizioni, che non preparo ancora."
-  },
-  {
-   "when": "{{ask.insegna_vincolo|not}}",
-   "else": "Un'insegna su un edificio tutelato richiede una propria autorizzazione: per ora non la preparo."
+   "when": "{{ask.insegna_bene_culturale|not}}",
+   "else": "Un'insegna su un edificio o in un'area tutelati come bene culturale richiede prima l'autorizzazione della Soprintendenza (art. 49 D.Lgs. 42/2004): non lo preparo ancora."
   },
   {
    "when": "{{ask.insegna_grande|not}}",
@@ -1521,7 +1528,43 @@
     {
      "id": "r1c1p1reg:radio:0_clone",
      "kind": "radio",
+     "when": "{{ask.insegna_vincolo|not}}",
      "label": "Non soggetta a tutela ambientale"
+    },
+    {
+     "id": "r2c1p2reg:radio:1_clone",
+     "kind": "radio",
+     "when": "{{ask.insegna_vincolo}} {{ask.vincolo_ambientale|is_esclusione}}",
+     "label": "Soggetta a tutela ambientale, ma rientrante"
+    },
+    {
+     "id": "r3c1p3reg:radio:2_clone",
+     "kind": "radio",
+     "when": "{{ask.insegna_vincolo}} {{ask.vincolo_ambientale|in_posseduta__ordinaria__semplificata}}",
+     "label": "Soggetta a tutela ambientale ai sensi"
+    },
+    {
+     "id": "r5c1p6reg:radio:3_clone",
+     "kind": "radio",
+     "when": "{{ask.insegna_vincolo}} {{ask.vincolo_ambientale|in_ordinaria__semplificata}}",
+     "label": "presenta contestualmente alla presente"
+    },
+    {
+     "id": "r7c1p9reg:radio:4_clone",
+     "kind": "radio",
+     "when": "{{ask.insegna_vincolo}} {{ask.vincolo_ambientale|is_ordinaria}}",
+     "label": "Ordinaria"
+    },
+    {
+     "id": "r7c2p10reg:radio:5_clone",
+     "kind": "radio",
+     "when": "{{ask.insegna_vincolo}} {{ask.vincolo_ambientale|is_semplificata}}",
+     "label": "Semplificata"
+    },
+    {
+     "kind": "radio",
+     "when": "{{ask.insegna_vincolo}} {{ask.vincolo_ambientale|is_posseduta}}",
+     "label": "è già in possesso dell'autorizzazione paesaggistica"
     }
    ]
   },

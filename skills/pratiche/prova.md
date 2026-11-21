@@ -44,12 +44,14 @@ real filing's details (the c/c, the order of the signatures, the PEC receipt).
    sh "${CLAUDE_SKILL_DIR}/py" "${CLAUDE_SKILL_DIR}/check.py" studio.json values.json --out run/values.json >/dev/null && \
    sh "${CLAUDE_SKILL_DIR}/py" "${CLAUDE_SKILL_DIR}/portal/run.py" preflight --steps "${CLAUDE_SKILL_DIR}/pratiche/cila-fittizia.json" \
      --answers answers.json --values run/values.json --made-up > run/preflight.json && \
-   sh "${CLAUDE_SKILL_DIR}/py" "${CLAUDE_SKILL_DIR}/portal/run.py" page --steps "${CLAUDE_SKILL_DIR}/pratiche/cila-fittizia.json" \
-     --answers answers.json --values run/values.json --made-up --plain --out run > run/page.txt
+   sh "${CLAUDE_SKILL_DIR}/py" "${CLAUDE_SKILL_DIR}/portal/run.py" <page> --steps "${CLAUDE_SKILL_DIR}/pratiche/cila-fittizia.json" \
+     --answers answers.json --values run/values.json --made-up <plain> --out run > run/page.txt
    ```
-   (`pwd` prints the Prova's folder on the error output, and `page`'s own lines go to `run/page.txt`: stdout is
-   empty.) No card in the Prova: what it would say, the closing lines say. `<name>` is `prova` in the fallback of
-   SKILL.md, step 4.3 (with `--made-up --plain`, as here). The check says `ready` (the build checks it);
+   `<page>` is `page` and `<plain>` is `--plain`.
+   (`pwd` prints the Prova's folder on the error output, and the last command's own lines go to `run/page.txt`:
+   stdout is empty.) No card in the Prova: what it would say, the closing lines say.
+   `<name>` is `prova` in the fallback of SKILL.md, step 4.3 (with `--made-up --plain`, as here).
+   The check says `ready` (the build checks it);
    its warnings are the Prova's own, never for the tecnico. If it isn't ready, that is Impresa in un minuto's
    fault: SKILL.md, **When Impresa in un minuto itself goes wrong**.
 2. Then say only this, and in the same turn open the portal (SKILL.md, step 4.1, without sending its
@@ -88,8 +90,9 @@ real filing's details (the c/c, the order of the signatures, the PEC receipt).
    Guarda la bozza qui accanto (Pratiche in bozza › PROVA NON INVIARE): scegli una casella e chiedimi cosa ho scritto e perché. Poi cancellala."
    Something didn't match, or wasn't read: the head `✅ … compilata in <T>.`, then a `✅` line for what was read
    and a `⚠️` line for a value that doesn't match, a file the portal doesn't hold or a check not done, then the
-   last two lines. (The Prova's receipt sits in quadro d: SKILL.md step 5.3 reads it there, with
-   `review.py run --quadri`.) No file, no list of values, no
+   last two lines.
+   (The Prova's receipt sits in quadro d: SKILL.md step 5.3 reads it there, with `review.py run --quadri`.)
+   No file, no list of values, no
    portal warnings (the portal's warnings on made-up values, such as the PEC, are expected), no
    declarations' text, no list of their steps, no diritti, no procura, no second compilation, no offer of
    anything more.

@@ -88,6 +88,34 @@
    "type": "text",
    "question": "Perché non sono dovuti diritti: l'esenzione e la norma del tariffario del Comune che la prevede (al massimo 300 caratteri)"
   },
+  "dehors_periodo": {
+   "type": "choice",
+   "question": "Per quale periodo occupi l'area? annuale (la prima volta); rinnovo (di un'autorizzazione che hai già); stagionale (una stagione); chiusura (con l'area libera nel giorno di chiusura settimanale); altro",
+   "options": [
+    "annuale",
+    "rinnovo",
+    "stagionale",
+    "chiusura",
+    "altro"
+   ],
+   "default": ""
+  },
+  "dehors_rinnovo_numero": {
+   "type": "text",
+   "question": "Il numero dell'autorizzazione da rinnovare (10 caratteri al massimo)"
+  },
+  "dehors_rinnovo_data": {
+   "type": "date",
+   "question": "La data di quell'autorizzazione"
+  },
+  "dehors_chiusura_giorno": {
+   "type": "text",
+   "question": "Quale giorno di chiusura settimanale resta con l'area libera (50 caratteri al massimo)"
+  },
+  "dehors_periodo_altro": {
+   "type": "text",
+   "question": "Come occupi l'area, con l'area libera (200 caratteri al massimo)"
+  },
   "occupazione_area_tipo": {
    "type": "choice",
    "question": "L'area è pubblica o privata ad uso pubblico? pubblica; privata (area privata ad uso pubblico)",
@@ -962,28 +990,78 @@
     {
      "id": "r1c1p1reg:radio:0_clone",
      "kind": "radio",
-     "when": "{{ask.stagionale|not}}",
+     "when": "{{ask.stagionale,ask.dehors_periodo|periodo|is_annuale}}",
      "label": "a carattere annuale (1° anno di richiesta)"
+    },
+    {
+     "id": "r3c1p3reg:radio:1_clone",
+     "kind": "radio",
+     "when": "{{ask.stagionale,ask.dehors_periodo|periodo|is_rinnovo}}",
+     "label": "a carattere annuale - rinnovo di autorizzazione"
+    },
+    {
+     "id": "r3c2p5reg:txt",
+     "kind": "text",
+     "value": "{{ask.dehors_rinnovo_numero}}",
+     "when": "{{ask.stagionale,ask.dehors_periodo|periodo|is_rinnovo}}",
+     "max": 10,
+     "label": "numero"
+    },
+    {
+     "id": "r3c3p7reg:calendar_input",
+     "kind": "date",
+     "value": "{{ask.dehors_rinnovo_data|date_it}}",
+     "when": "{{ask.stagionale,ask.dehors_periodo|periodo|is_rinnovo}}",
+     "label": "del"
     },
     {
      "id": "r5c1p9reg:radio:2_clone",
      "kind": "radio",
-     "when": "{{ask.stagionale}}",
+     "when": "{{ask.stagionale,ask.dehors_periodo|periodo|is_stagionale}}",
      "label": "a carattere stagionale"
     },
     {
      "id": "r5c2p11reg:calendar_input",
      "kind": "date",
      "value": "{{ask.dehors_dal|date_it}}",
-     "when": "{{ask.stagionale}}",
+     "when": "{{ask.stagionale,ask.dehors_periodo|periodo|is_stagionale}}",
      "label": "dal giorno"
     },
     {
      "id": "r5c3p13reg:calendar_input",
      "kind": "date",
      "value": "{{ask.dehors_al|date_it}}",
-     "when": "{{ask.stagionale}}",
+     "when": "{{ask.stagionale,ask.dehors_periodo|periodo|is_stagionale}}",
      "label": "al giorno"
+    },
+    {
+     "id": "r8c1p16reg:radio:3_clone",
+     "kind": "radio",
+     "when": "{{ask.stagionale,ask.dehors_periodo|periodo|is_chiusura}}",
+     "label": "nel giorno di chiusura settimanale"
+    },
+    {
+     "id": "r8c2p18reg:txt",
+     "kind": "text",
+     "value": "{{ask.dehors_chiusura_giorno}}",
+     "when": "{{ask.stagionale,ask.dehors_periodo|periodo|is_chiusura}}",
+     "max": 50,
+     "label": "specificare"
+    },
+    {
+     "id": "r10c1p20reg:radio:4_clone",
+     "kind": "radio",
+     "when": "{{ask.stagionale,ask.dehors_periodo|periodo|is_altro}}",
+     "label": "altro"
+    },
+    {
+     "id": "r10c2p22reg:txt",
+     "kind": "text",
+     "value": "{{ask.dehors_periodo_altro}}",
+     "when": "{{ask.stagionale,ask.dehors_periodo|periodo|is_altro}}",
+     "max": 200,
+     "label": "specificare",
+     "nth": 2
     }
    ]
   },
