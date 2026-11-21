@@ -494,8 +494,11 @@ async function attempt(tab, runDir, opts, run) {
   // fixes: [{section, field, set}], what the page really has for a field (a moved id, a renamed label).
   let resume0 = typeof opts.resume === "object" ? { ...opts.resume } : {};
   if (opts.resume === true) {
-    const last = JSON.parse(fs.readFileSync(path.join(runDir, "report.json"), "utf8"));
-    if (last.result !== "stopped" || !last.at || !last.url) fail("no stopped run in this folder to resume");
+    // The last stop a run can go on from (private/resume.json): a later run that failed before it began (not logged
+    // in) doesn't erase it.
+    const point = path.join(priv, "resume.json");
+    const last = fs.existsSync(point) ? JSON.parse(fs.readFileSync(point, "utf8")) : JSON.parse(fs.readFileSync(path.join(runDir, "report.json"), "utf8"));
+    if (!last.at || !last.url) fail("no stopped run in this folder to resume");
     const keptFile = path.join(priv, "kept.json");
     resume0 = { url: last.url, from: { [last.at.phase === "section" ? "section" : "wizard"]: last.at.index },
       kept: fs.existsSync(keptFile) ? JSON.parse(fs.readFileSync(keptFile, "utf8")) : [] };
@@ -533,7 +536,12 @@ async function attempt(tab, runDir, opts, run) {
   } finally {
     run.report.total_seconds = +((Date.now() - t0) / 1000).toFixed(1);
     const write = (name, data) => { fs.mkdirSync(priv, { recursive: true, mode: 0o700 }); fs.writeFileSync(path.join(priv, name), data, { mode: 0o600 }); };
-    write("kept.json", JSON.stringify(run.report.kept || [], null, 2));
+    const r = run.report;
+    // A run that never began (not logged in, no draft) leaves the earlier run's files as they were.
+    if (!r.at && !(r.sections || []).length && r.result !== "filled") { fs.writeFileSync(path.join(runDir, "report.json"), JSON.stringify(publicReport(run), null, 2)); return; }
+    if (r.result === "stopped" && r.at && r.url) write("resume.json", JSON.stringify({ at: r.at, url: r.url }));
+    if (r.result === "filled") fs.rmSync(path.join(priv, "resume.json"), { force: true });
+    if ((r.kept || []).length || !fs.existsSync(path.join(priv, "kept.json"))) write("kept.json", JSON.stringify(r.kept || [], null, 2));
     write("held.json", JSON.stringify(held.details, null, 2));
     if (held.declarations.length || !fs.existsSync(path.join(priv, "declarations.json"))) write("declarations.json", JSON.stringify(held.declarations, null, 2));
     if (held.preview) write("anteprima.pdf", held.preview);
