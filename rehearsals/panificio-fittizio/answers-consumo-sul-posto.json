@@ -1,0 +1,17 @@
+{
+ "extras": [],
+ "attivita_852": [
+  "forno",
+  "pane",
+  "dettaglio_alimenti"
+ ],
+ "descrizione": "PROVA NON INVIARE - panificio consumo sul posto",
+ "oggetto": "Apertura di un panificio (pane e pizza) con vendita al banco e consumo sul posto, notifica sanitaria.",
+ "consumo_sul_posto": "true",
+ "in_centro_commerciale": "false",
+ "diritti_euro": "120",
+ "stagionale": "false",
+ "in_ccn": "false",
+ "responsabile_produzione_altro": "false",
+ "diritti_esente": false
+}

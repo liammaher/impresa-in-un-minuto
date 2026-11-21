@@ -22,6 +22,8 @@ panificio generato" and stops before the declarations, payment, signing and send
 | Date | Browser | Case | Result |
 |---|---|---|---|
 | 2026-10-28 | pane |  | Stopped at the address: "Via Foria" is also inside "Via Santa Maria Avvocata a Foria". `inpage.js` now takes the street named exactly. Resumed on the draft: every value kept and read back on a fresh load. |
+| 2026-11-21 | pane | `answers-stagionale.json` | **filled** in 105 s |
+| 2026-11-21 | pane | `answers-consumo-sul-posto.json` | **filled** in 108 s |
 
 <!-- /runs -->
 

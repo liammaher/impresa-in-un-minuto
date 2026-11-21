@@ -36,7 +36,7 @@ sessionStorage `pv-batch` with in-page waits under 45 s (a run takes 100-140 s) 
 Building the bundle takes about 2 minutes for 4 runs: run it as a background job and wait for its notification.
 With --bundle, check.js's `stale` list needs no action: the bundle carries the runner and the steps and stores them itself (2026-11-21:
 check.js said the new steps were stale, only the pick was done, and the five runs used them). The pane may also still be signed in from an
-earlier turn (it was all of round 23's turn): read the home list (`document.body.innerText` on cmd/home) before asking for the SPID sign-in.
+earlier turn (round 25: it was not after about five hours: `cmd/home` landed on iasu.infocamere.it, the SPID sign-in the person does) (it was all of round 23's turn): read the home list (`document.body.innerText` on cmd/home) before asking for the SPID sign-in.
 No rehearsal named: every one with a generated steps file and the answers file. A rehearsal
 named `NAME:ANSWERS.json` runs with that answers file instead (one pratica, several cases: each
 its own run, `NAME/ANSWERS` in the results). `NAME:ANSWERS.json:VALUES.json` runs that case on

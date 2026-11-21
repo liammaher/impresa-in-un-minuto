@@ -1262,6 +1262,28 @@ mapped one: «Tipologia» was hardcoded to «insegna d'esercizio» on the sign's
   (the four offered filled, the seven others another procedure's); `test_gen` holds the ask, the two selects' values, the filter and the three runs. The tools' timings: `schema_branches.py suap` about a minute alone,
   `plan_diff.py` over every rehearsal 9 minutes, `rerun.py --bundle` 2 minutes for 4 runs (a background job: wait for its notification), one portal run 100-140 s.
 
+**Round 25 (2026-11-21): the variants of a shop's and a bakery's pratiche.** Two bundles, 16 runs: **15 filled, 1 stopped**. The pane's portal session had expired since round 24 (about five hours: navigating to `cmd/home` landed on
+`iasu.infocamere.it`), so the SPID sign-in was asked before the first file pick.
+
+- **Why so many boxes read «mapped, no case yet».** A rehearsal with no `fixture.json` of its own is counted as a case only when a recorded run carries `values` (`schema_branches.borrowed_fixture`); 50 SUAP rehearsals have none. Re-running all
+  50 base cases on the pizzeria's fixture would resolve about 29 boxes (378 → 406 filled, estimated by pointing `borrowed_fixture` at it), so the rest are real variants no case takes: that is what this round wrote.
+- **The bakery's take-over (`subingresso-panificio-fittizio`), 8 runs, all filled (91-97 s).** One case for each cause of the transfer (affitto d'azienda, donazione, fusione, fallimento, successione, altre cause), the premises' title as
+  proprietario and as «altro: comodato» (the base case, compravendita with affittuario, was re-run with `values` so it counts), and a take-over with consumption on the spot. The notary's boxes and the deed's dates exist only for the four causes with a
+  deed (compravendita, affitto, donazione, fusione): the three others' answers have none. Nothing was moved or loose.
+- **The medium shop (`media-struttura-fittizia`), base + 5 variants: 4 filled, 1 stopped.** ME instead of MA/M, wholesale too, seasonal (1 June - 30 September) and «Generi di monopolio» filled (67-93 s). **The mixed food and non-food case
+  (`answers-alimentare.json`) stopped at «Alimentare»: `r29c1p65reg:chk: didn't stay ticked`** (44.8 s in). The crawl has «Alimentare» at `r25c1p53reg:chk` (the live draft agrees: read by hand, nothing saved) and the same box at `r29c1p65reg:chk` in a
+  `moved` entry (rows four lower, as when an earlier choice opens a block), so the runner ticked the id of a layout the live page did not have. The base case (only «Non alimentare», `r27c1p59`) and «Non alimentare» + monopolio, which share the
+  same `moved` table, fill; only a run that ticks «Alimentare» first stops. Not found: which choice the runner believed had shifted the rows (a food-only case would say whether it is «Alimentare» or the pair). `test_gen` pins the
+  stop (`stopped` for this case), so the day a run fills it the test says so.
+- **The bakery's opening (`panificio-fittizio`), 2 runs filled (105 and 108 s):** a seasonal one (1 June - 30 September with the start and end dates, the notification's «Avvio con decorrenza» and «Termine dell'attività») and one with consumption on the spot.
+- **The counter** (`schema_branches.py suap`, all 268 crawls): **406 filled (was 378), 375 mapped with no case (was 403)**, 472 not mapped as before. Those 472 are mostly food-production forms (the bakery's Reg. 852 checklist, 85 + 88 boxes) and the emissions
+  authorizations, not a shop's or a bar's. `test_gen` holds the cases (the notary's boxes only for the four causes, the recorded runs).
+- **Diagnosing a stopped run** (the medium shop's mixed case): the pane's `pv-batch` entry has `at` (`section`, `label`, `phase`, `field`) and `error`; the id in the error comes from the steps file, so compare it with the live draft's ids
+  (`__draft.controls()` on the section, nothing saved) and with the crawl's `moved` table for the section (`catalogue/F839/sections/<crawl>.json`, `branches[].moved`: pairs of ids a choice shifts), which is how `r25c1p53reg:chk`
+  (live, and the crawl's own) and `r29c1p65reg:chk` (the shifted one) were told apart. A run that stops leaves its section **unsaved** on the draft (the section read back empty), so the draft shows nothing of what it had filled there.
+  A click on a checkbox's label through the pane's `left_click` did not show the box checked in one try (the page scrolled to the top): unexplored; the runner's `kind: checkbox` is what ticks them.
+- **Tool facts met in this round**: `run.py plan` needs `--made-up` for rehearsals whose file asks are the person's; a zsh `for k in $LIST` does not split (`${=LIST}`); the portal session expires after some hours (`rerun.py`'s docstring).
+
 ## What the portal does that bit us
 
 - **Selects take an option's own text, and two screens may spell one option differently.** `inpage.js`'s `select()` matches the option's value or its text (case-insensitive), or a code before a colon, nothing looser; the sign's
@@ -1270,8 +1292,9 @@ mapped one: «Tipologia» was hardcoded to «insegna d'esercizio» on the sign's
   does on the client, and the portal's PrimeFaces label follows.
 - **A bundle starts itself.** Once its file is picked the pane says «started: N queued» (`window.pvBundle`) and the loop is running: do not run `loop.js`; poll `window.pvBatchBusy` and `sessionStorage` `pv-batch` with in-page
   waits under 45 s until busy is false, then read every run's `moved`, `loose` and `alerts` before recording. The new drafts are not on the home list until the page is loaded again.
-- **A new answers file is «new, no plan» in `plan_diff.py`.** It plans on the P6 fixture, a CILA architect's, which every SUAP recipe refuses first («Per ora per una ditta individuale o una srl...»): that is not a
-  failure; the case's own run is the proof.
+- **`plan_diff.py` was blind to the SUAP until round 25.** It planned every case on the CILA architect's P6 fixture, which every SUAP recipe refuses first («Per ora per una ditta individuale...»), so a SUAP case printed «no plan» before and after
+  and the tool said «0 cases plan differently» without comparing anything (rounds 22-24 included; round 24's check was re-done, see round 25). It now plans each rehearsal on its own fixture, else the `values` its recorded runs name, else (SUAP) the
+  pizzeria's (`fixture_for`), and its last line counts the cases it could not plan on either side as «NOT compared». A new answers file that prints «new (no plan: ...)» is now a real stop of that case.
 
 - **Street names without their particles.** The location's street lookup and the Comune's
   stradario (`internal/napoli`, 2025) don't always name a street alike: the stradario's VIA DEI

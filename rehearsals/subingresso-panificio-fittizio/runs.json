@@ -4,5 +4,69 @@
   "answers": "answers.json",
   "result": "filled",
   "seconds": 101.4
+ },
+ {
+  "date": "2026-11-21",
+  "answers": "answers.json",
+  "result": "filled",
+  "seconds": 95.2,
+  "browser": "pane",
+  "values": "rehearsals/pizzeria-fittizia/fixture.json"
+ },
+ {
+  "date": "2026-11-21",
+  "answers": "answers-affitto-azienda.json",
+  "result": "filled",
+  "seconds": 93.8,
+  "browser": "pane",
+  "values": "rehearsals/pizzeria-fittizia/fixture.json"
+ },
+ {
+  "date": "2026-11-21",
+  "answers": "answers-donazione.json",
+  "result": "filled",
+  "seconds": 97,
+  "browser": "pane",
+  "values": "rehearsals/pizzeria-fittizia/fixture.json"
+ },
+ {
+  "date": "2026-11-21",
+  "answers": "answers-fusione.json",
+  "result": "filled",
+  "seconds": 96.6,
+  "browser": "pane",
+  "values": "rehearsals/pizzeria-fittizia/fixture.json"
+ },
+ {
+  "date": "2026-11-21",
+  "answers": "answers-fallimento.json",
+  "result": "filled",
+  "seconds": 94.4,
+  "browser": "pane",
+  "values": "rehearsals/pizzeria-fittizia/fixture.json"
+ },
+ {
+  "date": "2026-11-21",
+  "answers": "answers-successione.json",
+  "result": "filled",
+  "seconds": 90.8,
+  "browser": "pane",
+  "values": "rehearsals/pizzeria-fittizia/fixture.json"
+ },
+ {
+  "date": "2026-11-21",
+  "answers": "answers-altre-cause.json",
+  "result": "filled",
+  "seconds": 91.2,
+  "browser": "pane",
+  "values": "rehearsals/pizzeria-fittizia/fixture.json"
+ },
+ {
+  "date": "2026-11-21",
+  "answers": "answers-consumo-sul-posto.json",
+  "result": "filled",
+  "seconds": 90.5,
+  "browser": "pane",
+  "values": "rehearsals/pizzeria-fittizia/fixture.json"
  }
 ]

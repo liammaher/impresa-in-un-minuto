@@ -6,5 +6,53 @@
   "seconds": 75.4,
   "browser": "pane",
   "note": "Filled (75 s), read back on a fresh load. The first run stopped: «Esercizio autonomo» is required (SI opens four required «Organizzato come» rows) and the total must be a decimal (\"300.00\"); both fixed in the dictionary."
+ },
+ {
+  "date": "2026-11-21",
+  "answers": "answers.json",
+  "result": "filled",
+  "seconds": 94.5,
+  "browser": "pane",
+  "values": "rehearsals/pizzeria-fittizia/fixture.json"
+ },
+ {
+  "date": "2026-11-21",
+  "answers": "answers-me.json",
+  "result": "filled",
+  "seconds": 66.5,
+  "browser": "pane",
+  "values": "rehearsals/pizzeria-fittizia/fixture.json"
+ },
+ {
+  "date": "2026-11-21",
+  "answers": "answers-ingrosso.json",
+  "result": "filled",
+  "seconds": 67.7,
+  "browser": "pane",
+  "values": "rehearsals/pizzeria-fittizia/fixture.json"
+ },
+ {
+  "date": "2026-11-21",
+  "answers": "answers-stagionale.json",
+  "result": "filled",
+  "seconds": 70.5,
+  "browser": "pane",
+  "values": "rehearsals/pizzeria-fittizia/fixture.json"
+ },
+ {
+  "date": "2026-11-21",
+  "answers": "answers-alimentare.json",
+  "result": "stopped",
+  "seconds": 44.8,
+  "browser": "pane",
+  "values": "rehearsals/pizzeria-fittizia/fixture.json"
+ },
+ {
+  "date": "2026-11-21",
+  "answers": "answers-monopolio.json",
+  "result": "filled",
+  "seconds": 93,
+  "browser": "pane",
+  "values": "rehearsals/pizzeria-fittizia/fixture.json"
  }
 ]

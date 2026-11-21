@@ -1,0 +1,22 @@
+{
+ "extras": [],
+ "descrizione": "PROVA NON INVIARE - subingresso panificio fallimento",
+ "oggetto": "Subingresso per fallimento nel panificio di via Foria 120, Napoli (pane e pizza, vendita al banco, senza consumo sul posto).",
+ "notifica_852_data": "2026-11-02",
+ "locali_titolo": "affittuario",
+ "subingresso_causa": "Fallimento",
+ "data_inizio_attivita": "2026-11-02",
+ "cedente_denominazione": "Forno Precedente di Mario Esempio",
+ "cedente_cf": "SMPMRA70A01F839J",
+ "tari_denuncia_data": "2026-11-02",
+ "forni_numero": "1",
+ "forni_mq": "4",
+ "forni_kg_24h": "200",
+ "forni_altre_caratteristiche": "nessuna",
+ "forno_descrizione": "forno elettrico a piani, 30 kW",
+ "consumo_sul_posto": "false",
+ "responsabile_produzione_altro": "false",
+ "subingresso_atto_doc": "rehearsals/subingresso-panificio-fittizio/files/atto-cessione.pdf",
+ "diritti_euro": "50",
+ "diritti_esente": false
+}
