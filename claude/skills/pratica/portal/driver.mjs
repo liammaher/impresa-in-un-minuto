@@ -19,10 +19,11 @@
 // page may build code from a string, so a page function goes to evaluate as a string expression.
 
 const G = (globalThis.__impresaDriver = globalThis.__impresaDriver || { run: null });
-// ChatGPT's browser acts only while a call of the JavaScript tool is running ("Browser Use could not read
-// requirements" between calls, 2026-11-21): a run touches the browser only while wait() or run() holds the gate
-// open, and waits at the gate in between.
-G.gate = G.gate || { open: false, inflight: 0 };
+// ChatGPT's browser acts only for the call of the JavaScript tool that is running, and an action belongs to the call
+// whose code made it ("Browser Use could not read requirements", then "node_repl exec context not found", 2026-11-21):
+// a run started in one call can't act in the next. So the run queues each browser action, and wait() (or run()), in
+// the call that is running, performs them: they belong to that call.
+G.exec = G.exec || { queue: [], inflight: 0 };
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const norm = (s) => (s || "").normalize("NFKD").replace(/[^\x00-\x7f]/g, "").replace(/\s+/g, " ").trim().toLowerCase();
 class StepError extends Error {}
@@ -353,9 +354,10 @@ function pageApi(cfg) {
 const PENDING = new Set(["click", "dblclick", "fill", "press", "pressSequentially", "type", "selectOption", "check", "uncheck",
   "setChecked", "waitFor", "evaluate", "goto", "reload", "waitForEvent", "setFiles", "count", "isVisible", "textContent",
   "innerText", "getAttribute"]);
-const NO_CALL = /could not read requirements|browser actions are blocked|access host is unavailable/i;
-// The tab, its playwright, locators and file choosers, each action held at the gate (and tried again on a gap
-// between calls); the rest (locator, nth, first) as they are.
+const NO_CALL = /could not read requirements|browser actions are blocked|access host is unavailable|exec context not found/i;
+const enqueue = (fn) => new Promise((res, rej) => G.exec.queue.push({ fn, res, rej }));
+// The tab, its playwright, locators and file choosers: each action queued for the running call (and queued again on a
+// gap between calls); the rest (locator, nth, first) as they are.
 function gated(obj) {
   return new Proxy(obj, {
     get(t, p) {
@@ -364,15 +366,13 @@ function gated(obj) {
       if (PENDING.has(p)) {
         return async (...a) => {
           for (let k = 0; ; k++) {
-            while (!G.gate.open) await sleep(100);
-            G.gate.inflight++;
             try {
-              const r = await v.apply(t, a);
+              const r = await enqueue(() => v.apply(t, a));
               return r && typeof r === "object" && typeof r.setFiles === "function" ? gated(r) : r;
             } catch (e) {
               if (k < 8 && NO_CALL.test(e.message || "")) { await sleep(500); continue; }
               throw e;
-            } finally { G.gate.inflight--; }
+            }
           }
         };
       }
@@ -380,9 +380,24 @@ function gated(obj) {
     },
   });
 }
+// Performs the queued actions from the running call until stop(); then lets those under way finish (none new).
+async function serve(stop, drainMs = 25000) {
+  while (!stop()) {
+    while (G.exec.queue.length) {
+      const j = G.exec.queue.shift();
+      G.exec.inflight++;
+      let p;
+      try { p = Promise.resolve(j.fn()); } catch (e) { p = Promise.reject(e); }
+      p.then(j.res, j.rej).finally(() => { G.exec.inflight--; });
+    }
+    await sleep(15);
+  }
+  for (const end = Date.now() + drainMs; G.exec.inflight > 0 && Date.now() < end;) await sleep(15);
+}
 
 export function start(tab, runDir, opts = {}) {
   if (G.run && G.run.report.result === "running") return "a run is already going: wait for it";
+  G.exec.queue = []; // an earlier run's actions, never performed now
   const run = (G.run = { report: { result: "running", sections: [], at: null, browser: "chatgpt" }, scrub: (s) => String(s), promise: null });
   run.promise = attempt(gated(tab), runDir, opts, run).catch((e) => {
     run.report.result = "stopped";
@@ -391,17 +406,15 @@ export function start(tab, runDir, opts = {}) {
   return "started";
 }
 
-// Holds the gate open for ms (the run works only meanwhile), then lets the action under way finish: keep ms well
-// under the call's timeout (the JavaScript tool's default is 30 s).
+// Performs the run's browser actions for ms (the run moves only meanwhile), then lets the action under way finish:
+// keep ms well under the call's timeout (the JavaScript tool's default is 30 s).
 export async function wait(ms = 20000) {
   const run = G.run;
   if (!run) return { result: "none" };
-  G.gate.open = true;
-  try { await Promise.race([run.promise, sleep(ms)]); }
-  finally {
-    G.gate.open = false;
-    for (const end = Date.now() + 25000; G.gate.inflight > 0 && Date.now() < end;) await sleep(50);
-  }
+  let done = false;
+  run.promise.then(() => { done = true; });
+  const end = Date.now() + ms;
+  await serve(() => done || Date.now() > end);
   return publicReport(run);
 }
 
@@ -409,8 +422,9 @@ export async function wait(ms = 20000) {
 export async function run(tab, runDir, opts = {}) {
   const said = start(tab, runDir, opts);
   if (said !== "started") return { result: "refused", error: said };
-  G.gate.open = true;
-  try { await G.run.promise; } finally { G.gate.open = false; }
+  let done = false;
+  G.run.promise.then(() => { done = true; });
+  await serve(() => done);
   return publicReport(G.run);
 }
 
