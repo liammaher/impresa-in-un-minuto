@@ -1436,6 +1436,27 @@ asks:
   orario_dalle: {type: text, question: "Orario di apertura, uguale per tutti i giorni di apertura (hh:mm)"}
   orario_alle: {type: text, question: "Orario di chiusura (hh:mm)"}
   giorno_chiusura: {type: text, question: "Il giorno di chiusura settimanale ('nessuno' se non c'è)", propose: "nessuno"}
+  # The dehors' hours when they aren't one spell every open day (round 23; the portal's «dichiarazione relativa agli orari ed ai giorni di apertura»,
+  # read on a draft): «oppure tutti i giorni» has two dalle/alle pairs, a second spell (a lunch break), and «orari diversi giorno per giorno» has a row
+  # a weekday (a tick and two pairs). A day left empty is closed. Defaults, so the answers that give one spell keep working.
+  orario_dalle2: {type: text, question: "Se c'è una pausa, a che ora riapri la sera (hh:mm), uguale per tutti i giorni? Lascia vuoto se l'orario è continuato", default: ""}
+  orario_alle2: {type: text, question: "E a che ora chiudi la sera (hh:mm)?", default: ""}
+  orari_diversi: {type: yes_no, question: "Gli orari cambiano da un giorno all'altro?", default: "false"}
+  orario_lunedi: {type: text, format: fasce, question: "L'orario di lunedì, come 12:00-15:00 (con una pausa: 12:00-15:00, 19:00-23:30). Vuoto se è chiuso", default: ""}
+  orario_martedi: {type: text, format: fasce, question: "L'orario di martedì, come 12:00-15:00 (con una pausa: 12:00-15:00, 19:00-23:30). Vuoto se è chiuso", default: ""}
+  orario_mercoledi: {type: text, format: fasce, question: "L'orario di mercoledì, come 12:00-15:00 (con una pausa: 12:00-15:00, 19:00-23:30). Vuoto se è chiuso", default: ""}
+  orario_giovedi: {type: text, format: fasce, question: "L'orario di giovedì, come 12:00-15:00 (con una pausa: 12:00-15:00, 19:00-23:30). Vuoto se è chiuso", default: ""}
+  orario_venerdi: {type: text, format: fasce, question: "L'orario di venerdì, come 12:00-15:00 (con una pausa: 12:00-15:00, 19:00-23:30). Vuoto se è chiuso", default: ""}
+  orario_sabato: {type: text, format: fasce, question: "L'orario di sabato, come 12:00-15:00 (con una pausa: 12:00-15:00, 19:00-23:30). Vuoto se è chiuso", default: ""}
+  orario_domenica: {type: text, format: fasce, question: "L'orario di domenica, come 12:00-15:00 (con una pausa: 12:00-15:00, 19:00-23:30). Vuoto se è chiuso", default: ""}
+  # The dehors' period beyond the first year or one season: the portal's five exclusive choices («a carattere annuale 1° anno», «rinnovo di
+  # autorizzazione» with its number and date, «stagionale», «con area libera» in the weekly closing day or «altro», each with a specify box).
+  # Empty: what `stagionale` says (annual first year, or seasonal), so the first cases' answers are unchanged.
+  dehors_periodo: {type: choice, question: "Per quale periodo occupi l'area? annuale (la prima volta); rinnovo (di un'autorizzazione che hai già); stagionale (una stagione); chiusura (con l'area libera nel giorno di chiusura settimanale); altro", options: [annuale, rinnovo, stagionale, chiusura, altro], default: ""}
+  dehors_rinnovo_numero: {type: text, question: "Il numero dell'autorizzazione da rinnovare (10 caratteri al massimo)"}
+  dehors_rinnovo_data: {type: date, question: "La data di quell'autorizzazione"}
+  dehors_chiusura_giorno: {type: text, question: "Quale giorno di chiusura settimanale resta con l'area libera (50 caratteri al massimo)"}
+  dehors_periodo_altro: {type: text, question: "Come occupi l'area, con l'area libera (200 caratteri al massimo)"}
   # The request for hours outside the Comune's rules (350 characters each, as the portal counts them).
   orario_deroga: {type: text, question: "Quale orario di apertura chiedi in deroga? Scrivi i giorni e le ore (350 caratteri al massimo)"}
   deroga_motivazione: {type: text, question: "Perché chiedi la deroga? La motivazione, in poche righe (350 caratteri al massimo)"}
@@ -3308,6 +3329,25 @@ sections:
     supports:
       - {if: "{{ask.bollo_esenzione|is_onlus}}", when: "{{ask.bollo_onlus_esercizio}}", else: "L'esenzione ONLUS è cessata con il regime ONLUS il 1° gennaio 2026, salvo per un periodo d'imposta iniziato prima di tale data: un'ex ONLUS iscritta al RUNTS è esente come ets."}
     suap_only: ["Solo la marca da €16,00 per la domanda; non è richiesta alcuna marca da bollo per l'autorizzazione", "Non è richiesta alcuna marca da bollo per l'autorizzazione perché il procedimento può concludersi con il silenzio assenso"]
+    # Round 23 (2026-11-21), the SUAP counter's 17 bollo options: the 7 exemption reasons are mapped (`bollo_motivo`, run.BOLLO_ESENZIONE) but no SUAP recipe
+    # takes one (an ETS, a sports club or a public body is no ditta individuale or srl: the recipes refuse the legal form first). The two
+    # «silenzio assenso» radios and the 10 procedures of their dropdown are the choices of pratiche no recipe maps: the fire brigade's project
+    # evaluation (PIN 1), an emissions or drain authorization, a hotel's classification, the structures' deposits, a photovoltaic PAS, the Provincia's
+    # nulla osta; a restaurant, shop or dehors files none of them (a dehors is a concession: «Due marche»). `schema_branches.py suap` counts them «a
+    # procedure no recipe maps», not «not mapped». Read in the three SUE crawls that hold this section's fields (one fingerprint, 152 crawls).
+    other_procedure:
+      - "Solo la marca da €16,00 per la domanda; non è richiesta alcuna marca da bollo per l'autorizzazione"
+      - "Non è richiesta alcuna marca da bollo per l'autorizzazione perché il procedimento può concludersi con il silenzio assenso"
+      - "adesione all'autorizzazione generale per le emissioni in atmosfera"
+      - "domanda per prima classificazione / rinnovo o modifica di classificazione"
+      - "procedura abilitativa semplificata e comunicazione per gli impianti alimentati da energia rinnovabile"
+      - "denuncia opere in conglomerato cementizio armato"
+      - "richiesta di nulla osta alla Provincia/città metropolitana per l'occupazione di suolo pubblico"
+      - "presentazione della Valutazione progetto ai VVF (art. 3 DPR n. 151/2011)"
+      - "presentazione della Valutazione progetto ai VVF per installazione impianto di stoccaggio"
+      - "rilascio nulla osta allo scarico in pubblica fognatura"
+      - "deposito del collaudo statico"
+      - "deposito relazione a struttura ultimata"
     fields:
       - {kind: radio, label: "Il pagamento è dovuto e si intende assolvere l'obbligo tramite il circuito digitale pagoPA", when: "{{ask.bollo_marche|not}} {{ask.bollo_esenzione|is_no}}"}
       - {kind: radio, label: "Due marche da €16,00 ciascuna", when: "{{ask.bollo_marche|not}} {{ask.bollo_esenzione|is_no}}"}
@@ -5973,8 +6013,11 @@ sections:
   # in every recipe. What the form does with it, read on a draft (2026-11-21, nothing saved): "Soggetta a tutela monumentale ai sensi della
   # parte II del D.Lgs. 42/04" opens «e, pertanto, con la presente istanza chiede alla Soprintendenza ... il rilascio dell'autorizzazione di
   # competenza, ai sensi dell'art. 49» with a Si and a No; Si adds «Attenzione: verificare di selezionare, nella sezione 'Interventi
-  # eventuali', la relativa autorizzazione», No adds nothing. So the authorization is an intervento of the wizard, and the wizard
-  # catalogue lists none for the sign's sectors: that, not a box here, is what is missing before the refusal can go. Every recipe with this section asks `insegna_vincolo` and `insegna_bene_culturale` (test_preflight holds it: the
+  # eventuali', la relativa autorizzazione», No adds nothing. Round 23 read the «interventi eventuali» screens of the 118 crawls that have
+  # one (not `suap-wizard.json`, which holds operations only): 37 options, none the Soprintendenza's authorization (the only art. 49
+  # options anywhere in the wizard are the radio-electric installations', D.Lgs. 259/2003). The portal's note is generic, so the
+  # authorization is not filed with the sign: it comes first, outside the portal, and the refusal is the law's, not a gap
+  # (test_preflight fails if a crawl ever shows such an option). Every recipe with this section asks `insegna_vincolo` and `insegna_bene_culturale` (test_preflight holds it: the
   # permanent sign ticked "Non soggetta" without asking). The sign's stand-alone SCIA form (`...-scia-4`) has no such section: its two
   # Si/No are in "ulteriori dichiarazioni (mezzi pubblicitari)" below, and a Si there opens no box and no section.
   - section: dichiarazione relativa al vincolo ambientale
@@ -6626,23 +6669,73 @@ sections:
   - section: dichiarazione dell'insegna dell'esercizio
     fields:
       - {kind: text, label: descrizione insegna (nome del locale), value: "{{ask.insegna}}"}
+  # Round 23: the other shape of the hours, a row a weekday («orari diversi giorno per giorno»): a tick and two dalle/alle pairs each, so the
+  # day rows' boxes are «dalle ore»/«alle ore» nth 1-14 and the all-days pairs nth 15-16. A day with no answer isn't ticked (closed).
   - section: dichiarazione relativa agli orari ed ai giorni di apertura
     leave: [dalle ore, alle ore]
     fields:
-      - {kind: radio, label: "oppure tutti i giorni:"}
-      - {kind: text, label: dalle ore, nth: 15, value: "{{ask.orario_dalle}}"}
-      - {kind: text, label: alle ore, nth: 15, value: "{{ask.orario_alle}}"}
+      - {kind: radio, label: "orari diversi giorno per giorno", when: "{{ask.orari_diversi}}"}
+      - {kind: checkbox, label: lunedì, when: "{{ask.orari_diversi}} {{ask.orario_lunedi|filled}}"}
+      - {kind: text, label: dalle ore, nth: 1, value: "{{ask.orario_lunedi|fascia1_dalle}}", when: "{{ask.orari_diversi}} {{ask.orario_lunedi|filled}}"}
+      - {kind: text, label: alle ore, nth: 1, value: "{{ask.orario_lunedi|fascia1_alle}}", when: "{{ask.orari_diversi}} {{ask.orario_lunedi|filled}}"}
+      - {kind: text, label: dalle ore, nth: 2, value: "{{ask.orario_lunedi|fascia2_dalle}}", when: "{{ask.orari_diversi}} {{ask.orario_lunedi|fascia2_dalle|filled}}"}
+      - {kind: text, label: alle ore, nth: 2, value: "{{ask.orario_lunedi|fascia2_alle}}", when: "{{ask.orari_diversi}} {{ask.orario_lunedi|fascia2_dalle|filled}}"}
+      - {kind: checkbox, label: martedì, when: "{{ask.orari_diversi}} {{ask.orario_martedi|filled}}"}
+      - {kind: text, label: dalle ore, nth: 3, value: "{{ask.orario_martedi|fascia1_dalle}}", when: "{{ask.orari_diversi}} {{ask.orario_martedi|filled}}"}
+      - {kind: text, label: alle ore, nth: 3, value: "{{ask.orario_martedi|fascia1_alle}}", when: "{{ask.orari_diversi}} {{ask.orario_martedi|filled}}"}
+      - {kind: text, label: dalle ore, nth: 4, value: "{{ask.orario_martedi|fascia2_dalle}}", when: "{{ask.orari_diversi}} {{ask.orario_martedi|fascia2_dalle|filled}}"}
+      - {kind: text, label: alle ore, nth: 4, value: "{{ask.orario_martedi|fascia2_alle}}", when: "{{ask.orari_diversi}} {{ask.orario_martedi|fascia2_dalle|filled}}"}
+      - {kind: checkbox, label: mercoledì, when: "{{ask.orari_diversi}} {{ask.orario_mercoledi|filled}}"}
+      - {kind: text, label: dalle ore, nth: 5, value: "{{ask.orario_mercoledi|fascia1_dalle}}", when: "{{ask.orari_diversi}} {{ask.orario_mercoledi|filled}}"}
+      - {kind: text, label: alle ore, nth: 5, value: "{{ask.orario_mercoledi|fascia1_alle}}", when: "{{ask.orari_diversi}} {{ask.orario_mercoledi|filled}}"}
+      - {kind: text, label: dalle ore, nth: 6, value: "{{ask.orario_mercoledi|fascia2_dalle}}", when: "{{ask.orari_diversi}} {{ask.orario_mercoledi|fascia2_dalle|filled}}"}
+      - {kind: text, label: alle ore, nth: 6, value: "{{ask.orario_mercoledi|fascia2_alle}}", when: "{{ask.orari_diversi}} {{ask.orario_mercoledi|fascia2_dalle|filled}}"}
+      - {kind: checkbox, label: giovedì, when: "{{ask.orari_diversi}} {{ask.orario_giovedi|filled}}"}
+      - {kind: text, label: dalle ore, nth: 7, value: "{{ask.orario_giovedi|fascia1_dalle}}", when: "{{ask.orari_diversi}} {{ask.orario_giovedi|filled}}"}
+      - {kind: text, label: alle ore, nth: 7, value: "{{ask.orario_giovedi|fascia1_alle}}", when: "{{ask.orari_diversi}} {{ask.orario_giovedi|filled}}"}
+      - {kind: text, label: dalle ore, nth: 8, value: "{{ask.orario_giovedi|fascia2_dalle}}", when: "{{ask.orari_diversi}} {{ask.orario_giovedi|fascia2_dalle|filled}}"}
+      - {kind: text, label: alle ore, nth: 8, value: "{{ask.orario_giovedi|fascia2_alle}}", when: "{{ask.orari_diversi}} {{ask.orario_giovedi|fascia2_dalle|filled}}"}
+      - {kind: checkbox, label: venerdì, when: "{{ask.orari_diversi}} {{ask.orario_venerdi|filled}}"}
+      - {kind: text, label: dalle ore, nth: 9, value: "{{ask.orario_venerdi|fascia1_dalle}}", when: "{{ask.orari_diversi}} {{ask.orario_venerdi|filled}}"}
+      - {kind: text, label: alle ore, nth: 9, value: "{{ask.orario_venerdi|fascia1_alle}}", when: "{{ask.orari_diversi}} {{ask.orario_venerdi|filled}}"}
+      - {kind: text, label: dalle ore, nth: 10, value: "{{ask.orario_venerdi|fascia2_dalle}}", when: "{{ask.orari_diversi}} {{ask.orario_venerdi|fascia2_dalle|filled}}"}
+      - {kind: text, label: alle ore, nth: 10, value: "{{ask.orario_venerdi|fascia2_alle}}", when: "{{ask.orari_diversi}} {{ask.orario_venerdi|fascia2_dalle|filled}}"}
+      - {kind: checkbox, label: sabato, when: "{{ask.orari_diversi}} {{ask.orario_sabato|filled}}"}
+      - {kind: text, label: dalle ore, nth: 11, value: "{{ask.orario_sabato|fascia1_dalle}}", when: "{{ask.orari_diversi}} {{ask.orario_sabato|filled}}"}
+      - {kind: text, label: alle ore, nth: 11, value: "{{ask.orario_sabato|fascia1_alle}}", when: "{{ask.orari_diversi}} {{ask.orario_sabato|filled}}"}
+      - {kind: text, label: dalle ore, nth: 12, value: "{{ask.orario_sabato|fascia2_dalle}}", when: "{{ask.orari_diversi}} {{ask.orario_sabato|fascia2_dalle|filled}}"}
+      - {kind: text, label: alle ore, nth: 12, value: "{{ask.orario_sabato|fascia2_alle}}", when: "{{ask.orari_diversi}} {{ask.orario_sabato|fascia2_dalle|filled}}"}
+      - {kind: checkbox, label: domenica, when: "{{ask.orari_diversi}} {{ask.orario_domenica|filled}}"}
+      - {kind: text, label: dalle ore, nth: 13, value: "{{ask.orario_domenica|fascia1_dalle}}", when: "{{ask.orari_diversi}} {{ask.orario_domenica|filled}}"}
+      - {kind: text, label: alle ore, nth: 13, value: "{{ask.orario_domenica|fascia1_alle}}", when: "{{ask.orari_diversi}} {{ask.orario_domenica|filled}}"}
+      - {kind: text, label: dalle ore, nth: 14, value: "{{ask.orario_domenica|fascia2_dalle}}", when: "{{ask.orari_diversi}} {{ask.orario_domenica|fascia2_dalle|filled}}"}
+      - {kind: text, label: alle ore, nth: 14, value: "{{ask.orario_domenica|fascia2_alle}}", when: "{{ask.orari_diversi}} {{ask.orario_domenica|fascia2_dalle|filled}}"}
+      - {kind: radio, label: "oppure tutti i giorni:", when: "{{ask.orari_diversi|not}}"}
+      - {kind: text, label: dalle ore, nth: 15, value: "{{ask.orario_dalle}}", when: "{{ask.orari_diversi|not}}"}
+      - {kind: text, label: alle ore, nth: 15, value: "{{ask.orario_alle}}", when: "{{ask.orari_diversi|not}}"}
+      - {kind: text, label: dalle ore, nth: 16, value: "{{ask.orario_dalle2}}", when: "{{ask.orari_diversi|not}} {{ask.orario_dalle2|filled}}"}
+      - {kind: text, label: alle ore, nth: 16, value: "{{ask.orario_alle2}}", when: "{{ask.orari_diversi|not}} {{ask.orario_dalle2|filled}}"}
       - {kind: text, label: giorno di chiusura, value: "{{ask.giorno_chiusura}}"}
   - section: dichiarazione relativa all'occupazione di suolo pubblico per attività di somministrazione
     fields:
       - {kind: radio, label: area pubblica, when: "{{ask.area_privata_uso_pubblico|not}}"}
       - {kind: radio, label: area privata ad uso pubblico, when: "{{ask.area_privata_uso_pubblico}}"}
+  # Round 23: the five choices are exclusive and each switches on its own boxes (read on a draft: «numero» and «del» only under the renewal,
+  # «dal giorno»/«al giorno» under the season, one «specificare» under the weekly closing day and another under «altro»). `dehors_periodo`
+  # chooses; empty, `stagionale` does (annual first year, or season), as before.
   - section: dichiarazione del periodo di effettiva occupazione
     fields:
-      - {kind: radio, label: a carattere annuale (1° anno di richiesta), when: "{{ask.stagionale|not}}"}
-      - {kind: radio, label: a carattere stagionale, when: "{{ask.stagionale}}"}
-      - {kind: date, label: dal giorno, value: "{{ask.dehors_dal|date_it}}", when: "{{ask.stagionale}}"}
-      - {kind: date, label: al giorno, value: "{{ask.dehors_al|date_it}}", when: "{{ask.stagionale}}"}
+      - {kind: radio, label: a carattere annuale (1° anno di richiesta), when: "{{ask.stagionale,ask.dehors_periodo|periodo|is_annuale}}"}
+      - {kind: radio, label: a carattere annuale - rinnovo di autorizzazione, when: "{{ask.stagionale,ask.dehors_periodo|periodo|is_rinnovo}}"}
+      - {kind: text, label: numero, value: "{{ask.dehors_rinnovo_numero}}", when: "{{ask.stagionale,ask.dehors_periodo|periodo|is_rinnovo}}"}
+      - {kind: date, label: del, value: "{{ask.dehors_rinnovo_data|date_it}}", when: "{{ask.stagionale,ask.dehors_periodo|periodo|is_rinnovo}}"}
+      - {kind: radio, label: a carattere stagionale, when: "{{ask.stagionale,ask.dehors_periodo|periodo|is_stagionale}}"}
+      - {kind: date, label: dal giorno, value: "{{ask.dehors_dal|date_it}}", when: "{{ask.stagionale,ask.dehors_periodo|periodo|is_stagionale}}"}
+      - {kind: date, label: al giorno, value: "{{ask.dehors_al|date_it}}", when: "{{ask.stagionale,ask.dehors_periodo|periodo|is_stagionale}}"}
+      - {kind: radio, label: nel giorno di chiusura settimanale, when: "{{ask.stagionale,ask.dehors_periodo|periodo|is_chiusura}}"}
+      - {kind: text, label: specificare, nth: 1, value: "{{ask.dehors_chiusura_giorno}}", when: "{{ask.stagionale,ask.dehors_periodo|periodo|is_chiusura}}"}
+      - {kind: radio, label: altro, when: "{{ask.stagionale,ask.dehors_periodo|periodo|is_altro}}"}
+      - {kind: text, label: specificare, nth: 2, value: "{{ask.dehors_periodo_altro}}", when: "{{ask.stagionale,ask.dehors_periodo|periodo|is_altro}}"}
     leave: [numero, del, dal giorno, al giorno, specificare]
   - section: dichiarazione delle misure dell'area richiesta
     fields:

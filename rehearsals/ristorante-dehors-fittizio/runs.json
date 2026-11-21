@@ -12,5 +12,45 @@
   "result": "filled",
   "seconds": 122.9,
   "browser": "pane"
+ },
+ {
+  "date": "2026-11-21",
+  "answers": "answers-orari-pausa.json",
+  "result": "filled",
+  "seconds": 102.6,
+  "browser": "pane",
+  "note": "Nothing moved or loose; the portal's warnings were the made-up PEC, address and cadastral data. Hours: «oppure tutti i giorni» with a second spell (12:00-15:00, 19:00-23:30)."
+ },
+ {
+  "date": "2026-11-21",
+  "answers": "answers-orari-giorni.json",
+  "result": "filled",
+  "seconds": 111.1,
+  "browser": "pane",
+  "note": "Nothing moved or loose; the portal's warnings were the made-up PEC, address and cadastral data. Hours: «orari diversi giorno per giorno», lunedì closed, tuesday-thursday and friday with a break, saturday and sunday one spell."
+ },
+ {
+  "date": "2026-11-21",
+  "answers": "answers-periodo-rinnovo.json",
+  "result": "filled",
+  "seconds": 111,
+  "browser": "pane",
+  "note": "Nothing moved or loose; the portal's warnings were the made-up PEC, address and cadastral data. Period: «a carattere annuale - rinnovo di autorizzazione» with its number and date."
+ },
+ {
+  "date": "2026-11-21",
+  "answers": "answers-periodo-chiusura.json",
+  "result": "filled",
+  "seconds": 111.7,
+  "browser": "pane",
+  "note": "Nothing moved or loose; the portal's warnings were the made-up PEC, address and cadastral data. Period: «con area libera» in the weekly closing day (lunedì)."
+ },
+ {
+  "date": "2026-11-21",
+  "answers": "answers-periodo-altro.json",
+  "result": "filled",
+  "seconds": 106.4,
+  "browser": "pane",
+  "note": "Nothing moved or loose; the portal's warnings were the made-up PEC, address and cadastral data. Period: «con area libera» altro, with its text."
  }
 ]

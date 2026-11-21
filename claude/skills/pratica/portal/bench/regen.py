@@ -13,6 +13,10 @@ and exits 1 if any is refused. --check writes nothing and exits 1 if the lock or
 would change (test_gen runs it). A combination's answers come from its main pratica's, so the
 main pratiche go first. An unrelated pratica whose hash changes is a regression until shown
 otherwise (plan_diff.py).
+
+Naming only the rehearsals a change touches is fast (15 of them: 39 s, 2026-11-21): list them with
+`grep -l "<section name>" rehearsals/*/portal-steps.generated.yaml`, and in zsh pass the list as `${=NAMES}`
+(an unquoted `$NAMES` is one word there).
 """
 import argparse
 import sys

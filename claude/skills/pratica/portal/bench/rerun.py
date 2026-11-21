@@ -31,6 +31,9 @@ and its answers file) goes through run.py's page_files, as `run.py page` would. 
 The pane cuts a call off at 45 s: poll results.js. The values file is what `pvault get`
 prints, or a fixture as it is (rehearsals/cila-fittizia/fixture-p6.json: its "fields" are read, so a
 person added to it is in the next batch).
+With --bundle, check.js's `stale` list needs no action: the bundle carries the runner and the steps and stores them itself (2026-11-21:
+check.js said the new steps were stale, only the pick was done, and the five runs used them). The pane may also still be signed in from an
+earlier turn (it was all of round 23's turn): read the home list (`document.body.innerText` on cmd/home) before asking for the SPID sign-in.
 No rehearsal named: every one with a generated steps file and the answers file. A rehearsal
 named `NAME:ANSWERS.json` runs with that answers file instead (one pratica, several cases: each
 its own run, `NAME/ANSWERS` in the results). `NAME:ANSWERS.json:VALUES.json` runs that case on
@@ -151,11 +154,14 @@ def record(done, default, day, values=None):
     except where the rehearsal has no fixture.json of its own (the restaurant's opening with a sign
     borrows the pizzeria's; 2026-11-20 five such runs had to be written into runs.json by hand and the
     README's table went stale): then `values`, the file the batch ran on, is its fixture, and the run
-    is recorded with `"values": <that file>` so the record says what it ran on."""
+    is recorded with `"values": <that file>` so the record says what it ran on. That holds with no "@" too (2026-11-21, round 23: a batch built
+    with --values alone, three runs of the same borrowing rehearsal, was recorded with no `values` and they had to be added by hand: a run
+    of a rehearsal with no fixture.json of its own is always on the file --record was given)."""
     for d in done:
         base, at, on = d["name"].partition("@")
         name, _, stem = base.partition("/")
-        if at and not (values and on == Path(values).stem and (REHEARSALS / name).is_dir() and not (REHEARSALS / name / "fixture.json").exists()):
+        borrows = bool(values) and (REHEARSALS / name).is_dir() and not (REHEARSALS / name / "fixture.json").exists()
+        if at and not (borrows and on == Path(values).stem):
             print(f"{d['name']}: {d['result']}, on other values than the fixture's: not recorded")
             continue
         f = REHEARSALS / name / "runs.json"
@@ -164,7 +170,7 @@ def record(done, default, day, values=None):
         own_default = default if (REHEARSALS / name / default).exists() or not (REHEARSALS / name / "answers.json").exists() else "answers.json"
         entry = {"date": day, "answers": f"{stem}.json" if stem else own_default, "result": d["result"],
                  **({"seconds": d["total_seconds"]} if d.get("total_seconds") else {}), "browser": "pane",
-                 **({"values": str(values)} if at else {})}
+                 **({"values": str(values)} if at or borrows else {})}
         if not any(all(r.get(k) == entry[k] for k in ("date", "answers", "result")) for r in runs):
             runs.append(entry)
             f.write_text(json.dumps(runs, indent=1, ensure_ascii=False) + "\n")

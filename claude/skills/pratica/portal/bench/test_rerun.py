@@ -151,6 +151,29 @@ def _():
         assert "go to https://suap.impresainungiorno.gov.it first" in out and "sign-in" in out, out
 
 
+@case("record --values: a run of a rehearsal with no fixture.json of its own is recorded with the file it ran on, whether or not its name has an \"@\" (2026-11-21); "
+      "one with its own fixture.json carries no `values`")
+def _():
+    real = rerun.REHEARSALS
+    tmp = Path(tempfile.mkdtemp())
+    for n in ("borrows", "owns"):
+        (tmp / n).mkdir()
+        (tmp / n / "answers.json").write_text("{}")
+    (tmp / "owns" / "fixture.json").write_text("{}")
+    rerun.REHEARSALS = tmp
+    try:
+        with redirect_stdout(io.StringIO()):
+            rerun.record([{"name": "borrows/answers-a", "result": "filled", "total_seconds": 5.0},
+                          {"name": "owns/answers-a", "result": "filled", "total_seconds": 6.0}], "answers-p6.json", "2026-11-21", Path("rehearsals/pizzeria-fittizia/fixture.json"))
+        borrows = json.loads((tmp / "borrows" / "runs.json").read_text())
+        owns = json.loads((tmp / "owns" / "runs.json").read_text())
+        assert borrows[0]["values"] == "rehearsals/pizzeria-fittizia/fixture.json", borrows
+        assert "values" not in owns[0], owns
+    finally:
+        rerun.REHEARSALS = real
+        shutil.rmtree(tmp, ignore_errors=True)
+
+
 @case("record: a SUAP rehearsal's run is filed under its own answers file, once")
 def _():
     real = rerun.REHEARSALS

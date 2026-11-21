@@ -148,7 +148,7 @@ says whether the dictionary fills a section and what is unaccounted for (`--dump
 entry from); `derive_recipe.py` then writes the rehearsal (it takes an operation the wizard offers twice by its `nth`, and the Si/No questions of
 the interventi and scelte eventuali screens from the crawl, answered "No") and `answer_case.py REHEARSAL KEY=VALUE ...` answers its new asks until
 pre-flight says `ready True`. Then `regen.py NAME ...` (only the new lock lines may move), `suap-unrouted.yaml` (a rehearsal route.py doesn't reach
-needs its reason: `test_route`), and a bundle of at most 12 runs. **Don't edit the dictionary while `bench/test_gen.py` runs** (25 minutes): a case
+needs its reason: `test_route`), and a bundle of at most 12 runs. **Don't edit the dictionary while `bench/test_gen.py` runs** (25 minutes alone, 58 with other tests and `make coverage` running beside it, 2026-11-21: `make coverage` took 18 minutes then; a run started before an edit of the dictionary, the rules table or a recipe tests the old state and is stopped and restarted, never read): a case
 reads the half-written file and fails.
 
 **Reading a section by hand** when a run stops on something the crawl can't tell (a box switched off, a radio that isn't kept, a required
@@ -1010,7 +1010,7 @@ rehearsal: 36 → **22**. The seven 060 forms are canonical crawls that 279 of t
 - **Why none is routed.** The library's `napoli/asl-napoli-1/registrazione-attivita-alimentare` describes the notification's four boxes (opening, take-over, change of type,
   closure or suspension), but the table (`alimenti-notifica`) adds it only as `also` to an opening or a move, never as a pratica of its own, and has no event for its updates
   (suspension is refused: `sospensione-non-coperta`). Routing the five notifications would mean an event in the table for filing the notification alone, with the page's
-  boxes as its sourced claims: left for a decision. Reactivation and the registered-office change are named in that page only as exempt from the sanitary fee.
+  boxes as its sourced claims: left for a decision. Reactivation and the registered-office change are named in that page only as exempt from the sanitary fee. **Superseded in round 23 for two of the five** (next section): the change of type and the missing notification are routed.
 - **What a run buys, in code now (`leverage.py`, `test_leverage.py`, the scoreboard's two new lines).** The SUAP's 1,148 «mapped» are 309 crawls of their own and 839
   same-fingerprint copies of 55 of them, so "run 246" was out of 309 (now **260**), and a copy is proved by its canonical's run, never by its own: running the copies would
   fill the same sections again. After this round 47 of the 55 canonicals have a run; the eight left carry 52 copies (Dogane 13, the two reductions 12 each, sector 02's
@@ -1151,7 +1151,7 @@ so only the bundle's pick was needed.
   **358 filled (was 354), 392 mapped with no case (was 396)**, 543 not mapped as before. `test_gen` holds the answers, the two radios they choose and the recorded run. Still no case: the four «titolarità dell'intervento»
   options on the sign's screen (owner, co-owner, usufructuary, condominium administrator), the days of the week and «orari diversi giorno per giorno», and the period's «rinnovo», «giorno di chiusura» and «altro»
   (the dictionary ticks «tutti i giorni» with one closing day: the other shapes of a week are a new ask, not a rehearsal).
-- **The attachments screen under a vincolo Si is the one without it.** Read on the stand-alone sign's draft with the landscape vincolo Si and zone A No (`answers-vincolo.json`; the both-Si draft, `answers.json`, was not opened) and on yesterday's plain draft, recorded in `catalogue/F839/sign-attachments.json` and held by `test_gen`: the same ten slots (the road's
+- **The attachments screen under a vincolo Si is the one without it.** Read on the stand-alone sign's draft with the landscape vincolo Si and zone A No (`answers-vincolo.json`; the both-Si draft, `answers.json`, was not opened: **read in round 23, the same ten slots**) and on yesterday's plain draft, recorded in `catalogue/F839/sign-attachments.json` and held by `test_gen`: the same ten slots (the road's
   cross-section, the owner's or condominium's consent, photographs, the colour sketch, the cadastral plan, the quoted project, the art. 90 D.Lgs. 81/2008 declaration, the road owner's technical clearance if it is not the Comune,
   «Dichiarazione programma 100», «Allegati liberi»), all `.p7m` signed but the last. No slot for a landscape authorization, so the library's `insegna-esercizio` line stands: the person files or attaches it and installs the sign after
   (the recipe's `yours` says so).
@@ -1160,11 +1160,67 @@ so only the bundle's pick was needed.
   **SI and NO**. SI shows «Attenzione: verificare di selezionare, nella sezione 'Interventi eventuali', la relativa autorizzazione»; NO shows nothing. So the authorization is an intervento of the wizard's «Scelta interventi eventuali»,
   and `catalogue/F839/suap-wizard.json` lists none for the sign's sectors (its only art. 49 options are the radio-electric installations' D.Lgs. 259/2003). `insegna_bene_culturale` therefore stays refused, now for a precise
   reason: the missing piece is that wizard choice, not a box in the form. Not read: the «Scelta interventi eventuali» screen of a sign's wizard on a live draft (the wizard's clicks do not register in the pane, so it needs the
-  runner's wizard step with another `tree:`).
+  runner's wizard step with another `tree:`). **Superseded in round 23:** `suap-wizard.json` holds operations only (`follow: false`), so that grep could not have shown an intervento; the screens are in the section crawls, and
+  they offer none (next section).
 - **In code from this round:** `read_draft.js`'s header says how to read a draft without the helper (the list is 10 a page, older drafts are on the numbered links, a toggle reads and saves nothing), the dictionary's comment above the
   vincolo section has the monumentale facts, `test_gen` the dehors case, and the two stale round 21 test failures are gone (the FILING line is 345 characters; the round 11 record test reads a rehearsal's plain `answers.json` runs, so
   later answers files that stop on made-up values, as PIN 6's, don't count). `docs/coverage.md` and `docs/ready.md` are redrawn (`make coverage` takes about 6 minutes: started as a background job with a trailing `&` it looked like a no-op,
   because the tool returned at once and the run was still going; run it in the foreground): SUAP 1,148 mapped, 1,119 fillable, 267 run on the portal.
+
+**Round 23 (2026-11-21): the cultural asset is the law's refusal, the sign's three more titles, the dehors' hours and period.** Eight portal runs in two bundles, all filled (the first bullet needed none). The counter at the start matched round 22's (1,634 boxes, 358 filled, 392 mapped with no case, 543 not mapped).
+
+- **The Soprintendenza's art. 49 authorization is not an «interventi eventuali» option.** The «interventi eventuali» options live in the `screens` of the section crawls (`catalogue/F839/sections`), not in
+  `suap-wizard.json` (operations only). 118 crawls have the screen, 37 distinct options; none names the Soprintendenza, art. 49 of D.Lgs. 42/2004 or a cultural asset (the sign's are «insegna esterna», the ANAS's and the
+  Provincia's contextual SCIA). Read on the crawls, not on a live draft, and only the sectors whose crawls have the screen. So `insegna_bene_culturale` is refused because the authorization comes first and outside the portal
+  (the monumentale «Soggetta» + art. 49 Si/No and its «Attenzione» note are generic), not for a missing mapping. `test_preflight.sign_vincolo_follows_the_answer` fails if a crawl ever shows such an option; the
+  dictionary's comment above the vincolo section says the same.
+- **The sign's «titolo» select: three more cases, all filled on the portal (same day, one bundle, 104, 101 and 102 s, nothing moved or loose, the portal's warnings the made-up PEC, address and cadastral data).**
+  `ristorante-insegna-fittizio/answers-titolo-{proprietario,comproprietario,usufruttuario}.json` are the opening-with-sign case with that option in `insegna_titolo_tipo` (no «specificare» note, which only «altro» shows);
+  every one of the 52 earlier answers files used «altro» + «locatario». Run on pizzeria-fittizia's fixture. The counter: **361 filled (was 358), 389 mapped with no case (392)**, 543 not mapped. `test_gen` holds the three.
+  The select's fifth option, «amministratore di condominio», is not in the dictionary's `insegna_titolo_tipo` (it is a condominium's, not a business's: a shop's sign is not filed by the building's administrator) and stays so.
+- **Still open, and it is a legal reading, not a mapping: what a tenant declares.** Every case answers «altro: locatario» **with** «avere titolarità esclusiva all'esecuzione dell'intervento». The other radio is «non avere titolarità
+  esclusiva ... ma di disporre comunque della dichiarazione di assenso dei terzi titolari di altri diritti reali o obbligatori»: it opens a third party's whole identity block (surname, name, C.F., birth, citizenship, sex, birth and
+  residence places, address, PEC, phone, and a «ditta o società» tick), repeatable with «+». The library's `insegna-esercizio` says nothing about title or consent; the attachments screen asks the owner's or condominium's
+  consent (`atto di assenso del proprietario dell'area o dello stabile o dell'assemblea condominiale`, signed only) of everyone. Whether a tenant who has the landlord's consent should tick «non esclusiva» and name the landlord
+  is not settled in the repo: it is the owner's question to a tecnico, and the recipes' refusal (`insegna_consenso`) stands until then.
+- **The dehors' hours and period: five cases, all filled on the portal (same day, one bundle: 103, 111, 111, 112 and 106 s, nothing moved or loose, the warnings the made-up PEC, address and cadastral data).**
+  Read first on a draft (`ristorante dehors stagionale privata`, nothing saved; leaving a section with a toggled box asks «Proseguire senza salvare?», answered Conferma). The hours section has «oppure tutti i giorni» with
+  **two** dalle/alle pairs (a second spell, a lunch break: the dictionary filled only the first) and «orari diversi giorno per giorno», which enables a row a weekday (a tick and two pairs); the all-days boxes are then
+  disabled. The period's five radios are one exclusive choice, each switching on only its own boxes: «numero» and «del» (the renewal), «dal giorno»/«al giorno» (the season), a «specificare» under «nel giorno di
+  chiusura settimanale» and another under «altro» (both under the heading «con area libera:»). New asks, all with a default, so the earlier answers files plan as before (`plan_diff.py`: 0 cases plan differently; it lists the five new ones as «new, no plan» only because it runs on the P6 fixture, not the rehearsal's own): `orario_dalle2`/`orario_alle2`, `orari_diversi` and
+  `orario_lunedi` ... `orario_domenica` (a day's hours as `12:00-15:00, 19:00-23:30`; empty = closed; `format: fasce`, which pre-flight checks), and `dehors_periodo` (annuale, rinnovo, stagionale, chiusura, altro; empty = what
+  `stagionale` says) with `dehors_rinnovo_numero`/`_data`, `dehors_chiusura_giorno`, `dehors_periodo_altro`. run.py has the filters `periodo` and `fascia1_dalle` ... `fascia2_alle`. The cases are
+  `ristorante-dehors-fittizio/answers-orari-pausa`, `-orari-giorni`, `-periodo-rinnovo`, `-periodo-chiusura`, `-periodo-altro`. 15 steps files changed (the 13 dehors recipes and the two stand-alone occupations);
+  `test_preflight.dehors_hours_and_period` holds the plans and the refusal of badly written hours, `test_gen` the sections and the five runs. The counter after it, with the titles above: **371 filled (was 358), 390 mapped with no case,
+  532 not mapped (was 543)**; the wedge alone (`--only suap-060-aprire-l-attivita`, 71 boxes): **34 filled (was 23), 2 mapped with no case, 30 not mapped (was 41)**. Only `ristorante-dehors-fittizio` was run: the other 14 steps files carry the same two sections by fingerprint. Not read: what the portal says on SALVA for a day with only «alle ore» (the asks
+  refuse it as not hh:mm-hh:mm, and a second spell with no first is not asked).
+- **The both-Si sign draft's attachments are the same ten slots (read by hand, nothing saved).** `insegna ristorante vincolo e zona A` (`insegna-ristorante-vincolo-fittizio/answers.json`, filled 2026-11-20): its zona A and vincolo paesaggistico radios read back Si (the
+  radios' value `1` checked) before the «Allega Documenti» screen was read, and its ten slots' titles and accepted types are those in `catalogue/F839/sign-attachments.json` (the plain and the vincolo-only drafts'): neither Si adds a slot. That closes round 22's
+  unverified claim. `test_gen` holds the three drafts. Still not read: the attachments of the opening-with-sign recipes.
+- **The bollo's 17 options: none is a gap (no portal run).** They are one section (fingerprint `869752d2cea5aef3`, in 152 crawls, SUE and SUAP) whose fields only three SUE crawls hold (`sue-autorizzazione-paesaggistica-semplificata`,
+  `sue-combo-cila-paesaggistica-ordinaria`, `sue-permesso-di-costruire-art-10-d-p-r-380-2001`), so the wedge counter never showed them; 179 steps files carry the section, the plain opening not (it files no provvedimento), the dehors does.
+  **7 are the exemption reasons** («per la seguente motivazione» under «Il pagamento non è dovuto poiché esentati»): mapped (`bollo_motivo`, `run.BOLLO_ESENZIONE`), but **only «cooperativa sociale» was ever run on the portal** (a SUE case,
+  `paesaggistica-semplificata-fittizia/answers-esenzioni.json`, 2026-11-02; `-bollo-virtuale.json` is the other radio, «assolta in modo virtuale»): the other six reasons are mapped and unrun (a SUE case with a company client could run them: that is the SUE's counter's, not this one's; no SUAP case can until the legal-form refusal lets an
+  association or a public body through). The SUAP counter showed them «not mapped» because the SUAP steps file's select carries no id, so its `"*"` matched none: `steps_fields` now
+  also names the filter's own options. No SUAP recipe takes one, since an ETS, a sports club or a public body is none of the legal forms the recipes accept (ditta individuale, srl, srls, snc, sas, spa). **The other 10 are the dropdown
+  of the two «silenzio assenso» radios** (VVF project evaluation = PIN 1, emissions and drain authorizations, a hotel's classification, the structures' deposits, a photovoltaic PAS, the Provincia's nulla osta): choices of pratiche no recipe maps,
+  none a restaurant's, shop's or dehors' (a dehors takes «Due marche»). The dictionary's bollo entry lists them as `other_procedure`, and `schema_branches.py suap` has a state for it, **«a procedure no recipe maps»**. The counter after it:
+  **371 filled, 404 mapped with no case (was 390), 494 not mapped (was 532), 24 of another procedure** (12 choices under the two label variants of the section's title). `test_schema_branches.suap_choices` holds it. The SUE table (`docs/schema-branches.md`) had the same blind spot: its six «portal boxes no schema alternative matched» exemption reasons now read «mapped» (regenerated with `schema_branches.py table`).
+- **Two of the Reg. 852 notices routed (your decision, round 23; no portal run: all four recipes were filled on 2026-11-20).** The table has two new `evento` values, `modifica_tipologia` (a new line of activity, box 3) and `notifica_mancante` (the
+  business never filed one, box 1), and four main rules, `somministrazione-notifica-{modifica,mancante}-{zona-c,zone-tutelate}`, to `napoli/asl-napoli-1/registrazione-attivita-alimentare` (regime notifica, the portal's sector by zone and the
+  operation «Presentare l'aggiornamento della registrazione impresa alimentare - modifica della tipologia di attività» or «Notifica ai fini della registrazione - avvio attività/trasferimento»), citing `dd117`; `notifica-sanitaria-non-coperta`
+  refuses both events for a food shop or any other trade (only a bar or restaurant is covered). The four recipes (`notifica-{avvio-registrazione,modifica-tipologia}-ristorante[-centro-storico]-fittizio`) have a `rules:` block (`main` the
+  registration page, since their `procedure` is the sector's), so they are reached and left `suap-unrouted.yaml`: 777 cases, 268 routed, 0 not mapped yet (`test_route`: 28/28; the four cases are in `suap_wedge_cells_and_their_reasons`, and the refusal
+  for the other trades). **The other six stay unrouted, with the evidence:** the take-over's, the closure's and the suspension's own pratiche (routed, or refused for the suspension) already file the notification in their own sections
+  («notifica di subingresso», «Cessazione dell'attività ai sensi dell'art. 6», «Sospensione temporanea»), so a second pratica would duplicate them; reactivation and the registered-office change (GISA procedures 3 and 4) are described in the page only as fee-exempt.
+  Not run here: the library's own validator (`npm run validate`, TypeScript: the library has no `node_modules` here), so CI is the first to check the table against it; `test_rules`' `every_case_decided_once` is its Python twin and passes.
+- **In code from this round** (so the next one doesn't relearn it): `read_draft.js`'s header has what bit on the portal's pages (APRI is a button, a section link needs the pane's real click, the «Proseguire senza salvare?» Conferma after a toggle,
+  single-radio groups the portal makes exclusive); `catalogue/README.md` says `suap-wizard.json` is operations only; `rerun.py`'s docstring says a bundle installs its own steps (check.js's `stale` needs no action with it) and that the pane
+  may still be signed in; `rerun.py --record --values` now records a borrowing rehearsal's `values` with no «@» in the name (three runs had to be fixed by hand, `test_rerun`); `regen.py`'s says how to regenerate only the rehearsals a section
+  touches (and `${=NAMES}` in zsh); a plan item carries the box's id, not its `nth` (gen.py turns the `nth` into the crawl's id), so tests assert on ids. A draft's name is held to the portal's 60 characters by pre-flight, and the
+  title and dehors cases are asserted to fit.
+- **Left as it was:** the 63 recipes' wording («caso non ancora previsto», «non lo preparo ancora») still reads like a gap. Changing it means regenerating 63 steps files (about an hour) for a text change; do it only
+  with another change to those recipes.
 
 ## What the portal does that bit us
 

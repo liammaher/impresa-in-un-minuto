@@ -1,9 +1,10 @@
 {
-  "note": "The «Allega Documenti» screen of the restaurant's stand-alone sign SCIA (suap-060 ...-scia-4), read by hand on two made-up drafts on 2026-11-21, nothing saved or attached. Both drafts show the same ten slots, so the landscape vincolo Si adds no slot for an authorization: the person files or attaches it apart. Not read: the draft with both Si (zone A too), and the attachments of the opening-with-sign recipes.",
+  "note": "The «Allega Documenti» screen of the restaurant's stand-alone sign SCIA (suap-060 ...-scia-4), read by hand on three made-up drafts on 2026-11-21, nothing saved or attached (the third, with both Si, read in round 23: its zona A and vincolo radios were read back Si on the draft first). All three show the same ten slots, so neither the landscape vincolo Si nor zona A Si adds a slot for an authorization: the person files or attaches it apart. Not read: the attachments of the opening-with-sign recipes.",
   "read": "2026-11-21",
   "drafts": {
     "plain": {"portal_name": "insegna ristorante scia generato", "rehearsal": "insegna-ristorante-scia-fittizio", "answers": "answers.json", "vincolo": "no", "zona_a": "no"},
-    "vincolo": {"portal_name": "insegna ristorante vincolo", "rehearsal": "insegna-ristorante-vincolo-fittizio", "answers": "answers-vincolo.json", "vincolo": "si", "zona_a": "no"}
+    "vincolo": {"portal_name": "insegna ristorante vincolo", "rehearsal": "insegna-ristorante-vincolo-fittizio", "answers": "answers-vincolo.json", "vincolo": "si", "zona_a": "no"},
+    "both": {"portal_name": "insegna ristorante vincolo e zona A", "rehearsal": "insegna-ristorante-vincolo-fittizio", "answers": "answers.json", "vincolo": "si", "zona_a": "si"}
   },
   "signed_only": "dwf.p7m;svg.p7m;jpg.p7m;pdf.p7m",
   "max_mb": 9.77,

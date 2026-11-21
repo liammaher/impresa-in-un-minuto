@@ -1252,6 +1252,19 @@ def sign_vincolo_follows_the_answer():
         assert r["ready"], (name, r)
         assert labels(plan, "vincolo ambientale") == [w[:38] for w in want], (name, labels(plan, "vincolo ambientale"))
         assert labels(plan, "vincolo monumentale") == ["Non soggetta a tutela monumentale"], name  # a cultural asset is refused
+    # Why the cultural asset is the law's refusal and not a gap (round 23): the Soprintendenza's art. 49 authorization is not an option of
+    # any «interventi eventuali» screen the crawls read (118 of them, 37 options when read), so the portal has no way to file it with the sign.
+    # A crawl that finds one makes this fail: then the refusal is a gap again.
+    seen = 0
+    for crawl in sorted((HERE.parent / "catalogue" / "F839" / "sections").glob("*.json")):
+        for screen in json.loads(crawl.read_text()).get("screens") or []:
+            if "interventi eventuali" not in screen.get("screen", ""):
+                continue
+            seen += 1
+            for o in screen.get("options") or []:
+                label = o.get("label", "").lower()
+                assert not any(w in label for w in ("soprintendenza", "art. 49", "beni culturali", "bene culturale", "42/04", "42/2004")), (crawl.name, o["label"])
+    assert seen >= 100, seen  # the guard reads the crawls, not an empty folder
     # A cultural asset, and a landscape answer given with no vincolo (the question isn't asked), in both forms.
     for rehearsal, fixture in ((opening, pizzeria), ("insegna-ristorante-vincolo-fittizio", None)):
         r, _ = plan_of(rehearsal, "answers.json", fixture=fixture, extras=["insegna_bene_culturale"])
@@ -1262,6 +1275,56 @@ def sign_vincolo_follows_the_answer():
         assert r["ready"], (name, r)
         assert [x.lower() for x in labels(plan, "ulteriori dichiarazioni")] == want, (name, labels(plan, "ulteriori dichiarazioni"))
         assert any("autorizzazione paesaggistica" in y for y in r["yours"]), r["yours"]
+
+
+def dehors_hours_and_period():
+    """The dehors' hours and period say what the answers say (round 23, rehearsals/ristorante-dehors-fittizio/answers-orari-*.json and
+    answers-periodo-*.json, filled on the portal). Hours: one spell every day (the first cases), a second spell, or a row a weekday (a closed day
+    isn't ticked; a day's boxes are its row's, the all-days pairs the last row's). Period: the five exclusive choices, the
+    season by `dehors_periodo` or, with none, by `stagionale` as the first cases had it. Hours that don't read hh:mm-hh:mm are refused by pre-flight."""
+    reh = HERE.parents[4] / "rehearsals" / "ristorante-dehors-fittizio"
+    steps = yaml.safe_load((reh / "portal-steps.generated.yaml").read_text())
+    fixture = dict(json.loads((reh / "fixture.json").read_text())["fields"])
+
+    def plan_of(name, **change):
+        answers = {**json.loads((reh / name).read_text()), **change}
+        v = values(answers=answers, fields=fixture, steps=steps)
+        r = run.preflight(steps, v, made_up=True)
+        return r, (rehearsal_plan(steps, v) if r["ready"] else [])
+
+    def lines(plan, word):
+        return [(f["kind"], f["label"], f["id"].split("reg")[0], f.get("value")) for f in plan if word in f["section"].lower()]
+
+    r, plan = plan_of("answers.json")
+    assert r["ready"] and [x[3] for x in lines(plan, "orari") if x[1] in ("dalle ore", "alle ore")] == ["12:00", "23:30"], lines(plan, "orari")
+    assert [x[1] for x in lines(plan, "periodo")] == ["a carattere annuale (1° anno di richiesta)"], lines(plan, "periodo")
+    r, plan = plan_of("answers-stagionale-privata.json")
+    assert r["ready"] and [x[1] for x in lines(plan, "periodo")] == ["a carattere stagionale", "dal giorno", "al giorno"], lines(plan, "periodo")
+    # A second spell: the all-days pairs' two spells (the plan has the boxes' ids, the crawl's: gen.py turned the `nth` into them).
+    r, plan = plan_of("answers-orari-pausa.json")
+    assert r["ready"], r
+    assert [(x[2], x[3]) for x in lines(plan, "orari") if x[1] in ("dalle ore", "alle ore")] == [("r18c1p74", "12:00"), ("r18c2p76", "15:00"), ("r18c3p78", "19:00"), ("r18c4p80", "23:30")], lines(plan, "orari")
+    # A row a weekday: lunedì (no answer) is closed, not ticked; a day with one spell has no second pair.
+    r, plan = plan_of("answers-orari-giorni.json")
+    assert r["ready"], r
+    h = lines(plan, "orari")
+    assert h[0][1] == "orari diversi giorno per giorno" and [x[1] for x in h if x[0] == "checkbox"] == ["martedì", "mercoledì", "giovedì", "venerdì", "sabato", "domenica"], h
+    assert not [x for x in h if x[1] == "oppure tutti i giorni:"], h
+    boxes = [(x[2], x[3]) for x in h if x[1] in ("dalle ore", "alle ore")]
+    assert boxes[:4] == [("r5c2p15", "12:00"), ("r5c3p17", "15:00"), ("r5c4p19", "19:00"), ("r5c5p21", "23:00")], boxes  # martedì: its row's four boxes
+    assert boxes[-2:] == [("r15c2p65", "12:00"), ("r15c3p67", "17:00")] and len(boxes) == 4 * 4 + 2 + 2, boxes  # domenica: one spell, the row's first pair
+    # The period's four other choices, each with its own boxes.
+    for name, want in (("answers-periodo-rinnovo.json", ["a carattere annuale - rinnovo di autorizzazione", "numero", "del"]),
+                       ("answers-periodo-chiusura.json", ["nel giorno di chiusura settimanale", "specificare"]),
+                       ("answers-periodo-altro.json", ["altro", "specificare"])):
+        r, plan = plan_of(name)
+        assert r["ready"] and [x[1] for x in lines(plan, "periodo")] == want, (name, lines(plan, "periodo"))
+    # `dehors_periodo` stagionale with the season question No: the dates are asked all the same.
+    r, plan = plan_of("answers.json", dehors_periodo="stagionale", dehors_dal="2027-04-01", dehors_al="2027-10-31")
+    assert [x[1] for x in lines(plan, "periodo")] == ["a carattere stagionale", "dal giorno", "al giorno"], lines(plan, "periodo")
+    # Hours that aren't hh:mm-hh:mm are refused, not typed.
+    r, _ = plan_of("answers-orari-giorni.json", orario_martedi="dalle 12 alle 15")
+    assert not r["ready"] and "hh:mm-hh:mm" in json.dumps(r, ensure_ascii=False), r
 
 
 CASES = [
@@ -1314,6 +1377,7 @@ CASES = [
     ("the diritti from the case: the contributo asked only with the prospetto, a car park's area only for one, then proposed; the onerous SCIA asked", diritti_from_the_case),
     ("two adempimenti in one pratica pay the main pratica's line alone (SUE 2-3 only on their own; no line for terre e rocce or the DAU)", diritti_main_row),
     ("the sign's vincolo says what the person said: the opening's ambientale radios by answer, the stand-alone form's Si/No, a cultural asset refused, no recipe ticking «Non soggetta» without asking (2026-11-20)", sign_vincolo_follows_the_answer),
+    ("the dehors' hours (one spell, a second spell, a row a weekday) and period (five exclusive choices) follow the answers; hours not hh:mm-hh:mm are refused (round 23)", dehors_hours_and_period),
 ]
 
 
