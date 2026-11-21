@@ -321,7 +321,9 @@ function pageApi(cfg) {
         if (!e) return { got: null };
         if (e.value === "<redacted>") return { hidden: true };
         let ok = norm(e.value) === norm(f.typed);
-        if (!ok && f.kind === "number") ok = parseFloat(e.value) === parseFloat(f.typed);
+        // ChatGPT's view lacks the global number parser: a number by arithmetic ("12,5" and "12.50" alike).
+        const num = (x) => { const t = String(x).trim().replace(",", "."); return /^-?\d+(\.\d+)?$/.test(t) ? +t : null; };
+        if (!ok && f.kind === "number") ok = num(e.value) !== null && num(e.value) === num(f.typed);
         return ok ? { ok: true } : { got: e.value, ro: e.readOnly };
       });
     },
