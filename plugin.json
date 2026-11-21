@@ -1,8 +1,8 @@
 {
  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
  "name": "impresa-in-un-minuto",
- "version": "0.8.3",
- "description": "Per tecnici e professionisti (architetti, geometri, ingegneri, commercialisti, consulenti) che queste pratiche le presentano già: controlla la cartella di un lavoro per una pratica del SUE e SUAP del Comune di Napoli su impresainungiorno e ti dice quale pratica serve, quali file lo sportello rifiuterebbe e quali dati mancano. In ChatGPT, per ora, non compila il portale. Non è una consulenza: ChatGPT può sbagliare. Con la biblioteca pratiche-napoli di regole e procedure.",
+ "version": "0.8.4",
+ "description": "Per tecnici e professionisti (architetti, geometri, ingegneri, commercialisti, consulenti) che queste pratiche le presentano già: ChatGPT compila le pratiche del SUE e SUAP del Comune di Napoli su impresainungiorno dai documenti del cliente, e tu controlli. Si ferma ai passi che spettano solo a te (accesso con SPID, dichiarazioni, firma, pagamento, invio). Non è una consulenza: ChatGPT può sbagliare. Con la biblioteca pratiche-napoli di regole e procedure.",
  "author": {
   "name": "Liam Maher"
  },
@@ -24,7 +24,7 @@
    "requires_local_executor": true,
    "interface": {
     "displayName": "Impresa in un minuto",
-    "longDescription": "Per tecnici e professionisti (architetti, geometri, ingegneri, commercialisti, consulenti) che queste pratiche le presentano già: controlla la cartella di un lavoro per una pratica del SUE e SUAP del Comune di Napoli su impresainungiorno e ti dice quale pratica serve, quali file lo sportello rifiuterebbe e quali dati mancano. In ChatGPT, per ora, non compila il portale. Non è una consulenza: ChatGPT può sbagliare. Con la biblioteca pratiche-napoli di regole e procedure.",
+    "longDescription": "Per tecnici e professionisti (architetti, geometri, ingegneri, commercialisti, consulenti) che queste pratiche le presentano già: ChatGPT compila le pratiche del SUE e SUAP del Comune di Napoli su impresainungiorno dai documenti del cliente, e tu controlli. Si ferma ai passi che spettano solo a te (accesso con SPID, dichiarazioni, firma, pagamento, invio). Non è una consulenza: ChatGPT può sbagliare. Con la biblioteca pratiche-napoli di regole e procedure.",
     "developerName": "Liam Maher",
     "category": "Business & Operations",
     "defaultPrompt": "solo un controllo: cosa manca nella cartella di questo lavoro?",

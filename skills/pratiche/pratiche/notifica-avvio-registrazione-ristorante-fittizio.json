@@ -15,6 +15,9 @@
   },
   "extras": {
    "question": "Qualcuna di queste voci vale per l'attività? Spunta tutte quelle che valgono, o nessuna."
+  },
+  "fatti": {
+   "question": "Quali di queste cose valgono per l'attività? Spunta quelle vere, anche nessuna."
   }
  },
  "asks": {
@@ -130,6 +133,62 @@
    "type": "yes_no",
    "item": "È una società con altri soci o amministratori oltre a chi dichiara",
    "why": "Ciascuno presenta una propria dichiarazione antimafia firmata (art. 85 D.Lgs. 159/2011), che non preparo ancora."
+  },
+  "zona": {
+   "type": "choice",
+   "question": "In quale zona del Piano del Comune si trova il locale?",
+   "options": [
+    "a",
+    "b",
+    "c"
+   ],
+   "labels": {
+    "a": "Zona A: centro storico UNESCO (aree 1 rossa, 2 arancione, 3 gialla)",
+    "b": "Zona B: buffer zone (blu)",
+    "c": "Zona C: il resto della città"
+   },
+   "how": "Dalla mappa delle zone tutelate allegata al Piano (delibera di Consiglio comunale n. 79/2026), o chiedendo al SUAP."
+  },
+  "superficie_vendita_mq": {
+   "type": "number",
+   "question": "Quanti metri quadri di vendita ha il negozio (dopo il trasferimento o l'ampliamento, se è il caso)?",
+   "how": "L'area dove entrano i clienti, banchi e scaffali compresi; senza magazzini, depositi, laboratori, uffici e servizi."
+  },
+  "consumo_sul_posto": {
+   "group": "fatti",
+   "type": "yes_no",
+   "item": "Il negozio di alimenti fa consumare sul posto quello che vende (senza servizio ai tavoli)?"
+  },
+  "somministrazione_particolare": {
+   "group": "fatti",
+   "type": "yes_no",
+   "item": "Il locale è in un'area di servizio autostradale, in una stazione, in una mensa aziendale, in un ospedale o in una scuola, su un mezzo di trasporto, fa catering, o serve solo gli alloggiati di una struttura ricettiva?"
+  },
+  "prevenzione_incendi": {
+   "group": "fatti",
+   "type": "yes_no",
+   "item": "L'attività è nell'elenco dell'Allegato I del D.P.R. 151/2011 (per esempio un negozio con più di 400 mq lordi, servizi e depositi compresi, o una centrale termica oltre 116 kW)?",
+   "how": "Lo stabilisce il tecnico abilitato, o il Comando dei Vigili del Fuoco."
+  },
+  "alcolici": {
+   "group": "fatti",
+   "type": "yes_no",
+   "item": "Venderai o servirai bevande alcoliche?"
+  },
+  "insegna": {
+   "group": "fatti",
+   "type": "yes_no",
+   "item": "Avrai un'insegna, una targa o una vetrofania?"
+  },
+  "musica": {
+   "group": "fatti",
+   "type": "yes_no",
+   "item": "Userai impianti di diffusione sonora, o farai eventi con musica o strumenti musicali?"
+  },
+  "dehors": {
+   "group": "fatti",
+   "type": "yes_no",
+   "item": "Vuoi tavoli e sedie all'aperto, su suolo pubblico?"
   }
  },
  "supports": [
@@ -158,6 +217,23 @@
    "else": "Un bar o ristorante che produce anche prodotti da forno o gestisce un negozio alimentare per ora non lo preparo: queste voci insieme non sono ancora state mappate."
   }
  ],
+ "rules": {
+  "table": "suap-napoli",
+  "main": "napoli/asl-napoli-1/registrazione-attivita-alimentare",
+  "facts": {
+   "attivita": "somministrazione",
+   "evento": "notifica_mancante",
+   "zona": "{{ask.zona}}",
+   "superficie_vendita_mq": "{{ask.superficie_vendita_mq}}",
+   "consumo_sul_posto": "{{ask.consumo_sul_posto}}",
+   "somministrazione_particolare": "{{ask.somministrazione_particolare}}",
+   "prevenzione_incendi": "{{ask.prevenzione_incendi}}",
+   "alcolici": "{{ask.alcolici}}",
+   "insegna": "{{ask.insegna}}",
+   "musica": "{{ask.musica}}",
+   "dehors": "{{ask.dehors}}"
+  }
+ },
  "start": "https://suap.impresainungiorno.gov.it/fnsuap/cmd/create?comune=F839",
  "logged_in": "https://suap.impresainungiorno.gov.it/fnsuap/",
  "wizard": [
