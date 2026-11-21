@@ -700,6 +700,7 @@ async function fill(tab, steps, values, resume, run, held, { fs, path, priv }) {
       await click(s.plus, `+ ${f.label}`);
       await idle();
       s = need(await page("slotRows", f.label));
+      for (const end = Date.now() + 10000; s.files.length === before && Date.now() < end;) { await sleep(400); s = need(await page("slotRows", f.label)); }
       if (s.files.length !== before + 1) fail(`${f.label}: + didn't add a file box`);
     }
     return { ...f, id: s.files[f.nth - 1].id, slotted: true };
@@ -709,7 +710,10 @@ async function fill(tab, steps, values, resume, run, held, { fs, path, priv }) {
     if (f.block && before >= f.block) return `block ${f.block}`;
     await click(need(await page("plusFor", { anchor: f.anchor, nth: f.nth })), `+ ${f.anchor}`);
     await idle();
-    if ((await page("blocks", f.anchor)) !== before + 1) fail(`+ didn't add a block of ${f.anchor}`);
+    // The new block's rows can come a moment after the page looks idle here (as a box a choice shows: resolveSoon).
+    let now = await page("blocks", f.anchor);
+    for (const end = Date.now() + 10000; now === before && Date.now() < end; now = await page("blocks", f.anchor)) await sleep(400);
+    if (now !== before + 1) fail(`+ didn't add a block of ${f.anchor}`);
     return `block ${before + 1}`;
   }
   async function attach(f, v) {
