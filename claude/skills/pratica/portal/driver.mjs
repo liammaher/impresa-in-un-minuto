@@ -568,7 +568,12 @@ async function fill(tab, steps, values, resume, run, held, { fs, path, priv }) {
 
   // the fields
   async function located(f) {
-    const r = await page("located", { kind: f.kind, label: f.label, nth: f.nth, id: f.id });
+    let r;
+    for (const end = Date.now() + 8000; ;) {
+      r = await page("located", { kind: f.kind, label: f.label, nth: f.nth, id: f.id });
+      if (!r.why || !LATE.test(r.why) || Date.now() > end) break;
+      await sleep(400);
+    }
     if (r.why) fail(r.why);
     const note = (k) => { const x = { label: f.label, id: f.id, ...(k === "moved" ? { to: r.id } : {}) };
       if (!(report[k] = report[k] || []).some((y) => y.label === x.label && y.id === x.id)) report[k].push(x); };
@@ -578,8 +583,20 @@ async function fill(tab, steps, values, resume, run, held, { fs, path, priv }) {
     const { id, ...byLabel } = f;
     return { ...f, id: r.id, spec: byLabel };
   }
+  // A box a choice just before it shows (the INAIL's "sede di" once INAIL is ticked) can come a moment after the
+  // page looks idle here: this view can't see the portal's own request queue, as inpage.js does. So a box found by its
+  // label is looked for again for a few seconds before the run says it isn't there.
+  const LATE = /fields with this label|no block /;
+  async function resolveSoon(f) {
+    let r;
+    for (const end = Date.now() + 8000; ;) {
+      r = await page("resolve", f);
+      if (!r.why || !LATE.test(r.why) || Date.now() > end) return r;
+      await sleep(400);
+    }
+  }
   async function bySpec(f) {
-    const r = await page("resolve", f);
+    const r = await resolveSoon(f);
     if (r.why) fail(r.why);
     return { ...f, id: r.id, ...(r.at !== undefined ? { at: r.at } : {}), spec: r.at !== undefined ? { ...f, last: false, at: r.at } : f };
   }
