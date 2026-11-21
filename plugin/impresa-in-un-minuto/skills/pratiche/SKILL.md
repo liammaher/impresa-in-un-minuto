@@ -1,35 +1,23 @@
 ---
 name: pratiche
 description: Per chi queste pratiche le presenta già (tecnici e professionisti; Claude compila, il controllo è loro). Prepara una pratica del {{copertura}} su impresainungiorno dai documenti del cliente - {{pratiche}} - come bozza controllata che si ferma prima di dichiarazioni, firma, pagamento e invio. Risponde anche su quale pratica serve e con quali documenti, controlla una cartella senza aprire il portale e fa vedere una prova su una CILA con dati inventati. Da usare quando {{chi}} chiede, in italiano o in inglese, di preparare, compilare o presentare una pratica a {{città}} («prepara una CILA»), di controllare una cartella («solo un controllo», «cosa manca»), cosa serve per un caso, o di vedere una prova («fammi vedere una prova», «fai una prova»).
-metadata:
-  openai-description: Per chi queste pratiche le presenta già (tecnici e professionisti). Controlla la cartella di un lavoro per una pratica del {{copertura}} su impresainungiorno - {{pratiche}} - e dice quale pratica serve, cosa dicono i documenti, quali file lo sportello rifiuterebbe e quali dati mancano, senza aprire il portale. In ChatGPT, per ora, non compila il portale. Da usare quando {{chi}} chiede, in italiano o in inglese, di controllare una cartella («solo un controllo», «cosa manca»), quale pratica serve a {{città}} e con quali documenti, o di preparare, compilare o presentare una pratica («prepara una CILA»).
 ---
 
 # Pratiche a {{città}}
 <!-- openai -->
 
-**In ChatGPT: a check only, for now.** ChatGPT's in-app browser can read a page but not fill one,
-so here you never open, log in to or fill the portal, and you prepare no draft. Every job is
-**A check only** (below): step 0, then steps 1-3 up to the check, then that report. Steps 4 to 7
-(the compilation) are not in this skill here, and neither is the Prova on the portal (`prova.md`
-says what to do instead). Where anything below says otherwise, this wins: never offer a login, a
-compilation, a draft or a test on the portal. The check still writes its files where step 0 says,
-in the work folder (`impresa-in-un-minuto/` inside the open folder): never in a temporary folder or
-anywhere else on the computer, since that subfolder is the one place the tecnico is told the
-documents' data sits. Its report ends with the line step «A check only» gives, in those words.
+**In ChatGPT.** You fill the portal in ChatGPT's in-app browser, with the Browser plugin's JavaScript
+tool, in the ChatGPT desktop app; steps 4 to 6 say where that differs. Codex in a terminal has no such
+browser, and neither has a chat whose JavaScript tool doesn't start (a chat on a folder that no longer
+exists): there every job is **A check only** (below), and you say once, in one line, «Qui non ho il
+browser per il portale: faccio solo il controllo. Per compilare, aprimi nell'app ChatGPT per computer.»
 <!-- /openai -->
 <!-- no-vault -->
 
 **First, on the first reply of the conversation in which they hand over a job**: your very first
 words, before any tool or document, are this and nothing else:
-<!-- claude -->
 «Leggo io i documenti: i loro dati passano da questa conversazione e poi sul portale. Password e
 SPID mai. Posso sbagliare: il controllo finale è tuo.» Then work in silence until the one message.
-<!-- /claude -->
-<!-- openai -->
-«Leggo io i documenti: i loro dati passano da questa conversazione. Il portale non lo apro.
-Posso sbagliare: il controllo finale è tuo.» Then work in silence until the report.
-<!-- /openai -->
 Not a word of plan or progress in between («Ho trovato un solo lavoro…», «Sto leggendo…»): neither Italian nor
 English, only that line and, at the end, the message.
 <!-- /no-vault -->
@@ -176,12 +164,11 @@ your questions): `${CLAUDE_SKILL_DIR}/prova.md` at once. A test asks nothing.
 - **The built-in browser** of the Claude desktop app, never Claude in Chrome.
 <!-- /claude -->
 <!-- openai -->
-- **No browser.** The portal is never opened from here, not even to look (see the top).
+- **ChatGPT's in-app browser**, through the Browser plugin's JavaScript tool, never another browser.
 <!-- /openai -->
 
 ## The flow, as the tecnico lives it
 
-<!-- claude -->
 1. The studio's details, once (step 0).
 2. They say the job in one line and hand over the folder (documents attached here instead: step 2).
 3. You answer in **one short message**: the verdict, what you understood, the pratica you
@@ -208,14 +195,6 @@ Between 3 and 7 they hear nothing from you but the login, the code and those few
 <!-- no-vault -->
 Between 3 and 7 they hear nothing from you but the login and those few lines.
 <!-- /no-vault -->
-<!-- /claude -->
-<!-- openai -->
-1. The studio's details, once (step 0).
-2. They say the job in one line and hand over the folder (documents attached here instead: step 2).
-3. You answer in **one short message**, the report of **A check only**: the verdict and what you
-   understood, the files the sportello would refuse, the details missing, counted. Nothing opens.
-4. They fix the folder and ask again: the check again, the same report.
-<!-- /openai -->
 
 ## La prova
 
@@ -223,13 +202,6 @@ Between 3 and 7 they hear nothing from you but the login and those few lines.
 the real portal in a few minutes, with no questions and none of a real filing's rules; a test of
 another pratica the same way.
 
-<!-- openai -->
-**When they come without a job** ("come funziona?", "ciao", "cosa fa?"), your whole reply is these
-two lines, nothing before or after:
-  "Controllo le cartelle delle pratiche del {{copertura}} per chi le presenta già: ti dico quale pratica serve, cosa leggo dai documenti, quali file lo sportello rifiuterebbe e quali dati mancano.
-  Dammi la cartella di un lavoro e scrivimi «solo un controllo». In ChatGPT, per ora, il portale non lo compilo."
-<!-- /openai -->
-<!-- claude -->
 **When they come without a job** ("come funziona?", "ciao", "cosa fa?"), the Prova is the answer:
 seeing it beats any description. Your whole reply is these two lines, nothing before or after,
 no list of features or steps:
@@ -241,7 +213,6 @@ With the clickable-options tool, the second line is its question, "Sì, fammelo 
 and "Ho già un caso vero"; without it, add "Scrivi «sì», o dimmi il tuo caso." On yes,
 `prova.md`. Never force it: when they come with a real job and don't call it a test, start the
 job, and offer the Prova only if they hesitate or lack the documents.
-<!-- /claude -->
 
 ## A check only
 
@@ -257,18 +228,10 @@ questions, one short report (a line each, no lists of boxes):
    and which are fine.
 3. **I dati**: how many details no document holds and whose they are, counted («61: 20 tuoi e dello
    studio, 7 del committente, …»), never listed; and how many questions are left.
-<!-- claude -->
 4. Last, in these words: «Non ho aperto il portale e non ho compilato nulla. Se vuoi andare
    avanti, scrivimi «procedi»: ti faccio le domande.»
 
 On «procedi», the one message of step 3.
-<!-- /claude -->
-<!-- openai -->
-4. Last, in these words: «Non ho aperto il portale e non ho compilato nulla: in ChatGPT, per ora,
-   Impresa in un minuto controlla soltanto.»
-
-If they ask to go on, to compile or to file, say that again in one line, and nothing else.
-<!-- /openai -->
 A check that finds the case refused (`unsupported`, a
 status that isn't `available`) is that refusal, as always.
 
@@ -928,6 +891,58 @@ inatteso", a 503): `url = await __pv.reopen("<draft name>")`, then `__pv.resume(
 the tecnico only for a fact nothing holds, in one plain question. Budget: two fixes or about
 three minutes; then stop, leave the draft saved, and say plainly what's left.
 
+<!-- /claude -->
+<!-- openai -->
+## 4. The compilation
+
+ChatGPT's in-app browser fills the portal through the Browser plugin's JavaScript tool (a Node session with `cua` and
+`tab.playwright`), with this skill's `portal/driver.mjs`. The job's values never pass through this conversation:
+`run.py chatgpt` writes them into the run's private folder, and the driver reads them from there.
+
+```sh
+sh "${CLAUDE_SKILL_DIR}/py" "${CLAUDE_SKILL_DIR}/portal/run.py" chatgpt --steps "${CLAUDE_SKILL_DIR}/pratiche/<name>.json" --answers answers.json \
+  --values run/values.json --values run/intake/private/values.json --out run
+```
+
+Leave out `--values run/intake/private/values.json` when the intake didn't run. The JavaScript tool's calls: each
+as its own call, written as here, with no `try`/`catch` around it, and never code built from a string (`eval`,
+`new Function`: the tool refuses them). A browser tab belongs to the turn that opened it: in a later turn open a new
+one (the SPID login stays).
+
+1. Open the portal with one call of the JavaScript tool,
+   `const tab = await cua.createBrowserTab("iab", "https://suap.impresainungiorno.gov.it/fnsuap/cmd/home", {visible: true})`,
+   and say:
+   "**Entra con il tuo SPID** nel browser qui accanto; quando vedi la pagina del portale scrivimi
+   **«fatto»**. Le credenziali le scrivi solo tu.
+   Poi compilo la bozza, in circa un quarto d'ora, e ti dico cosa ho riletto. Non spunto dichiarazioni, non pago, non firmo, non invio."
+   Send these lines after the `card` when the tecnico hasn't read it yet in this job (they answered questions and
+   no `riepilogo` came). The card is printed by:
+   ```sh
+   sh "${CLAUDE_SKILL_DIR}/py" "${CLAUDE_SKILL_DIR}/portal/run.py" card --steps "${CLAUDE_SKILL_DIR}/pratiche/<name>.json" \
+     --answers answers.json --values run/values.json --values run/intake/private/values.json
+   ```
+   Send it as it is, so they read it while they log in. Wait for «fatto».
+2. Say, in one line: "Compilo e poi rileggo ogni valore: non toccare la pagina."
+3. Start it, in one call, `run` being the run folder's absolute path:
+   `const tab = await cua.createBrowserTab("iab", "https://suap.impresainungiorno.gov.it/fnsuap/cmd/home", {visible: true}); const d = await import("${CLAUDE_SKILL_DIR}/portal/driver.mjs"); nodeRepl.write(d.start(tab, "<run>"))`
+4. It returns at once, and it works only while a call is running (ChatGPT's browser acts only then): call
+   `nodeRepl.write(JSON.stringify(await (await import("${CLAUDE_SKILL_DIR}/portal/driver.mjs")).wait(20000)))`, each with a
+   `timeout_ms` of 60000, one after the other, until `result` is `filled` or `stopped`. It writes `run/report.json`
+   itself (no value in it). Then step 5.
+
+While it runs and after, never take a screenshot or a snapshot of the page and never read its boxes: they hold the
+job's values. One compilation per login at a time: the portal keeps one pratica open per login.
+
+**If it stops, recover it without the tecnico.** `run/report.json` has `error`, `at` (the wizard screen, or the
+section and field) and `snapshot` (the page with no value in it). Use those and nothing else; never open
+`run/private/`. "0 fields with this label" usually means the section wasn't open yet. Work out the fix for that one
+field (its new `id`, `css` or `label`) and start it again on the same draft, in a new tab:
+`d.start(tab, "<run>", {resume: true, fixes: [{"section": i, "field": k, "set": {"label": "..."}}]})`, then `wait` as
+above. A draft whose address expired (`/cmd/error`, "errore inatteso") can't be picked up from here yet: say so. Ask the
+tecnico only for a fact nothing holds, in one plain question. Budget: two fixes or about three minutes; then stop,
+leave the draft saved, and say plainly what's left.
+<!-- /openai -->
+<!-- claude -->
 <!-- vault -->
 ## 5. Hand over
 
@@ -1003,6 +1018,28 @@ on the portal, where they tick them. Asked how to pay or what a step involves, a
 A compilation that stopped and wasn't recovered prints no `message`: say plainly what's left
 (step 4).
 <!-- /no-vault -->
+<!-- /claude -->
+<!-- openai -->
+## 5. Hand over
+
+The driver read back every value it typed, then read them all again on a fresh load of the draft, except what
+ChatGPT's browser hides from it (emails and phone numbers): the closing lines name those for the tecnico to look at.
+The check of the portal's preview against the documents isn't in ChatGPT yet.
+
+`sh "${CLAUDE_SKILL_DIR}/py" "${CLAUDE_SKILL_DIR}/review.py" run` prints its `message`: say it as
+written, its lines as they are, and nothing else. It is three things: did it work (`✅`), what
+they must check (a `⚠️` line for each warning the portal put beside a value it kept, each box it couldn't read
+back; none, no line), and what is left to them ("Tocca a te:"), a numbered
+step a line, each with what the sportello adds to it in brackets (where the diritti are paid, the order of
+the signatures, what comes back after sending: here, not before), and only what they do. Send no file, list no
+values and never paraphrase a declaration: they read the portal's own preview and declarations
+on the portal, where they tick them. Asked how to pay or what a step involves, answer from its
+`yours` (their steps in full). Stop: they check, declare, sign, pay and send.
+
+A compilation that stopped and wasn't recovered prints no `message`: say plainly what's left
+(step 4).
+<!-- /openai -->
+<!-- claude -->
 
 ## 6. The second compilation, after the declarations
 
@@ -1031,6 +1068,15 @@ for one you can't place or that is missing. Write the signed files' paths into `
 other value, so there is **no code** this time: they choose the signed files once in the box on
 the page. Same calls as step 4, from `check.js`, saving the report to `run2/report.json`; then
 `review.py run2` and its `message`, as in step 5.
+<!-- /claude -->
+<!-- openai -->
+## 6. The second compilation, after the declarations
+
+What the portal makes only once the declarations are ticked (the procura for the client to sign, the quadro
+riepilogativo) would go in a second compilation, which isn't in ChatGPT yet. When they say «ho firmato»,
+tell them in one line to attach those signed files themselves on the portal, in Allega documenti (the closing
+lines named them), and that you'll check the rest with them.
+<!-- /openai -->
 
 ## 7. After they send it
 
@@ -1039,7 +1085,6 @@ When they say it is sent ("inviata"), read the procedure's `deadline` and `after
 date they sent it: the controls, the start or end of the works, the catasto within 30 days).
 Then offer, in one line, the pratica that usually follows (the fine lavori, the agibilità; its
 line in `catalog.json`), and stop.
-<!-- /claude -->
 
 <!-- vault -->
 <!-- claude -->

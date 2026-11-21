@@ -19,15 +19,21 @@ Poi la cancelli da «Pratiche in bozza». Anche su un tuo caso, se non hai ancor
 documenti, basta dire «è una prova, inventa i dati».
 <!-- /claude -->
 <!-- openai -->
-Controlla la cartella di un lavoro per una pratica del {{copertura}}, su impresainungiorno: ti dice
-quale pratica serve, cosa leggono i documenti del tuo cliente (o della tua impresa), quali file lo
-sportello rifiuterebbe e quali dati mancano. **In ChatGPT, per ora, non compila il portale**: non
-apre impresainungiorno, non prepara bozze, non dichiara, non firma, non paga e non invia. Gratuito
-e open source.
+Prepara una pratica del {{copertura}}, su impresainungiorno, dai documenti del tuo
+cliente (o della tua impresa), nel browser dell'app ChatGPT per computer. Si ferma dove comincia la tua
+parte: le dichiarazioni, la firma digitale, il pagamento e l'invio: ChatGPT non spunta mai una
+dichiarazione, non firma, non paga e non invia. Gratuito e open source.
 
-> **Per chi queste pratiche le presenta già.** Impresa in un minuto controlla: non è una consulenza e
-> non decide al posto tuo. ChatGPT può sbagliare, e il controllo finale è tuo. Se non sai riconoscere
-> un errore in una pratica, non usarlo.
+> **Per chi queste pratiche le presenta già.** Impresa in un minuto compila: non è una consulenza e non
+> decide al posto tuo. ChatGPT può sbagliare, e il controllo finale è tuo. Se non sai riconoscere un errore
+> in una pratica, non usarlo.
+
+## Provalo
+
+Dopo l'installazione scrivi **«Fammi vedere una prova»** nell'app ChatGPT per computer. ChatGPT compila
+sul portale vero una CILA di prova, con committente, studio e documenti inventati, senza farti domande:
+tu accedi con SPID nel browser dell'app, e in circa un quarto d'ora vedi sul portale la bozza «PROVA NON
+INVIARE - CILA di prova» compilata. Poi la cancelli da «Pratiche in bozza».
 <!-- /openai -->
 
 ## Cosa copre, e cosa no
@@ -155,14 +161,24 @@ installalo da python.org.
 <!-- /claude -->
 <!-- openai -->
 1. Metti i documenti di ogni lavoro in una cartella, una per lavoro: visura, atto o contratto,
-   documento d'identità, relazione tecnica, elaborati. Apri in Codex, nell'app, quella cartella (o la
-   cartella che contiene tutti i lavori). I documenti non si toccano: ChatGPT non li sposta e non li
-   rinomina; i suoi file di lavoro stanno in una sola sottocartella, «impresa-in-un-minuto», che puoi
-   cancellare a lavoro finito.
-2. Scrivi una riga: «solo un controllo: CILA per il signor Bianchi, i documenti sono nella cartella
-   Bianchi».
-3. ChatGPT risponde con un solo messaggio: quale pratica serve, cosa ha capito dai documenti, quali
-   file lo sportello rifiuterebbe e perché, e quanti dati mancano. Il portale lo compili tu.
+   documento d'identità, relazione tecnica, elaborati. Apri in Codex, nell'app ChatGPT per computer,
+   quella cartella (o la cartella che contiene tutti i lavori). I documenti non si toccano: ChatGPT non
+   li sposta e non li rinomina; i suoi file di lavoro stanno in una sola sottocartella,
+   «impresa-in-un-minuto», che puoi cancellare a lavoro finito.
+2. Scrivi una riga: «CILA per il signor Bianchi, i documenti sono nella cartella Bianchi».
+   Se vuoi solo vedere cosa legge ChatGPT dai tuoi documenti, senza aprire il portale, scrivi «solo un
+   controllo»: ti dice cosa ha capito, quali file il SUE rifiuterebbe e quanti dati mancano.
+3. ChatGPT risponde con un solo messaggio: se la pratica è coperta, cosa dicono i documenti,
+   quale pratica propone, le poche domande. Rispondi una volta.
+4. Accedi con SPID nel browser dell'app e scrivi a ChatGPT «fatto». ChatGPT compila la bozza e rilegge
+   ogni valore: non toccare la pagina finché non ti scrive.
+5. Quando la bozza è pronta, ChatGPT ti scrive in poche righe cosa controllare e cosa resta a te sul
+   portale: l'anteprima, le dichiarazioni, la firma, il pagamento e l'invio. Email e numeri di telefono
+   il browser di ChatGPT non glieli fa rileggere: te li indica, e li controlli tu. Gli allegati che il
+   portale crea solo dopo le dichiarazioni (la procura) li firmi e li alleghi tu.
+6. Dopo l'invio, ChatGPT ti dice le prossime scadenze e la pratica che di solito segue.
+
+Senza browser (Codex nel terminale) Impresa in un minuto fa solo il controllo.
 <!-- /openai -->
 
 ## Dove vanno i dati dei tuoi clienti
@@ -183,14 +199,14 @@ Claude, come ogni documento che tu vi apri. Claude te lo dice alla prima pratica
 non vuole che i suoi documenti passino da Claude, non usare Impresa in un minuto per quel lavoro.
 <!-- /claude -->
 <!-- openai -->
-Nella cartella dei tuoi lavori su questo computer e nella conversazione con ChatGPT: sul portale no,
-perché in ChatGPT Impresa in un minuto non lo apre. Impresa in un minuto non ha un server suo. I dati
-che ChatGPT legge dai documenti restano in chiaro nella sottocartella «impresa-in-un-minuto» della
-cartella del lavoro: se la cartella è sincronizzata (Dropbox, OneDrive, Drive), lo sono anche loro.
-Cancellala a lavoro finito. **ChatGPT legge i documenti del lavoro**: i dati dei clienti (nomi,
-codici fiscali, indirizzi, dati catastali) passano quindi dalla conversazione con ChatGPT, come ogni
-documento che tu vi apri. Se un cliente non vuole che i suoi documenti passino da ChatGPT, non usare
-Impresa in un minuto per quel lavoro.
+Nella cartella dei tuoi lavori su questo computer, nella conversazione con ChatGPT e sul portale, dove
+li porta la compilazione. Impresa in un minuto non ha un server suo. I dati che ChatGPT legge dai
+documenti restano in chiaro nella sottocartella «impresa-in-un-minuto» della cartella del lavoro: se la
+cartella è sincronizzata (Dropbox, OneDrive, Drive), lo sono anche loro. Cancellala a lavoro finito.
+**ChatGPT legge i documenti del lavoro**: i dati dei clienti (nomi, codici fiscali, indirizzi, dati
+catastali) passano quindi dalla conversazione con ChatGPT, come ogni documento che tu vi apri. I valori
+che scrive sul portale li prende da quella sottocartella, senza ripassarli dalla conversazione. Se un
+cliente non vuole che i suoi documenti passino da ChatGPT, non usare Impresa in un minuto per quel lavoro.
 <!-- /openai -->
 
 Password, PIN e accesso SPID mai: l'accesso al portale lo fai tu.

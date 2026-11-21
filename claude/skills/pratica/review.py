@@ -343,10 +343,14 @@ def summary(report, out=None, job=None, prova=False):
         return {"result": report.get("result") or "stopped", "message": None, "warnings": [], "steps": []}
     name = pratica_name(report)
     done = "compilato" if MASCULINE.match(name) else "compilata"
+    # The boxes the browser wouldn't let the runner read back (ChatGPT's hides emails and phone numbers): typed,
+    # never checked, so the tecnico looks at them.
+    unread = [f"{section(h['section'])}: non ho potuto rileggere {', '.join(h['labels'])} (il browser nasconde email e "
+              "numeri di telefono). Controllali tu sulla bozza." for h in report.get("hidden") or []]
     if prova:
         # The portal's own warnings on made-up values (the PEC) are expected; a value that doesn't match
         # the case, or a file that isn't the Prova's, is not.
-        warns = mismatches(out) + stray_files(out, job) + not_read_back(out, report.get("attached")) + unchecked(out)
+        warns = mismatches(out) + stray_files(out, job) + not_read_back(out, report.get("attached")) + unchecked(out) + unread
         head = f"✅ {name} di prova {done} in {duration(report.get('total_seconds'))}."
         checks = verified(out, job, prova=True, attached=report.get("attached"))
         read = whole_read(out, job, report.get("attached"))
@@ -362,7 +366,7 @@ def summary(report, out=None, job=None, prova=False):
     # made-up data the catasto's comes four times, one for each box of the parcel (2026-11-07).
     warnings = list(dict.fromkeys(f"{section(a['section'])}: il portale segnala «{a['text'].strip()}». Controllalo."
                                   for a in report.get("alerts", [])))
-    warnings += mismatches(out) + stray_files(out, job) + not_read_back(out, report.get("attached"))
+    warnings += mismatches(out) + stray_files(out, job) + not_read_back(out, report.get("attached")) + unread
     # The second compilation (after the declarations) attaches what the portal makes only then, signed:
     # the procura, the quadro riepilogativo, and the receipt of what is paid first (the diritti).
     later = list(dict.fromkeys(report.get("second_run") or []))
@@ -370,7 +374,8 @@ def summary(report, out=None, job=None, prova=False):
     if reopened:
         head = f"✅ {name}: file firmati allegati sul portale in {duration(report.get('total_seconds'))}; ogni valore è stato riletto."
     else:
-        head = f"✅ {name} {done} sul portale in {duration(report.get('total_seconds'))}: ogni valore è stato riletto."
+        head = (f"✅ {name} {done} sul portale in {duration(report.get('total_seconds'))}: "
+                + ("ho riletto ogni valore, tranne quelli qui sotto." if unread else "ogni valore è stato riletto."))
     steps = tu_steps(later, reopened)
     # What the preview check held equal, named by the portal's own sections (as the Prova says it), only when
     # nothing differed or wasn't read back: otherwise the ⚠️ lines say what.

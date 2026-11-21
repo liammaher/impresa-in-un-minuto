@@ -399,7 +399,7 @@ def copy_library(library, skill, catalog, desks):
 # The runner files the plugin ships unchanged, plugin path (under skills/pratiche) -> the repo file.
 # Tests of the plugin run these and nothing else (plugin/live.py): the build refuses a copy that differs.
 RUNNER_FILES = {f"portal/{n}": PRATICA / "portal" / n
-                for n in ("run.py", "rules.py", "route.py", "inpage.js", "preview_text.js", "attachments.js")}
+                for n in ("run.py", "rules.py", "route.py", "inpage.js", "driver.mjs", "preview_text.js", "attachments.js")}
 RUNNER_FILES |= {"review.py": PRATICA / "review.py", "fill/fill.py": PRATICA / "fill" / "fill.py",
                  "intake/intake.py": PRATICA / "intake" / "intake.py"}
 
@@ -442,7 +442,7 @@ def copy_runner(skill, desks, library):
     shutil.copy2(PRATICA / "intake" / "intake.py", skill / "intake" / "intake.py")  # reads the job's documents
     # preview_text.js and attachments.js: the check after a compilation (the portal's preview as
     # text, its files fetched back), each one call on the open draft.
-    for name in ("run.py", "rules.py", "route.py", "inpage.js", "preview_text.js", "attachments.js"):
+    for name in ("run.py", "rules.py", "route.py", "inpage.js", "driver.mjs", "preview_text.js", "attachments.js"):
         shutil.copy2(PRATICA / "portal" / name, portal / name)
     (portal / "catalogue" / "F839").mkdir(parents=True)
     shutil.copy2(PRATICA / "portal" / "catalogue" / "F839" / "drift.json", portal / "catalogue" / "F839" / "drift.json")

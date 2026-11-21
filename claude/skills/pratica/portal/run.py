@@ -47,6 +47,12 @@
       data, or a person who accepts that), and is the only choice where no window can open.
       bench/rerun.py does it for many rehearsals at once. inpage.js says more.
 
+  run.py chatgpt --steps STEPS.yaml --answers A.json VAULT --out DIR
+      The same run for ChatGPT's in-app browser (driver.mjs): writes DIR/private/chatgpt-run.json,
+      the pane's steps and the values with each file's path, which driver.mjs reads from disk in
+      ChatGPT's JavaScript tool, so no value passes through the conversation and nothing is sealed.
+      The driver writes DIR/report.json and DIR/private/ as `run` does. Not the second run yet.
+
   run.py run  --steps STEPS.yaml --answers A.json VAULT --out DIR
               [--cdp URL | --profile DIR] [--close]
       Opens the portal in a Playwright window (its own Chromium) and waits for the person
@@ -2610,10 +2616,9 @@ def pane_section(s):
             | {"fields": [{k: f[k] for k in PANE_FIELD_KEYS if k in f} for f in s["fields"]]})
 
 
-def page_bundle(steps, values, files_limit=PAGE_FILES_LIMIT, resume=None, code=None, pick=True, source=None):
-    """page_files, and what runner.js and steps.js leave in the pane's localStorage. code: seal the values under it (see above); None carries them in the clear. pick: files
-    over files_limit are chosen by the person in the page (`picked`); False refuses them (a
-    batch has no one to pick for each run). source: the steps file on disk, for fetch.js."""
+def pane_run(steps, values, resume=None, paths=False):
+    """The steps as a runner reads them (no personal data) and the run's values, both for inpage.js and
+    for driver.mjs. paths: a file's value is its path on disk (driver.mjs attaches it from there), not its bytes."""
     expanded = expand(steps, values)
     # Steps expanded already (rerun.py passes them so) still have their blocks: an `add` per
     # block. Missed until 2026-11-05: two CILA cases with other counts shared one pane key, and
@@ -2640,6 +2645,10 @@ def page_bundle(steps, values, files_limit=PAGE_FILES_LIMIT, resume=None, code=N
             return True
         v = values.render(f["value"])
         if f["kind"] == "file" and v:
+            if paths:
+                a = Path(v).expanduser().resolve()
+                return {"name": a.name, "type": FILE_TYPES.get(a.suffix.lower()) or mimetypes.guess_type(a.name)[0]
+                        or "application/octet-stream", "path": str(a)}
             return attachment(v)
         return v
 
@@ -2652,6 +2661,15 @@ def page_bundle(steps, values, files_limit=PAGE_FILES_LIMIT, resume=None, code=N
         "wizard": [values.render(w["fill"]["value"]) if "fill" in w else None for w in steps["wizard"]],
         "sections": [[value(f) if i >= start else None for f in s["fields"]] for i, s in enumerate(steps["sections"])],
     }
+    return steps, skeleton, vals, blocks
+
+
+def page_bundle(steps, values, files_limit=PAGE_FILES_LIMIT, resume=None, code=None, pick=True, source=None):
+    """page_files, and what runner.js and steps.js leave in the pane's localStorage. code: seal the values under it (see above); None carries them in the clear. pick: files
+    over files_limit are chosen by the person in the page (`picked`); False refuses them (a
+    batch has no one to pick for each run). source: the steps file on disk, for fetch.js."""
+    steps, skeleton, vals, blocks = pane_run(steps, values, resume)
+    second = bool(resume and resume.get("reopen"))
     if second:
         files_limit, pick = 0, True
     if files_limit is not None:
@@ -2687,6 +2705,23 @@ def page_bundle(steps, values, files_limit=PAGE_FILES_LIMIT, resume=None, code=N
         files["fetch.js"] = fetch
     return files | {"check.js": check_script(stored, origin, {k: "fetch.js" for k in stored} if fetch else None),
                     "run.js": run_js}, stored
+
+
+def chatgpt_run(steps, values, out, resume=None, whole=None):
+    """What driver.mjs (ChatGPT's in-app browser) reads: private/chatgpt-run.json, the steps as the pane's and the
+    values with each file's path, in the run's private folder (0600), with shown.json for review.py. Nothing in it
+    passes through the conversation: the driver reads it from disk."""
+    if resume and resume.get("reopen"):
+        raise StepError("the second run (after the declarations) isn't in the ChatGPT driver yet: the person attaches those files on the portal")
+    expanded, skeleton, vals, _ = pane_run(steps, values, resume, paths=True)
+    proc = expanded["procedure"] + "#" + hashlib.sha256(json.dumps(
+        {"wizard": skeleton.get("wizard"), "sections": skeleton["sections"]}, sort_keys=True, default=str).encode()).hexdigest()[:8]
+    folder = private_dir(out)
+    f = folder / "chatgpt-run.json"
+    f.write_text(json.dumps({"procedure": proc, "steps": skeleton, "values": vals}, ensure_ascii=False))
+    f.chmod(0o600)
+    private(out, review_shown(steps, values, whole))
+    return f
 
 
 def to_pick(files):
@@ -3084,7 +3119,7 @@ def run(steps, values, out, cdp=None, profile=None, close=False, resume=None, wh
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
-    ap.add_argument("command", choices=["preflight", "card", "details", "confirm", "plan", "page", "run", "scope"])
+    ap.add_argument("command", choices=["preflight", "card", "details", "confirm", "plan", "page", "chatgpt", "run", "scope"])
     ap.add_argument("--steps", required=True, type=Path)
     ap.add_argument("--answers", type=Path, help="the asks' answers as JSON (none yet: preflight lists them all)")
     src = ap.add_mutually_exclusive_group()
@@ -3143,7 +3178,7 @@ def main():
         if a.command not in ("preflight", "card", "details", "confirm"):
             steps = phase(steps, a.after_declarations, a.made_up)
         resume = None
-        if a.after_declarations and a.command in ("page", "run"):
+        if a.after_declarations and a.command in ("page", "chatgpt", "run"):
             if a.resume:
                 ap.error("--after-declarations opens the draft by its name: no --resume")
             resume = reopening(steps)
@@ -3204,6 +3239,14 @@ def main():
             return 0
         if not a.out:
             ap.error(f"{a.command} needs --out")
+        if a.command == "chatgpt":
+            a.out.mkdir(parents=True, exist_ok=True)
+            drift(a.out, steps, resume)
+            chatgpt_run(steps, values, a.out, resume, whole)
+            print(f"{a.out}: in ChatGPT's in-app browser, on the portal's page: driver.mjs start(tab, {json.dumps(str(a.out.resolve()))}), "
+                  "then wait() until its result isn't running. It writes report.json here (no value in it) and private/; "
+                  f"then review.py {a.out}: its `message` is what to say.")
+            return 0
         if a.command == "page":
             a.out.mkdir(parents=True, exist_ok=True)
             # The second run carries no values (page_bundle), so it is never sealed: one code a pratica.
