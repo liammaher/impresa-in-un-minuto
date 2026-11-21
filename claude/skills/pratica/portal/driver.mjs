@@ -625,7 +625,7 @@ async function fill(tab, steps, values, resume, run, held, { fs, path, priv }) {
   // the fields
   async function located(f) {
     let r;
-    for (const end = Date.now() + 8000; ;) {
+    for (const end = Date.now() + REDRAW_MS; ;) {
       r = await page("located", { kind: f.kind, label: f.label, nth: f.nth, id: f.id });
       if (!r.why || !LATE.test(r.why) || Date.now() > end) break;
       await sleep(400);
@@ -643,9 +643,12 @@ async function fill(tab, steps, values, resume, run, held, { fs, path, priv }) {
   // page looks idle here: this view can't see the portal's own request queue, as inpage.js does. So a box found by its
   // label is looked for again for a few seconds before the run says it isn't there.
   const LATE = /fields with this label|no block /;
+  // How long a redraw this view can't see coming (rows a tick or a "+" adds) is waited for: section h's grew past 8 s
+  // as it filled (2026-11-21).
+  const REDRAW_MS = 20000;
   async function resolveSoon(f) {
     let r;
-    for (const end = Date.now() + 8000; ;) {
+    for (const end = Date.now() + REDRAW_MS; ;) {
       r = await page("resolve", f);
       if (!r.why || !LATE.test(r.why) || Date.now() > end) return r;
       await sleep(400);
@@ -709,7 +712,7 @@ async function fill(tab, steps, values, resume, run, held, { fs, path, priv }) {
     // A box that opens rows renumbers itself (INPS adds its "sede di": r27 became r28, 2026-11-21): found again by its
     // label, for a few seconds, since the re-drawn rows come after the page looks idle to this view.
     let id = f.id;
-    for (const end = Date.now() + 8000; !(id && (await page("checked", id))) && Date.now() < end;) {
+    for (const end = Date.now() + REDRAW_MS; !(id && (await page("checked", id))) && Date.now() < end;) {
       if (f.spec) { const r = await page("resolve", f.spec); if (!r.why) id = r.id; }
       if (!(id && (await page("checked", id)))) await sleep(400);
     }
@@ -749,7 +752,7 @@ async function fill(tab, steps, values, resume, run, held, { fs, path, priv }) {
       await click(s.plus, `+ ${f.label}`);
       await idle();
       s = need(await page("slotRows", f.label));
-      for (const end = Date.now() + 10000; s.files.length === before && Date.now() < end;) { await sleep(400); s = need(await page("slotRows", f.label)); }
+      for (const end = Date.now() + REDRAW_MS; s.files.length === before && Date.now() < end;) { await sleep(400); s = need(await page("slotRows", f.label)); }
       if (s.files.length !== before + 1) fail(`${f.label}: + didn't add a file box`);
     }
     return { ...f, id: s.files[f.nth - 1].id, slotted: true };
@@ -761,7 +764,7 @@ async function fill(tab, steps, values, resume, run, held, { fs, path, priv }) {
     await idle();
     // The new block's rows can come a moment after the page looks idle here (as a box a choice shows: resolveSoon).
     let now = await page("blocks", f.anchor);
-    for (const end = Date.now() + 10000; now === before && Date.now() < end; now = await page("blocks", f.anchor)) await sleep(400);
+    for (const end = Date.now() + REDRAW_MS; now === before && Date.now() < end; now = await page("blocks", f.anchor)) await sleep(400);
     if (now !== before + 1) fail(`+ didn't add a block of ${f.anchor}`);
     return `block ${before + 1}`;
   }
