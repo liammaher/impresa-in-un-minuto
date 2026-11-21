@@ -1,6 +1,7 @@
 // A tab shaped like ChatGPT's in-app browser tab, over Playwright for Node, for driver.mjs's offline test
 // (test_driver.py). Its evaluate is read only, as ChatGPT's is: a call that changes a box's value, a tick or the
-// title fails. It hides an email the page holds as ChatGPT's view does ("<redacted>").
+// title fails. It hides an email the page holds as ChatGPT's view does ("<redacted>"), and, as ChatGPT's browser,
+// refuses to read the page between two calls of the tool (no wait() under way).
 //
 //   node driver_tab.mjs BASE_URL RUN_DIR [OPTS_JSON]     prints the driver's report as JSON
 //   PLAYWRIGHT_NODE: the playwright package's folder (default: the one inside the ChatGPT app)
@@ -27,6 +28,7 @@ const tab = {
   playwright: {
     async evaluate(fn, arg) {
       if (typeof fn !== "string") throw new Error("driver.mjs sends page code as a string (ChatGPT's REPL can't build it)");
+      if (inCall && !inCall()) throw new Error("Browser Use could not read requirements.");
       const before = await state();
       // ChatGPT's view reads an email as "<redacted>": its value getter here does the same while the call runs.
       const out = await page.evaluate(([src, rx]) => {
@@ -47,6 +49,21 @@ const tab = {
 
 const d = await import(new URL("../driver.mjs", import.meta.url).href);
 await page.goto(base + "/");
-const report = await d.run(tab, runDir, optsJson ? JSON.parse(optsJson) : {});
+const opts = optsJson ? JSON.parse(optsJson) : {};
+let report, inCall = null;
+if (opts.calls) {
+  // As ChatGPT's tool: start() returns at once, then short wait() calls with a gap between them, and nothing reaches
+  // the page outside a call.
+  let calling = false;
+  inCall = () => calling;
+  d.start(tab, runDir, opts);
+  for (;;) {
+    calling = true;
+    report = await d.wait(opts.calls);
+    calling = false;
+    if (report.result !== "running") break;
+    await new Promise((r) => setTimeout(r, 700));
+  }
+} else report = await d.run(tab, runDir, opts);
 console.log(JSON.stringify(report));
 await browser.close();

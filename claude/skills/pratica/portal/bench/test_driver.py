@@ -82,6 +82,16 @@ def main():
             assert f.exists() and oct(f.stat().st_mode & 0o777) == "0o600", f"private/{name}"
     case("fills from disk, attaches 3 MB byte-exact through the chooser, and the fresh load finds it all", kept)
 
+    def calls(out):
+        # ChatGPT's browser acts only during a call (2026-11-21: "Browser Use could not read requirements" 30 s into a
+        # run started with start()): the run works only while wait() holds its gate, and waits in between.
+        bench.PORTAL.reset()
+        r = drive(base, bench.steps(base), answers, out, {"calls": 1500})
+        assert r["result"] == "filled", r.get("error")
+        assert bench.PORTAL.fields.get(bench.DEN) == answers["den"], f"stored {bench.PORTAL.fields}"
+        assert {f["name"] for f in bench.PORTAL.files} == set(sha), "files"
+    case("started with start() and driven by short wait() calls, nothing touches the browser between calls", calls)
+
     def dropped(out):
         bench.PORTAL.reset(drop=True)
         r = drive(base, bench.steps(base), answers, out)

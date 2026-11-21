@@ -5,7 +5,7 @@
 //
 //   const d = await import("<skill-dir>/portal/driver.mjs");
 //   d.start(tab, "<run folder>")    the run folder run.py chatgpt wrote; returns at once
-//   await d.wait(25000)             the report (no value in it) once the run ends, or after ms
+//   await d.wait(20000)             runs it for up to ms, then the report (no value in it); call it until it isn't running
 //   d.start(tab, dir, {resume: true, fixes: [{section, field, set}]})   a stopped run again, on its draft
 //
 // The values come from <run folder>/private/chatgpt-run.json and stay in this process: nothing this module returns
@@ -19,6 +19,10 @@
 // page may build code from a string, so a page function goes to evaluate as a string expression.
 
 const G = (globalThis.__impresaDriver = globalThis.__impresaDriver || { run: null });
+// ChatGPT's browser acts only while a call of the JavaScript tool is running ("Browser Use could not read
+// requirements" between calls, 2026-11-21): a run touches the browser only while wait() or run() holds the gate
+// open, and waits at the gate in between.
+G.gate = G.gate || { open: false, inflight: 0 };
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const norm = (s) => (s || "").normalize("NFKD").replace(/[^\x00-\x7f]/g, "").replace(/\s+/g, " ").trim().toLowerCase();
 class StepError extends Error {}
@@ -346,20 +350,58 @@ function pageApi(cfg) {
 
 // --- a run --------------------------------------------------------------------------------------------------
 
+const PENDING = new Set(["click", "dblclick", "fill", "press", "pressSequentially", "type", "selectOption", "check", "uncheck",
+  "setChecked", "waitFor", "evaluate", "goto", "reload", "waitForEvent", "setFiles", "count", "isVisible", "textContent",
+  "innerText", "getAttribute"]);
+const NO_CALL = /could not read requirements|browser actions are blocked|access host is unavailable/i;
+// The tab, its playwright, locators and file choosers, each action held at the gate (and tried again on a gap
+// between calls); the rest (locator, nth, first) as they are.
+function gated(obj) {
+  return new Proxy(obj, {
+    get(t, p) {
+      const v = t[p];
+      if (typeof v !== "function") return v && typeof v === "object" && p === "playwright" ? gated(v) : v;
+      if (PENDING.has(p)) {
+        return async (...a) => {
+          for (let k = 0; ; k++) {
+            while (!G.gate.open) await sleep(100);
+            G.gate.inflight++;
+            try {
+              const r = await v.apply(t, a);
+              return r && typeof r === "object" && typeof r.setFiles === "function" ? gated(r) : r;
+            } catch (e) {
+              if (k < 8 && NO_CALL.test(e.message || "")) { await sleep(500); continue; }
+              throw e;
+            } finally { G.gate.inflight--; }
+          }
+        };
+      }
+      return (...a) => { const r = v.apply(t, a); return r && typeof r === "object" ? gated(r) : r; };
+    },
+  });
+}
+
 export function start(tab, runDir, opts = {}) {
   if (G.run && G.run.report.result === "running") return "a run is already going: wait for it";
   const run = (G.run = { report: { result: "running", sections: [], at: null, browser: "chatgpt" }, scrub: (s) => String(s), promise: null });
-  run.promise = attempt(tab, runDir, opts, run).catch((e) => {
+  run.promise = attempt(gated(tab), runDir, opts, run).catch((e) => {
     run.report.result = "stopped";
     run.report.error = run.scrub(e instanceof StepError ? e.message : `${e.name}: ${e.message}`);
   });
   return "started";
 }
 
-export async function wait(ms = 25000) {
+// Holds the gate open for ms (the run works only meanwhile), then lets the action under way finish: keep ms well
+// under the call's timeout (the JavaScript tool's default is 30 s).
+export async function wait(ms = 20000) {
   const run = G.run;
   if (!run) return { result: "none" };
-  await Promise.race([run.promise, sleep(ms)]);
+  G.gate.open = true;
+  try { await Promise.race([run.promise, sleep(ms)]); }
+  finally {
+    G.gate.open = false;
+    for (const end = Date.now() + 25000; G.gate.inflight > 0 && Date.now() < end;) await sleep(50);
+  }
   return publicReport(run);
 }
 
@@ -367,7 +409,8 @@ export async function wait(ms = 25000) {
 export async function run(tab, runDir, opts = {}) {
   const said = start(tab, runDir, opts);
   if (said !== "started") return { result: "refused", error: said };
-  await G.run.promise;
+  G.gate.open = true;
+  try { await G.run.promise; } finally { G.gate.open = false; }
   return publicReport(G.run);
 }
 

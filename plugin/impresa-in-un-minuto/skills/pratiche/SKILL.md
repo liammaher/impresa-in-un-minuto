@@ -925,8 +925,10 @@ one (the SPID login stays).
 2. Say, in one line: "Compilo e poi rileggo ogni valore: non toccare la pagina."
 3. Start it, in one call, `run` being the run folder's absolute path:
    `const tab = await cua.createBrowserTab("iab", "https://suap.impresainungiorno.gov.it/fnsuap/cmd/home", {visible: true}); const d = await import("${CLAUDE_SKILL_DIR}/portal/driver.mjs"); nodeRepl.write(d.start(tab, "<run>"))`
-4. It returns at once: call `nodeRepl.write(JSON.stringify(await (await import("${CLAUDE_SKILL_DIR}/portal/driver.mjs")).wait(25000)))`
-   until `result` is `filled` or `stopped`. It writes `run/report.json` itself (no value in it). Then step 5.
+4. It returns at once, and it works only while a call is running (ChatGPT's browser acts only then): call
+   `nodeRepl.write(JSON.stringify(await (await import("${CLAUDE_SKILL_DIR}/portal/driver.mjs")).wait(20000)))`, each with a
+   `timeout_ms` of 60000, one after the other, until `result` is `filled` or `stopped`. It writes `run/report.json`
+   itself (no value in it). Then step 5.
 
 While it runs and after, never take a screenshot or a snapshot of the page and never read its boxes: they hold the
 job's values. One compilation per login at a time: the portal keeps one pratica open per login.
