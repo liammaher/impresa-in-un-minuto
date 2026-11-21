@@ -1,0 +1,22 @@
+{
+  "note": "The «Allega Documenti» screen of the restaurant's stand-alone sign SCIA (suap-060 ...-scia-4), read by hand on two made-up drafts on 2026-11-21, nothing saved or attached. Both drafts show the same ten slots, so the landscape vincolo Si adds no slot for an authorization: the person files or attaches it apart. Not read: the draft with both Si (zone A too), and the attachments of the opening-with-sign recipes.",
+  "read": "2026-11-21",
+  "drafts": {
+    "plain": {"portal_name": "insegna ristorante scia generato", "rehearsal": "insegna-ristorante-scia-fittizio", "answers": "answers.json", "vincolo": "no", "zona_a": "no"},
+    "vincolo": {"portal_name": "insegna ristorante vincolo", "rehearsal": "insegna-ristorante-vincolo-fittizio", "answers": "answers-vincolo.json", "vincolo": "si", "zona_a": "no"}
+  },
+  "signed_only": "dwf.p7m;svg.p7m;jpg.p7m;pdf.p7m",
+  "max_mb": 9.77,
+  "slots": [
+    {"title": "sezione trasversale della strada, in scala adeguata, rilevata in corrispondenza dell'impianto pubblicitario, comprensiva dell'intera sede della strada, banchine, aiuole, fossati, piste ciclopedonali, recinzioni ecc.", "accepts": "signed_only"},
+    {"title": "atto di assenso del proprietario dell'area o dello stabile o dell'assemblea condominiale", "accepts": "signed_only"},
+    {"title": "documentazione fotografica che illustra il punto di collocazione del mezzo pubblicitario nell'ambiente circostante", "accepts": "signed_only"},
+    {"title": "bozzetto colorato del messaggio pubblicitario", "accepts": "signed_only"},
+    {"title": "planimetria catastale aggiornata con indicazione del punto preciso dove verrà collocato l’impianto pubblicitario da installare (SI RACCOMANDA L'USO DEI FORMATI VETTORIALI ANZICHE' PDF)", "accepts": "signed_only"},
+    {"title": "progetto quotato dell'opera e relativa descrizione tecnica, dai quali sono individuabili gli elementi essenziali dell'opera e la sua eventuale collocazione sul fabbricato", "accepts": "signed_only"},
+    {"title": "dichiarazione del committente o dal responsabile dei lavori che attesti l'avvenuta verifica della documentazione di cui alle lettere a) e b), comma 9, dell'art. 90 del D.Lgs. 09/04/2008 n.81", "accepts": "signed_only"},
+    {"title": "autorizzazione/nulla osta tecnico dell'ente proprietario della strada (diverso dal Comune)", "accepts": "signed_only"},
+    {"title": "Dichiarazione programma 100", "accepts": "signed_only", "download": true},
+    {"title": "Allegati liberi", "accepts": "dwf.p7m;svg.p7m;jpg.p7m;pdf.p7m;pdf;xml;dwf;svg;jpg"}
+  ]
+}
