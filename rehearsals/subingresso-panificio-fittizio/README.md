@@ -24,6 +24,14 @@ at via Foria 120 by a notary's sale. The draft is "PROVA NON INVIARE - subingres
 | Date | Browser | Case | Result |
 |---|---|---|---|
 | 2026-11-10 |  | `answers.json` | **filled** in 101 s |
+| 2026-11-21 | pane | `answers.json` | **filled** in 95 s |
+| 2026-11-21 | pane | `answers-affitto-azienda.json` | **filled** in 94 s |
+| 2026-11-21 | pane | `answers-donazione.json` | **filled** in 97 s |
+| 2026-11-21 | pane | `answers-fusione.json` | **filled** in 97 s |
+| 2026-11-21 | pane | `answers-fallimento.json` | **filled** in 94 s |
+| 2026-11-21 | pane | `answers-successione.json` | **filled** in 91 s |
+| 2026-11-21 | pane | `answers-altre-cause.json` | **filled** in 91 s |
+| 2026-11-21 | pane | `answers-consumo-sul-posto.json` | **filled** in 90 s |
 
 <!-- /runs -->
 

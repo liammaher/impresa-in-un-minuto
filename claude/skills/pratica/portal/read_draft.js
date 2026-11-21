@@ -45,6 +45,7 @@
 // `return` is a SyntaxError and gives `undefined`. The home page is `cmd/home`; a pane with no tab is opened by navigating there, and navigating away from an open
 // draft needs `force` (the «Leave site?» dialog). The list of drafts showing is also the check that the pane is still signed in: read it before asking for the SPID login.
 // The home list's APRI is «Apri» in `textContent` (the page's CSS upper-cases it; `innerText` reads «APRI»): match it case-insensitively, a `/APRI/` on `textContent` finds no button and the click does nothing.
+// Round 25: a section's ids shift when an earlier choice opens a block, and the runner can tick the id of a layout the live page does not have (`didn't stay ticked`): read the live ids with controls() and compare them with the crawl's `moved` pairs (README, round 25). A click on a checkbox's label through the pane's left_click did not tick it in one try (not investigated).
 // The helper now has list(), page(n), sections(), confirm(), options(frag) and choose(frag, text) for what each of those took by hand in rounds 22-24; every click that
 // navigates goes in a timeout, so the call returns, and the helper must be pasted again afterwards (the page is reloaded, not swapped).
 // Written 2026-11-15 for round 7 (README): it found that the VV.F. take-over's statements a) and b) are required and b) switches on the
