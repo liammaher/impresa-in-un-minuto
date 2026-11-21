@@ -130,7 +130,13 @@ in `~/.codex`, the values read from the run's private folder):
    too: the driver can't check them. They are listed in the report as `hidden`, and the closing lines ask the
    person to look at those boxes on the page.
 
-Still open: the preview PDF (`fetch` in `evaluate`, or `waitForEvent("download")`).
+6. **No `fetch` in the view**: the preview PDF isn't saved (`preview_note`); `waitForEvent("download")` is the way left.
+
+**The whole CILA (the Prova's made-up case) filled from ChatGPT on 2026-11-21**, over one first run and five resumes,
+each stopped by one of the limits above and fixed: the wizard, all 18 form sections saved and read back, the
+payment screen, the fresh load of the draft (every value read again, 58 s) and the 4 declarations read; the
+attachments screen's 7 files handed to the tecnico with their slots. A resumed run's report holds only its own part
+(`hidden` and `declarations_read` of the earlier ones aren't carried over yet).
 
 Built: `driver.mjs` (start/wait/run on `globalThis`; `resume: true` picks a stopped run up from its own report and
 private `kept.json`), `run.py chatgpt` (the run folder: `private/chatgpt-run.json`, each file by its path), review.py's
@@ -142,8 +148,8 @@ bozza by its name, as inpage.js does.
 
 ## What the target does not do yet
 
-- A whole pratica run end to end in ChatGPT, recorded in `runs.json` (the driver ran the CILA's wizard and four of its
-  sections on the portal, as the test module).
+- A whole pratica in one run in ChatGPT, recorded in `runs.json` (the CILA went through in six, 2026-11-21), and the
+  attachments screen's uploads; a resumed run carrying the earlier parts' `hidden` and declarations; the preview PDF.
 - The second compilation, the preview check, `reads.js` (above).
 - The archive (`vault: true`): the setup skill and the vault parts have no OpenAI words.
 - The directory listing: icons, `shortDescription`, support, privacy and terms URLs, and the plugin portal's review.
