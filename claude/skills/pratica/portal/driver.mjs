@@ -272,13 +272,25 @@ function pageApi(cfg) {
       if (nth > 1 && !own) return fail(`no + number ${nth} after ${anchor}'s last block`);
       return { css, nth: nthOf(css, own || plus[plus.length - 1]) };
     },
+    // What may open the file chooser for a file box, in order: PrimeFaces' Choose button (a quadro's upload), the
+    // attachments screen's drop zone beside it, a label for it, the clickable things in its cell; the box itself last.
     fileBox({ id, css }) {
       const e = css ? document.querySelector(css) : el(id);
       if (!e) return fail(`${css || id}: no file box`);
       if (e.type !== "file") return fail(`${css || id}: not a file box`);
+      const ways = [];
+      const add = (x, how) => { if (x && vis(x) && !ways.some((w) => w.el === x)) ways.push({ el: x, how }); };
       const w = e.closest(".ui-fileupload");
-      const choose = w && w.querySelector(".ui-fileupload-choose");
-      return { full: e.id, choose: choose ? { css: ".ui-fileupload-choose", nth: nthOf(".ui-fileupload-choose", choose) } : null };
+      add(w && w.querySelector(".ui-fileupload-choose"), "choose");
+      add(document.getElementById(e.id.replace(/upload\d*_input$/, "editor_file_dropzone")), "dropzone");
+      for (const l of e.labels || []) add(l, "label");
+      const cell = e.closest("td");
+      if (cell) for (const x of cell.querySelectorAll("button, a, label, .ui-button, [id*=dropzone], [class*=drop], [class*=upload]")) {
+        // never one that removes, downloads, or is the person's step (send, pay, sign), never a "+"
+        const t = (x.textContent || "").trim();
+        if (!/rimuovi|scarica|elimina|invia|paga|firma/i.test(t) && t !== "+") add(x, `cell ${x.tagName.toLowerCase()}`);
+      }
+      return { full: e.id, ways: ways.slice(0, 6).map(({ el: x, how }) => (x.id ? { full: x.id, how } : { css: "*", nth: nthOf("*", x), how })) };
     },
     uploaded(name) {
       const refused = [...document.querySelectorAll(".ui-growl-item")].map((g) => g.textContent.replace(/\s+/g, " ").trim()).filter((t) => /non è stato accettato/i.test(t));
@@ -730,17 +742,20 @@ async function fill(tab, steps, values, resume, run, held, { fs, path, priv }) {
       fs.writeFileSync(file, Buffer.from(v.b64, "base64"), { mode: 0o600 });
     }
     if (!file || !fs.existsSync(file)) fail(`${f.label}: the file isn't in the run's folder`);
-    // The file box's own click opens no chooser on this portal; its button does.
+    // The file box's own click opens no chooser on this portal: what does is its button, or the drop zone beside it.
     let chooser = null;
-    for (const target of [b.choose, { full: b.full }].filter(Boolean)) {
+    const tried = [];
+    for (const target of [...b.ways, { full: b.full, how: "box", force: true }]) {
       try {
-        const p = pw.waitForEvent("filechooser", { timeout: 8000 });
-        await click(target, f.label, { timeout: 8000 });
+        const p = pw.waitForEvent("filechooser", { timeout: 6000 });
+        const loc = target.full ? pw.locator(`[id="${target.full}"]`) : pw.locator(target.css).nth(target.nth);
+        await loc.click({ timeout: 6000, ...(target.force ? { force: true } : {}) });
         chooser = await p;
+        (report.upload_ways = report.upload_ways || {})[target.how] = ((report.upload_ways || {})[target.how] || 0) + 1;
         break;
-      } catch (e) { /* the next way */ }
+      } catch (e) { tried.push(target.how); }
     }
-    if (!chooser) fail(`${f.label}: no file chooser opened`);
+    if (!chooser) fail(`${f.label}: no file chooser opened (tried ${tried.join(", ")})`);
     await chooser.setFiles([file]);
     await idle();
     let u = { named: false, refused: [] };
