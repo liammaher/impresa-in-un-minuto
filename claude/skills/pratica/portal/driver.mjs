@@ -489,7 +489,9 @@ async function attempt(tab, runDir, opts, run) {
     for (let n = 0; ; n++) {
       await fill(tab, steps, values, resume, run, held, { fs, path, priv });
       const r = run.report, at = r.at;
-      if (r.result !== "stopped" || !at || n >= (opts.retries ?? 2) || /^signed out/.test(r.error || "") || !TRANSIENT.test(r.error || "")) break;
+      // A stop on the portal's error page is an expired address whatever failed first (inpage.js: onError).
+      const onError = /\/cmd\/error/.test(r.url || "");
+      if (r.result !== "stopped" || !at || n >= (opts.retries ?? 2) || /^signed out/.test(r.error || "") || !(onError || TRANSIENT.test(r.error || ""))) break;
       if (at.phase !== "section" || !r.url) break;
       run.report = { ...r, result: "running", error: undefined, snapshot: undefined, resumed: true,
         retries: (r.retries || []).concat([{ error: r.error, at }]) };
@@ -957,7 +959,9 @@ async function fill(tab, steps, values, resume, run, held, { fs, path, priv }) {
     await idle();
     let url = (await page("state")).url;
     if (!url.startsWith(steps.logged_in)) fail("not logged in to the portal");
-    if (resume.url && (resume.reopen_draft || /\/cmd\/error/.test(url))) url = await reopen(values.wizard[0]);
+    // A draft's address lasts only as long as the portal's session: a resume that doesn't land on the draft opens
+    // it again from Pratiche in bozza, by its name.
+    if (resume.url && (resume.reopen_draft || /\/cmd\/error/.test(url) || !(await page("hasOpenSection")))) url = await reopen(values.wizard[0]);
     if (/\/cmd\/error/.test(url)) fail("the draft's address has expired: open it again from Pratiche in bozza");
     const from = resume.from || {};
     for (const k of resume.kept || []) {
