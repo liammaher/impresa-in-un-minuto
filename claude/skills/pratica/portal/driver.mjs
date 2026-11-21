@@ -185,6 +185,24 @@ function pageApi(cfg) {
       return next ? { page: { css: ".ui-paginator-page", nth: nthOf(".ui-paginator-page", next) } } : fail(`no draft named ${name} in Pratiche in bozza`);
     },
     hasOpenSection() { return !!document.querySelector("li#corrente"); },
+    centre(full) {
+      const e = document.getElementById(full);
+      if (!e) return null;
+      const r = e.getBoundingClientRect();
+      return r.width && r.height ? { x: Math.round(r.left + r.width / 2), y: Math.round(r.top + r.height / 2), inView: r.top >= 0 && r.bottom <= (window.innerHeight || 0) } : null;
+    },
+    // A file box's widget as tags, classes and sizes (no value, no file name): what a failed upload reports.
+    fileWidget(full) {
+      const e = document.getElementById(full);
+      if (!e) return null;
+      const shape = (x) => `${x.tagName.toLowerCase()}${x.id ? "#…" + x.id.split(":").pop() : ""}${x.className && typeof x.className === "string" ? "." + x.className.trim().split(/\s+/).slice(0, 3).join(".") : ""}` +
+        (() => { const r = x.getBoundingClientRect(); return ` ${Math.round(r.width)}x${Math.round(r.height)}`; })();
+      const up = [];
+      for (let x = e, k = 0; x && k < 5; x = x.parentElement, k++) up.push(shape(x));
+      const td = e.closest("td");
+      return { box: up, accept: e.getAttribute("accept"), multiple: e.multiple, disabled: e.disabled,
+        cell: td ? [...td.querySelectorAll("*")].slice(0, 25).map(shape) : [] };
+    },
     menuNames() { return [...document.querySelectorAll("a.linkmenu")].map((a) => a.textContent.replace(/\s+/g, " ").trim()); },
     resolve,
     // An id the crawl saw, held to the box's kind and label: else the box by its label (a move), else the id as it is.
@@ -388,7 +406,7 @@ function gated(obj) {
   return new Proxy(obj, {
     get(t, p) {
       const v = t[p];
-      if (typeof v !== "function") return v && typeof v === "object" && p === "playwright" ? gated(v) : v;
+      if (typeof v !== "function") return v && typeof v === "object" && (p === "playwright" || p === "cua") ? gated(v) : v;
       if (PENDING.has(p)) {
         return async (...a) => {
           for (let k = 0; ; k++) {
@@ -745,20 +763,35 @@ async function fill(tab, steps, values, resume, run, held, { fs, path, priv }) {
     // The file box's own click opens no chooser on this portal: what does is its button, or the drop zone beside it.
     let chooser = null;
     const tried = [];
-    for (const target of [...b.ways, { full: b.full, how: "box", force: true }]) {
+    const ways = [...b.ways, { full: b.full, how: "box" }].flatMap((w) => [{ ...w }, { ...w, force: true }, { ...w, mouse: true }]);
+    for (const target of ways) {
+      const how = target.how + (target.force ? " forced" : target.mouse ? " mouse" : "");
       // The chooser's promise is settled here whatever the click does: an unhandled rejection resets ChatGPT's whole
       // JavaScript session (2026-11-21).
       const p = pw.waitForEvent("filechooser", { timeout: 6000 }).then((c) => c, (e) => e);
       try {
-        const loc = target.full ? pw.locator(`[id="${target.full}"]`) : pw.locator(target.css).nth(target.nth);
-        await loc.click({ timeout: 6000, ...(target.force ? { force: true } : {}) });
+        if (target.mouse) {
+          // A real mouse click at its centre, past Playwright's checks: what a person's click reaches.
+          if (!target.full) throw new Error("no id to find its centre by");
+          const c = await page("centre", target.full);
+          if (!c || !c.inView) throw new Error(c ? "not in view" : "no box to click");
+          await tab.cua.click({ x: c.x, y: c.y });
+        } else {
+          const loc = target.full ? pw.locator(`[id="${target.full}"]`) : pw.locator(target.css).nth(target.nth);
+          await loc.click({ timeout: 6000, ...(target.force ? { force: true } : {}) });
+        }
         // A chooser by its shape: an error from the browser's service is of another realm (not instanceof Error here).
         const c = await p;
         if (!c || typeof c.setFiles !== "function") throw new Error(String((c && c.message) || "no file chooser"));
         chooser = c;
-        (report.upload_ways = report.upload_ways || {})[target.how] = ((report.upload_ways || {})[target.how] || 0) + 1;
+        (report.upload_ways = report.upload_ways || {})[how] = ((report.upload_ways || {})[how] || 0) + 1;
         break;
-      } catch (e) { tried.push(target.how); await p; }
+      } catch (e) { tried.push(`${how}: ${String(e && e.message || e).split("\n")[0].slice(0, 80)}`); await p; }
+    }
+    if (!chooser) {
+      held.details.push({ section: report.at && report.at.section, label: f.label, upload_widget: await page("fileWidget", b.full).catch(() => null) });
+      report.upload_tried = tried;
+      report.upload_widget = await page("fileWidget", b.full).catch(() => null);
     }
     if (!chooser) fail(`${f.label}: no file chooser opened (tried ${tried.join(", ")})`);
     await chooser.setFiles([file]);

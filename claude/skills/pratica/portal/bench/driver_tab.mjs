@@ -31,8 +31,6 @@ const mac = exe && `${cache}/${exe}/chrome-mac-arm64/Google Chrome for Testing.a
 const browser = await chromium.launch(mac && fs.existsSync(mac) ? { executablePath: mac } : {});
 const page = await browser.newPage();
 
-const state = () => page.evaluate(() => JSON.stringify([document.title,
-  ...[...document.querySelectorAll("input, select, textarea")].map((e) => [e.id, e.value, e.checked])]));
 const redacted = /^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i;
 const tab = {
   goto: (url) => { ctx(); return page.goto(url); },
@@ -41,18 +39,21 @@ const tab = {
     async evaluate(fn, arg) {
       if (typeof fn !== "string") throw new Error("driver.mjs sends page code as a string (ChatGPT's REPL can't build it)");
       ctx();
-      const before = await state();
-      // ChatGPT's view reads an email as "<redacted>": its value getter here does the same while the call runs.
-      const out = await page.evaluate(([src, rx]) => {
+      // Read only, as ChatGPT's view: while the script runs (synchronously, so the page's own handlers can't run in
+      // between), setting a box's value, a tick or the title throws. An email reads "<redacted>", as ChatGPT's view.
+      return page.evaluate(([src, rx]) => {
         const re = new RegExp(rx, "i");
-        const d = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value");
-        Object.defineProperty(HTMLInputElement.prototype, "value", { configurable: true,
-          get() { const v = d.get.call(this); return re.test(v) ? "<redacted>" : v; }, set(v) { d.set.call(this, v); } });
-        const restore = () => Object.defineProperty(HTMLInputElement.prototype, "value", d);
-        try { const r = (0, eval)(src); return Promise.resolve(r).finally(restore); } catch (e) { restore(); throw e; }
+        const trap = (proto, key, read) => {
+          const d = Object.getOwnPropertyDescriptor(proto, key);
+          Object.defineProperty(proto, key, { configurable: true, get() { return read ? read(d.get.call(this)) : d.get.call(this); },
+            set() { throw new Error("evaluate wrote to the page: ChatGPT's view is read only"); } });
+          return () => Object.defineProperty(proto, key, d);
+        };
+        const undo = [trap(HTMLInputElement.prototype, "value", (v) => (re.test(v) ? "<redacted>" : v)),
+          trap(HTMLInputElement.prototype, "checked"), trap(HTMLTextAreaElement.prototype, "value"),
+          trap(HTMLSelectElement.prototype, "value"), trap(Document.prototype, "title")];
+        try { return (0, eval)(src); } finally { undo.forEach((f) => f()); }
       }, [fn, redacted.source]);
-      if ((await state()) !== before) throw new Error("evaluate wrote to the page: ChatGPT's view is read only");
-      return out;
     },
     locator: (css) => checked(page.locator(css)),
     waitForEvent: (name, opts) => { ctx(); return page.waitForEvent(name, opts).then((c) => checked(c)); },
