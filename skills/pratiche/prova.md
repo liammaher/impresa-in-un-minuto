@@ -36,7 +36,8 @@ real filing's details (the c/c, the order of the signatures, the PEC receipt).
 
 1. Prepare it first, in one silent call (a few seconds): `prova.py` copies the Prova into a new
    `impresa-in-un-minuto-prova/` (`-2`, `-3` when one is there) and prints it; run everything in that
-   folder. Never `cd` into `<skill-dir>` and never `cp` from it: the plugin's folder can't be
+   folder. It is made in the folder open in this session, or in `Documents/Impresa in un minuto` when that
+   folder is inside a code repository (never leave the Prova in someone's project). Never `cd` into `<skill-dir>` and never `cp` from it: the plugin's folder can't be
    written, and a session's rules may refuse a copy that names it. It has its own `studio.json`: never
    read or write the tecnico's `../studio.json` for the Prova.
    ```sh
