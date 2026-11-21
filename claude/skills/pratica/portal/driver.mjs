@@ -752,8 +752,9 @@ async function fill(tab, steps, values, resume, run, held, { fs, path, priv }) {
       try {
         const loc = target.full ? pw.locator(`[id="${target.full}"]`) : pw.locator(target.css).nth(target.nth);
         await loc.click({ timeout: 6000, ...(target.force ? { force: true } : {}) });
+        // A chooser by its shape: an error from the browser's service is of another realm (not instanceof Error here).
         const c = await p;
-        if (c instanceof Error) throw c;
+        if (!c || typeof c.setFiles !== "function") throw new Error(String((c && c.message) || "no file chooser"));
         chooser = c;
         (report.upload_ways = report.upload_ways || {})[target.how] = ((report.upload_ways || {})[target.how] || 0) + 1;
         break;
