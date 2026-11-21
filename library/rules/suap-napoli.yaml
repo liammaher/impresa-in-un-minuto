@@ -1,7 +1,7 @@
 schema_version: 0
 id: suap-napoli
 title: "SUAP di Napoli: quale pratica presentare per un negozio, un bar o ristorante, un acconciatore o un B&B"
-updated: 2026-11-12
+updated: 2026-11-21
 intro: >-
   Da poche risposte sull'attività (che cosa è, che cosa succede, dove si trova) alle pratiche da
   presentare al SUAP di Napoli e al loro regime. Ogni regola rimanda a quanto è verificato nella
@@ -28,6 +28,8 @@ facts:
       cessazione: "Chiude"
       sospensione: "Si ferma per un periodo, senza chiudere"
       variazione_soggetti: "Cambia una persona dell'impresa (legale rappresentante, preposto, soci), senza cambiare impresa"
+      modifica_tipologia: "Cambia il tipo di attività alimentare che fa (per esempio un bar che aggiunge la cucina), senza spostarsi né cambiare impresa"
+      notifica_mancante: "Fa già l'attività alimentare ma non ha mai presentato la notifica sanitaria (Reg. CE 852/2004)"
   zona:
     type: choice
     question: "In quale zona del Piano del Comune si trova il locale?"
@@ -342,6 +344,50 @@ rules:
     when: {attivita: [somministrazione, vicinato_alimentare], evento: [apertura, trasferimento]}
     then: {role: also, procedure: napoli/asl-napoli-1/registrazione-attivita-alimentare, regime: notifica}
     cites: [{procedure: napoli/asl-napoli-1/registrazione-attivita-alimentare, source: dd117}]
+    status: verified
+  # La notifica sanitaria da sola, per un bar o ristorante (2026-11-21). Una sola via per le quattro comunicazioni: la pagina della
+  # procedura dice che con la stessa via si comunicano subingresso, modifiche e cessazione (le nuove linee d'attività con la procedura
+  # dell'avvio), e il portale ha l'operazione del settore. Subingresso, cessazione e sospensione la includono già nella loro pratica
+  # (sezioni «notifica di subingresso», «Cessazione dell'attività ai sensi dell'art. 6» e «Sospensione temporanea»): qui non si ripetono.
+  - id: somministrazione-notifica-modifica-zona-c
+    when: {attivita: [somministrazione], evento: [modifica_tipologia], zona: [c]}
+    then:
+      role: main
+      procedure: napoli/asl-napoli-1/registrazione-attivita-alimentare
+      regime: notifica
+      portal: {settore: "Esercizio di somministrazione di alimenti e bevande in zone NON tutelate", operazione: "Presentare l'aggiornamento della registrazione impresa alimentare - modifica della tipologia di attività"}
+    cites: [{procedure: napoli/asl-napoli-1/registrazione-attivita-alimentare, source: dd117}]
+    status: verified
+  - id: somministrazione-notifica-modifica-zone-tutelate
+    when: {attivita: [somministrazione], evento: [modifica_tipologia], zona: [a, b]}
+    then:
+      role: main
+      procedure: napoli/asl-napoli-1/registrazione-attivita-alimentare
+      regime: notifica
+      portal: {settore: "Esercizio di somministrazione di alimenti e bevande in zone tutelate", operazione: "Presentare l'aggiornamento della registrazione impresa alimentare - modifica della tipologia di attività"}
+    cites: [{procedure: napoli/asl-napoli-1/registrazione-attivita-alimentare, source: dd117}]
+    status: verified
+  - id: somministrazione-notifica-mancante-zona-c
+    when: {attivita: [somministrazione], evento: [notifica_mancante], zona: [c]}
+    then:
+      role: main
+      procedure: napoli/asl-napoli-1/registrazione-attivita-alimentare
+      regime: notifica
+      portal: {settore: "Esercizio di somministrazione di alimenti e bevande in zone NON tutelate", operazione: "Notifica ai fini della registrazione - avvio attività/trasferimento"}
+    cites: [{procedure: napoli/asl-napoli-1/registrazione-attivita-alimentare, source: dd117}]
+    status: verified
+  - id: somministrazione-notifica-mancante-zone-tutelate
+    when: {attivita: [somministrazione], evento: [notifica_mancante], zona: [a, b]}
+    then:
+      role: main
+      procedure: napoli/asl-napoli-1/registrazione-attivita-alimentare
+      regime: notifica
+      portal: {settore: "Esercizio di somministrazione di alimenti e bevande in zone tutelate", operazione: "Notifica ai fini della registrazione - avvio attività/trasferimento"}
+    cites: [{procedure: napoli/asl-napoli-1/registrazione-attivita-alimentare, source: dd117}]
+    status: verified
+  - id: notifica-sanitaria-non-coperta
+    when: {attivita: [vicinato_alimentare, vicinato_non_alimentare, acconciatore, estetista, bed_and_breakfast], evento: [modifica_tipologia, notifica_mancante]}
+    then: {refuse: "La notifica sanitaria da sola è coperta per ora solo per un bar o ristorante: per un negozio di alimenti va chiesta al SUAP, o presentata tu stesso dal portale, all'operazione del tuo settore; le altre attività non ne hanno."}
     status: verified
   - id: alcolici
     when: {attivita: [somministrazione, vicinato_alimentare, vicinato_non_alimentare], evento: [apertura, trasferimento, subingresso], alcolici: true}

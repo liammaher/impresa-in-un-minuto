@@ -428,6 +428,26 @@ def _facts(v, n):
     return (str(v).split("/") + [""] * n)[:n]
 
 
+def _periodo(v):
+    """The dehors' period (SUAP «dichiarazione del periodo di effettiva occupazione»), from {{ask.stagionale,ask.dehors_periodo|periodo}}:
+    the answer to `dehors_periodo` if there is one, else what the season question says (the first four cases only had that)."""
+    stagionale, periodo = _facts(v, 2)
+    return re.sub(r"[^a-z0-9]+", "_", periodo.strip().lower()).strip("_") or ("stagionale" if stagionale.strip().lower() == "true" else "annuale")
+
+
+_FASCIA = re.compile(r"(\d{1,2}:\d{2})\s*-\s*(\d{1,2}:\d{2})")
+
+
+def _fasce(v):
+    """A day's opening hours as «12:00-15:00, 19:00-23:30»: its spells, each (from, to), in order."""
+    return _FASCIA.findall(str(v))
+
+
+def _fascia(n, i):
+    """Filter: the n-th spell's start (i = 0) or end (i = 1), "" when the day has fewer spells."""
+    return lambda v: (_fasce(v) + [("", "")] * (n + 1))[n][i]
+
+
 def _amount(v):
     """A number answer (12500, 12500,50, 12500.5), or None: also for "12.500", which may be an
     Italian thousands separator, so a bracket is never worked out from a figure read wrong."""
@@ -551,6 +571,9 @@ FILTERS = Filters({
     "destinazione": _destinazione,
     "destinazione_is_altro": lambda v: "true" if _destinazione(v) == "altro" else "false",
     "filled": lambda v: "true" if v else "false",
+    "periodo": _periodo,
+    "fascia1_dalle": _fascia(0, 0), "fascia1_alle": _fascia(0, 1),
+    "fascia2_dalle": _fascia(1, 0), "fascia2_alle": _fascia(1, 1),
     "rea_num": lambda v: v.split("-")[-1].strip(),
     "date_it": lambda v: "/".join(reversed(v.split("-"))),
     "phone_it": lambda v: re.sub(r"^\+39|\s", "", v),
@@ -1301,6 +1324,8 @@ def check_answer(ask, v):
         return f"no file {s}"
     if kind == "text" and not s:
         return "the answer is empty"
+    if ask.get("format") == "fasce" and s and (not _fasce(s) or _FASCIA.sub("", s).replace(",", "").strip()):
+        return "answer with the day's hours as hh:mm-hh:mm (a break: hh:mm-hh:mm, hh:mm-hh:mm), or leave it empty if closed"
     return None
 
 

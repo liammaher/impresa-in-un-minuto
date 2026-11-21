@@ -352,12 +352,12 @@ Portal boxes of the Permesso di costruire no schema alternative matched and no c
 - Dichiarazione relativa all'assolvimento…: deposito del collaudo statico ai sensi dell'art. 67 del DPR 380/2001 (not mapped)
 - Dichiarazione relativa all'assolvimento…: deposito relazione a struttura ultimata ai sensi dell'art. 65 del DPR 380/2001 (not mapped)
 - Dichiarazione relativa all'assolvimento…: Non è richiesta alcuna marca da bollo per l'autorizzazione perché il procedimento può con… (not mapped)
-- Dichiarazione relativa all'assolvimento…: ai sensi dell'art.82, c.5, d.Lgs. n.117/2017 (Enti del Terzo settore iscritti nel registr… (not mapped)
-- Dichiarazione relativa all'assolvimento…: ai sensi del D.P.R. 26/10/1972, n. 642, allegato B, art. 16 (amministrazioni dello Stato,… (not mapped)
-- Dichiarazione relativa all'assolvimento…: ai sensi del D.P.R. 26/10/1972, n. 642, allegato B, art. 21 (piccola proprietà contadina) (not mapped)
-- Dichiarazione relativa all'assolvimento…: ai sensi del D.P.R. 26/10/1972, n. 642, allegato B, art. 27-bis (federazioni sportive, en… (not mapped)
-- Dichiarazione relativa all'assolvimento…: ai sensi del D.P.R. 26/10/1972, n. 642, allegato B, art. 27-bis (organizzazioni non lucra… (not mapped)
-- Dichiarazione relativa all'assolvimento…: ai sensi del D.P.R. 26/10/1972, n. 642, allegato B, art. 27-ter (movimenti o partiti poli… (not mapped)
+- Dichiarazione relativa all'assolvimento…: ai sensi dell'art.82, c.5, d.Lgs. n.117/2017 (Enti del Terzo settore iscritti nel registr… (mapped)
+- Dichiarazione relativa all'assolvimento…: ai sensi del D.P.R. 26/10/1972, n. 642, allegato B, art. 16 (amministrazioni dello Stato,… (mapped)
+- Dichiarazione relativa all'assolvimento…: ai sensi del D.P.R. 26/10/1972, n. 642, allegato B, art. 21 (piccola proprietà contadina) (mapped)
+- Dichiarazione relativa all'assolvimento…: ai sensi del D.P.R. 26/10/1972, n. 642, allegato B, art. 27-bis (federazioni sportive, en… (mapped)
+- Dichiarazione relativa all'assolvimento…: ai sensi del D.P.R. 26/10/1972, n. 642, allegato B, art. 27-bis (organizzazioni non lucra… (mapped)
+- Dichiarazione relativa all'assolvimento…: ai sensi del D.P.R. 26/10/1972, n. 642, allegato B, art. 27-ter (movimenti o partiti poli… (mapped)
 - SANATORIA: lo Sportello Unico può subordinare il rilascio del permesso di costruire in sanatoria all… (not mapped)
 
 ### SCIA

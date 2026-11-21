@@ -228,7 +228,7 @@ What a Napoli architect or pratiche agency files again and again, so what has to
 
 `run` = run on the portal; `fill` = fillable, never run; `map` = crawled, sections missing from the dictionary; `crawl` = not crawled; `-` = the sector doesn't offer it; `*` = a case of the rules table reaches this pratica's steps file (`bench/test_route.py`).
 
-Routing (the library's SUAP table): of 757 cases, **262 reach a steps file**, 495 are refused with a reason or need no pratica, 0 have no steps file yet (0 combinations of pratiche, mostly an outside sign, a dehors, music or fire prevention filed with an opening). 118 steps files are reached; the others with a run are listed with their reason in `catalogue/F839/suap-unrouted.yaml`.
+Routing (the library's SUAP table): of 777 cases, **268 reach a steps file**, 509 are refused with a reason or need no pratica, 0 have no steps file yet (0 combinations of pratiche, mostly an outside sign, a dehors, music or fire prevention filed with an opening). 122 steps files are reached; the others with a run are listed with their reason in `catalogue/F839/suap-unrouted.yaml`.
 
 Of 60 cells: **60 run, 0 fillable but not run, 0 need dictionary work, 0 not crawled yet.**
 

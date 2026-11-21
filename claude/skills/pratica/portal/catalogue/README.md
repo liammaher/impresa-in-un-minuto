@@ -10,7 +10,13 @@ catastale (`F839` is Napoli).
   operation the comune offers, and for each one alone: the screens after it, the pratica the
   portal generates (its adempimenti, the office each goes to, its sections in order), and
   each option of "Scelte eventuali" tried alone (a Si/No answered Si, a box ticked) with the
-  sections it adds or drops. Sections are indices into `sections`.
+  sections it adds or drops. Sections are indices into `sections`. **That is the SUE's file.**
+  `F839/suap-wizard.json` is *operations only* (its `note`: crawled with `follow: false`): no screens, no
+  «interventi eventuali». Those options are in the `screens` of the batch crawls under `sections/` (118 of
+  them have the screen, 37 distinct options, 2026-11-21): a question about what the wizard offers in
+  «Scelta interventi eventuali» is answered from there, never by grepping `suap-wizard.json` (that file
+  could not hold one: round 23's first grep of it proved nothing). The screens have no art. 49 / Soprintendenza
+  option, and `bench/test_preflight.py` fails if a crawl ever shows one.
 - `<comune>/sections/<pratica>.json`: one pratica's sections, crawled by `crawl.js`: each
   section's fields (id, kind, label), each choice tried with what it opens, hides and shifts,
   its fingerprint, and the attachments screen's slots (`slots`, read on the screen). A batch

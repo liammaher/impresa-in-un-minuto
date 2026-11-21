@@ -29,6 +29,14 @@
 // «DOCUMENTI ALLEGATI»), (4) a box is switched by the visible `*_clone` of a radio (`[id*='r4c1p4reg']` filtered on offsetParent): click it,
 // wait 2.5 s and read what appeared. Nothing is saved until SALVA, so a toggle only reads; read-only is what this is for. Drafts left on the portal
 // are the made-up ones ("PROVA NON INVIARE - ..."), kept so a later round can compare a section across them (the plain and the vincolo sign's attachments, round 22).
+// Round 23 (2026-11-21), what bit on the dehors' hours and period: (a) on the home list APRI is a `<button>` around a `<span>` (no `<a>`): find the row,
+// then the span's `closest("a,button")`, and click it inside a `setTimeout` so the call returns before the page navigates (the home list's pages: `[...document.querySelectorAll("a, span")].filter((e) => e.textContent.trim() === "3" && e.closest(".ui-paginator, [class*=paginator]"))[0].click()`, then wait ~4 s; a draft's name is in the row's text, and 10 drafts a page: 30 made-up drafts were on three pages); (b) a section link in the draft (`<a href="#">`) clicked by script works (the dehors' sections, «Allega Documenti», «Dati Dichiarazioni»); one that seemed to do nothing
+// after a toggle had opened the confirm of (c) underneath: read the page's text for it before trying another way to click;
+// (c) leaving a section whose boxes you toggled shows «Le informazioni inserite non sono state salvate. Proseguire senza salvare ?»: press its Conferma
+// (the visible one inside the dialog), nothing was saved, the toggles are gone; (d) one attempt to tick a weekday's checkbox by script (its `.ui-chkbox-box`) did not
+// register and was not investigated; the runner's `kind: checkbox` ticks them (the five dehors runs read the rows back), so read what a checkbox switches on from a run;
+// (e) radios that look like one group may be five single-radio groups with the portal's own exclusion (the dehors' period): toggle each and read the
+// others' checked/disabled state before writing a dictionary entry as «one of».
 // Written 2026-11-15 for round 7 (README): it found that the VV.F. take-over's statements a) and b) are required and b) switches on the
 // previous manager's boxes, that the garage's header radio is not kept, and what the B&B variation's capacity groups need. A page that
 // navigates (open, section, required) loses the return value of the call that caused it: look at the page, then call again.

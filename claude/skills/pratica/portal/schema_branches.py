@@ -229,6 +229,11 @@ def steps_fields(steps):
             elif x["kind"] == "select":
                 v = str(x.get("value", ""))
                 yield norm(sec["section"]), x.get("id"), "option", "*" if "{{" in v else norm(v)
+                # A dropdown whose answer a filter turns into one of its options, which the filter's table names (the bollo's
+                # reasons for an exemption): no id on a SUAP steps file's field, so "*" alone matched none of them (round 23).
+                if "{{" in v and v.strip("{} ").split("|")[-1].strip() == "bollo_motivo":
+                    for o in run.BOLLO_ESENZIONE.values():
+                        yield norm(sec["section"]), x.get("id"), "option", norm(o)
 
 
 def sue_steps(sportello="sue"):
@@ -332,10 +337,20 @@ def left():
     return out
 
 
-def status(box, ticks, mapped, leaves, peers, runs=frozenset()):
+def other_procedures():
+    """{(section, label)} for the dictionary's `other_procedure:` lists: choices of a procedure no recipe maps (the bollo's
+    silenzio assenso reasons are the fire brigade's project evaluation, an emissions or drain authorization, a hotel's
+    classification: a restaurant or a shop files none of them). The SUAP's counter only: the SUE's table keeps its states."""
+    dic = yaml.safe_load((HERE / "dictionary" / "fnsuap.yaml").read_text())
+    return {(norm(name), norm(lab)) for s in dic["sections"] for name in [s["section"]] + s.get("aliases", [])
+            for lab in s.get("other_procedure", [])}
+
+
+def status(box, ticks, mapped, leaves, peers, runs=frozenset(), other=()):
     """("filled", rehearsals) when a case with a filled run on the portal ticks it, ("case",
     rehearsals) when only pre-flight-ready cases do; "mapped" when a steps file can, under a
-    condition no case meets; "leave" or "theirs" when the dictionary says so; else "none"."""
+    condition no case meets; "leave" or "theirs" when the dictionary says so; "other" when it is a choice of a
+    procedure no recipe maps (`other`, the SUAP's only); else "none"."""
     taken = hits(box, ticks, peers)
     if taken:
         return "filled" if any(t in runs for t in taken) else "case", sorted({r for r, _ in taken})
@@ -345,11 +360,14 @@ def status(box, ticks, mapped, leaves, peers, runs=frozenset()):
     for (s, l), why in leaves.items():
         if same_section(s, sec) and starts(lab, l):
             return why, []
+    for s, l in other:
+        if same_section(s, sec) and starts(lab, l):
+            return "other", []
     return "none", []
 
 
 STATES = {"filled": "filled on the portal", "case": "a case, no recorded run", "mapped": "mapped, no case yet", "none": "on the portal, not mapped",
-          "leave": "left empty", "theirs": "the person's", "absent": "no portal box"}
+          "leave": "left empty", "theirs": "the person's", "other": "a procedure no recipe maps", "absent": "no portal box"}
 READ = {"cila": "CILA", "scia": "SCIA", "permesso_di_costruire": "Permesso di costruire",
         "scia_alternativa": "SCIA alternativa", "segnalazione_certificata_agibilita": "Agibilità (SCA)",
         "comunicazione_inizio_lavori": "Inizio lavori", "comunicazione_fine_lavori": "Fine lavori"}
@@ -444,6 +462,7 @@ def suap_table():
     to count against; the SUAP has no such list, so this counts the boxes the portal shows."""
     skipped = []
     ticks, mapped, leaves, runs = ticked("suap", skipped), entries("suap"), left(), filled("suap")
+    other = other_procedures()
     crawls = sorted({gen.resolved(gen.load_yaml(d / "recipe.yaml"))["crawl"] for d, _ in sue_steps("suap")})
     rows, seen = [], set()
     for name in crawls:
@@ -453,7 +472,7 @@ def suap_table():
             if key in seen:
                 continue
             seen.add(key)
-            st, who = status(b, ticks, mapped, leaves, bx, runs)
+            st, who = status(b, ticks, mapped, leaves, bx, runs, other)
             rows.append({"crawl": name, "section": b["section"], "kind": b["kind"], "label": b["label"], "state": st, "by": who})
     return rows, len(crawls), skipped
 
@@ -467,7 +486,7 @@ def suap_report(rows, ncrawls, skipped, only=""):
         count[r["state"]] += 1
     lines = [f"{len(rows)} choice boxes in {ncrawls} SUAP crawls with a recipe, once per section and label; "
              f"{len(skipped)} rehearsals have no fixture.json of their own and are not counted as cases"]
-    for k in ("filled", "case", "mapped", "none", "leave", "theirs"):
+    for k in ("filled", "case", "mapped", "none", "leave", "theirs", "other"):
         lines.append(f"  {STATES.get(k, k):28} {count[k]:5}")
     for k in ("case", "mapped", "none"):
         todo = [r for r in rows if r["state"] == k]

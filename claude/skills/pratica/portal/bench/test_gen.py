@@ -2842,9 +2842,53 @@ def _():
     area = {f["label"]: f.get("when") for f in section(g, "dichiarazione relativa all'occupazione di suolo pubblico")["fields"]}
     assert area["area privata ad uso pubblico"] == "{{ask.area_privata_uso_pubblico}}", area
     per = {f["label"]: f.get("when") for f in section(g, "dichiarazione del periodo di effettiva occupazione")["fields"] if f.get("when")}
-    assert per["a carattere stagionale"] == "{{ask.stagionale}}" and per["dal giorno"] == per["al giorno"] == "{{ask.stagionale}}", per
+    season = "{{ask.stagionale,ask.dehors_periodo|periodo|is_stagionale}}"  # round 23: `stagionale`, unless `dehors_periodo` chooses another period
+    assert per["a carattere stagionale"] == season and per["dal giorno"] == per["al giorno"] == season, per
     runs = [r for r in json.loads((REH / name / "runs.json").read_text()) if r["answers"] == "answers-stagionale-privata.json"]
     assert runs and runs[-1]["result"] == "filled", runs[-1:]
+
+
+@case("round 23: the sign's «titolo» select has a case for each title the restaurant owner can hold without a note (owner, co-owner, usufructuary), "
+      "each filled on the portal: its answers choose that option, drop the «locatario» note, and the draft name fits the portal's 60 characters")
+def _():
+    name = "ristorante-insegna-fittizio"
+    g = generated(name)
+    sel = [f for f in section(g, "TITOLARITA' DELL'INTERVENTO")["fields"] if f["kind"] == "select"]
+    assert len(sel) == 1 and sel[0]["value"] == "{{ask.insegna_titolo_tipo}}", sel
+    runs = json.loads((REH / name / "runs.json").read_text())
+    for title in ("proprietario", "comproprietario", "usufruttuario"):
+        f = f"answers-titolo-{title}.json"
+        a = json.loads((REH / name / f).read_text())
+        assert a["insegna_titolo_tipo"] == title and "insegna_titolo_altro" not in a, a
+        assert a["descrizione"].startswith("PROVA NON INVIARE - ") and len(a["descrizione"]) <= 60, a["descrizione"]
+        mine = [r for r in runs if r["answers"] == f]
+        assert mine and mine[-1]["result"] == "filled", (f, mine[-1:])
+
+
+@case("round 23: the dehors' hours and occupation period have a case for each shape the portal offers beyond one spell every day and a first-year or seasonal "
+      "occupation (a second spell, a row a weekday, renewal, weekly closing day, other), each filled on the portal; the five period radios are the section's only ones and each "
+      "is chosen by `dehors_periodo` or, with none, by `stagionale`")
+def _():
+    name = "ristorante-dehors-fittizio"
+    g = generated(name)
+    per = section(g, "dichiarazione del periodo di effettiva occupazione")["fields"]
+    radios = [f["label"] for f in per if f["kind"] == "radio"]
+    assert radios == ["a carattere annuale (1° anno di richiesta)", "a carattere annuale - rinnovo di autorizzazione", "a carattere stagionale",
+                      "nel giorno di chiusura settimanale", "altro"], radios
+    assert all("ask.stagionale,ask.dehors_periodo|periodo|is_" in f["when"] for f in per if f["kind"] == "radio"), per
+    hours = section(g, "dichiarazione relativa agli orari ed ai giorni di apertura")["fields"]
+    days = [f["label"] for f in hours if f["kind"] == "checkbox"]
+    assert days == ["lunedì", "martedì", "mercoledì", "giovedì", "venerdì", "sabato", "domenica"], days
+    assert len([f for f in hours if f["label"] in ("dalle ore", "alle ore")]) == 7 * 4 + 4, "seven rows of two pairs and the all-days two"
+    runs = json.loads((REH / name / "runs.json").read_text())
+    for f in ("answers-orari-pausa.json", "answers-orari-giorni.json", "answers-periodo-rinnovo.json", "answers-periodo-chiusura.json", "answers-periodo-altro.json"):
+        a = json.loads((REH / name / f).read_text())
+        assert a["descrizione"].startswith("PROVA NON INVIARE - ") and len(a["descrizione"]) <= 60, a["descrizione"]
+        mine = [r for r in runs if r["answers"] == f]
+        assert mine and mine[-1]["result"] == "filled", (f, mine[-1:])
+    # The renewal's number is the portal's 10 characters at most, and the weekly closing day's text 50, «altro» 200.
+    assert len(json.loads((REH / name / "answers-periodo-rinnovo.json").read_text())["dehors_rinnovo_numero"]) <= 10
+    assert len(json.loads((REH / name / "answers-periodo-altro.json").read_text())["dehors_periodo_altro"]) <= 200
 
 
 @case("round 22: the stand-alone sign's attachments screen read on a plain draft and on one with the landscape vincolo Si is the same ten slots, none for a "
@@ -2859,6 +2903,8 @@ def _():
         a = json.loads((REH / d["rehearsal"] / d["answers"]).read_text())
         assert (d["vincolo"] == "si") == ("insegna_vincolo" in a.get("extras", [])), (key, a.get("extras"))
         assert (d["zona_a"] == "si") == ("insegna_zona_a" in a.get("extras", [])), (key, a.get("extras"))
+    # Round 23: the draft with both Si (zona A and vincolo) was read too, and shows the same ten slots.
+    assert set(data["drafts"]) == {"plain", "vincolo", "both"} and (data["drafts"]["both"]["vincolo"], data["drafts"]["both"]["zona_a"]) == ("si", "si"), data["drafts"]
     recipe = gen.load_yaml(REH / "insegna-ristorante-vincolo-fittizio" / "recipe.yaml")
     assert any("autorizzazione paesaggistica" in y for y in recipe["yours"]), recipe["yours"]
 

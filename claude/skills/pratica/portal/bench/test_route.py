@@ -625,6 +625,11 @@ def suap_wedge_cells_and_their_reasons():
         ("bar or restaurant, zone A", "trasferimento"): "trasferimento-ristorante-centro-storico-fittizio",
         ("bar or restaurant, zone A", "cessazione"): "cessazione-ristorante-centro-storico-fittizio",
         ("B&B", "apertura"): "affittacamere-fittizio",
+        # Round 23: the Reg. 852 notification on its own, for a bar or restaurant: a new line of activity, or one never notified.
+        ("bar or restaurant, zone C", "modifica_tipologia"): "notifica-modifica-tipologia-ristorante-fittizio",
+        ("bar or restaurant, zone C", "notifica_mancante"): "notifica-avvio-registrazione-ristorante-fittizio",
+        ("bar or restaurant, zone A", "modifica_tipologia"): "notifica-modifica-tipologia-ristorante-centro-storico-fittizio",
+        ("bar or restaurant, zone A", "notifica_mancante"): "notifica-avvio-registrazione-ristorante-centro-storico-fittizio",
     }
     for (cell, evento), name in expected.items():
         r = route.route(SUAP, {**cells[cell], "evento": evento}, REHEARSALS)
@@ -637,6 +642,11 @@ def suap_wedge_cells_and_their_reasons():
                          ("hairdresser", "sospensione"), ("B&B", "variazione_soggetti")):
         r = route.route(SUAP, {**cells[cell], "evento": evento}, REHEARSALS)
         assert not r["routed"] and "Va chiesta al SUAP" in r["unsupported"][0] and "portale" in r["unsupported"][0], (cell, evento, r)
+    # The notification alone is a bar's or restaurant's only: a food shop, or a trade with none, is told so (rule notifica-sanitaria-non-coperta).
+    for cell in ("shop, food, no tables", "shop, non-food", "hairdresser", "B&B"):
+        for evento in ("modifica_tipologia", "notifica_mancante"):
+            r = route.route(SUAP, {**cells[cell], "evento": evento}, REHEARSALS)
+            assert not r["routed"] and "solo per un bar o ristorante" in r["unsupported"][0], (cell, evento, r)
     for cell, evento in (("bar or restaurant, zone A", "subingresso"), ("shop, food, eaten on the spot, zone A", "subingresso"),
                          ("B&B", "cessazione")):
         r = route.route(SUAP, {**cells[cell], "evento": evento}, REHEARSALS)

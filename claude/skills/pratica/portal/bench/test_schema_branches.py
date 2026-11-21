@@ -129,6 +129,14 @@ def suap_choices():
     assert {"filled", "mapped", "none"} <= got, got
     by = {(sb.norm(r["section"]), sb.norm(r["label"])): r["state"] for r in rows}
     assert any(st == "filled" and "somministrazione" in sec for (sec, _), st in by.items()), "no restaurant box filled"
+    # The bollo's 17 options (round 23): the 7 exemption reasons are mapped (a dropdown the `bollo_motivo` filter fills, which no id found before),
+    # the two silenzio assenso radios and the 10 procedures of their dropdown are another procedure's (a restaurant files none of them).
+    bollo = [r for r in rows if "imposta di bollo" in r["section"].lower()]
+    reasons = [r for r in bollo if r["kind"] == "option" and r["label"].startswith("ai sensi del")]
+    assert len(reasons) >= 7 and {r["state"] for r in reasons} <= {"mapped", "case", "filled"}, [(r["label"][:40], r["state"]) for r in reasons]
+    other = [r for r in bollo if r["state"] == "other"]
+    assert len(other) >= 12 and not [r for r in bollo if r["state"] == "none"], [(r["label"][:40], r["state"]) for r in bollo if r["state"] == "none"]
+    assert sum(r["kind"] == "option" for r in other) >= 20 and all(r["label"][:3] != "ai " for r in other), other
     # The report names the boxes without a filled run and keeps to one family of crawls.
     rep = sb.suap_report(rows, ncrawls, skipped, only="suap-060-")
     assert "on the portal, not mapped" in rep and "suap-016-" not in rep, rep[:300]
