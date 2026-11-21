@@ -2847,5 +2847,21 @@ def _():
     assert runs and runs[-1]["result"] == "filled", runs[-1:]
 
 
+@case("round 22: the stand-alone sign's attachments screen read on a plain draft and on one with the landscape vincolo Si is the same ten slots, none for a "
+      "landscape authorization (catalogue/F839/sign-attachments.json), so the recipe's `yours` still tells the person to file it apart; each recorded draft's answers match what it says")
+def _():
+    data = json.loads((HERE.parent / "catalogue" / "F839" / "sign-attachments.json").read_text())
+    titles = [s["title"] for s in data["slots"]]
+    assert len(titles) == 10 and len(set(titles)) == 10 and titles[-1] == "Allegati liberi", titles
+    assert not [t for t in titles if re.search(r"paesaggistic|soprintendenza|vincol", t, re.I)], titles
+    assert all(s["accepts"] in ("signed_only", data["slots"][-1]["accepts"]) for s in data["slots"])
+    for key, d in data["drafts"].items():
+        a = json.loads((REH / d["rehearsal"] / d["answers"]).read_text())
+        assert (d["vincolo"] == "si") == ("insegna_vincolo" in a.get("extras", [])), (key, a.get("extras"))
+        assert (d["zona_a"] == "si") == ("insegna_zona_a" in a.get("extras", [])), (key, a.get("extras"))
+    recipe = gen.load_yaml(REH / "insegna-ristorante-vincolo-fittizio" / "recipe.yaml")
+    assert any("autorizzazione paesaggistica" in y for y in recipe["yours"]), recipe["yours"]
+
+
 print(f"{sum(results)}/{len(results)} passed")
 sys.exit(0 if all(results) else 1)

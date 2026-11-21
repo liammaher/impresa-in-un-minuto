@@ -1151,7 +1151,7 @@ so only the bundle's pick was needed.
   **358 filled (was 354), 392 mapped with no case (was 396)**, 543 not mapped as before. `test_gen` holds the answers, the two radios they choose and the recorded run. Still no case: the four «titolarità dell'intervento»
   options on the sign's screen (owner, co-owner, usufructuary, condominium administrator), the days of the week and «orari diversi giorno per giorno», and the period's «rinnovo», «giorno di chiusura» and «altro»
   (the dictionary ticks «tutti i giorni» with one closing day: the other shapes of a week are a new ask, not a rehearsal).
-- **The attachments screen under a vincolo Si is the one without it.** Read on the stand-alone sign's draft with both Si (landscape vincolo and zone A) and on yesterday's plain draft: the same ten slots (the road's
+- **The attachments screen under a vincolo Si is the one without it.** Read on the stand-alone sign's draft with the landscape vincolo Si and zone A No (`answers-vincolo.json`; the both-Si draft, `answers.json`, was not opened) and on yesterday's plain draft, recorded in `catalogue/F839/sign-attachments.json` and held by `test_gen`: the same ten slots (the road's
   cross-section, the owner's or condominium's consent, photographs, the colour sketch, the cadastral plan, the quoted project, the art. 90 D.Lgs. 81/2008 declaration, the road owner's technical clearance if it is not the Comune,
   «Dichiarazione programma 100», «Allegati liberi»), all `.p7m` signed but the last. No slot for a landscape authorization, so the library's `insegna-esercizio` line stands: the person files or attaches it and installs the sign after
   (the recipe's `yours` says so).
@@ -1163,8 +1163,8 @@ so only the bundle's pick was needed.
   runner's wizard step with another `tree:`).
 - **In code from this round:** `read_draft.js`'s header says how to read a draft without the helper (the list is 10 a page, older drafts are on the numbered links, a toggle reads and saves nothing), the dictionary's comment above the
   vincolo section has the monumentale facts, `test_gen` the dehors case, and the two stale round 21 test failures are gone (the FILING line is 345 characters; the round 11 record test reads a rehearsal's plain `answers.json` runs, so
-  later answers files that stop on made-up values, as PIN 6's, don't count). `docs/coverage.md` and `docs/ready.md` are redrawn (`make coverage` printed nothing and wrote nothing the first time: run `scoreboard.py --write`
-  directly if it does): SUAP 1,148 mapped, 1,119 fillable, 267 run on the portal.
+  later answers files that stop on made-up values, as PIN 6's, don't count). `docs/coverage.md` and `docs/ready.md` are redrawn (`make coverage` takes about 6 minutes: started as a background job with a trailing `&` it looked like a no-op,
+  because the tool returned at once and the run was still going; run it in the foreground): SUAP 1,148 mapped, 1,119 fillable, 267 run on the portal.
 
 ## What the portal does that bit us
 
