@@ -9,8 +9,8 @@
       "source": {
         "source": "url",
         "url": "https://github.com/liammaher/impresa-in-un-minuto.git",
-        "ref": "plugin-openai-v0.8.3",
-        "sha": "7f1e5346c7a63debd4fdc3fb62f9d09276cf3b88"
+        "ref": "plugin-openai-v0.8.4",
+        "sha": "bab220ad796e3c4f14cfa98750ca88ad8bb7c69c"
       },
       "policy": {
         "installation": "AVAILABLE",
