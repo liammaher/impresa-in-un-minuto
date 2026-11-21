@@ -209,27 +209,28 @@ def main():
             assert "<!--" not in text or "<!-- download" in text or "<!-- no-download" in text, f
         skill = (plugin / "skills" / "pratiche" / "SKILL.md").read_text()
         assert "`<skill-dir>` is this SKILL.md's directory" in skill, "the openai skill says what <skill-dir> is"
-        # A check only in ChatGPT: its in-app browser reads a page but can't fill one (2026-11-20). Nothing
-        # tells the model to log in, compile or show a test on the portal, and nothing promises it to them.
-        assert "**In ChatGPT: a check only, for now.**" in skill and "## 4. The compilation" not in skill, \
-            "the openai skill has no compilation"
-        for f, said in ((plugin / "skills" / "pratiche" / "SKILL.md", skill),
-                        (plugin / "skills" / "pratiche" / "prova.md", (plugin / "skills" / "pratiche" / "prova.md").read_text()),
-                        (plugin / "README.md", (plugin / "README.md").read_text())):
-            for promise in ("Entra con il tuo SPID", "Vuoi vedere una CILA di prova", "run.py\" page",
-                            "Fammi vedere una prova", "tab.playwright"):
-                assert promise not in said, (f.name, promise)
+        # ChatGPT fills the portal with driver.mjs (2026-11-21): run.py chatgpt and the driver, never the pane's
+        # scripts (check.js, run.js, __pv), which its read-only view can't run; a terminal with no browser checks only.
+        prova = (plugin / "skills" / "pratiche" / "prova.md").read_text()
+        assert "## 4. The compilation" in skill and "portal/driver.mjs" in skill and "run.py\" chatgpt" in skill, \
+            "the openai skill fills through the driver"
+        assert "**A check only**" in skill.split("## How you speak")[0], "the openai skill says a terminal checks only"
+        steps = skill.split("## 4. The compilation")[1].split("## 7. After they send it")[0]
+        for f, said in (("SKILL.md, steps 4-6", steps), ("prova.md", prova)):
+            for pane in ("check.js", "run.js", "__pv", "--plain", "preview_text.js", "--after-declarations"):
+                assert pane not in said, (f, pane)
+        assert "`<page>` is `chatgpt`" in prova
         front = yaml.safe_load(skill.split("---")[1])
-        assert set(front) == {"name", "description"} and "non compila il portale" in front["description"], front
+        assert set(front) == {"name", "description"} and "ChatGPT compila" in front["description"], front
         readme = (plugin / "README.md").read_text()
-        assert "codex plugin marketplace add liammaher/impresa-in-un-minuto" in readme and "non compila il portale" in readme
+        assert "codex plugin marketplace add liammaher/impresa-in-un-minuto" in readme and "Fammi vedere una prova" in readme
     # The claude build keeps every Claude part as it was.
     with tempfile.TemporaryDirectory() as tmp:
         plugin = Path(tmp) / "claude"
         shutil.copytree(HERE / "impresa-in-un-minuto", plugin)
         build.select_target(plugin, "claude")
         skill = (plugin / "skills" / "pratiche" / "SKILL.md").read_text()
-        assert "never Claude in Chrome" in skill and "<skill-dir>" not in skill and "a check only, for now" not in skill
+        assert "never Claude in Chrome" in skill and "<skill-dir>" not in skill and "driver.mjs" not in skill and "ChatGPT" not in skill
         assert "## 4. The compilation" in skill and "Entra con il tuo SPID" in skill
         front = yaml.safe_load(skill.split("---")[1])
         assert set(front) == {"name", "description"} and "Claude compila" in front["description"], front
@@ -245,10 +246,10 @@ def main():
                         "keywords", "extensions"}, out
     assert "displayName" not in out, "displayName is Claude's; OpenAI's goes under extensions.com.openai.interface"
     openai = out["extensions"]["com.openai"]
-    assert "Claude" not in out["description"] and "non compila il portale" in out["description"], out["description"]
+    assert "Claude" not in out["description"] and "ChatGPT compila" in out["description"], out["description"]
     assert openai["requires_local_executor"] is True, "the runner's scripts need the desktop app: desktop only"
     face = openai["interface"]
-    assert face["displayName"] == manifest["displayName"] and face["longDescription"] == out["description"] == build.openai_words(manifest["metadata"]["openai"]["description"], "t") \
+    assert face["displayName"] == manifest["displayName"] and face["longDescription"] == out["description"] == build.openai_words(manifest["description"], "t") \
         and face["developerName"] == manifest["author"]["name"] and face["websiteURL"] == manifest["homepage"], face
     assert face["category"] in {"Productivity", "Creativity", "Developer Tools", "Business & Operations", "Data & Analytics",
                                 "Communication", "Education & Research", "Security", "Finance", "Healthcare", "Travel",

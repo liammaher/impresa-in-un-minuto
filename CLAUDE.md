@@ -131,6 +131,9 @@ claude/skills/       vault and pratica skills; pratica keeps one playbook per pr
                      schema (`schema/`, InfoCamere's forms flattened), for a person to check;
                      schema_branches.py sets the 7 SUE forms' choices against the rehearsals' cases
                      (docs/schema-branches.md: the branches no case takes yet)
+                     ChatGPT's in-app browser runs driver.mjs instead (`run.py chatgpt`): it reads through
+                     the read-only `evaluate` and writes as a person does (fill, keys, clicks, the file
+                     chooser), the values from the run's private folder (docs/design/openai-platform.md)
   pratica/intake/    intake.py: a job's documents (visura, lease, deed, relazione, receipts) to a
                      private values file and proposed facts and answers, each with its source, for
                      the person to confirm (`accept`); Claude reads only intake.json, never the
@@ -572,7 +575,7 @@ pilot's form from disk; the `sign` case needs a library whose layout has `signat
 CI runs `regress.py` on every change to the filler, the vault or `library/` (`fill.yml`).
 The portal runner has offline tests on a fake portal: `claude/skills/pratica/portal/bench/test_inpage.py`,
 run with the pratica venv's Python (`~/.cache/pratica-portal/venv`, Playwright's Chromium, headless; no
-network, vault or model); `bench/test_preview_text.py` the preview PDF's reader (`preview_text.js`),
+network, vault or model); `bench/test_driver.py` driver.mjs on the same fake portal (Playwright for Node: a tab whose `evaluate` is read only), `bench/test_preview_text.py` the preview PDF's reader (`preview_text.js`),
 `bench/test_review_check.py` review.py's closing lines (the check against the documents as warnings); `bench/test_preflight.py` tests pre-flight on the SCIA rehearsal's files, `bench/test_gen.py`
 gen.py on the crawls in `catalogue/F839/sections`, `bench/test_rerun.py` what a rerun batch holds and refuses (a procedure's steps files keyed apart, a REA company, the SUAP's answers.json; pick.js, check.js and results.js run in node under a fake page), `bench/test_leverage.py` leverage.py's count of the SUAP's own crawls against their same-fingerprint copies (the scoreboard prints it), `bench/test_derive.py` derive_recipe.py's checks (the closer template by the crawl's sections, a checklist answer from the pool, valerio for sector 20, the attachments and declarations lines from the crawl, the asks that only refuse), `bench/test_branches.py` the SUE choice count
 (`branches.py --write` writes `docs/sue-branches.md`), `bench/test_portability.py` the national/Campania/Napoli

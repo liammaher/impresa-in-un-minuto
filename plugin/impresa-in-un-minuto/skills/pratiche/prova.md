@@ -3,7 +3,6 @@
 A test run, for a tecnico who wants to see Impresa in un minuto work before a real job, or who calls a job
 of theirs a test. `${CLAUDE_SKILL_DIR}` is this skill's folder, as in SKILL.md.
 
-<!-- claude -->
 **Which test.** Decide from their words alone, and ask nothing:
 - **The Prova**, every time the pratica they name is a CILA, or they name none ("una prova",
   "fammi vedere", "a client's renovation", "una pratica"). What they say about the client or the
@@ -45,17 +44,27 @@ real filing's details (the c/c, the order of the signatures, the PEC receipt).
    sh "${CLAUDE_SKILL_DIR}/py" "${CLAUDE_SKILL_DIR}/check.py" studio.json values.json --out run/values.json >/dev/null && \
    sh "${CLAUDE_SKILL_DIR}/py" "${CLAUDE_SKILL_DIR}/portal/run.py" preflight --steps "${CLAUDE_SKILL_DIR}/pratiche/cila-fittizia.json" \
      --answers answers.json --values run/values.json --made-up > run/preflight.json && \
-   sh "${CLAUDE_SKILL_DIR}/py" "${CLAUDE_SKILL_DIR}/portal/run.py" page --steps "${CLAUDE_SKILL_DIR}/pratiche/cila-fittizia.json" \
-     --answers answers.json --values run/values.json --made-up --plain --out run > run/page.txt
+   sh "${CLAUDE_SKILL_DIR}/py" "${CLAUDE_SKILL_DIR}/portal/run.py" <page> --steps "${CLAUDE_SKILL_DIR}/pratiche/cila-fittizia.json" \
+     --answers answers.json --values run/values.json --made-up <plain> --out run > run/page.txt
    ```
+<!-- claude -->
+   `<page>` is `page` and `<plain>` is `--plain`.
+<!-- /claude -->
+<!-- openai -->
+   `<page>` is `chatgpt` and `<plain>` is nothing (the driver reads the values from the run's folder).
+<!-- /openai -->
 <!-- vault -->
    With the archive's compilation nothing reads the preview back: add `--no-preview-check` to `preflight`.
 <!-- /vault -->
-   (`pwd` prints the Prova's folder on the error output, and `page`'s own lines go to `run/page.txt`: stdout is
-   empty.) No card in the Prova: what it would say, the closing lines say. `<name>` is `prova` in the fallback of
-   SKILL.md, step 4.3 (with `--made-up --plain`, as here). The check says `ready` (the build checks it);
+   (`pwd` prints the Prova's folder on the error output, and the last command's own lines go to `run/page.txt`:
+   stdout is empty.) No card in the Prova: what it would say, the closing lines say.
+<!-- claude -->
+   `<name>` is `prova` in the fallback of SKILL.md, step 4.3 (with `--made-up --plain`, as here).
+<!-- /claude -->
+   The check says `ready` (the build checks it);
    its warnings are the Prova's own, never for the tecnico. If it isn't ready, that is Impresa in un minuto's
    fault: SKILL.md, **When Impresa in un minuto itself goes wrong**.
+<!-- claude -->
 2. Then say only this, and in the same turn open the portal (SKILL.md, step 4.1, without sending its
    line), so they log in while they read:
    > Ho aperto il portale impresainungiorno qui accanto.
@@ -91,14 +100,37 @@ real filing's details (the c/c, the order of the signatures, the PEC receipt).
 <!-- vault -->
    then `sh "${CLAUDE_SKILL_DIR}/py" "${CLAUDE_SKILL_DIR}/review.py" run --prova` (no check against the preview here).
 <!-- /vault -->
+<!-- /claude -->
+<!-- openai -->
+2. Then say only this, and in the same turn open the portal (SKILL.md, step 4.1, its first call, without sending
+   its lines), so they log in while they read:
+   > Ho aperto il portale impresainungiorno nel browser qui accanto.
+   > **Entra con il tuo SPID e scrivimi «fatto».** Le credenziali le scrivi solo tu.
+   > Poi, in circa un quarto d'ora, compilo una CILA inventata (manutenzione straordinaria in un appartamento, lavori già in corso, per un locatario, con due imprese) e la rileggo dal portale. Non spunto dichiarazioni, non pago, non firmo, non invio.
+
+   The parenthesis says what the case is, so they can hold what appears on the portal to it; never its
+   names, codici fiscali, addresses or figures. As it is, a word not changed, added or left out: nothing before,
+   nothing after, no card. Never "non le vedo": the browser's pages can be read.
+   With no browser for the portal here (SKILL.md, at the top), say in two lines that the Prova fills on the
+   portal from the ChatGPT app for computer, in its browser, once they log in there with their own SPID
+   ("Scrivimi «fammi vedere una prova» dall'app ChatGPT per computer: lì entra con il tuo SPID nel suo
+   browser"), and that the draft «PROVA NON INVIARE - CILA di prova», with invented data, is then to be
+   deleted from «Pratiche in bozza». Then stop.
+3. Wait for their «fatto». Then say one line: "Sto compilando, non toccare la pagina." Then SKILL.md steps 4.3
+   and 4.4 (the driver, `wait`), and `sh "${CLAUDE_SKILL_DIR}/py" "${CLAUDE_SKILL_DIR}/review.py" run --prova`
+   (no check against the preview in ChatGPT yet: its closing lines say so).
+<!-- /openai -->
 4. Hand over with its `message`, as written, its lines and nothing else. Everything matched:
    "✅ CILA di prova compilata in <T>. Riletti dal portale: scheda anagrafica, dati catastali, lavori e altri <N> quadri, più <M> file. Tutto corrisponde.
    In una pratica vera restano a te: controllare l'anteprima, spuntare le dichiarazioni, pagare, firmare, inviare.
    Guarda la bozza qui accanto (Pratiche in bozza › PROVA NON INVIARE): scegli una casella e chiedimi cosa ho scritto e perché. Poi cancellala."
    Something didn't match, or wasn't read: the head `✅ … compilata in <T>.`, then a `✅` line for what was read
    and a `⚠️` line for a value that doesn't match, a file the portal doesn't hold or a check not done, then the
-   last two lines. (The Prova's receipt sits in quadro d: SKILL.md step 5.3 reads it there, with
-   `review.py run --quadri`.) No file, no list of values, no
+   last two lines.
+<!-- claude -->
+   (The Prova's receipt sits in quadro d: SKILL.md step 5.3 reads it there, with `review.py run --quadri`.)
+<!-- /claude -->
+   No file, no list of values, no
    portal warnings (the portal's warnings on made-up values, such as the PEC, are expected), no
    declarations' text, no list of their steps, no diritti, no procura, no second compilation, no offer of
    anything more.
@@ -147,14 +179,11 @@ while you prepare:
 6. The check again with `--made-up`, until `ready`. A `made_up_stops` entry (a company client
    registered with the Registro Imprese, which the portal checks) means made-up data can't pass
    there: say so in one line and make the client a private person instead.
+<!-- claude -->
 7. `page` with `--made-up --plain`, then as the Prova's steps 3 and 4 (the line while it fills, the closing lines,
-   the answers with `run.py details ... --made-up` only if asked). Never mention PDF/A, a digital signature, the diritti, the
-   procura or a second compilation: a test draft is never sent.
 <!-- /claude -->
 <!-- openai -->
-**In ChatGPT there is no test on the portal, for now** (SKILL.md, at the top: a check only). Whatever
-test they ask for, your whole reply is these two lines, nothing before or after:
-  «In ChatGPT, per ora, non compilo il portale, nemmeno per una prova: controllo le cartelle dei lavori.
-  Dammi la cartella di un tuo lavoro e scrivimi «solo un controllo»: ti dico quale pratica serve, quali file lo sportello rifiuterebbe e quali dati mancano.»
-Never make up a case for it, and never open the portal.
+7. `chatgpt` with `--made-up`, then as the Prova's steps 3 and 4 (the line while it fills, the closing lines,
 <!-- /openai -->
+   the answers with `run.py details ... --made-up` only if asked). Never mention PDF/A, a digital signature, the diritti, the
+   procura or a second compilation: a test draft is never sent.
