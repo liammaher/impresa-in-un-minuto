@@ -2963,5 +2963,43 @@ def _():
     assert "insegna_bene_culturale" in g["asks"], "the recipe must still ask, and refuse"
 
 
+@case("round 25: the bakery take-over has a case for each cause of the transfer (affitto d'azienda, donazione, fusione, fallimento, successione, altre cause) and for the "
+      "premises' title (proprietario, altro), the medium shop one for each variant of its specifications (ME, wholesale too, seasonal, food and non-food, monopoly) and the bakery's opening a "
+      "seasonal one and one with consumption on the spot, each filled on the portal except the mixed food and non-food one, which stops (see the assertion); the notary's boxes belong only to the four causes with a deed")
+def _():
+    def runs_of(name):
+        return json.loads((REH / name / "runs.json").read_text())
+    take = "subingresso-panificio-fittizio"
+    causes = {"affitto-azienda": "Affitto d'azienda", "donazione": "Donazione", "fusione": "Fusione", "fallimento": "Fallimento", "successione": "Successione",
+              "altre-cause": "Altre cause"}
+    for k, cause in causes.items():
+        a = json.loads((REH / take / f"answers-{k}.json").read_text())
+        assert a["subingresso_causa"] == cause and a["descrizione"].startswith("PROVA NON INVIARE - ") and len(a["descrizione"]) <= 60, a
+        assert ("notaio_nome" in a) == (cause in ("Affitto d'azienda", "Donazione", "Fusione")), (k, a)
+    assert json.loads((REH / take / "answers-donazione.json").read_text())["locali_titolo"] == "altro"
+    assert json.loads((REH / take / "answers-affitto-azienda.json").read_text())["locali_titolo"] == "proprietario"
+    assert json.loads((REH / take / "answers-consumo-sul-posto.json").read_text())["consumo_sul_posto"] == "true"
+    med = "media-struttura-fittizia"
+    mm = {k: json.loads((REH / med / f"answers-{k}.json").read_text()) for k in ("me", "ingrosso", "stagionale", "alimentare", "monopolio")}
+    assert mm["me"]["media_struttura_tipo"] == "ME" and mm["ingrosso"]["anche_ingrosso"] == "true" and mm["stagionale"]["stagionale"] == "true", mm
+    assert float(mm["alimentare"]["superficie_alimentare_mq"]) > 0 and float(mm["monopolio"]["superficie_monopolio_mq"]) > 0, mm
+    bak = "panificio-fittizio"
+    seas = json.loads((REH / bak / "answers-stagionale.json").read_text())
+    assert seas["stagionale"] == "true" and seas["avvio_data"] < seas["termine_data"], seas
+    assert json.loads((REH / bak / "answers-consumo-sul-posto.json").read_text())["consumo_sul_posto"] == "true"
+    # The mixed food and non-food case STOPPED on the portal (2026-11-21): the runner ticks «Alimentare» by the id r29c1p65reg:chk (the crawl's
+    # `moved` table, rows shifted by four), which the live layout does not have (Alimentare is r25c1p53reg:chk there), «didn't stay ticked».
+    # The same section with only «Non alimentare» (the base case) or «Non alimentare» + «Generi di monopolio» fills. README round 25 says what is known;
+    # this assertion flips the day a run of it fills.
+    stopped = {(med, "answers-alimentare.json")}
+    for name, files in ((take, [f"answers-{k}.json" for k in causes] + ["answers-consumo-sul-posto.json"]),
+                        (med, [f"answers-{k}.json" for k in mm]), (bak, ["answers-stagionale.json", "answers-consumo-sul-posto.json"])):
+        runs = runs_of(name)
+        for f in files:
+            mine = [r for r in runs if r.get("answers") == f]
+            want = "stopped" if (name, f) in stopped else "filled"
+            assert mine and mine[-1]["result"] == want, (name, f, want, mine[-1:])
+
+
 print(f"{sum(results)}/{len(results)} passed")
 sys.exit(0 if all(results) else 1)
