@@ -5,5 +5,12 @@
   "result": "filled",
   "seconds": 92.7,
   "browser": "pane"
+ },
+ {
+  "date": "2026-11-21",
+  "answers": "answers-stagionale-privata.json",
+  "result": "filled",
+  "seconds": 122.9,
+  "browser": "pane"
  }
 ]

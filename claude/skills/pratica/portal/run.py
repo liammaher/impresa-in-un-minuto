@@ -2330,7 +2330,7 @@ FILING = {
                            "napoli/comune/scia-in-sanatoria", "napoli/comune/permesso-in-sanatoria"],
             "yours": [
                 "Napoli chiede sempre due dichiarazioni (DD 603/2025): l'Allegato A Nuovo Programma 100 (il "
-                "titolare su quanto deve al Comune) e il Modello DP (il compenso che ti è stato pagato, L.R. Campania 59/2018). "
+                "titolare su quanto deve al Comune) e il Modello DP (il compenso ricevuto, L.R. Campania 59/2018). "
                 "Sono moduli del Comune, da compilare tu. L'Allegato A lo firma il committente, il DP entrambi, digitalmente. Vanno con "
                 "la procura nella seconda compilazione",
                 "Su un edificio esistente gli elaborati comprendono lo Stato Comparativo: attuale e progetto "

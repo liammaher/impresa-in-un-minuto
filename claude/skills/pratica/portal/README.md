@@ -1142,6 +1142,30 @@ On 2026-11-20: **1,634 boxes in 268 crawls: 346 filled on the portal, 2 a case w
   asking the two facts, no zone A ask where the form has no box). A recipe's refusal that is a *gap* and not the law's hides a second thing to check: what the form fills when the refusal is gone (here a fixed «Non soggetta»).
 - **Not done:** the counter does not yet say which of a box's *revealed* boxes a case saw (it counts boxes, not paths), and it is not in `docs/` (a `--write` waits for the numbers to be read against a case).
 
+**Round 22 (2026-11-21): the seasonal dehors on private ground, and what the vincolo screens hold.** One bundle, two runs, both filled (123 s and 88 s, nothing moved or loose, the portal's warnings the
+made-up PEC, address and cadastral data); the SPID sign-in and the file pick were asked in one turn. The runner and both steps files were already in the pane's storage byte for byte (`check.js` said `stale: []`),
+so only the bundle's pick was needed.
+
+- **A case for the occupation's two mapped, never-run choices.** `ristorante-dehors-fittizio/answers-stagionale-privata.json` is the plain restaurant-with-dehors recipe with the ground private but open to the public
+  (`area_privata_uso_pubblico`) and one season (`stagionale`, with `dehors_dal`/`dehors_al` for the occupation and `stagione_dal`/`stagione_al`, gg/mm, for the Reg. 852 notification, which shares the ask). The counter after it:
+  **358 filled (was 354), 392 mapped with no case (was 396)**, 543 not mapped as before. `test_gen` holds the answers, the two radios they choose and the recorded run. Still no case: the four «titolarità dell'intervento»
+  options on the sign's screen (owner, co-owner, usufructuary, condominium administrator), the days of the week and «orari diversi giorno per giorno», and the period's «rinnovo», «giorno di chiusura» and «altro»
+  (the dictionary ticks «tutti i giorni» with one closing day: the other shapes of a week are a new ask, not a rehearsal).
+- **The attachments screen under a vincolo Si is the one without it.** Read on the stand-alone sign's draft with both Si (landscape vincolo and zone A) and on yesterday's plain draft: the same ten slots (the road's
+  cross-section, the owner's or condominium's consent, photographs, the colour sketch, the cadastral plan, the quoted project, the art. 90 D.Lgs. 81/2008 declaration, the road owner's technical clearance if it is not the Comune,
+  «Dichiarazione programma 100», «Allegati liberi»), all `.p7m` signed but the last. No slot for a landscape authorization, so the library's `insegna-esercizio` line stands: the person files or attaches it and installs the sign after
+  (the recipe's `yours` says so).
+- **The monumentale section, read in the opening-with-sign draft (`ristorante insegna vincolo esclusione`), nothing saved.** Two radios, «Non soggetta a tutela monumentale ai sensi della parte II del D.Lgs. 42/04» (what the dictionary ticks)
+  and «Soggetta ...», which opens «e, pertanto, con la presente istanza chiede alla Soprintendenza Archeologia, Belle Arti e Paesaggio il rilascio dell'autorizzazione di competenza, ai sensi dell'art. 49 del D.Lgs n. 42/2004» with
+  **SI and NO**. SI shows «Attenzione: verificare di selezionare, nella sezione 'Interventi eventuali', la relativa autorizzazione»; NO shows nothing. So the authorization is an intervento of the wizard's «Scelta interventi eventuali»,
+  and `catalogue/F839/suap-wizard.json` lists none for the sign's sectors (its only art. 49 options are the radio-electric installations' D.Lgs. 259/2003). `insegna_bene_culturale` therefore stays refused, now for a precise
+  reason: the missing piece is that wizard choice, not a box in the form. Not read: the «Scelta interventi eventuali» screen of a sign's wizard on a live draft (the wizard's clicks do not register in the pane, so it needs the
+  runner's wizard step with another `tree:`).
+- **In code from this round:** `read_draft.js`'s header says how to read a draft without the helper (the list is 10 a page, older drafts are on the numbered links, a toggle reads and saves nothing), the dictionary's comment above the
+  vincolo section has the monumentale facts, `test_gen` the dehors case, and the two stale round 21 test failures are gone (the FILING line is 345 characters; the round 11 record test reads a rehearsal's plain `answers.json` runs, so
+  later answers files that stop on made-up values, as PIN 6's, don't count). `docs/coverage.md` and `docs/ready.md` are redrawn (`make coverage` printed nothing and wrote nothing the first time: run `scoreboard.py --write`
+  directly if it does): SUAP 1,148 mapped, 1,119 fillable, 267 run on the portal.
+
 ## What the portal does that bit us
 
 - **Street names without their particles.** The location's street lookup and the Comune's
