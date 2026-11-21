@@ -31,12 +31,13 @@ jobs:
       # Python launcher with fake commands (plugin/test_py.py: no download), and the bug-report
       # link (plugin/test_report.py), and publishing to the plugin branch (plugin/test_publish.py),
       # and the install page (site/test_site.py), and docs/ready.md against docs/coverage.md
-      # (plugin/test_ready.py).
+      # (plugin/test_ready.py), and where the Prova's folder goes, never inside a git repository (plugin/test_prova.py).
       - name: Installer
         run: |
           python3 -m pip install pyyaml
           python3 plugin/test_install.py
           python3 plugin/test_build.py
+          python3 plugin/test_prova.py
           python3 plugin/test_check.py
           python3 plugin/test_nota.py
           python3 plugin/test_py.py
