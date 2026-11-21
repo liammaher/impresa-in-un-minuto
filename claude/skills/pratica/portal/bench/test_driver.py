@@ -90,6 +90,8 @@ def main():
         bench.PORTAL.reset()
         r = drive(base, bench.steps(base), answers, out, {"calls": 1500})
         assert r["result"] == "filled", r.get("error")
+        # wait() says a result only once the run has written it (review: a stop said before report.json existed)
+        assert json.loads((out / "report.json").read_text())["result"] == "filled", "report.json not the result wait() gave"
         assert bench.PORTAL.fields.get(bench.DEN) == answers["den"], f"stored {bench.PORTAL.fields}"
         assert {f["name"] for f in bench.PORTAL.files} == set(sha), "files"
     case("started with start() and driven by short wait() calls, nothing touches the browser between calls", calls)
@@ -106,6 +108,50 @@ def main():
         said = review.summary(r, out)["message"]
         assert "Allegali tu" in said and "Planimetria quotata: planimetria.pdf" in said and "ricevuta-asl.pdf.p7m" in said, said
     case("files the browser won't open a chooser for are the tecnico's: listed by slot, the run still filled", handed_over)
+
+    def resumed(out):
+        # A run stopped in its second section, then resumed with a fix (resume: true): the closing lines are the whole
+        # pratica's, so what the first stretch found (a hidden email, its section) is in the second's report.
+        bench.PORTAL.reset()
+        st = bench.steps(base, start="/portal.html?decl=1")
+        broken = {k: v for k, v in st["sections"][1]["fields"][0].items() if k != "id"} | {"label": "Etichetta che non c'e"}
+        st["sections"][1]["fields"][0] = broken
+        mail = answers | {"den": "pizzeria.fittizia@pec.example.it"}
+        r1 = drive(base, st, mail, out, {"retries": 0})
+        assert r1["result"] == "stopped" and r1["at"]["index"] == 1, r1
+        fix = [{"section": 1, "field": 0, "set": {"id": "impresa_txt", "label": "Impresa esecutrice"}}]
+        r2 = drive(base, st, mail, out, {"resume": True, "fixes": fix})
+        assert r2["result"] == "filled", r2.get("error")
+        assert r2.get("resumed") and [x["section"] for x in r2["sections"]] == ["Allega documenti", "Dati tecnici"], r2["sections"]
+        assert any("Denominazione" in h["labels"] for h in r2.get("hidden", [])), r2.get("hidden")
+        assert bench.PORTAL.fields.get(bench.IMPRESA) == answers["impresa"], bench.PORTAL.fields
+    case("a resumed run carries what the first stretch found into the whole pratica's report", resumed)
+
+    def second_run_lines(out):
+        # ChatGPT has no second compilation: the closing lines ask the tecnico to attach the signed files, never «Poi io».
+        r = {"result": "filled", "browser": "chatgpt", "procedure": "x", "total_seconds": 60,
+             "second_run": ["Procura speciale"], "details": {}}
+        said = review.summary(r, out)["message"]
+        assert "Poi io" not in said and "allega i file firmati in «Allega documenti»" in said, said
+        assert "Poi io" in review.summary({**r, "browser": "pane"}, out)["message"], "the pane's lines changed"
+    case("ChatGPT's closing lines give the signed files to the tecnico, never a second compilation", second_run_lines)
+
+    def readonly(out):
+        # A box the portal fills itself stops with inpage.js's words, not a 20 s timeout typing into it.
+        bench.PORTAL.reset()
+        r = drive(base, bench.steps(base, start="/portal.html?ro=1"), answers, out, {"retries": 0})
+        assert r["result"] == "stopped" and "read-only: the portal fills it itself" in r.get("error", ""), r.get("error")
+    case("a read-only box stops with what it is", readonly)
+
+    def loose(out):
+        # An id whose box doesn't carry the field's label (and no box does) is never typed into: inpage.js checkLabel.
+        bench.PORTAL.reset()
+        st = bench.steps(base)
+        st["sections"][0]["fields"][0]["label"] = "Etichetta che non c'e"
+        r = drive(base, st, answers, out, {"retries": 0})
+        assert r["result"] == "stopped" and "expected the label" in r.get("error", ""), r.get("error")
+        assert not bench.PORTAL.fields, f"something was saved: {bench.PORTAL.fields}"
+    case("a box whose label isn't there is never typed into", loose)
 
     def dropped(out):
         bench.PORTAL.reset(drop=True)

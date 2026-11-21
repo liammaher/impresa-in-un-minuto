@@ -299,10 +299,11 @@ def duration(s):
     return f"{s} secondi" if s < 120 else f"{round(s / 60)} minuti"
 
 
-def tu_steps(later, reopened=False):
+def tu_steps(later, reopened=False, attach_self=False):
     """The tecnico's steps, in order, as the card says them (bench/test_card.py holds run.tu_steps to the same
     list): only what they do. later: what the second compilation attaches (the procura, the quadro riepilogativo
-    and the receipt of what is paid first, the diritti), which the second line of the signing step names."""
+    and the receipt of what is paid first, the diritti), which the second line of the signing step names.
+    attach_self: there is no second compilation (ChatGPT's browser): they attach the signed files themselves."""
     pay_first = any(re.search(r"versament|ricevut|pagament", x, re.I) for x in later)
     if reopened:  # the second compilation: the declarations are ticked, the signed files are on the portal
         return ["controlla l'anteprima della bozza", "firma la pratica"] + ([] if pay_first else ["paga"]) + ["invia"]
@@ -314,9 +315,10 @@ def tu_steps(later, reopened=False):
         # The portal's own names for them (the steps file's labels), so nothing is signed unseen.
         named = ", ".join(dict.fromkeys(rest))
         what += [f"gli altri documenti ({named})" if what else f"i documenti da firmare ({named})"] if rest else []
+        signed = ' e '.join([', '.join(what[:-1]), what[-1]] if len(what) > 1 else what)
         steps += (["paga i diritti"] if pay_first else []) + [
-            f"firma {' e '.join([', '.join(what[:-1]), what[-1]] if len(what) > 1 else what)}; "
-            "salva i file firmati nella cartella del lavoro e scrivimi «ho firmato»"]
+            f"firma {signed}; allega i file firmati in «Allega documenti»" if attach_self else
+            f"firma {signed}; salva i file firmati nella cartella del lavoro e scrivimi «ho firmato»"]
     return steps + ["firma la pratica"] + ([] if pay_first and later else ["paga"]) + ["invia"]
 
 
@@ -395,13 +397,18 @@ def summary(report, out=None, job=None, prova=False):
     else:
         head = (f"✅ {name} {done} sul portale in {duration(report.get('total_seconds'))}: "
                 + ("ho riletto ogni valore, tranne quelli qui sotto." if unread else "ogni valore è stato riletto."))
-    steps = tu_steps(later, reopened)
+    # ChatGPT's driver has no second compilation: the signed files are theirs to attach.
+    attach_self = report.get("browser") == "chatgpt"
+    steps = tu_steps(later, reopened, attach_self)
     # What the preview check held equal, named by the portal's own sections (as the Prova says it), only when
     # nothing differed or wasn't read back: otherwise the ⚠️ lines say what.
     read = whole_read(out, job, report.get("attached"))
     clean = not (mismatches(out) + stray_files(out, job) + not_read_back(out, report.get("attached")))
     lines = [head] + ([f"✅ Anteprima del portale confrontata con i tuoi documenti: {read}. Tutto corrisponde."] if read and clean else []) + [f"⚠️ {w}" for w in warnings] + attach
-    lines += numbered(steps, report.get("details") or {}, phased=not reopened and bool(later))
+    details = dict(report.get("details") or {})
+    if attach_self:  # the brackets go by each step's words: the reworded signing step keeps its own
+        details.update({new: details[old] for old, new in zip(tu_steps(later, reopened), steps) if old != new and old in details})
+    lines += numbered(steps, details, phased=not reopened and bool(later) and not attach_self)
     lines += [f"{a}." for a in report.get("apart") or []]
     # `yours`, the steps file's own steps in full (how the diritti are paid, the files' rules), is
     # not said: Claude answers from it when the tecnico asks how.

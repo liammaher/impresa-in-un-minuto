@@ -28,6 +28,9 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const norm = (s) => (s || "").normalize("NFKD").replace(/[^\x00-\x7f]/g, "").replace(/\s+/g, " ").trim().toLowerCase();
 class StepError extends Error {}
 const fail = (m) => { throw new StepError(m); };
+// What a report says of an error: ours whole; another's (Playwright's carries a call log with the page's HTML, so
+// values) its first line only.
+const said = (e) => e instanceof StepError ? e.message : `${(e && e.name) || "Error"}: ${String(e && e.message || e).split("\n")[0]}`;
 
 // The steps' label reader asks a node for compareDocumentPosition, which ChatGPT's view of a node lacks: the label
 // before a box goes by document order instead (the same answer).
@@ -133,12 +136,12 @@ function pageApi(cfg) {
     button(text) {
       const css = "button, a, input[type=submit]";
       const b = [...document.querySelectorAll(css)].find((e) => vis(e) && norm(e.textContent || e.value) === norm(text));
-      return b ? { css, nth: nthOf(css, b), text: [b.textContent, b.value, b.title].join(" ") } : fail(`no ${text} button`);
+      return b ? { css, nth: nthOf(css, b), text: [b.textContent, b.value, b.title].join(" "), ...(b.textContent ? { expect: b.textContent } : {}) } : fail(`no ${text} button`);
     },
     stepLink(text) {
       const css = "a";
       const a = [...document.querySelectorAll(css)].filter((x) => vis(x) && norm(x.textContent) === norm(text)).pop();
-      return a ? { css, nth: nthOf(css, a), text: a.textContent } : null;
+      return a ? { css, nth: nthOf(css, a), text: a.textContent, expect: a.textContent } : null;
     },
     tree({ leaf, nth }) {
       const css = ".ui-tree .tree-content > span";
@@ -171,7 +174,7 @@ function pageApi(cfg) {
     link(name) {
       const css = "a.linkmenu";
       const a = [...document.querySelectorAll(css)].find((x) => norm(x.textContent).startsWith(norm(name)));
-      return a ? { css, nth: nthOf(css, a), text: a.textContent } : null;
+      return a ? { css, nth: nthOf(css, a), text: a.textContent, expect: a.textContent } : null;
     },
     // Pratiche in bozza: the newest draft named so (its Apri), else the paginator's page p.
     draftOpen({ name, p }) {
@@ -189,7 +192,7 @@ function pageApi(cfg) {
       const e = document.getElementById(full);
       if (!e) return null;
       const r = e.getBoundingClientRect();
-      return r.width && r.height ? { x: Math.round(r.left + r.width / 2), y: Math.round(r.top + r.height / 2), inView: r.top >= 0 && r.bottom <= (window.innerHeight || 0) } : null;
+      return r.width && r.height ? { x: Math.round(r.left + r.width / 2), y: Math.round(r.top + r.height / 2), inView: r.top >= 0 && r.bottom <= ((typeof window !== "undefined" && window.innerHeight) || 0) } : null;
     },
     // A file box's widget as tags, classes and sizes (no value, no file name): what a failed upload reports.
     fileWidget(full) {
@@ -232,6 +235,20 @@ function pageApi(cfg) {
       return box ? { css, nth: nthOf(css, box) } : { full: e.id };
     },
     checked(id) { const e = el(id); return !!e && e.checked; },
+    // inpage.js checkLabel: the box (a dropdown's label) carries the label among its texts.
+    checkLabel({ id, label, kind }) {
+      const e = kind === "select" ? el(id + ":combo_label") || el(id + ":combo_input") : el(id);
+      if (!e || !label) return { ok: true };
+      const t = texts(e);
+      return t.some((x) => norm(x).includes(norm(label))) ? { ok: true } : fail(`expected the label ${label} by this field, found [${t.slice(0, 3).map((x) => `"${x}"`).join(", ")}]`);
+    },
+    // The document's identity, from what the view has (no `performance` there, 2026-11-21): its address, when it was
+    // made, and JSF's view state, which a new page renews. Each read on its own, so a missing one costs nothing.
+    origin() {
+      const part = (f) => { try { return String(f()); } catch (e) { return ""; } };
+      return [part(() => location.href), part(() => document.lastModified),
+        part(() => document.querySelector('input[name="javax.faces.ViewState"]').value)].join("|");
+    },
     options(id) { const s = el(id + ":combo_input"); return s ? s.options.length : -1; },
     select({ id, value }) {
       const s = el(id + ":combo_input");
@@ -272,7 +289,7 @@ function pageApi(cfg) {
       const files = [];
       for (let tr = head.closest("tr").nextElementSibling; tr; tr = tr.nextElementSibling) {
         const plus = [...tr.querySelectorAll("button")].find((b) => b.textContent.trim() === "+");
-        if (plus) return { files: files.map((b) => ({ id: short(b), cell: (b.closest("td") || {}).innerText || "" })), plus: { css: "button", nth: nthOf("button", plus) } };
+        if (plus) return { files: files.map((b) => ({ id: short(b), cell: (b.closest("td") || {}).innerText || "" })), plus: { css: "button", nth: nthOf("button", plus), expect: "+" } };
         if (tr.querySelector("span.input-label") && !tr.querySelector("input, select, textarea")) break;
         files.push(...tr.querySelectorAll("input[type=file]"));
       }
@@ -288,7 +305,7 @@ function pageApi(cfg) {
       const after = last ? plus.filter((b) => pos(last) < pos(b)) : [];
       const own = after[(nth || 1) - 1];
       if (nth > 1 && !own) return fail(`no + number ${nth} after ${anchor}'s last block`);
-      return { css, nth: nthOf(css, own || plus[plus.length - 1]) };
+      return { css, nth: nthOf(css, own || plus[plus.length - 1]), expect: "+" };
     },
     // What may open the file chooser for a file box, in order: PrimeFaces' Choose button (a quadro's upload), the
     // attachments screen's drop zone beside it, a label for it, the clickable things in its cell; the box itself last.
@@ -308,14 +325,15 @@ function pageApi(cfg) {
         const t = (x.textContent || "").trim();
         if (!/rimuovi|scarica|elimina|invia|paga|firma/i.test(t) && t !== "+") add(x, `cell ${x.tagName.toLowerCase()}`);
       }
-      return { full: e.id, ways: ways.slice(0, 6).map(({ el: x, how }) => (x.id ? { full: x.id, how } : { css: "*", nth: nthOf("*", x), how })) };
+      return { full: e.id, ways: ways.slice(0, 6).map(({ el: x, how }) => (x.id ? { full: x.id, how }
+        : how === "choose" ? { css: ".ui-fileupload-choose", nth: nthOf(".ui-fileupload-choose", x), how } : null)).filter(Boolean) };
     },
     uploaded(name) {
       const refused = [...document.querySelectorAll(".ui-growl-item")].map((g) => g.textContent.replace(/\s+/g, " ").trim()).filter((t) => /non è stato accettato/i.test(t));
       return { named: norm(document.body.innerText).includes(norm(name)), refused };
     },
-    describeBox({ id }) {
-      const e = el(id);
+    describeBox({ id, css }) {
+      const e = (id && el(id)) || (css && document.querySelector(css));
       const td = e && e.closest("td");
       const box = td && [...td.querySelectorAll("input[type=text], textarea")].find((x) => !/dropzone/.test(x.id));
       return box ? { full: box.id } : fail("no description box");
@@ -365,15 +383,17 @@ function pageApi(cfg) {
           const slot = kind === "file" || /file_dropzone/.test(e.id) ? slotOf(e) : null;
           const state = kind === "radio" || kind === "checkbox" ? (e.checked ? "checked" : "unchecked")
             : kind === "file" ? (slot.holds ? "filled" : "empty") : e.value ? "filled" : "empty";
-          const lab = norm(texts(e).find((t) => norm(t) && !MESSAGE.test(norm(t))) || "").slice(0, 80);
-          return { id: e.id.replace(/^.*dynaForm:/, ""), label: slot ? norm(slot.title).slice(0, 80) : lab, kind, state,
+          const lab = norm(texts(e).find((t) => norm(t) && !MESSAGE.test(norm(t))) || "");
+          return { id: e.id.replace(/^.*dynaForm:/, ""), label: slot ? norm(slot.title) : lab, kind, state,
             ...(kind === "select" ? { options: e.options.length } : {}),
             ...(e.readOnly && kind === "text" && !/calendar_input/.test(e.id) ? { readonly: true } : {}),
             ...(!slot && flagged(e) ? { required: true } : {}),
             ...(slot && slot.accepts.length ? { accepts: slot.accepts.join(";"), required: slot.required } : {}) };
         });
       const open = document.querySelector("li#corrente");
-      return { section: open ? norm(open.textContent).slice(0, 80) : null, boxes };
+      const messages = [...document.querySelectorAll(".ui-message-error, .ui-messages-error, .ui-growl-message-error, [id*=\"dynaForm\"] .error-message-text")]
+        .filter((e) => e.getClientRects().length && norm(e.textContent)).map((e) => norm(e.textContent)).slice(0, 10);
+      return { section: open ? norm(open.textContent) : null, boxes, messages };
     },
     declarations(name) {
       const cur = document.querySelector("li#corrente");
@@ -399,20 +419,20 @@ const PENDING = new Set(["click", "dblclick", "fill", "press", "pressSequentiall
   "setChecked", "waitFor", "evaluate", "goto", "reload", "waitForEvent", "setFiles", "count", "isVisible", "textContent",
   "innerText", "getAttribute"]);
 const NO_CALL = /could not read requirements|browser actions are blocked|access host is unavailable|exec context not found/i;
-const enqueue = (fn) => new Promise((res, rej) => G.exec.queue.push({ fn, res, rej }));
+const enqueue = (fn, gen) => new Promise((res, rej) => G.exec.queue.push({ fn, res, rej, gen }));
 // The tab, its playwright, locators and file choosers: each action queued for the running call (and queued again on a
 // gap between calls); the rest (locator, nth, first) as they are.
-function gated(obj) {
+function gated(obj, gen) {
   return new Proxy(obj, {
     get(t, p) {
       const v = t[p];
-      if (typeof v !== "function") return v && typeof v === "object" && (p === "playwright" || p === "cua") ? gated(v) : v;
+      if (typeof v !== "function") return v && typeof v === "object" && (p === "playwright" || p === "cua") ? gated(v, gen) : v;
       if (PENDING.has(p)) {
         return async (...a) => {
           for (let k = 0; ; k++) {
             try {
-              const r = await enqueue(() => v.apply(t, a));
-              return r && typeof r === "object" && typeof r.setFiles === "function" ? gated(r) : r;
+              const r = await enqueue(() => v.apply(t, a), gen);
+              return r && typeof r === "object" && typeof r.setFiles === "function" ? gated(r, gen) : r;
             } catch (e) {
               if (k < 8 && NO_CALL.test(e.message || "")) { await sleep(500); continue; }
               throw e;
@@ -420,7 +440,7 @@ function gated(obj) {
           }
         };
       }
-      return (...a) => { const r = v.apply(t, a); return r && typeof r === "object" ? gated(r) : r; };
+      return (...a) => { const r = v.apply(t, a); return r && typeof r === "object" ? gated(r, gen) : r; };
     },
   });
 }
@@ -429,6 +449,8 @@ async function serve(stop, drainMs = 25000) {
   while (!stop()) {
     while (G.exec.queue.length) {
       const j = G.exec.queue.shift();
+      // An earlier run's action (one under way when a new run began): never performed for it.
+      if (j.gen !== G.exec.gen) { j.rej(new StepError("superseded by a newer run")); continue; }
       G.exec.inflight++;
       let p;
       try { p = Promise.resolve(j.fn()); } catch (e) { p = Promise.reject(e); }
@@ -440,13 +462,17 @@ async function serve(stop, drainMs = 25000) {
 }
 
 export function start(tab, runDir, opts = {}) {
-  if (G.run && G.run.report.result === "running") return "a run is already going: wait for it";
-  G.exec.queue = []; // an earlier run's actions, never performed now
-  const run = (G.run = { report: { result: "running", sections: [], at: null, browser: "chatgpt" }, scrub: (s) => String(s), promise: null });
-  run.promise = attempt(gated(tab), runDir, opts, run).catch((e) => {
+  if (G.run && !G.run.settled) return "a run is already going: wait for it";
+  if (!tab || !tab.playwright) return "no tab: open the portal in a tab first";
+  G.exec.gen = (G.exec.gen || 0) + 1;
+  for (const j of G.exec.queue) j.rej(new StepError("superseded by a newer run"));
+  G.exec.queue = [];
+  const run = (G.run = { gen: G.exec.gen, settled: false, report: { result: "running", sections: [], at: null, browser: "chatgpt" },
+    scrub: (s) => String(s), promise: null });
+  run.promise = attempt(gated(tab, run.gen), runDir, opts, run).catch((e) => {
     run.report.result = "stopped";
-    run.report.error = run.scrub(e instanceof StepError ? e.message : `${e.name}: ${e.message}`);
-  });
+    run.report.error = run.scrub(said(e));
+  }).finally(() => { run.settled = true; });
   return "started";
 }
 
@@ -455,21 +481,20 @@ export function start(tab, runDir, opts = {}) {
 export async function wait(ms = 20000) {
   const run = G.run;
   if (!run) return { result: "none" };
-  let done = false;
-  run.promise.then(() => { done = true; });
   const end = Date.now() + ms;
-  await serve(() => done || Date.now() > end);
-  return publicReport(run);
+  await serve(() => run.settled || Date.now() > end);
+  // "running" until the run has written its files: a stop is said only once there is a report.json to read.
+  const out = publicReport(run);
+  return run.settled ? out : { ...out, result: "running" };
 }
 
 // The whole run in one call (give the call a long timeout_ms).
 export async function run(tab, runDir, opts = {}) {
   const said = start(tab, runDir, opts);
   if (said !== "started") return { result: "refused", error: said };
-  let done = false;
-  G.run.promise.then(() => { done = true; });
-  await serve(() => done);
-  return publicReport(G.run);
+  const r = G.run;
+  await serve(() => r.settled);
+  return publicReport(r);
 }
 
 function publicReport(run) {
@@ -477,6 +502,12 @@ function publicReport(run) {
   delete out.kept;
   if (out.error) out.error = run.scrub(out.error);
   out.sections = (out.sections || []).map((s) => ({ ...s, errors: (s.errors || []).map(run.scrub) }));
+  if (out.retries) out.retries = out.retries.map((r) => ({ ...r, error: run.scrub(r.error) }));
+  if (out.snapshot) {
+    const cut = (t) => (t == null ? t : run.scrub(t).slice(0, 80));
+    out.snapshot = { ...out.snapshot, section: cut(out.snapshot.section), boxes: (out.snapshot.boxes || []).map((b) => ({ ...b, label: cut(b.label) })),
+      messages: (out.snapshot.messages || []).map(cut) };
+  }
   return JSON.parse(JSON.stringify(out));
 }
 
@@ -494,11 +525,14 @@ async function attempt(tab, runDir, opts, run) {
   // fixes: [{section, field, set}], what the page really has for a field (a moved id, a renamed label).
   let resume0 = typeof opts.resume === "object" ? { ...opts.resume } : {};
   if (opts.resume === true) {
-    const last = JSON.parse(fs.readFileSync(path.join(runDir, "report.json"), "utf8"));
-    if (last.result !== "stopped" || !last.at || !last.url) fail("no stopped run in this folder to resume");
+    // The last stop a run can go on from (private/resume.json): a later run that failed before it began (not logged
+    // in) doesn't erase it.
+    const point = path.join(priv, "resume.json");
+    const last = fs.existsSync(point) ? JSON.parse(fs.readFileSync(point, "utf8")) : JSON.parse(fs.readFileSync(path.join(runDir, "report.json"), "utf8"));
+    if (!last.at || !last.url) fail("no stopped run in this folder to resume");
     const keptFile = path.join(priv, "kept.json");
     resume0 = { url: last.url, from: { [last.at.phase === "section" ? "section" : "wizard"]: last.at.index },
-      kept: fs.existsSync(keptFile) ? JSON.parse(fs.readFileSync(keptFile, "utf8")) : [] };
+      kept: fs.existsSync(keptFile) ? JSON.parse(fs.readFileSync(keptFile, "utf8")) : [], carry: last.carry || {} };
   }
   if (opts.fixes) resume0.fixes = opts.fixes;
   if (opts.only) resume0.only = opts.only;
@@ -514,10 +548,13 @@ async function attempt(tab, runDir, opts, run) {
   run.scrub = (s) => secrets.reduce((t, rx) => t.replace(rx, "‹value›"), String(s));
   run.report.procedure = procedure;
   if (resume0.url) run.report.resumed = true;
+  // What the earlier stretches of this pratica found (a resume): the closing lines are the whole pratica's.
+  for (const [k, v] of Object.entries(resume0.carry || {})) if (v !== undefined && v !== null) run.report[k] = v;
   const t0 = Date.now();
   const held = { details: [], declarations: [] };
   let resume = { ...resume0 };
   try {
+   try {
     for (let n = 0; ; n++) {
       await fill(tab, steps, values, resume, run, held, { fs, path, priv });
       const r = run.report, at = r.at;
@@ -530,15 +567,33 @@ async function attempt(tab, runDir, opts, run) {
       await sleep(opts.retry_wait_ms ?? 10000);
       resume = { ...resume, url: r.url, from: { section: at.index }, kept: r.kept || [], reopen_draft: /\/cmd\/error/.test(r.url) };
     }
+   } catch (e) {
+    run.report.result = "stopped";
+    run.report.error = said(e);
+   }
   } finally {
     run.report.total_seconds = +((Date.now() - t0) / 1000).toFixed(1);
     const write = (name, data) => { fs.mkdirSync(priv, { recursive: true, mode: 0o700 }); fs.writeFileSync(path.join(priv, name), data, { mode: 0o600 }); };
-    write("kept.json", JSON.stringify(run.report.kept || [], null, 2));
+    const r = run.report;
+    if (r.result === "running") { r.result = "stopped"; r.error = r.error || "the run ended without a result"; }
+    // A run a newer one replaced writes nothing; a run that never began (not logged in, no draft) only its report.
+    const mine = G.run === run, began = !!r.at || (r.sections || []).length > 0 || r.result === "filled";
+    if (mine && !began) fs.writeFileSync(path.join(runDir, "report.json"), JSON.stringify(publicReport(run), null, 2));
+    if (mine && began) {
+    if (r.result === "stopped" && r.at && r.url) {
+      const carry = {};
+      for (const k of ["hidden", "alerts", "attach_yours", "sections", "declarations_read", "declarations_note", "wizard_seconds", "verify_seconds", "moved", "loose", "skipped_sections"])
+        if (r[k] !== undefined) carry[k] = r[k];
+      write("resume.json", JSON.stringify({ at: r.at, url: r.url, carry }));
+    }
+    if (r.result === "filled") fs.rmSync(path.join(priv, "resume.json"), { force: true });
+    if ((r.kept || []).length || !fs.existsSync(path.join(priv, "kept.json"))) write("kept.json", JSON.stringify(r.kept || [], null, 2));
     write("held.json", JSON.stringify(held.details, null, 2));
     if (held.declarations.length || !fs.existsSync(path.join(priv, "declarations.json"))) write("declarations.json", JSON.stringify(held.declarations, null, 2));
     if (held.preview) write("anteprima.pdf", held.preview);
-    if (held.yours) write("attach_yours.json", JSON.stringify(held.yours, null, 2));
+    if ((held.yours || []).length || !fs.existsSync(path.join(priv, "attach_yours.json"))) write("attach_yours.json", JSON.stringify(held.yours || [], null, 2));
     fs.writeFileSync(path.join(runDir, "report.json"), JSON.stringify(publicReport(run), null, 2));
+    }
   }
 }
 
@@ -549,6 +604,9 @@ async function fill(tab, steps, values, resume, run, held, { fs, path, priv }) {
   const pw = tab.playwright;
   const labelJs = adaptLabelJs(steps.label_js);
   held.yours = held.yours || [];
+  if (resume.url && !held.yours.length) {
+    try { held.yours = JSON.parse(fs.readFileSync(path.join(priv, "attach_yours.json"), "utf8")); } catch (e) { /* none yet */ }
+  }
   const page = async (method, arg) => {
     const src = `(${pageApi.toString().replace("__LABEL_JS__", () => `(${labelJs})`)})({}).${method}(${arg === undefined ? "" : JSON.stringify(arg)})`;
     for (let i = 0; ; i++) {
@@ -564,6 +622,13 @@ async function fill(tab, steps, values, resume, run, held, { fs, path, priv }) {
   const click = async (where, what, opts = {}) => {
     if (where.text !== undefined && steps.forbidden.test(where.text)) fail(`refused to click ${what}: that step is the person's`);
     const loc = where.full ? pw.locator(`[id="${where.full}"]`) : pw.locator(where.css).nth(where.nth);
+    // A place in a list was read one round trip ago, and a redraw this view can't see may have moved it: what is
+    // there now is read again, held to the forbidden steps and to the text it had.
+    if (!where.full) {
+      const now = norm(await loc.textContent({ timeout: 5000 }).catch(() => "") || "");
+      if (steps.forbidden.test(now)) fail(`refused to click ${what}: that step is the person's`);
+      if (where.expect !== undefined && now !== norm(where.expect)) fail(`${what}: the page changed under it`);
+    }
     await loc.click({ timeout: opts.timeout || 20000 });
   };
   const kept = [];
@@ -593,13 +658,24 @@ async function fill(tab, steps, values, resume, run, held, { fs, path, priv }) {
       const s = await page("state");
       if (s.busy || s.composing) last = Date.now();
       if (s.signedOut && Date.now() - start > 2000) fail("signed out: the portal sent the page to its sign-in; sign in again, then rerun");
+      if (s.portalError && Date.now() - start > 2000) fail("no page to read");
       if (Date.now() - last > QUIET) fail(`${why} (nothing happening for ${QUIET / 1000} s)`);
       if (Date.now() - start > cap) fail(`${why} (still working after ${Math.round(cap / 60000)} minutes)`);
       await sleep(250);
     }
   }
   // After a click that may load a page: let it start, then wait for the page to settle.
-  async function act(fn) { await fn(); await sleep(400); await idle(); }
+  // After a click that may load a page: until a new document is there or the portal shows it is working (a save
+  // that reloads reads, a moment after the click, as the old page complete), then until it settles.
+  async function act(fn) {
+    const before = await page("origin");
+    await fn();
+    for (const end = Date.now() + 1500; Date.now() < end;) {
+      await sleep(150);
+      if ((await page("origin")) !== before || (await page("state")).busy) break;
+    }
+    await idle();
+  }
   async function sweep() {
     if (await page("panelOpen")) { await pw.locator("body").press("Escape").catch(() => {}); await idle(); }
   }
@@ -615,14 +691,17 @@ async function fill(tab, steps, values, resume, run, held, { fs, path, priv }) {
   }
 
   // the fields
+  // A field as the page reads it: its spec, without what the run added (typed, field, spec, slotted).
+  const spot = ({ typed, field, spec, slotted, ...g }) => g;
   async function located(f) {
     let r;
-    for (const end = Date.now() + 8000; ;) {
-      r = await page("located", { kind: f.kind, label: f.label, nth: f.nth, id: f.id });
-      if (!r.why || !LATE.test(r.why) || Date.now() > end) break;
+    for (const end = Date.now() + REDRAW_MS; ;) {
+      r = await page("located", spot(f));
+      if (!(r.why ? LATE.test(r.why) : r.loose) || Date.now() > end) break;
       await sleep(400);
     }
     if (r.why) fail(r.why);
+    if (r.loose) need(await page("checkLabel", { id: f.id, label: f.label, kind: f.kind }));
     const note = (k) => { const x = { label: f.label, id: f.id, ...(k === "moved" ? { to: r.id } : {}) };
       if (!(report[k] = report[k] || []).some((y) => y.label === x.label && y.id === x.id)) report[k].push(x); };
     if (r.loose) { note("loose"); return f; }
@@ -635,20 +714,27 @@ async function fill(tab, steps, values, resume, run, held, { fs, path, priv }) {
   // page looks idle here: this view can't see the portal's own request queue, as inpage.js does. So a box found by its
   // label is looked for again for a few seconds before the run says it isn't there.
   const LATE = /fields with this label|no block /;
+  // How long a redraw this view can't see coming (rows a tick or a "+" adds) is waited for: section h's grew past 8 s
+  // as it filled (2026-11-21).
+  const REDRAW_MS = 20000;
   async function resolveSoon(f) {
     let r;
-    for (const end = Date.now() + 8000; ;) {
+    for (const end = Date.now() + REDRAW_MS; ;) {
       r = await page("resolve", f);
       if (!r.why || !LATE.test(r.why) || Date.now() > end) return r;
       await sleep(400);
     }
   }
-  async function bySpec(f) {
-    const r = await resolveSoon(f);
+  async function bySpec(f, soon = true) {
+    const r = soon ? await resolveSoon(f) : await page("resolve", f);
     if (r.why) fail(r.why);
     return { ...f, id: r.id, ...(r.at !== undefined ? { at: r.at } : {}), spec: r.at !== undefined ? { ...f, last: false, at: r.at } : f };
   }
   async function text(f, v) {
+    const b = await page("box", f.id);
+    if (!b) fail(`${f.id}: no field`);
+    if (b.disabled) fail(`${f.label || f.id}: switched off (a choice before it, which the steps file doesn't make, switches it on)`);
+    if (b.readOnly && !/calendar_input$/.test(f.id)) fail(`${f.label || f.id}: read-only: the portal fills it itself (\`leave\` it in the dictionary)`);
     const box = pw.locator(`[id$="dynaForm:${f.id}"]`).first();
     await sweep();
     await box.fill(String(v), { timeout: 20000 });
@@ -698,9 +784,15 @@ async function fill(tab, steps, values, resume, run, held, { fs, path, priv }) {
   async function tick(f) {
     const r = need(await page("tick", f.id), f.label || f.id);
     if (!r.already) { await click(r, f.label || f.id); await idle(); }
-    let id = f.id;
-    if (!(await page("checked", id)) && f.spec) id = (await page("resolve", f.spec)).id;
-    if (!id || !(await page("checked", id))) fail(`${f.id}: didn't stay ticked`);
+    // A box that opens rows renumbers itself (INPS adds its "sede di": r27 became r28, 2026-11-21): found again by its
+    // label, for a few seconds, since the re-drawn rows come after the page looks idle to this view.
+    // Section h's redraws ran past 20 s here more than once (2026-11-21), so this one waits longer.
+    let id = f.id, found = "not looked up by its label";
+    for (const end = Date.now() + 2.25 * REDRAW_MS; !(id && (await page("checked", id))) && Date.now() < end;) {
+      if (f.spec) { const r = await page("resolve", f.spec); found = r.why || r.id; if (!r.why) id = r.id; }
+      if (!(id && (await page("checked", id)))) await sleep(400);
+    }
+    if (!id || !(await page("checked", id))) fail(`${f.id}: didn't stay ticked (by its label now: ${found})`);
     return "checked";
   }
   async function lookup(f, value) {
@@ -736,7 +828,7 @@ async function fill(tab, steps, values, resume, run, held, { fs, path, priv }) {
       await click(s.plus, `+ ${f.label}`);
       await idle();
       s = need(await page("slotRows", f.label));
-      for (const end = Date.now() + 10000; s.files.length === before && Date.now() < end;) { await sleep(400); s = need(await page("slotRows", f.label)); }
+      for (const end = Date.now() + REDRAW_MS; s.files.length === before && Date.now() < end;) { await sleep(400); s = need(await page("slotRows", f.label)); }
       if (s.files.length !== before + 1) fail(`${f.label}: + didn't add a file box`);
     }
     return { ...f, id: s.files[f.nth - 1].id, slotted: true };
@@ -748,7 +840,7 @@ async function fill(tab, steps, values, resume, run, held, { fs, path, priv }) {
     await idle();
     // The new block's rows can come a moment after the page looks idle here (as a box a choice shows: resolveSoon).
     let now = await page("blocks", f.anchor);
-    for (const end = Date.now() + 10000; now === before && Date.now() < end; now = await page("blocks", f.anchor)) await sleep(400);
+    for (const end = Date.now() + REDRAW_MS; now === before && Date.now() < end; now = await page("blocks", f.anchor)) await sleep(400);
     if (now !== before + 1) fail(`+ didn't add a block of ${f.anchor}`);
     return `block ${before + 1}`;
   }
@@ -771,7 +863,11 @@ async function fill(tab, steps, values, resume, run, held, { fs, path, priv }) {
     // The file box's own click opens no chooser on this portal: what does is its button, or the drop zone beside it.
     let chooser = null;
     const tried = [];
-    const ways = [...b.ways, { full: b.full, how: "box" }].flatMap((w) => [{ ...w }, { ...w, force: true }, { ...w, mouse: true }]);
+    // The button, the drop zone, a label and the box, each plain then forced (to its centre, past the check of
+    // what is on top). The cell's other elements and a mouse click at a point (no tab.cua on ChatGPT's tab) never
+    // opened one (2026-11-21), and each try costs 6 s.
+    const ways = [...b.ways.filter((w) => ["choose", "dropzone", "label"].includes(w.how)), { full: b.full, how: "box" }]
+      .flatMap((w) => [{ ...w }, { ...w, force: true }, ...(tab.cua ? [{ ...w, mouse: true }] : [])]);
     for (const target of ways) {
       const how = target.how + (target.force ? " forced" : target.mouse ? " mouse" : "");
       // The chooser's promise is settled here whatever the click does: an unhandled rejection resets ChatGPT's whole
@@ -808,7 +904,7 @@ async function fill(tab, steps, values, resume, run, held, { fs, path, priv }) {
     for (const end = Date.now() + 10000; Date.now() < end && !u.named && !u.refused.length;) { u = await page("uploaded", v.name); await sleep(200); }
     if (u.refused.length) fail(`${f.label}: the portal refused ${v.name}: ${u.refused.join("; ")}`);
     if (f.describe) {
-      const d = need(await page("describeBox", { id: f.id }), f.label);
+      const d = need(await page("describeBox", { id: f.id, css: f.css }), f.label);
       const box = pw.locator(`[id="${d.full}"]`);
       await box.fill(f.describe);
       await box.press("Tab");
@@ -865,6 +961,7 @@ async function fill(tab, steps, values, resume, run, held, { fs, path, priv }) {
       await idle();
     }
     const before = (await page("state")).title;
+    if (!before) { await act(() => button(step.confirm)); return; }
     await button(step.confirm);
     await sleep(400);
     await until(async () => { const s = await page("state"); return !s.busy && s.title !== before; }, `still on ${step.screen} after ${step.confirm}`, 300000)
@@ -908,7 +1005,7 @@ async function fill(tab, steps, values, resume, run, held, { fs, path, priv }) {
       } else if (f.kind === "file" && !f.id && attached[norm(f.label)] && v !== null && v !== "") f = await slotBox({ ...f, nth: attached[norm(f.label)] + 1 });
       if (f.id && f.label && !f.slotted) f = await located(f);
       if (!f.id && !f.css && f.if_present) {
-        try { f = await bySpec(f); } catch (e) { if (e instanceof StepError) continue; throw e; }
+        try { f = await bySpec(f, false); } catch (e) { if (e instanceof StepError) continue; throw e; }
       }
       if (!f.id && !f.css) f = await bySpec(f);
       await sweep();
@@ -928,7 +1025,9 @@ async function fill(tab, steps, values, resume, run, held, { fs, path, priv }) {
     delete report.at.label;
     await sweep();
     if (sec.save !== false) await act(() => button(sec.save || "Salva"));
-    const errs = await page("errors", sec.theirs || []);
+    // A slot whose file was handed over is the tecnico's: the portal's "required" under it isn't the run's error.
+    const mine = yours.filter((y) => y.section === sec.section).map((y) => y.slot);
+    const errs = await page("errors", [...(sec.theirs || []), ...mine]);
     for (const a of await page("alerts")) {
       const label = (done.find((d) => d.id === a.id) || {}).label || a.label;
       const x = { section: sec.section, label: label && run.scrub(label), text: run.scrub(a.text) };
@@ -940,7 +1039,8 @@ async function fill(tab, steps, values, resume, run, held, { fs, path, priv }) {
     held.details.push(...bad.map((c) => ({ section: sec.section, ...c })));
     const gone = bad.map(redact);
     if (hidden.length) report.hidden = (report.hidden || []).filter((h) => h.section !== sec.section).concat([{ section: sec.section, labels: hidden.map(run.scrub) }]);
-    report.sections.push({ section: sec.section, seconds: +((Date.now() - t0) / 1000).toFixed(1), errors: errs, bad: gone });
+    report.sections = report.sections.filter((x) => x.section !== sec.section)
+      .concat([{ section: sec.section, seconds: +((Date.now() - t0) / 1000).toFixed(1), errors: errs, bad: gone }]);
     if (errs.length || bad.length) fail(`${sec.section}: portal errors ${JSON.stringify(errs)}, not kept ${JSON.stringify(gone)}`);
     keep(si, done);
   }
@@ -958,7 +1058,7 @@ async function fill(tab, steps, values, resume, run, held, { fs, path, priv }) {
         }
         g = { ...f, id: r.id };
       } else if (f.kind !== "file" && f.id && f.label && !f.slotted) {
-        const r = await page("located", { kind: f.kind, label: f.label, nth: f.nth, id: f.id });
+        const r = await page("located", spot(f));
         if (!r.why) g = { ...f, id: r.id };
       }
       items.push({ f: g, slot: out.length });
@@ -1002,13 +1102,13 @@ async function fill(tab, steps, values, resume, run, held, { fs, path, priv }) {
     held.declarations = [];
     try {
       for (const name of names) {
-        await openSection(name);
+        if (!(await openSection(name)) && !(await page("isOpen", name))) continue;
         held.declarations.push(need(await page("declarations", name)));
       }
       report.declarations_read = held.declarations.length;
     } catch (e) {
       report.declarations_read = held.declarations.length;
-      report.declarations_note = run.scrub(e instanceof StepError ? e.message : `${e.name}: ${e.message}`);
+      report.declarations_note = run.scrub(said(e));
     }
     try { if (names.length && back) await openSection(back); }
     catch (e) { report.declarations_note = report.declarations_note || run.scrub(`could not go back to ${back}: ${e.message}`); }
@@ -1022,7 +1122,7 @@ async function fill(tab, steps, values, resume, run, held, { fs, path, priv }) {
       if (bytes.subarray(0, 5).toString() !== "%PDF-") fail("what it sent isn't a PDF");
       held.preview = bytes;
     } catch (e) {
-      report.preview_note = run.scrub(e instanceof StepError ? e.message : `${e.name}: ${e.message}`);
+      report.preview_note = run.scrub(said(e));
     }
     report.preview_pdf = !!held.preview;
   }
@@ -1063,7 +1163,14 @@ async function fill(tab, steps, values, resume, run, held, { fs, path, priv }) {
     report.at = null;
   } catch (e) {
     report.result = "stopped";
-    report.error = e instanceof StepError ? e.message : `${e.name}: ${e.message}`;
+    // As inpage.js fail(): a stop on the sign-in or on the portal's error page is that, whatever failed first.
+    let why = said(e);
+    try {
+      const st = await page("state");
+      if (st.signedOut && !/^signed out/.test(why)) why = `signed out: the portal sent the page to its sign-in (${why}); sign in again, then rerun`;
+      else if (st.portalError && !/error page/.test(why)) why = `the portal answered an error page (${why}); wait a while, then rerun`;
+    } catch (x) { /* the page is gone */ }
+    report.error = why;
     try { report.snapshot = await page("look"); report.snapshot.boxes.forEach((b) => { b.label = run.scrub(b.label); }); } catch (x) { /* the page is gone */ }
   } finally {
     try { report.url = (await page("state")).url; } catch (e) { /* the page is gone */ }
