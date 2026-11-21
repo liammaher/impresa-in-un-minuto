@@ -54,11 +54,32 @@ class InstallPage(unittest.TestCase):
         self.assertEqual(page.ids["marketplace"], repo)
         self.assertEqual(repo, "liammaher/impresa-in-un-minuto")
 
+    def test_chatgpt_marketplace(self):
+        # ChatGPT reads .agents/plugins/marketplace.json (the Claude one has a source type it can't use): the page's
+        # Source for ChatGPT is the repository that file's plugin comes from.
+        market = json.loads((ROOT / ".agents" / "plugins" / "marketplace.json").read_text())
+        url = market["plugins"][0]["source"]["url"]
+        self.assertEqual(f"https://github.com/{page.ids['marketplace-chatgpt']}.git", url)
+        self.assertEqual(page.ids["marketplace-chatgpt"], page.ids["marketplace"])
+        self.assertIn("https://github.com/liammaher/impresa-in-un-minuto", PAGE)  # the admin's import source
+
+    def test_claude_is_recommended(self):
+        # Claude is the recommended app (2026-11-21): the switch says so, opens on Claude, and the ChatGPT tab says why.
+        claude = PAGE.split('data-pick="claude"', 1)[1].split("</button>", 1)[0]
+        self.assertIn('aria-pressed="true"', claude)
+        self.assertIn("Consigliato", claude)
+        self.assertIn("Recommended", claude)
+        chatgpt = PAGE.split('<div data-for="chatgpt">', 1)[1]
+        self.assertIn("<strong>Consigliamo Claude.</strong>", chatgpt.split("<ol>", 1)[0])
+        self.assertIn("<strong>We recommend Claude.</strong>", chatgpt.split("<ol>", 1)[0])
+        self.assertIn('html:not([data-app="chatgpt"]) [data-for="chatgpt"]', PAGE)  # hidden unless chosen
+
     def test_prova_phrase_is_the_skills(self):
         # The skill's description names the phrase that starts the Prova; the page must give the same.
         skill = (ROOT / "plugin" / "impresa-in-un-minuto" / "skills" / "pratiche" / "SKILL.md").read_text()
         phrase = page.ids["prova"]
         self.assertIn(phrase.lower(), skill.lower())
+        self.assertEqual(page.ids["prova-chatgpt"], phrase)
         self.assertIn(f"«{phrase}»", (ROOT / "README.md").read_text())
 
     def test_every_copy_button_has_its_text(self):
@@ -109,6 +130,15 @@ class InstallPage(unittest.TestCase):
         for label in ("+ Aggiungi", "Aggiungi marketplace", "Aggiungi da un repository", "Sincronizza",
                       "Nuovi plugin", "+", "Gestisci marketplace", "Verifica aggiornamenti", "Rimuovi"):
             self.assertIn(label, labels)
+
+    def test_labels_of_the_chatgpt_app(self):
+        # As read in the ChatGPT desktop app (build 26.1117) set to italiano and to English, on 2026-11-21: its plugins page
+        # (the sidebar, «Aggiungi»/«Add» and its menu, the marketplace dialog) and Impostazioni › Plugin › Marketplace.
+        it = PAGE.split('<div data-for="chatgpt">', 1)[1]
+        for label in ("Personalizza", "Plugin", "Aggiungi", "Aggiungi marketplace", "Origine", "Cerca plugin", "Marketplace", "Aggiorna"):
+            self.assertIn(f'<span class="ui">{label}</span>', it, label)
+        for label in ("Customize", "Plugins", "Add", "Add a marketplace", "Source", "Add marketplace", "Search plugins", "Upgrade"):
+            self.assertIn(f'<span class="ui">{label}</span>', it, label)
 
     def test_every_text_has_its_english(self):
         # The IT/EN switch shows one of two texts, each block written twice (lang="it", lang="en"), the app's

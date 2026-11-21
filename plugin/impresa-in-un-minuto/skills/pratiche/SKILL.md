@@ -268,7 +268,12 @@ is, in one line, wait for "fatto", and run the command again. Never install Pyth
 - `portal/run.py`, `portal/route.py`, `intake/intake.py`, `review.py`, `check.py`, `nota.py` (the form of
   missing details, step 3), `report.py`
   (a problem report, below); for the page,
+<!-- claude -->
   `portal/preview_text.js` and `portal/attachments.js` (step 5).
+<!-- /claude -->
+<!-- openai -->
+  `portal/driver.mjs` (step 4).
+<!-- /openai -->
 
 <!-- vault -->
 ## 0. The archive
@@ -769,7 +774,13 @@ new form if it is many. With eight or fewer, the chat, as before.
 - `files`: each slot's `for` (its name), whether the file `exists`, and its `problem` (at
   Napoli's SUE, DD 501/2026: not PDF/A, not signed digitally, or a name with spaces, accents or
   signs; the fix is in the "Questi file vanno sistemati" block of `message`): the checklist's
-  documents. `pick`: they choose the files once in a box on the portal's page; say so in one line.
+  documents.
+<!-- claude -->
+  `pick`: they choose the files once in a box on the portal's page; say so in one line.
+<!-- /claude -->
+<!-- openai -->
+  `pick` is the pane's: in ChatGPT the driver attaches from the folder, so there is nothing to choose; say nothing of it.
+<!-- /openai -->
 - `yours` and `second_run`: what is left to them comes in the closing lines (step 5); now, at
   most one line.
 - `ready` with no `message`: nothing to ask. Say in one line what you read and the pratica, and
@@ -906,7 +917,8 @@ sh "${CLAUDE_SKILL_DIR}/py" "${CLAUDE_SKILL_DIR}/portal/run.py" chatgpt --steps 
 
 Leave out `--values run/intake/private/values.json` when the intake didn't run. The JavaScript tool's calls: each
 as its own call, written as here, with no `try`/`catch` around it, and never code built from a string (`eval`,
-`new Function`: the tool refuses them). A browser tab belongs to the turn that opened it: in a later turn open a new
+`new Function`: the tool refuses them). A call that answers «Kernel state was reset after inactivity. This code was
+not executed» didn't run: run the same call again. A browser tab belongs to the turn that opened it: in a later turn open a new
 one (the SPID login stays).
 
 1. Open the portal with one call of the JavaScript tool,
@@ -942,7 +954,10 @@ section and field) and `snapshot` (the page with no value in it). Use those and 
 `run/private/`. "0 fields with this label" usually means the section wasn't open yet. Work out the fix for that one
 field (its new `id`, `css` or `label`) and start it again on the same draft, in a new tab:
 `d.start(tab, "<run>", {resume: true, fixes: [{"section": i, "field": k, "set": {"label": "..."}}]})`, then `wait` as
-above; a draft whose address expired (`/cmd/error`, "errore inatteso") is reopened from Pratiche in bozza by its name. Ask the
+above; a draft whose address expired (`/cmd/error`, "errore inatteso") is reopened from Pratiche in bozza by its name.
+If the JavaScript tool says its kernel was reset (after a while idle, or on its own error), the run in it is gone: start
+it again in a new tab with `{resume: true}` (it goes on from its last saved section), or from the start if `wait`
+had never answered. Ask the
 tecnico only for a fact nothing holds, in one plain question. Budget: two fixes or about three minutes; then stop,
 leave the draft saved, and say plainly what's left.
 <!-- /openai -->
@@ -1079,9 +1094,8 @@ the page. Same calls as step 4, from `check.js`, saving the report to `run2/repo
 ## 6. The second compilation, after the declarations
 
 What the portal makes only once the declarations are ticked (the procura for the client to sign, the quadro
-riepilogativo) would go in a second compilation, which isn't in ChatGPT yet. When they say «ho firmato»,
-tell them in one line to attach those signed files themselves on the portal, in Allega documenti (the closing
-lines named them), and that you'll check the rest with them.
+riepilogativo) would go in a second compilation, which isn't in ChatGPT yet: the closing lines ask them to attach
+those signed files themselves, in Allega documenti. If they say «ho firmato» all the same, tell them that in one line.
 <!-- /openai -->
 
 ## 7. After they send it

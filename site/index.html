@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Installare Impresa in un minuto</title>
-<meta name="description" content="Per tecnici e professionisti che presentano già queste pratiche. Impresa in un minuto in Claude: quattro passi, senza terminale, poi una CILA di prova sul portale vero.">
+<meta name="description" content="Per tecnici e professionisti che presentano già queste pratiche. Impresa in un minuto in Claude (consigliato) o in ChatGPT: quattro passi, senza terminale, poi una CILA di prova sul portale vero.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231f5f4a'/%3E%3Cpath d='M8 23V13l8-5 8 5v10h-5v-6h-6v6z' fill='%23fff'/%3E%3C/svg%3E">
 <style>
   :root {
@@ -104,6 +104,18 @@
 
   footer { margin-top: 40px; font-size: 14px; color: var(--muted); }
 
+  /* Claude or ChatGPT: each app's steps sit in a data-for block; the switch shows one, Claude unless chosen. */
+  .apps { display: flex; gap: 8px; margin: 0 0 28px; }
+  .apps button {
+    flex: 1; display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 10px 14px;
+    border: 1px solid var(--line); border-radius: 12px; background: var(--surface); color: var(--text);
+    font: inherit; font-weight: 650; text-align: left; cursor: pointer;
+  }
+  .apps button[aria-pressed="true"] { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); background: var(--accent-soft); }
+  .badge { font-size: 12px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: .04em; }
+  .apps .sub { font-size: 13px; font-weight: 500; color: var(--muted); }
+  html:not([data-app="chatgpt"]) [data-for="chatgpt"], html[data-app="chatgpt"] [data-for="claude"] { display: none; }
+
   /* Each text is written twice, lang="it" and lang="en"; the switch (and the person's own language) shows one. */
   html[data-lang="en"] body [lang="it"], html:not([data-lang="en"]) body [lang="en"] { display: none; }
 </style>
@@ -112,7 +124,7 @@
 <main>
   <header>
     <div>
-      <h1>Impresa in un minuto in Claude</h1>
+      <h1>Impresa in un minuto</h1>
       <p class="lead" lang="it">Quattro passi, due minuti, nessun terminale.</p>
       <p class="lead" lang="en">Four steps, two minutes, no terminal.</p>
     </div>
@@ -122,6 +134,20 @@
     </div>
   </header>
 
+  <div class="apps" role="group" aria-label="App">
+    <button type="button" data-pick="claude" aria-pressed="true">
+      <span>Claude</span>
+      <span class="badge" lang="it">Consigliato</span>
+      <span class="badge" lang="en">Recommended</span>
+    </button>
+    <button type="button" data-pick="chatgpt" aria-pressed="false">
+      <span>ChatGPT</span>
+      <span class="sub" lang="it">Anche qui, con qualche limite</span>
+      <span class="sub" lang="en">Also here, with some limits</span>
+    </button>
+  </div>
+
+  <div data-for="claude">
   <p class="notice" lang="it"><strong>Per chi queste pratiche le presenta già.</strong> Impresa in un minuto compila: non è una consulenza e non decide al posto tuo. Claude può sbagliare, e il controllo finale è tuo. Se non sai riconoscere un errore in una pratica, non usarlo.</p>
   <p class="notice" lang="en"><strong>For people who already file these pratiche.</strong> Impresa in un minuto fills in forms: it is not a consultancy and does not decide for you. Claude can make mistakes, and the final check is yours. If you can't tell when a pratica is filled in wrongly, don't use it.</p>
 
@@ -221,6 +247,103 @@
     <summary>A warning or request you don't understand</summary>
     <p>«Only add marketplaces you trust» is the warning Claude shows for every plugin that isn't its own: Impresa in un minuto's code is public. You don't need to <span class="ui">Grant access</span> to GitHub: close the warning. On a Mac, if it asks you to install the developer tools, accept: they include Python, which Impresa in un minuto needs.</p>
   </details>
+  </div>
+
+  <div data-for="chatgpt">
+  <p class="notice" lang="it"><strong>Consigliamo Claude.</strong> In ChatGPT Impresa in un minuto compila le stesse pratiche, ma è più lento (una CILA in circa 10 minuti, in Claude in 2) e alcune cose restano a te: le email e i numeri di telefono li controlli a occhio, e i file della pagina «Allega documenti» li alleghi tu (ChatGPT ti dice quale va in quale riquadro). Se puoi scegliere, usa Claude.</p>
+  <p class="notice" lang="en"><strong>We recommend Claude.</strong> In ChatGPT Impresa in un minuto fills the same pratiche, but it is slower (a CILA in about 10 minutes, 2 in Claude) and some things stay with you: you check the emails and phone numbers by eye, and you attach the files of the «Allega documenti» page yourself (ChatGPT tells you which goes in which slot). If you can choose, use Claude.</p>
+  <p class="notice" lang="it"><strong>Per chi queste pratiche le presenta già.</strong> Impresa in un minuto compila: non è una consulenza e non decide al posto tuo. ChatGPT può sbagliare, e il controllo finale è tuo. Serve l'app ChatGPT per computer (Mac o Windows): non funziona in ChatGPT sul web o sul telefono.</p>
+  <p class="notice" lang="en"><strong>For people who already file these pratiche.</strong> Impresa in un minuto fills in forms: it is not a consultancy and does not decide for you. ChatGPT can make mistakes, and the final check is yours. You need the ChatGPT desktop app (Mac or Windows): it doesn't work in ChatGPT on the web or on a phone.</p>
+
+  <ol>
+    <li>
+      <h2 lang="it">Apri i plugin di ChatGPT</h2>
+      <h2 lang="en">Open ChatGPT's plugins</h2>
+      <p lang="it">Nell'app ChatGPT per computer, nella barra a sinistra: <span class="ui">Personalizza</span> › <span class="nw"><span class="ui">Plugin</span>.</span></p>
+      <p lang="en">In the ChatGPT desktop app, in the left bar: <span class="ui">Customize</span> › <span class="nw"><span class="ui">Plugins</span>.</span></p>
+      <p lang="it"><a class="button" href="https://openai.com/chatgpt/download/" target="_blank" rel="noopener">Scarica l'app ChatGPT <span aria-hidden="true">↗</span></a></p>
+      <p lang="en"><a class="button" href="https://openai.com/chatgpt/download/" target="_blank" rel="noopener">Get the ChatGPT app <span aria-hidden="true">↗</span></a></p>
+    </li>
+    <li>
+      <h2 lang="it">Aggiungi il marketplace</h2>
+      <h2 lang="en">Add the marketplace</h2>
+      <p lang="it">In alto a destra: <span class="ui">Aggiungi</span> › <span class="nw"><span class="ui">Aggiungi marketplace</span>.</span></p>
+      <p lang="en">Top right: <span class="ui">Add</span> › <span class="nw"><span class="ui">Add a marketplace</span>.</span></p>
+      <figure class="shot" lang="it">
+        <img src="img/chatgpt-aggiungi-menu.png" width="440" height="205"
+             alt="I plugin di ChatGPT con il menu «Aggiungi» aperto e la voce «Aggiungi marketplace» evidenziata.">
+        <span class="ring" style="left:35.4%;top:38.8%;width:37%;height:13.9%" aria-hidden="true"></span>
+      </figure>
+      <figure class="shot" lang="en">
+        <img src="img/chatgpt-add-menu.png" width="410" height="205"
+             alt="ChatGPT's plugins with the «Add» menu open and «Add a marketplace» highlighted.">
+        <span class="ring" style="left:52.7%;top:39%;width:36%;height:13.7%" aria-hidden="true"></span>
+      </figure>
+    </li>
+    <li>
+      <h2 lang="it">Collega Impresa in un minuto</h2>
+      <h2 lang="en">Connect Impresa in un minuto</h2>
+      <p lang="it">Nella casella <span class="ui">Origine</span> incolla:</p>
+      <p lang="en">In the <span class="ui">Source</span> box paste:</p>
+      <div class="copy"><span><code id="marketplace-chatgpt">liammaher/impresa-in-un-minuto</code></span><button type="button" data-copy="marketplace-chatgpt">Copia</button></div>
+      <p lang="it">Lascia vuote le altre caselle e clicca <span class="nw"><span class="ui">Aggiungi marketplace</span>.</span></p>
+      <p lang="en">Leave the other boxes empty and click <span class="nw"><span class="ui">Add marketplace</span>.</span></p>
+      <figure class="shot" lang="it">
+        <img src="img/chatgpt-aggiungi-marketplace.png" width="595" height="413" loading="lazy"
+             alt="La finestra «Aggiungi marketplace di plugin» con liammaher/impresa-in-un-minuto nella casella Origine e il pulsante «Aggiungi marketplace» evidenziato.">
+        <span class="ring" style="left:67.6%;top:86%;width:30.3%;height:9.6%" aria-hidden="true"></span>
+      </figure>
+      <figure class="shot" lang="en">
+        <img src="img/chatgpt-add-marketplace.png" width="595" height="413" loading="lazy"
+             alt="The «Add plugin marketplace» window with liammaher/impresa-in-un-minuto in the Source box and the «Add marketplace» button highlighted.">
+        <span class="ring" style="left:72.7%;top:86%;width:25.3%;height:9.6%" aria-hidden="true"></span>
+      </figure>
+    </li>
+    <li>
+      <h2 lang="it">Installa Impresa in un minuto</h2>
+      <h2 lang="en">Install Impresa in un minuto</h2>
+      <p lang="it">Cerca <code>impresa in un minuto</code> in <span class="ui">Cerca plugin</span> e clicca il <span class="nw"><span class="ui">+</span> accanto.</span></p>
+      <p lang="en">Search for <code>impresa in un minuto</code> in <span class="ui">Search plugins</span> and click the <span class="nw"><span class="ui">+</span> beside it.</span></p>
+      <p class="muted" lang="it">Se non compare subito, chiudi e riapri l'app.</p>
+      <p class="muted" lang="en">If it doesn't show up at once, quit and reopen the app.</p>
+    </li>
+  </ol>
+
+  <section class="done" aria-labelledby="done-chatgpt">
+    <h2 id="done-chatgpt" lang="it">Fatto. Ora provalo</h2>
+    <h2 lang="en">Done. Now try it</h2>
+    <p lang="it">Nell'app ChatGPT per computer, in una nuova conversazione, scrivi:</p>
+    <p lang="en">In the ChatGPT desktop app, in a new conversation, type (in Italian, as shown):</p>
+    <div class="copy"><span><q id="prova-chatgpt">Fammi vedere una prova</q></span><button type="button" data-copy="prova-chatgpt">Copia</button></div>
+    <p class="muted" lang="it">ChatGPT compila una CILA con dati inventati sul portale vero, nel browser dell'app, in circa 10 minuti. Tu devi solo accedere con SPID: non viene inviato nulla.</p>
+    <p class="muted" lang="en">ChatGPT fills in a CILA with made-up data on the real portal, in the app's browser, in about 10 minutes. You only have to log in with SPID: nothing is sent.</p>
+  </section>
+
+  <details lang="it">
+    <summary>Aggiornare Impresa in un minuto</summary>
+    <p>Prima di una pratica importante, nella pagina dei plugin: l'ingranaggio <span class="ui">⚙</span> accanto ad <span class="ui">Aggiungi</span> › <span class="ui">Marketplace</span> › <span class="ui">Aggiorna</span> accanto a Impresa in un minuto. Poi chiudi e riapri l'app.</p>
+  </details>
+  <details lang="en">
+    <summary>Updating Impresa in un minuto</summary>
+    <p>Before an important pratica, on the plugins page: the gear <span class="ui">⚙</span> next to <span class="ui">Add</span> › <span class="ui">Marketplace</span> › <span class="ui">Upgrade</span> beside Impresa in un minuto. Then quit and reopen the app.</p>
+  </details>
+  <details lang="it">
+    <summary>Per tutto lo studio (piani Business, Enterprise, Edu)</summary>
+    <p>L'amministratore può aggiungerlo per tutti dalla Admin Console di OpenAI: <span class="ui">Plugins</span> › <span class="ui">Add</span> › <span class="ui">Import marketplace</span>, con la sorgente <span class="nw">https://github.com/liammaher/impresa-in-un-minuto</span>. Nei piani Enterprise ed Edu i plugin sono spenti finché l'amministratore non li attiva.</p>
+  </details>
+  <details lang="en">
+    <summary>For the whole studio (Business, Enterprise, Edu plans)</summary>
+    <p>The admin can add it for everyone from OpenAI's Admin Console: <span class="ui">Plugins</span> › <span class="ui">Add</span> › <span class="ui">Import marketplace</span>, with the source <span class="nw">https://github.com/liammaher/impresa-in-un-minuto</span>. On Enterprise and Edu plans plugins are off until the admin turns them on.</p>
+  </details>
+  <details lang="it">
+    <summary>I dati dei clienti in ChatGPT</summary>
+    <p>Nei piani Plus e Pro, nelle impostazioni di ChatGPT disattiva «Migliora il modello per tutti». Nei piani Business, Enterprise ed Edu i dati non sono usati per l'addestramento. I valori che ChatGPT scrive sul portale li prende dalla cartella del lavoro sul tuo computer, senza ripassarli dalla conversazione.</p>
+  </details>
+  <details lang="en">
+    <summary>Your clients' data in ChatGPT</summary>
+    <p>On Plus and Pro plans, turn off «Improve the model for everyone» in ChatGPT's settings. On Business, Enterprise and Edu plans the data isn't used for training. The values ChatGPT types into the portal come from the job's folder on your computer, without passing through the conversation again.</p>
+  </details>
+  </div>
 
   <footer>
     <span lang="it">Gratuito e open source. Non è uno strumento ufficiale: non è affiliato al Comune di Napoli né a InfoCamere.
@@ -253,6 +376,24 @@
     b.addEventListener("click", function () { setLang(b.dataset.lang); });
   });
   try { if (localStorage.getItem("lang") === "en") setLang("en"); } catch (e) {}
+
+  // Claude (recommended) unless ChatGPT is chosen: by the switch, by #chatgpt in the link, or by an earlier visit.
+  function setApp(app) {
+    document.documentElement.dataset.app = app;
+    document.querySelectorAll(".apps button").forEach(function (b) {
+      b.setAttribute("aria-pressed", String(b.dataset.pick === app));
+    });
+    try { localStorage.setItem("app", app); } catch (e) {}
+  }
+  document.querySelectorAll(".apps button").forEach(function (b) {
+    b.addEventListener("click", function () {
+      setApp(b.dataset.pick);
+      try { history.replaceState(null, "", b.dataset.pick === "chatgpt" ? "#chatgpt" : location.pathname); } catch (e) {}
+    });
+  });
+  var asked = location.hash === "#chatgpt" ? "chatgpt" : location.hash === "#claude" ? "claude" : null;
+  try { asked = asked || localStorage.getItem("app"); } catch (e) {}
+  if (asked === "chatgpt") setApp("chatgpt");
 
   document.querySelectorAll("button[data-copy]").forEach(function (button) {
     button.addEventListener("click", function () {
