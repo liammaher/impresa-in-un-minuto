@@ -56,13 +56,17 @@ const tab = {
       }, [fn, redacted.source]);
     },
     locator: (css) => checked(page.locator(css)),
-    waitForEvent: (name, opts) => { ctx(); return page.waitForEvent(name, opts).then((c) => checked(c)); },
+    // noChooser: as ChatGPT's browser on the attachments screen, no click ever gives a file chooser.
+    waitForEvent: (name, o) => { ctx(); return NO_CHOOSER && name === "filechooser"
+      ? new Promise((_, no) => setTimeout(() => no(new Error(`Timed out after ${o && o.timeout}ms waiting for file chooser.`)), Math.min((o && o.timeout) || 1000, 1000)))
+      : page.waitForEvent(name, o).then((c) => checked(c)); },
   },
 };
 
 const d = await import(new URL("../driver.mjs", import.meta.url).href);
 await page.goto(base + "/");
 const opts = optsJson ? JSON.parse(optsJson) : {};
+const NO_CHOOSER = !!opts.noChooser;
 let report;
 if (opts.calls) {
   // As ChatGPT's tool: start() in one call returns at once, then short wait() calls, each its own call with a gap

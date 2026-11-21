@@ -121,7 +121,12 @@ in `~/.codex`, the values read from the run's private folder):
    list is the fallback. The street lookup: keys, then the one matching item. Radio and date as text. An upload:
    the file box's own click opens no chooser; its button does, and `setFiles` from disk went in (the page named
    the file, Salva raised no error). The Scheda anagrafica's 17 boxes all read back after Salva.
-4. **Emails and phone numbers are hidden.** The view reads them as `<redacted>`, the page script's own comparison
+4. **The attachments screen's uploads don't open.** Its file boxes (PrimeFaces' upload under a «+» beside a drop
+   zone) gave no chooser to any click (plain, forced, on the box, the drop zone or the cell), where a quadro's upload
+   (section d) did. Until that is understood, the driver hands those files to the tecnico: `attach_yours` in the report,
+   `private/attach_yours.json` (slot and file), and review.py's 📎 lines. `upload_tried` and `upload_widget` (tags,
+   classes, sizes) say what was tried.
+5. **Emails and phone numbers are hidden.** The view reads them as `<redacted>`, the page script's own comparison
    too: the driver can't check them. They are listed in the report as `hidden`, and the closing lines ask the
    person to look at those boxes on the page.
 

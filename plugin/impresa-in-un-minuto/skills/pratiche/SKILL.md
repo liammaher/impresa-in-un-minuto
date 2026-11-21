@@ -1028,7 +1028,9 @@ A compilation that stopped and wasn't recovered prints no `message`: say plainly
 
 The driver read back every value it typed, then read them all again on a fresh load of the draft, except what
 ChatGPT's browser hides from it (emails and phone numbers): the closing lines name those for the tecnico to look at.
-The check of the portal's preview against the documents isn't in ChatGPT yet.
+Where the browser won't open a file chooser (the attachments screen, Allega documenti), the driver doesn't attach:
+the closing lines list each file with its slot (📎) for the tecnico. The check of the portal's preview against the
+documents isn't in ChatGPT yet.
 
 `sh "${CLAUDE_SKILL_DIR}/py" "${CLAUDE_SKILL_DIR}/review.py" run` prints its `message`: say it as
 written, its lines as they are, and nothing else. It is three things: did it work (`✅`), what

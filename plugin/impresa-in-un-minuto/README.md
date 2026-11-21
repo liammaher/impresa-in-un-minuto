@@ -174,8 +174,9 @@ installalo da python.org.
    ogni valore: non toccare la pagina finché non ti scrive.
 5. Quando la bozza è pronta, ChatGPT ti scrive in poche righe cosa controllare e cosa resta a te sul
    portale: l'anteprima, le dichiarazioni, la firma, il pagamento e l'invio. Email e numeri di telefono
-   il browser di ChatGPT non glieli fa rileggere: te li indica, e li controlli tu. Gli allegati che il
-   portale crea solo dopo le dichiarazioni (la procura) li firmi e li alleghi tu.
+   il browser di ChatGPT non glieli fa rileggere: te li indica, e li controlli tu. I file della pagina
+   «Allega documenti» per ora li alleghi tu: ChatGPT ti dice quale file va in quale riquadro. Gli allegati
+   che il portale crea solo dopo le dichiarazioni (la procura) li firmi e li alleghi tu.
 6. Dopo l'invio, ChatGPT ti dice le prossime scadenze e la pratica che di solito segue.
 
 Senza browser (Codex nel terminale) Impresa in un minuto fa solo il controllo.

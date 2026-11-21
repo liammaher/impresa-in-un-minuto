@@ -537,6 +537,7 @@ async function attempt(tab, runDir, opts, run) {
     write("held.json", JSON.stringify(held.details, null, 2));
     if (held.declarations.length || !fs.existsSync(path.join(priv, "declarations.json"))) write("declarations.json", JSON.stringify(held.declarations, null, 2));
     if (held.preview) write("anteprima.pdf", held.preview);
+    if (held.yours) write("attach_yours.json", JSON.stringify(held.yours, null, 2));
     fs.writeFileSync(path.join(runDir, "report.json"), JSON.stringify(publicReport(run), null, 2));
   }
 }
@@ -547,6 +548,7 @@ async function fill(tab, steps, values, resume, run, held, { fs, path, priv }) {
   report.sections = report.sections || [];
   const pw = tab.playwright;
   const labelJs = adaptLabelJs(steps.label_js);
+  held.yours = held.yours || [];
   const page = async (method, arg) => {
     const src = `(${pageApi.toString().replace("__LABEL_JS__", () => `(${labelJs})`)})({}).${method}(${arg === undefined ? "" : JSON.stringify(arg)})`;
     for (let i = 0; ; i++) {
@@ -750,7 +752,13 @@ async function fill(tab, steps, values, resume, run, held, { fs, path, priv }) {
     if (now !== before + 1) fail(`+ didn't add a block of ${f.anchor}`);
     return `block ${before + 1}`;
   }
+  // A file whose box ChatGPT's browser won't open a chooser for (the attachments screen's, 2026-11-21: every way
+  // clicked, no chooser) is the tecnico's to attach: listed for review.py, never a stop. After the first such box on
+  // a screen the rest aren't tried (each costs a minute of tries).
+  const yours = [];
+  let noChooser = null;
   async function attach(f, v) {
+    if (noChooser === report.at.section) return handOver(f, v);
     const b = need(await page("fileBox", { id: f.id, css: f.css }));
     let file = v.path;
     if (!file && v.b64) {
@@ -789,11 +797,11 @@ async function fill(tab, steps, values, resume, run, held, { fs, path, priv }) {
       } catch (e) { tried.push(`${how}: ${String(e && e.message || e).split("\n")[0].slice(0, 80)}`); await p; }
     }
     if (!chooser) {
-      held.details.push({ section: report.at && report.at.section, label: f.label, upload_widget: await page("fileWidget", b.full).catch(() => null) });
-      report.upload_tried = tried;
+      report.upload_tried = tried.map(run.scrub);
       report.upload_widget = await page("fileWidget", b.full).catch(() => null);
+      noChooser = report.at.section;
+      return handOver(f, v);
     }
-    if (!chooser) fail(`${f.label}: no file chooser opened (tried ${tried.join(", ")})`);
     await chooser.setFiles([file]);
     await idle();
     let u = { named: false, refused: [] };
@@ -807,6 +815,14 @@ async function fill(tab, steps, values, resume, run, held, { fs, path, priv }) {
       await idle();
     }
     return v.name;
+  }
+  function handOver(f, v) {
+    yours.push({ section: report.at.section, slot: f.label, name: v.name, path: v.path || null });
+    held.yours = held.yours.filter((x) => !(x.section === report.at.section && x.slot === f.label && x.name === v.name))
+      .concat([{ section: report.at.section, slot: f.label, name: v.name }]);
+    report.attach_yours = (report.attach_yours || []).filter((x) => !(x.section === report.at.section && x.slot === f.label))
+      .concat([{ section: report.at.section, slot: f.label }]);
+    return null; // not attached: no read-back
   }
 
   // A draft whose address expired (the portal's /cmd/error), opened again by its name from Pratiche in bozza.
@@ -900,7 +916,11 @@ async function fill(tab, steps, values, resume, run, held, { fs, path, priv }) {
       else if (v === null || v === "") continue;
       else if (f.kind === "select") typed = await select(f, v);
       else if (f.kind === "lookup") typed = await lookup(f, v);
-      else if (f.kind === "file") { typed = await attach(f, v); attached[norm(f.label)] = (attached[norm(f.label)] || 0) + 1; }
+      else if (f.kind === "file") {
+        typed = await attach(f, v);
+        if (typed === null) continue; // the tecnico's to attach
+        attached[norm(f.label)] = (attached[norm(f.label)] || 0) + 1;
+      }
       else typed = await text(f, v);
       done.push({ ...f, kind: f.kind === "date" ? "text" : f.kind, typed, field: i });
     }

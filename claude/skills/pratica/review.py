@@ -334,6 +334,21 @@ def numbered(steps, details, phased=False):
             + [line(i, s) for i, s in enumerate(steps[cut + 1:], cut + 2)])
 
 
+def attach_yours(out):
+    """The files left to the tecnico to attach (private/attach_yours.json, driver.mjs), as the closing lines say them."""
+    f = Path(out or ".") / "private" / "attach_yours.json"
+    try:
+        rows = json.loads(f.read_text())
+    except (OSError, ValueError):
+        return []
+    lines = []
+    for sec in dict.fromkeys(r["section"] for r in rows):
+        lines.append(f"📎 {section(sec)}: non ho potuto caricare i file, il browser non mi apre la scelta dei file. "
+                     "Allegali tu, ognuno nel suo riquadro:")
+        lines += [f"   • {r['slot']}: {r['name']}" for r in rows if r["section"] == sec]
+    return lines
+
+
 def summary(report, out=None, job=None, prova=False):
     """What Claude says in the chat once a portal compilation ends: did it work, what the tecnico
     must check (the portal's warnings beside values it kept, a value or a file that doesn't match
@@ -347,6 +362,9 @@ def summary(report, out=None, job=None, prova=False):
     # never checked, so the tecnico looks at them.
     unread = [f"{section(h['section'])}: non ho potuto rileggere {', '.join(h['labels'])} (il browser nasconde email e "
               "numeri di telefono). Controllali tu sulla bozza." for h in report.get("hidden") or []]
+    # The files the browser wouldn't let the runner attach (ChatGPT's, on the attachments screen): each with its slot,
+    # from the run's private folder, for the tecnico to attach.
+    attach = attach_yours(out) if report.get("attach_yours") else []
     if prova:
         # The portal's own warnings on made-up values (the PEC) are expected; a value that doesn't match
         # the case, or a file that isn't the Prova's, is not.
@@ -358,6 +376,7 @@ def summary(report, out=None, job=None, prova=False):
             lines = [f"{head} Riletti dal portale: {read}. Tutto corrisponde."]
         else:
             lines = [head] + checks + [f"⚠️ {w}" for w in warns]
+        lines += attach
         lines.append("In una pratica vera restano a te: controllare l'anteprima, spuntare le dichiarazioni, pagare, firmare, inviare.")
         lines.append("Guarda la bozza qui accanto (Pratiche in bozza › PROVA NON INVIARE): scegli una casella e chiedimi cosa ho scritto e perché. Poi cancellala.")
         return {"result": "filled", "warnings": warns, "steps": [], "message": "\n".join(lines)}
@@ -381,7 +400,7 @@ def summary(report, out=None, job=None, prova=False):
     # nothing differed or wasn't read back: otherwise the ⚠️ lines say what.
     read = whole_read(out, job, report.get("attached"))
     clean = not (mismatches(out) + stray_files(out, job) + not_read_back(out, report.get("attached")))
-    lines = [head] + ([f"✅ Anteprima del portale confrontata con i tuoi documenti: {read}. Tutto corrisponde."] if read and clean else []) + [f"⚠️ {w}" for w in warnings]
+    lines = [head] + ([f"✅ Anteprima del portale confrontata con i tuoi documenti: {read}. Tutto corrisponde."] if read and clean else []) + [f"⚠️ {w}" for w in warnings] + attach
     lines += numbered(steps, report.get("details") or {}, phased=not reopened and bool(later))
     lines += [f"{a}." for a in report.get("apart") or []]
     # `yours`, the steps file's own steps in full (how the diritti are paid, the files' rules), is

@@ -25,6 +25,8 @@ sys.path.insert(0, str(HERE))
 sys.dont_write_bytecode = True
 import run  # noqa: E402
 import test_inpage as bench  # noqa: E402
+sys.path.insert(0, str(HERE.parent.parent))
+import review  # noqa: E402
 
 PW = os.environ.get("PLAYWRIGHT_NODE", "/Applications/ChatGPT.app/Contents/Resources/cua_node/lib/node_modules/playwright")
 
@@ -91,6 +93,19 @@ def main():
         assert bench.PORTAL.fields.get(bench.DEN) == answers["den"], f"stored {bench.PORTAL.fields}"
         assert {f["name"] for f in bench.PORTAL.files} == set(sha), "files"
     case("started with start() and driven by short wait() calls, nothing touches the browser between calls", calls)
+
+    def handed_over(out):
+        # ChatGPT's browser gave no file chooser on the attachments screen (2026-11-21): the files are the tecnico's,
+        # listed with their slots, and the run still ends filled.
+        bench.PORTAL.reset()
+        r = drive(base, bench.steps(base), answers, out, {"noChooser": True})
+        assert r["result"] == "filled", r.get("error")
+        assert [x["slot"] for x in r.get("attach_yours", [])] == ["Planimetria quotata", "Ricevuta ASL"], r.get("attach_yours")
+        assert not bench.PORTAL.files, "a file went up"
+        assert "planimetria.pdf" not in json.dumps(r), "the report names a file"
+        said = review.summary(r, out)["message"]
+        assert "Allegali tu" in said and "Planimetria quotata: planimetria.pdf" in said and "ricevuta-asl.pdf.p7m" in said, said
+    case("files the browser won't open a chooser for are the tecnico's: listed by slot, the run still filled", handed_over)
 
     def dropped(out):
         bench.PORTAL.reset(drop=True)
