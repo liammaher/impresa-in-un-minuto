@@ -706,8 +706,13 @@ async function fill(tab, steps, values, resume, run, held, { fs, path, priv }) {
   async function tick(f) {
     const r = need(await page("tick", f.id), f.label || f.id);
     if (!r.already) { await click(r, f.label || f.id); await idle(); }
+    // A box that opens rows renumbers itself (INPS adds its "sede di": r27 became r28, 2026-11-21): found again by its
+    // label, for a few seconds, since the re-drawn rows come after the page looks idle to this view.
     let id = f.id;
-    if (!(await page("checked", id)) && f.spec) id = (await page("resolve", f.spec)).id;
+    for (const end = Date.now() + 8000; !(id && (await page("checked", id))) && Date.now() < end;) {
+      if (f.spec) { const r = await page("resolve", f.spec); if (!r.why) id = r.id; }
+      if (!(id && (await page("checked", id)))) await sleep(400);
+    }
     if (!id || !(await page("checked", id))) fail(`${f.id}: didn't stay ticked`);
     return "checked";
   }
