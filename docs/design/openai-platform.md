@@ -121,7 +121,12 @@ in `~/.codex`, the values read from the run's private folder):
    list is the fallback. The street lookup: keys, then the one matching item. Radio and date as text. An upload:
    the file box's own click opens no chooser; its button does, and `setFiles` from disk went in (the page named
    the file, Salva raised no error). The Scheda anagrafica's 17 boxes all read back after Salva.
-4. **Emails and phone numbers are hidden.** The view reads them as `<redacted>`, the page script's own comparison
+4. **The attachments screen's uploads don't open.** Its file boxes (PrimeFaces' upload under a «+» beside a drop
+   zone) gave no chooser to any click (plain, forced, on the box, the drop zone or the cell), where a quadro's upload
+   (section d) did. Until that is understood, the driver hands those files to the tecnico: `attach_yours` in the report,
+   `private/attach_yours.json` (slot and file), and review.py's 📎 lines. `upload_tried` and `upload_widget` (tags,
+   classes, sizes) say what was tried.
+5. **Emails and phone numbers are hidden.** The view reads them as `<redacted>`, the page script's own comparison
    too: the driver can't check them. They are listed in the report as `hidden`, and the closing lines ask the
    person to look at those boxes on the page.
 
@@ -132,13 +137,14 @@ private `kept.json`), `run.py chatgpt` (the run folder: `private/chatgpt-run.jso
 `hidden` lines, and the openai texts' steps 4 to 6 and Prova. `bench/test_driver.py` runs it on test_inpage.py's fake
 portal through `bench/driver_tab.mjs`, a tab over Playwright for Node whose `evaluate` fails on any write and reads an
 email as `<redacted>`. Not yet: the second compilation (after the declarations), the check of the portal's preview
-against the documents (Claude's step 5), a draft reopened from Pratiche in bozza, and `reads.js`.
+against the documents (Claude's step 5), and `reads.js`. A draft whose address expired is reopened from Pratiche in
+bozza by its name, as inpage.js does.
 
 ## What the target does not do yet
 
 - A whole pratica run end to end in ChatGPT, recorded in `runs.json` (the driver ran the CILA's wizard and four of its
   sections on the portal, as the test module).
-- The second compilation, the preview check, reopening a draft, `reads.js` (above).
+- The second compilation, the preview check, `reads.js` (above).
 - The archive (`vault: true`): the setup skill and the vault parts have no OpenAI words.
 - The directory listing: icons, `shortDescription`, support, privacy and terms URLs, and the plugin portal's review.
 - The connector's ChatGPT side (`search`/`fetch`, origins, CORS) and a Codex run of the evals.

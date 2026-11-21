@@ -173,6 +173,36 @@ function pageApi(cfg) {
       const a = [...document.querySelectorAll(css)].find((x) => norm(x.textContent).startsWith(norm(name)));
       return a ? { css, nth: nthOf(css, a), text: a.textContent } : null;
     },
+    // Pratiche in bozza: the newest draft named so (its Apri), else the paginator's page p.
+    draftOpen({ name, p }) {
+      const row = [...document.querySelectorAll("tr")].find((t) => norm(t.innerText).includes(norm(name)));
+      if (row) {
+        const css = "a, button";
+        const b = [...row.querySelectorAll(css)].find((x) => norm(x.title || x.textContent) === "apri");
+        return b ? { css, nth: nthOf(css, b) } : fail(`${name}: no Apri`);
+      }
+      const next = [...document.querySelectorAll(".ui-paginator-page")].find((a) => a.textContent.trim() === String(p));
+      return next ? { page: { css: ".ui-paginator-page", nth: nthOf(".ui-paginator-page", next) } } : fail(`no draft named ${name} in Pratiche in bozza`);
+    },
+    hasOpenSection() { return !!document.querySelector("li#corrente"); },
+    centre(full) {
+      const e = document.getElementById(full);
+      if (!e) return null;
+      const r = e.getBoundingClientRect();
+      return r.width && r.height ? { x: Math.round(r.left + r.width / 2), y: Math.round(r.top + r.height / 2), inView: r.top >= 0 && r.bottom <= (window.innerHeight || 0) } : null;
+    },
+    // A file box's widget as tags, classes and sizes (no value, no file name): what a failed upload reports.
+    fileWidget(full) {
+      const e = document.getElementById(full);
+      if (!e) return null;
+      const shape = (x) => `${x.tagName.toLowerCase()}${x.id ? "#…" + x.id.split(":").pop() : ""}${x.className && typeof x.className === "string" ? "." + x.className.trim().split(/\s+/).slice(0, 3).join(".") : ""}` +
+        (() => { const r = x.getBoundingClientRect(); return ` ${Math.round(r.width)}x${Math.round(r.height)}`; })();
+      const up = [];
+      for (let x = e, k = 0; x && k < 5; x = x.parentElement, k++) up.push(shape(x));
+      const td = e.closest("td");
+      return { box: up, accept: e.getAttribute("accept"), multiple: e.multiple, disabled: e.disabled,
+        cell: td ? [...td.querySelectorAll("*")].slice(0, 25).map(shape) : [] };
+    },
     menuNames() { return [...document.querySelectorAll("a.linkmenu")].map((a) => a.textContent.replace(/\s+/g, " ").trim()); },
     resolve,
     // An id the crawl saw, held to the box's kind and label: else the box by its label (a move), else the id as it is.
@@ -260,13 +290,25 @@ function pageApi(cfg) {
       if (nth > 1 && !own) return fail(`no + number ${nth} after ${anchor}'s last block`);
       return { css, nth: nthOf(css, own || plus[plus.length - 1]) };
     },
+    // What may open the file chooser for a file box, in order: PrimeFaces' Choose button (a quadro's upload), the
+    // attachments screen's drop zone beside it, a label for it, the clickable things in its cell; the box itself last.
     fileBox({ id, css }) {
       const e = css ? document.querySelector(css) : el(id);
       if (!e) return fail(`${css || id}: no file box`);
       if (e.type !== "file") return fail(`${css || id}: not a file box`);
+      const ways = [];
+      const add = (x, how) => { if (x && vis(x) && !ways.some((w) => w.el === x)) ways.push({ el: x, how }); };
       const w = e.closest(".ui-fileupload");
-      const choose = w && w.querySelector(".ui-fileupload-choose");
-      return { full: e.id, choose: choose ? { css: ".ui-fileupload-choose", nth: nthOf(".ui-fileupload-choose", choose) } : null };
+      add(w && w.querySelector(".ui-fileupload-choose"), "choose");
+      add(document.getElementById(e.id.replace(/upload\d*_input$/, "editor_file_dropzone")), "dropzone");
+      for (const l of e.labels || []) add(l, "label");
+      const cell = e.closest("td");
+      if (cell) for (const x of cell.querySelectorAll("button, a, label, .ui-button, [id*=dropzone], [class*=drop], [class*=upload]")) {
+        // never one that removes, downloads, or is the person's step (send, pay, sign), never a "+"
+        const t = (x.textContent || "").trim();
+        if (!/rimuovi|scarica|elimina|invia|paga|firma/i.test(t) && t !== "+") add(x, `cell ${x.tagName.toLowerCase()}`);
+      }
+      return { full: e.id, ways: ways.slice(0, 6).map(({ el: x, how }) => (x.id ? { full: x.id, how } : { css: "*", nth: nthOf("*", x), how })) };
     },
     uploaded(name) {
       const refused = [...document.querySelectorAll(".ui-growl-item")].map((g) => g.textContent.replace(/\s+/g, " ").trim()).filter((t) => /non è stato accettato/i.test(t));
@@ -309,7 +351,9 @@ function pageApi(cfg) {
         if (!e) return { got: null };
         if (e.value === "<redacted>") return { hidden: true };
         let ok = norm(e.value) === norm(f.typed);
-        if (!ok && f.kind === "number") ok = parseFloat(e.value) === parseFloat(f.typed);
+        // ChatGPT's view lacks the global number parser: a number by arithmetic ("12,5" and "12.50" alike).
+        const num = (x) => { const t = String(x).trim().replace(",", "."); return /^-?\d+(\.\d+)?$/.test(t) ? +t : null; };
+        if (!ok && f.kind === "number") ok = num(e.value) !== null && num(e.value) === num(f.typed);
         return ok ? { ok: true } : { got: e.value, ro: e.readOnly };
       });
     },
@@ -362,7 +406,7 @@ function gated(obj) {
   return new Proxy(obj, {
     get(t, p) {
       const v = t[p];
-      if (typeof v !== "function") return v && typeof v === "object" && p === "playwright" ? gated(v) : v;
+      if (typeof v !== "function") return v && typeof v === "object" && (p === "playwright" || p === "cua") ? gated(v) : v;
       if (PENDING.has(p)) {
         return async (...a) => {
           for (let k = 0; ; k++) {
@@ -477,12 +521,14 @@ async function attempt(tab, runDir, opts, run) {
     for (let n = 0; ; n++) {
       await fill(tab, steps, values, resume, run, held, { fs, path, priv });
       const r = run.report, at = r.at;
-      if (r.result !== "stopped" || !at || n >= (opts.retries ?? 2) || /^signed out/.test(r.error || "") || !TRANSIENT.test(r.error || "")) break;
-      if (at.phase !== "section" || !r.url || /\/cmd\/error/.test(r.url)) break;
+      // A stop on the portal's error page is an expired address whatever failed first (inpage.js: onError).
+      const onError = /\/cmd\/error/.test(r.url || "");
+      if (r.result !== "stopped" || !at || n >= (opts.retries ?? 2) || /^signed out/.test(r.error || "") || !(onError || TRANSIENT.test(r.error || ""))) break;
+      if (at.phase !== "section" || !r.url) break;
       run.report = { ...r, result: "running", error: undefined, snapshot: undefined, resumed: true,
         retries: (r.retries || []).concat([{ error: r.error, at }]) };
       await sleep(opts.retry_wait_ms ?? 10000);
-      resume = { ...resume, url: r.url, from: { section: at.index }, kept: r.kept || [] };
+      resume = { ...resume, url: r.url, from: { section: at.index }, kept: r.kept || [], reopen_draft: /\/cmd\/error/.test(r.url) };
     }
   } finally {
     run.report.total_seconds = +((Date.now() - t0) / 1000).toFixed(1);
@@ -491,6 +537,7 @@ async function attempt(tab, runDir, opts, run) {
     write("held.json", JSON.stringify(held.details, null, 2));
     if (held.declarations.length || !fs.existsSync(path.join(priv, "declarations.json"))) write("declarations.json", JSON.stringify(held.declarations, null, 2));
     if (held.preview) write("anteprima.pdf", held.preview);
+    if (held.yours) write("attach_yours.json", JSON.stringify(held.yours, null, 2));
     fs.writeFileSync(path.join(runDir, "report.json"), JSON.stringify(publicReport(run), null, 2));
   }
 }
@@ -501,6 +548,7 @@ async function fill(tab, steps, values, resume, run, held, { fs, path, priv }) {
   report.sections = report.sections || [];
   const pw = tab.playwright;
   const labelJs = adaptLabelJs(steps.label_js);
+  held.yours = held.yours || [];
   const page = async (method, arg) => {
     const src = `(${pageApi.toString().replace("__LABEL_JS__", () => `(${labelJs})`)})({}).${method}(${arg === undefined ? "" : JSON.stringify(arg)})`;
     for (let i = 0; ; i++) {
@@ -688,6 +736,7 @@ async function fill(tab, steps, values, resume, run, held, { fs, path, priv }) {
       await click(s.plus, `+ ${f.label}`);
       await idle();
       s = need(await page("slotRows", f.label));
+      for (const end = Date.now() + 10000; s.files.length === before && Date.now() < end;) { await sleep(400); s = need(await page("slotRows", f.label)); }
       if (s.files.length !== before + 1) fail(`${f.label}: + didn't add a file box`);
     }
     return { ...f, id: s.files[f.nth - 1].id, slotted: true };
@@ -697,10 +746,19 @@ async function fill(tab, steps, values, resume, run, held, { fs, path, priv }) {
     if (f.block && before >= f.block) return `block ${f.block}`;
     await click(need(await page("plusFor", { anchor: f.anchor, nth: f.nth })), `+ ${f.anchor}`);
     await idle();
-    if ((await page("blocks", f.anchor)) !== before + 1) fail(`+ didn't add a block of ${f.anchor}`);
+    // The new block's rows can come a moment after the page looks idle here (as a box a choice shows: resolveSoon).
+    let now = await page("blocks", f.anchor);
+    for (const end = Date.now() + 10000; now === before && Date.now() < end; now = await page("blocks", f.anchor)) await sleep(400);
+    if (now !== before + 1) fail(`+ didn't add a block of ${f.anchor}`);
     return `block ${before + 1}`;
   }
+  // A file whose box ChatGPT's browser won't open a chooser for (the attachments screen's, 2026-11-21: every way
+  // clicked, no chooser) is the tecnico's to attach: listed for review.py, never a stop. After the first such box on
+  // a screen the rest aren't tried (each costs a minute of tries).
+  const yours = [];
+  let noChooser = null;
   async function attach(f, v) {
+    if (noChooser === report.at.section) return handOver(f, v);
     const b = need(await page("fileBox", { id: f.id, css: f.css }));
     let file = v.path;
     if (!file && v.b64) {
@@ -710,17 +768,40 @@ async function fill(tab, steps, values, resume, run, held, { fs, path, priv }) {
       fs.writeFileSync(file, Buffer.from(v.b64, "base64"), { mode: 0o600 });
     }
     if (!file || !fs.existsSync(file)) fail(`${f.label}: the file isn't in the run's folder`);
-    // The file box's own click opens no chooser on this portal; its button does.
+    // The file box's own click opens no chooser on this portal: what does is its button, or the drop zone beside it.
     let chooser = null;
-    for (const target of [b.choose, { full: b.full }].filter(Boolean)) {
+    const tried = [];
+    const ways = [...b.ways, { full: b.full, how: "box" }].flatMap((w) => [{ ...w }, { ...w, force: true }, { ...w, mouse: true }]);
+    for (const target of ways) {
+      const how = target.how + (target.force ? " forced" : target.mouse ? " mouse" : "");
+      // The chooser's promise is settled here whatever the click does: an unhandled rejection resets ChatGPT's whole
+      // JavaScript session (2026-11-21).
+      const p = pw.waitForEvent("filechooser", { timeout: 6000 }).then((c) => c, (e) => e);
       try {
-        const p = pw.waitForEvent("filechooser", { timeout: 8000 });
-        await click(target, f.label, { timeout: 8000 });
-        chooser = await p;
+        if (target.mouse) {
+          // A real mouse click at its centre, past Playwright's checks: what a person's click reaches.
+          if (!target.full) throw new Error("no id to find its centre by");
+          const c = await page("centre", target.full);
+          if (!c || !c.inView) throw new Error(c ? "not in view" : "no box to click");
+          await tab.cua.click({ x: c.x, y: c.y });
+        } else {
+          const loc = target.full ? pw.locator(`[id="${target.full}"]`) : pw.locator(target.css).nth(target.nth);
+          await loc.click({ timeout: 6000, ...(target.force ? { force: true } : {}) });
+        }
+        // A chooser by its shape: an error from the browser's service is of another realm (not instanceof Error here).
+        const c = await p;
+        if (!c || typeof c.setFiles !== "function") throw new Error(String((c && c.message) || "no file chooser"));
+        chooser = c;
+        (report.upload_ways = report.upload_ways || {})[how] = ((report.upload_ways || {})[how] || 0) + 1;
         break;
-      } catch (e) { /* the next way */ }
+      } catch (e) { tried.push(`${how}: ${String(e && e.message || e).split("\n")[0].slice(0, 80)}`); await p; }
     }
-    if (!chooser) fail(`${f.label}: no file chooser opened`);
+    if (!chooser) {
+      report.upload_tried = tried.map(run.scrub);
+      report.upload_widget = await page("fileWidget", b.full).catch(() => null);
+      noChooser = report.at.section;
+      return handOver(f, v);
+    }
     await chooser.setFiles([file]);
     await idle();
     let u = { named: false, refused: [] };
@@ -734,6 +815,29 @@ async function fill(tab, steps, values, resume, run, held, { fs, path, priv }) {
       await idle();
     }
     return v.name;
+  }
+  function handOver(f, v) {
+    yours.push({ section: report.at.section, slot: f.label, name: v.name, path: v.path || null });
+    held.yours = held.yours.filter((x) => !(x.section === report.at.section && x.slot === f.label && x.name === v.name))
+      .concat([{ section: report.at.section, slot: f.label, name: v.name }]);
+    report.attach_yours = (report.attach_yours || []).filter((x) => !(x.section === report.at.section && x.slot === f.label))
+      .concat([{ section: report.at.section, slot: f.label }]);
+    return null; // not attached: no read-back
+  }
+
+  // A draft whose address expired (the portal's /cmd/error), opened again by its name from Pratiche in bozza.
+  async function reopen(name) {
+    await act(() => tab.goto(new URL("/fnsuap/cmd/home", steps.logged_in).href));
+    for (let p = 2; ; p++) {
+      const r = need(await page("draftOpen", { name, p }));
+      if (!r.page) { await act(() => click(r, `${name}: Apri`)); break; }
+      await click(r.page, `Pratiche in bozza, page ${p}`);
+      await idle();
+    }
+    await until(() => page("hasOpenSection"), `${name}: the draft didn't open`, 60000);
+    await idle();
+    report.reopened_draft = true;
+    return (await page("state")).url;
   }
 
   // the wizard
@@ -783,7 +887,9 @@ async function fill(tab, steps, values, resume, run, held, { fs, path, priv }) {
       if (!(await here())) await act(() => button(sec.go));
       if (!(await here())) fail(`expected the screen ${sec.section}`);
     } else if (sec.open !== false) {
-      if (!(await openSection(sec.section)) && !(await page("isOpen", sec.section))) {
+      const opened = await openSection(sec.section);
+      if (/\/cmd\/error/.test((await page("state")).url)) fail("the draft's address has expired (the portal's error page)");
+      if (!opened && !(await page("isOpen", sec.section))) {
         if (sec.optional) { (report.skipped_sections = report.skipped_sections || []).push(sec.section); return; }
         fail(`no section ${sec.section}`);
       }
@@ -810,7 +916,11 @@ async function fill(tab, steps, values, resume, run, held, { fs, path, priv }) {
       else if (v === null || v === "") continue;
       else if (f.kind === "select") typed = await select(f, v);
       else if (f.kind === "lookup") typed = await lookup(f, v);
-      else if (f.kind === "file") { typed = await attach(f, v); attached[norm(f.label)] = (attached[norm(f.label)] || 0) + 1; }
+      else if (f.kind === "file") {
+        typed = await attach(f, v);
+        if (typed === null) continue; // the tecnico's to attach
+        attached[norm(f.label)] = (attached[norm(f.label)] || 0) + 1;
+      }
       else typed = await text(f, v);
       done.push({ ...f, kind: f.kind === "date" ? "text" : f.kind, typed, field: i });
     }
@@ -922,8 +1032,11 @@ async function fill(tab, steps, values, resume, run, held, { fs, path, priv }) {
   try {
     await tab.goto(resume.url || steps.start);
     await idle();
-    const url = (await page("state")).url;
+    let url = (await page("state")).url;
     if (!url.startsWith(steps.logged_in)) fail("not logged in to the portal");
+    // A draft's address lasts only as long as the portal's session: a resume that doesn't land on the draft opens
+    // it again from Pratiche in bozza, by its name.
+    if (resume.url && (resume.reopen_draft || /\/cmd\/error/.test(url) || !(await page("hasOpenSection")))) url = await reopen(values.wizard[0]);
     if (/\/cmd\/error/.test(url)) fail("the draft's address has expired: open it again from Pratiche in bozza");
     const from = resume.from || {};
     for (const k of resume.kept || []) {

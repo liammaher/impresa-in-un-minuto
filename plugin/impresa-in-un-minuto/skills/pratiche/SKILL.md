@@ -914,9 +914,13 @@ one (the SPID login stays).
    and say:
    "**Entra con il tuo SPID** nel browser qui accanto; quando vedi la pagina del portale scrivimi
    **«fatto»**. Le credenziali le scrivi solo tu.
-   Poi compilo la bozza, in circa un quarto d'ora, e ti dico cosa ho riletto. Non spunto dichiarazioni, non pago, non firmo, non invio."
-   Send these lines after the `card` when the tecnico hasn't read it yet in this job (they answered questions and
-   no `riepilogo` came). The card is printed by:
+   Con «fatto» mi dici anche di scrivere sul portale impresainungiorno, in una bozza, i dati di questo lavoro
+   (committente, immobile, tecnici, imprese) e di allegare i <N> file della sua cartella. Lo faccio in circa un
+   quarto d'ora e poi ti dico cosa ho riletto. Non spunto dichiarazioni, non pago, non firmo, non invio."
+   (`<N>`: the files the steps attach, from the check; none: leave out «e di allegare…».) ChatGPT confirms, before it
+   types a person's data into a site or uploads a file, what goes where: this line is that confirmation, so their
+   «fatto» covers the whole compilation and you ask nothing more. Send these lines after the `card` when the tecnico
+   hasn't read it yet in this job (they answered questions and no `riepilogo` came). The card is printed by:
    ```sh
    sh "${CLAUDE_SKILL_DIR}/py" "${CLAUDE_SKILL_DIR}/portal/run.py" card --steps "${CLAUDE_SKILL_DIR}/pratiche/<name>.json" \
      --answers answers.json --values run/values.json --values run/intake/private/values.json
@@ -938,7 +942,7 @@ section and field) and `snapshot` (the page with no value in it). Use those and 
 `run/private/`. "0 fields with this label" usually means the section wasn't open yet. Work out the fix for that one
 field (its new `id`, `css` or `label`) and start it again on the same draft, in a new tab:
 `d.start(tab, "<run>", {resume: true, fixes: [{"section": i, "field": k, "set": {"label": "..."}}]})`, then `wait` as
-above. A draft whose address expired (`/cmd/error`, "errore inatteso") can't be picked up from here yet: say so. Ask the
+above; a draft whose address expired (`/cmd/error`, "errore inatteso") is reopened from Pratiche in bozza by its name. Ask the
 tecnico only for a fact nothing holds, in one plain question. Budget: two fixes or about three minutes; then stop,
 leave the draft saved, and say plainly what's left.
 <!-- /openai -->
@@ -1024,7 +1028,9 @@ A compilation that stopped and wasn't recovered prints no `message`: say plainly
 
 The driver read back every value it typed, then read them all again on a fresh load of the draft, except what
 ChatGPT's browser hides from it (emails and phone numbers): the closing lines name those for the tecnico to look at.
-The check of the portal's preview against the documents isn't in ChatGPT yet.
+Where the browser won't open a file chooser (the attachments screen, Allega documenti), the driver doesn't attach:
+the closing lines list each file with its slot (📎) for the tecnico. The check of the portal's preview against the
+documents isn't in ChatGPT yet.
 
 `sh "${CLAUDE_SKILL_DIR}/py" "${CLAUDE_SKILL_DIR}/review.py" run` prints its `message`: say it as
 written, its lines as they are, and nothing else. It is three things: did it work (`✅`), what
