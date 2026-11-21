@@ -74,5 +74,29 @@
   "browser": "pane",
   "note": "Run on pizzeria-fittizia's fixture (this recipe has none of its own), nothing moved or loose; the portal's warnings were the made-up PEC, address and cadastral data. Sign title: «usufruttuario» (the select's option, no «specificare» note), exclusive title.",
   "values": "rehearsals/pizzeria-fittizia/fixture.json"
+ },
+ {
+  "date": "2026-11-21",
+  "answers": "answers-tipologia-vetrofania.json",
+  "result": "filled",
+  "seconds": 137.8,
+  "browser": "pane",
+  "values": "rehearsals/pizzeria-fittizia/fixture.json"
+ },
+ {
+  "date": "2026-11-21",
+  "answers": "answers-tipologia-targa.json",
+  "result": "filled",
+  "seconds": 114.6,
+  "browser": "pane",
+  "values": "rehearsals/pizzeria-fittizia/fixture.json"
+ },
+ {
+  "date": "2026-11-21",
+  "answers": "answers-tipologia-tenda.json",
+  "result": "filled",
+  "seconds": 103.5,
+  "browser": "pane",
+  "values": "rehearsals/pizzeria-fittizia/fixture.json"
  }
 ]

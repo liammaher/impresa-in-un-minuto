@@ -10,6 +10,10 @@ the plan's lines that differ, and a case that is new or no longer plans. A new q
 as the case did before leaves its plan unchanged: that is how existing cases keep their recorded
 runs (2026-11-01: 119 cases, only a box those forms don't have dropped). No browser, no network.
 
+A NEW answers file prints «new (no plan: ['stopped: not supported: Per ora per una ditta individuale...'])»: it plans on the P6
+fixture (a CILA architect's), which every SUAP recipe refuses first, so for the SUAP's rehearsals that line is not a failure; the case's own
+run on the portal is the proof (2026-11-21, round 24: three sign cases and a dehors case printed it and filled). A whole run takes about 9 minutes.
+
 The steps files are built, never committed (steps.lock holds their hashes): now's come from the
 recipes as they are, REF's from REF's own gen.py in a temporary worktree (a REF from before
 2026-11-04 still has them in git). A rehearsal changed when its steps file's hash differs from

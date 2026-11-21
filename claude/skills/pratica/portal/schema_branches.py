@@ -27,7 +27,10 @@ import unicodedata
 from collections import defaultdict
 from pathlib import Path
 
-import yaml
+try:
+    import yaml
+except ModuleNotFoundError:  # the system python3 has no PyYAML (round 24: a bare traceback cost a turn)
+    sys.exit("needs PyYAML: run it with the pratica venv's Python, ~/.cache/pratica-portal/venv/bin/python")
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
@@ -354,15 +357,17 @@ def status(box, ticks, mapped, leaves, peers, runs=frozenset(), other=()):
     taken = hits(box, ticks, peers)
     if taken:
         return "filled" if any(t in runs for t in taken) else "case", sorted({r for r, _ in taken})
-    if hits(box, mapped, peers):
-        return "mapped", []
     sec, lab = norm(box["section"]), norm(box["label"])
-    for (s, l), why in leaves.items():
-        if same_section(s, sec) and starts(lab, l):
-            return why, []
+    # Before "mapped": a select whose value is an ask reads as mapped for every option it lists (the sign's «Tipologia», round 24),
+    # and the dictionary's own `other_procedure` list says which of them no recipe takes.
     for s, l in other:
         if same_section(s, sec) and starts(lab, l):
             return "other", []
+    if hits(box, mapped, peers):
+        return "mapped", []
+    for (s, l), why in leaves.items():
+        if same_section(s, sec) and starts(lab, l):
+            return why, []
     return "none", []
 
 

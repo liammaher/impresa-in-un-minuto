@@ -1392,6 +1392,10 @@ asks:
   insegna_titolo_tipo: {type: choice, question: "Il titolo dell'impresa sull'edificio su cui va installata l'insegna", options: [proprietario, comproprietario, usufruttuario, altro]}
   insegna_titolo_altro: {type: text, question: "Quale titolo (ad es. locatario)", default: "locatario"}
   insegna_descrizione: {type: text, question: "L'insegna in poche parole (ad es. insegna frontale sopra la vetrina, 100 caratteri)"}
+  # The «Tipologia» select of the two screens of the sign's comunicazione version has eleven options; the other nine are other
+  # procedures' (cartello stradale, preinsegna, impianto di servizio, piramide, bacheca, totem, altro). Read on a draft in round 24
+  # (nothing saved): choosing any option switches no other box on either screen, so the type is only a value. Both screens must say the same.
+  insegna_tipologia: {type: choice, question: "Che cosa installi: un'insegna d'esercizio, una vetrofania, una targa o una tenda esterna", options: [insegna d'esercizio, vetrofania, targa/porta targhe, tenda esterna], default: insegna d'esercizio}
   insegna_larghezza_m: {type: number, question: "La larghezza dell'insegna in metri"}
   insegna_altezza_m: {type: number, question: "La sua altezza in metri"}
   insegna_superficie_mq: {type: number, question: "La sua superficie in m² (larghezza × altezza)"}
@@ -3333,7 +3337,8 @@ sections:
     # takes one (an ETS, a sports club or a public body is no ditta individuale or srl: the recipes refuse the legal form first). The two
     # «silenzio assenso» radios and the 10 procedures of their dropdown are the choices of pratiche no recipe maps: the fire brigade's project
     # evaluation (PIN 1), an emissions or drain authorization, a hotel's classification, the structures' deposits, a photovoltaic PAS, the Provincia's
-    # nulla osta; a restaurant, shop or dehors files none of them (a dehors is a concession: «Due marche»). `schema_branches.py suap` counts them «a
+    # nulla osta; a restaurant, shop or dehors files none of them (a dehors is a concession: «Due marche»).
+    # Round 24: all seven exemption reasons ran on the portal (SUE cases, paesaggistica-semplificata-fittizia/answers-esenzione-*.json). `schema_branches.py suap` counts them «a
     # procedure no recipe maps», not «not mapped». Read in the three SUE crawls that hold this section's fields (one fingerprint, 152 crawls).
     other_procedure:
       - "Solo la marca da €16,00 per la domanda; non è richiesta alcuna marca da bollo per l'autorizzazione"
@@ -5981,8 +5986,13 @@ sections:
       - {kind: text, label: specificare, via: altro, value: "{{ask.insegna_titolo_altro}}", when: "{{ask.insegna_titolo_tipo|is_altro}}"}
       - {kind: radio, label: avere titolarità esclusiva all'esecuzione dell'intervento}
   - section: Caratteristiche del manufatto da installare
+    # Round 24 (2026-11-21): the select's other seven options (totem, preinsegna, cartello stradale pubblicitario, bacheca, impianto pubblicitario di
+    # servizio, piramide/prisma, altro) are advertising installations the wedge's question («un'insegna, una targa o una vetrofania?») does not
+    # ask about and no recipe maps; `insegna_tipologia` offers four. A totem, a bacheca or an «altro» at the premises could be promoted: one more option
+    # and one case each (choosing any option switches no other box on this screen or the next: read on a draft, nothing saved).
+    other_procedure: [totem, preinsegna, cartello stradale pubblicitario, bacheca, impianto pubblicitario di servizio, piramide/prisma, altro]
     fields:
-      - {kind: select, label: Tipologia, value: "insegna d'esercizio"}
+      - {kind: select, label: Tipologia, value: "{{ask.insegna_tipologia}}"}
       - {kind: text, label: numero progressivo del mezzo pubblicitario, value: "1"}
       - {kind: text, label: precisare in caso di insegna di esercizio o altro, value: "{{ask.insegna_descrizione}}"}
       - {kind: text, label: larghezza (mt), value: "{{ask.insegna_larghezza_m}}"}
@@ -6017,7 +6027,9 @@ sections:
   # one (not `suap-wizard.json`, which holds operations only): 37 options, none the Soprintendenza's authorization (the only art. 49
   # options anywhere in the wizard are the radio-electric installations', D.Lgs. 259/2003). The portal's note is generic, so the
   # authorization is not filed with the sign: it comes first, outside the portal, and the refusal is the law's, not a gap
-  # (test_preflight fails if a crawl ever shows such an option). Every recipe with this section asks `insegna_vincolo` and `insegna_bene_culturale` (test_preflight holds it: the
+  # (test_preflight fails if a crawl ever shows such an option).
+  # Round 24: the opening-with-sign's «Allega Documenti» has two slots for a cultural building whose applicant delegates the SUAP to acquire the
+  # Soprintendenza's nulla osta (catalogue/F839/sign-attachments.json, `opening_with_sign`); the refusal stands because the wizard still has no matching intervento. Every recipe with this section asks `insegna_vincolo` and `insegna_bene_culturale` (test_preflight holds it: the
   # permanent sign ticked "Non soggetta" without asking). The sign's stand-alone SCIA form (`...-scia-4`) has no such section: its two
   # Si/No are in "ulteriori dichiarazioni (mezzi pubblicitari)" below, and a Si there opens no box and no section.
   - section: dichiarazione relativa al vincolo ambientale
@@ -6033,12 +6045,17 @@ sections:
     fields:
       - {kind: radio, label: Non soggetta a tutela monumentale}
   - section: DICHIARAZIONE RELATIVA alle opere in cemento armato
+    # «prevede la realizzazione di opere di conglomerato cementizio armato» and the art. 65 denuncia it opens are the structures' pratica (the bollo's list
+    # names it too: "denuncia opere in conglomerato cementizio armato"), which no recipe maps; a sign over a shop door says «non prevede».
+    other_procedure: [prevede la realizzazione di opere di conglomerato, presenta contestualmente alla presente la denuncia]
     fields:
       - {kind: radio, label: non prevede la realizzazione di opere di conglomerato}
   - section: luogo dell'installazione
+    # The same seven other options as «Caratteristiche del manufatto da installare» above.
+    other_procedure: [totem, preinsegna, cartello stradale pubblicitario, bacheca, impianto pubblicitario di servizio, piramide/prisma, altro]
     leave: [Coordinate GPS]
     fields:
-      - {kind: select, label: Tipologia, value: "insegna d'esercizio"}
+      - {kind: select, label: Tipologia, value: "{{ask.insegna_tipologia|insegna_luogo}}"}
       - {kind: text, label: Num. progressivo, value: "1"}
       - {kind: text, label: Specificare (solo nel caso, value: "{{ask.insegna_descrizione}}"}
       - {kind: radio, label: in area privata}

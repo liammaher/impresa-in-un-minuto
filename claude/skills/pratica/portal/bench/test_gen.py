@@ -2865,6 +2865,44 @@ def _():
         assert mine and mine[-1]["result"] == "filled", (f, mine[-1:])
 
 
+@case("round 24: the comunicazione sign's two «Tipologia» selects take the type from one ask (`insegna_tipologia`: insegna d'esercizio, vetrofania, targa, tenda esterna; "
+      "default the insegna), the second spelling the targa's option as the portal does, and the vetrofania, targa and tenda each have a case filled on the portal")
+def _():
+    name = "ristorante-insegna-fittizio"
+    g = generated(name)
+    first = [f for f in section(g, "Caratteristiche del manufatto da installare")["fields"] if f["kind"] == "select"]
+    second = [f for f in section(g, "luogo dell'installazione")["fields"] if f["kind"] == "select"]
+    assert [f["value"] for f in first] == ["{{ask.insegna_tipologia}}"], first
+    assert [f["value"] for f in second] == ["{{ask.insegna_tipologia|insegna_luogo}}"], second
+    ask = g["asks"]["insegna_tipologia"]
+    assert ask["options"] == ["insegna d'esercizio", "vetrofania", "targa/porta targhe", "tenda esterna"] and ask["default"] == "insegna d'esercizio", ask
+    assert run.FILTERS["insegna_luogo"]("targa/porta targhe") == "targa/porta targhe (solo per dimensioni superiori a 21x29,7"
+    assert run.FILTERS["insegna_luogo"]("vetrofania") == "vetrofania"
+    runs = json.loads((REH / name / "runs.json").read_text())
+    for kind, option in (("vetrofania", "vetrofania"), ("targa", "targa/porta targhe"), ("tenda", "tenda esterna")):
+        f = f"answers-tipologia-{kind}.json"
+        a = json.loads((REH / name / f).read_text())
+        assert a["insegna_tipologia"] == option and len(a["descrizione"]) <= 60, a
+        mine = [r for r in runs if r["answers"] == f]
+        assert mine and mine[-1]["result"] == "filled", (f, mine[-1:])
+
+
+@case("round 24: each of the bollo's seven exemption reasons has a case on the paesaggistica semplificata of a company client, filled on the portal: its answers choose that "
+      "reason (`bollo_esenzione`), and the form's dropdown takes the option `run.BOLLO_ESENZIONE` names (the ONLUS' only for a period begun before 2026)")
+def _():
+    name = "paesaggistica-semplificata-fittizia"
+    runs = json.loads((REH / name / "runs.json").read_text())
+    reasons = ["ets", "cooperativa sociale", "pubblica", "contadina", "sportiva", "onlus", "partito"]
+    assert sorted(run.BOLLO_ESENZIONE) == sorted(reasons), sorted(run.BOLLO_ESENZIONE)
+    for reason in reasons:
+        f = "answers-esenzioni.json" if reason == "cooperativa sociale" else f"answers-esenzione-{reason}.json"
+        a = json.loads((REH / name / f).read_text())
+        assert a["bollo_esenzione"] == reason and a["descrizione"].startswith("PROVA NON INVIARE - ") and len(a["descrizione"]) <= 60, (f, a)
+        assert (reason == "onlus") == bool(a.get("bollo_onlus_esercizio")), (f, a)
+        mine = [r for r in runs if r.get("answers") == f]  # older entries have no "answers" (the plain answers.json)
+        assert mine and mine[-1]["result"] == "filled", (f, mine[-1:])
+
+
 @case("round 23: the dehors' hours and occupation period have a case for each shape the portal offers beyond one spell every day and a first-year or seasonal "
       "occupation (a second spell, a row a weekday, renewal, weekly closing day, other), each filled on the portal; the five period radios are the section's only ones and each "
       "is chosen by `dehors_periodo` or, with none, by `stagionale`")
@@ -2907,6 +2945,22 @@ def _():
     assert set(data["drafts"]) == {"plain", "vincolo", "both"} and (data["drafts"]["both"]["vincolo"], data["drafts"]["both"]["zona_a"]) == ("si", "si"), data["drafts"]
     recipe = gen.load_yaml(REH / "insegna-ristorante-vincolo-fittizio" / "recipe.yaml")
     assert any("autorizzazione paesaggistica" in y for y in recipe["yours"]), recipe["yours"]
+
+
+@case("round 24: the opening-with-sign's attachments screen (read on a draft) has 16 slots, 9 required, two of them for delegating the SUAP to ask the Soprintendenza's "
+      "nulla osta; every slot is one the generated steps file names (a slot a recipe doesn't know would stop a run), and the cultural asset stays refused")
+def _():
+    data = json.loads((HERE.parent / "catalogue" / "F839" / "sign-attachments.json").read_text())["opening_with_sign"]
+    slots = data["slots"]
+    assert len(slots) == 16 and sum(bool(s.get("required")) for s in slots) == 9 and slots[-1]["title"] == "Allegati liberi", [s["title"][:30] for s in slots]
+    assert len([s for s in slots if re.search(r"delegare il SUAP ad acquisire il Nulla Osta della Soprintendenza", s["title"])]) == 2
+    g = generated(data["rehearsal"])
+    step = next(x for x in g["sections"] if x.get("step") == "Allega Documenti")
+    known = [t.lower() for t in step["theirs"]] + [f["label"].lower() for f in step["fields"]]
+    for s in slots:
+        assert any(s["title"].lower().startswith(k) or k.startswith(s["title"].lower()[:30]) for k in known), ("slot the steps file does not name", s["title"][:60])
+    # The refusal: a cultural asset is not filed (the delegation slots exist, but the wizard has no matching «interventi eventuali» option).
+    assert "insegna_bene_culturale" in g["asks"], "the recipe must still ask, and refuse"
 
 
 print(f"{sum(results)}/{len(results)} passed")

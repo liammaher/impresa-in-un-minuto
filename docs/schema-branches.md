@@ -11,7 +11,7 @@ branch no rehearsal has taken: the next cases to write.
   and the rehearsal's `runs.json` records a filled run of it (`bench/rerun.py --record`).
 - **a case, no recorded run**: such a case ticks it, but no filled run is recorded: never run,
   stopped, or run before 2026-10-31 and described in its README in words that don't name the
-  case (315 cases in all, 314 with a recorded filled run).
+  case (321 cases in all, 320 with a recorded filled run).
 - **mapped, no case yet**: the dictionary can tick it, under answers no case gives. Next: an
   answers file, then a run.
 - **on the portal, not mapped**: no steps file ever ticks it. Next: a dictionary entry.
@@ -32,7 +32,7 @@ parent) isn't told apart. Rehearsals counts the rehearsals whose cases tick the 
 | CILA | 43 | 34 | 0 | 0 | 1 | 7 | 2 |
 | Fine lavori | 2 | 2 | 0 | 0 | 0 | 0 | 1 |
 | Inizio lavori | 16 | 0 | 0 | 0 | 0 | 16 | 0 |
-| Permesso di costruire | 153 | 125 | 0 | 2 | 7 | 14 | 52 |
+| Permesso di costruire | 153 | 125 | 0 | 2 | 7 | 14 | 46 |
 | SCIA | 150 | 133 | 0 | 2 | 1 | 10 | 17 |
 | SCIA alternativa | 128 | 117 | 0 | 0 | 2 | 8 | 3 |
 | Agibilità (SCA) | 36 | 31 | 0 | 0 | 0 | 5 | 2 |
@@ -352,12 +352,6 @@ Portal boxes of the Permesso di costruire no schema alternative matched and no c
 - Dichiarazione relativa all'assolvimento…: deposito del collaudo statico ai sensi dell'art. 67 del DPR 380/2001 (not mapped)
 - Dichiarazione relativa all'assolvimento…: deposito relazione a struttura ultimata ai sensi dell'art. 65 del DPR 380/2001 (not mapped)
 - Dichiarazione relativa all'assolvimento…: Non è richiesta alcuna marca da bollo per l'autorizzazione perché il procedimento può con… (not mapped)
-- Dichiarazione relativa all'assolvimento…: ai sensi dell'art.82, c.5, d.Lgs. n.117/2017 (Enti del Terzo settore iscritti nel registr… (mapped)
-- Dichiarazione relativa all'assolvimento…: ai sensi del D.P.R. 26/10/1972, n. 642, allegato B, art. 16 (amministrazioni dello Stato,… (mapped)
-- Dichiarazione relativa all'assolvimento…: ai sensi del D.P.R. 26/10/1972, n. 642, allegato B, art. 21 (piccola proprietà contadina) (mapped)
-- Dichiarazione relativa all'assolvimento…: ai sensi del D.P.R. 26/10/1972, n. 642, allegato B, art. 27-bis (federazioni sportive, en… (mapped)
-- Dichiarazione relativa all'assolvimento…: ai sensi del D.P.R. 26/10/1972, n. 642, allegato B, art. 27-bis (organizzazioni non lucra… (mapped)
-- Dichiarazione relativa all'assolvimento…: ai sensi del D.P.R. 26/10/1972, n. 642, allegato B, art. 27-ter (movimenti o partiti poli… (mapped)
 - SANATORIA: lo Sportello Unico può subordinare il rilascio del permesso di costruire in sanatoria all… (not mapped)
 
 ### SCIA

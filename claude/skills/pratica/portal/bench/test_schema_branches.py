@@ -142,8 +142,26 @@ def suap_choices():
     assert "on the portal, not mapped" in rep and "suap-016-" not in rep, rep[:300]
 
 
+def sign_type_options():
+    """Round 24: the sign's «Tipologia» select reads as «mapped» for every option its value (an ask) could name, so `other_procedure` is checked before
+    «mapped» (`status`; with the old order the seven read «mapped, no case yet»): on both screens the four options `insegna_tipologia` offers are filled
+    on the portal and the other seven are another procedure's."""
+    rows, ncrawls, skipped = sb.suap_table()
+    offered = ("insegna d'esercizio", "vetrofania", "targa/porta targhe", "tenda esterna")
+    others = ("totem", "preinsegna", "cartello stradale pubblicitario", "bacheca", "impianto pubblicitario di servizio", "piramide/prisma", "altro")
+    for screen in ("Caratteristiche del manufatto da installare", "luogo dell'installazione"):
+        mine = {r["label"]: r["state"] for r in rows
+                if r["kind"] == "option" and r["crawl"] == "suap-060-aprire-l-attivita-interventi" and sb.norm(r["section"]).startswith(sb.norm(screen))}
+        assert len(mine) == 11, (screen, mine)
+        for lab, st in mine.items():
+            if lab.startswith("targa/porta targhe"):  # the second screen's carries the portal's size note
+                lab = "targa/porta targhe"
+            assert st == ("filled" if lab in offered else "other"), (screen, lab, st)
+            assert lab in offered or lab in others, (screen, lab)
+
+
 def main():
-    tests = [labels_alike, states, deeper_boxes, every_alternative_matched, required_choices, table_current, suap_choices]
+    tests = [labels_alike, states, deeper_boxes, every_alternative_matched, required_choices, table_current, suap_choices, sign_type_options]
     for t in tests:
         t()
         print(f"ok  {t.__name__}")

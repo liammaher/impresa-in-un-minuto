@@ -52,5 +52,12 @@
   "seconds": 106.4,
   "browser": "pane",
   "note": "Nothing moved or loose; the portal's warnings were the made-up PEC, address and cadastral data. Period: «con area libera» altro, with its text."
+ },
+ {
+  "date": "2026-11-21",
+  "answers": "answers-orari-lunedi.json",
+  "result": "filled",
+  "seconds": 114.6,
+  "browser": "pane"
  }
 ]

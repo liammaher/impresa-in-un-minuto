@@ -33,6 +33,9 @@ before the declarations, payment, signing and sending.
 | 2026-11-21 | pane | `answers-titolo-proprietario.json` | Run on pizzeria-fittizia's fixture (this recipe has none of its own), nothing moved or loose; the portal's warnings were the made-up PEC, address and cadastral data. Sign title: «proprietario» (the select's option, no «specificare» note), exclusive title. |
 | 2026-11-21 | pane | `answers-titolo-comproprietario.json` | Run on pizzeria-fittizia's fixture (this recipe has none of its own), nothing moved or loose; the portal's warnings were the made-up PEC, address and cadastral data. Sign title: «comproprietario» (the select's option, no «specificare» note), exclusive title. |
 | 2026-11-21 | pane | `answers-titolo-usufruttuario.json` | Run on pizzeria-fittizia's fixture (this recipe has none of its own), nothing moved or loose; the portal's warnings were the made-up PEC, address and cadastral data. Sign title: «usufruttuario» (the select's option, no «specificare» note), exclusive title. |
+| 2026-11-21 | pane | `answers-tipologia-vetrofania.json` | **filled** in 138 s |
+| 2026-11-21 | pane | `answers-tipologia-targa.json` | **filled** in 115 s |
+| 2026-11-21 | pane | `answers-tipologia-tenda.json` | **filled** in 104 s |
 
 <!-- /runs -->
 
