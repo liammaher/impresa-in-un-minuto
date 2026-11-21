@@ -914,9 +914,13 @@ one (the SPID login stays).
    and say:
    "**Entra con il tuo SPID** nel browser qui accanto; quando vedi la pagina del portale scrivimi
    **«fatto»**. Le credenziali le scrivi solo tu.
-   Poi compilo la bozza, in circa un quarto d'ora, e ti dico cosa ho riletto. Non spunto dichiarazioni, non pago, non firmo, non invio."
-   Send these lines after the `card` when the tecnico hasn't read it yet in this job (they answered questions and
-   no `riepilogo` came). The card is printed by:
+   Con «fatto» mi dici anche di scrivere sul portale impresainungiorno, in una bozza, i dati di questo lavoro
+   (committente, immobile, tecnici, imprese) e di allegare i <N> file della sua cartella. Lo faccio in circa un
+   quarto d'ora e poi ti dico cosa ho riletto. Non spunto dichiarazioni, non pago, non firmo, non invio."
+   (`<N>`: the files the steps attach, from the check; none: leave out «e di allegare…».) ChatGPT confirms, before it
+   types a person's data into a site or uploads a file, what goes where: this line is that confirmation, so their
+   «fatto» covers the whole compilation and you ask nothing more. Send these lines after the `card` when the tecnico
+   hasn't read it yet in this job (they answered questions and no `riepilogo` came). The card is printed by:
    ```sh
    sh "${CLAUDE_SKILL_DIR}/py" "${CLAUDE_SKILL_DIR}/portal/run.py" card --steps "${CLAUDE_SKILL_DIR}/pratiche/<name>.json" \
      --answers answers.json --values run/values.json --values run/intake/private/values.json

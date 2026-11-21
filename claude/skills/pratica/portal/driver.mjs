@@ -746,14 +746,18 @@ async function fill(tab, steps, values, resume, run, held, { fs, path, priv }) {
     let chooser = null;
     const tried = [];
     for (const target of [...b.ways, { full: b.full, how: "box", force: true }]) {
+      // The chooser's promise is settled here whatever the click does: an unhandled rejection resets ChatGPT's whole
+      // JavaScript session (2026-11-21).
+      const p = pw.waitForEvent("filechooser", { timeout: 6000 }).then((c) => c, (e) => e);
       try {
-        const p = pw.waitForEvent("filechooser", { timeout: 6000 });
         const loc = target.full ? pw.locator(`[id="${target.full}"]`) : pw.locator(target.css).nth(target.nth);
         await loc.click({ timeout: 6000, ...(target.force ? { force: true } : {}) });
-        chooser = await p;
+        const c = await p;
+        if (c instanceof Error) throw c;
+        chooser = c;
         (report.upload_ways = report.upload_ways || {})[target.how] = ((report.upload_ways || {})[target.how] || 0) + 1;
         break;
-      } catch (e) { tried.push(target.how); }
+      } catch (e) { tried.push(target.how); await p; }
     }
     if (!chooser) fail(`${f.label}: no file chooser opened (tried ${tried.join(", ")})`);
     await chooser.setFiles([file]);
