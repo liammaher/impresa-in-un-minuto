@@ -2660,6 +2660,9 @@ def _():
         assert recipe["crawl"] == crawl, (name, recipe["crawl"])
         generated(name)
         runs = json.loads((REH / name / "runs.json").read_text())
+        # Later rounds add answers files of their own (round 13's PIN 6 B and C stop on the Comando's opinion): the
+        # round's claim is about the plain answers, so read those runs when there are any.
+        runs = [r for r in runs if r["answers"] == "answers.json"] or runs
         assert runs and runs[-1]["result"] == "filled", (name, runs[-1:])
 
 
@@ -2826,6 +2829,22 @@ def _():
         assert idx, f"no entry for {want!r}"
         later = [n for n in names[idx[-1] + 1:] if norm(n).startswith(norm(want)) and norm(n) != norm(want)]
         assert not later, f"{want!r} comes before the longer {later[:2]}: it would take their sections, and drop their `theirs`"
+
+
+@case("round 22: the restaurant's dehors on private ground for one season has its own answers file, filled on the portal (2026-11-21): the occupation's "
+      "«area privata ad uso pubblico» and the period's «a carattere stagionale» with its two dates are the ones its answers choose, and the notification's season too")
+def _():
+    name = "ristorante-dehors-fittizio"
+    a = json.loads((REH / name / "answers-stagionale-privata.json").read_text())
+    assert a["stagionale"] == "true" and a["area_privata_uso_pubblico"] == "true", a
+    assert a["dehors_dal"] < a["dehors_al"] and re.fullmatch(r"\d\d/\d\d", a["stagione_dal"]) and re.fullmatch(r"\d\d/\d\d", a["stagione_al"]), a
+    g = generated(name)
+    area = {f["label"]: f.get("when") for f in section(g, "dichiarazione relativa all'occupazione di suolo pubblico")["fields"]}
+    assert area["area privata ad uso pubblico"] == "{{ask.area_privata_uso_pubblico}}", area
+    per = {f["label"]: f.get("when") for f in section(g, "dichiarazione del periodo di effettiva occupazione")["fields"] if f.get("when")}
+    assert per["a carattere stagionale"] == "{{ask.stagionale}}" and per["dal giorno"] == per["al giorno"] == "{{ask.stagionale}}", per
+    runs = [r for r in json.loads((REH / name / "runs.json").read_text()) if r["answers"] == "answers-stagionale-privata.json"]
+    assert runs and runs[-1]["result"] == "filled", runs[-1:]
 
 
 print(f"{sum(results)}/{len(results)} passed")

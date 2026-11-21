@@ -22,5 +22,12 @@
   "seconds": 106.6,
   "browser": "pane",
   "note": "Zona A Si, vincolo paesaggistico No."
+ },
+ {
+  "date": "2026-11-21",
+  "answers": "answers-vincolo.json",
+  "result": "filled",
+  "seconds": 88.2,
+  "browser": "pane"
  }
 ]

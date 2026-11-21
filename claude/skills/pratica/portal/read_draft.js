@@ -23,6 +23,12 @@
 // elemento», "Settore selezionato" empty), so get a draft by running a rehearsal of the pratica (bench/rerun.py) and open it here. A radio is
 // switched by its visible `_clone` (`...:radio:N_clone`), not the input; SALVA on a section whose declarations are unticked answers
 // «Il valore è obbligatorio» for each (the person's declarations: never ticked for them), and that is not a stop of the section's own boxes.
+// 2026-11-21 (round 22), without the helper, in four calls a draft: (1) navigate to cmd/home (a bundle's new drafts are not in the list until you do),
+// (2) the list is 10 per page and older drafts are on the numbered links under it (click "2", wait ~4 s: the page is reloaded), (3) click the row's APRI in
+// one call and wait ~8 s, then "Dati Dichiarazioni" for the section links or "Allega Documenti" for the attachment slots (`document.body.innerText` from
+// «DOCUMENTI ALLEGATI»), (4) a box is switched by the visible `*_clone` of a radio (`[id*='r4c1p4reg']` filtered on offsetParent): click it,
+// wait 2.5 s and read what appeared. Nothing is saved until SALVA, so a toggle only reads; read-only is what this is for. Drafts left on the portal
+// are the made-up ones ("PROVA NON INVIARE - ..."), kept so a later round can compare a section across them (the plain and the vincolo sign's attachments, round 22).
 // Written 2026-11-15 for round 7 (README): it found that the VV.F. take-over's statements a) and b) are required and b) switches on the
 // previous manager's boxes, that the garage's header radio is not kept, and what the B&B variation's capacity groups need. A page that
 // navigates (open, section, required) loses the return value of the call that caused it: look at the page, then call again.
