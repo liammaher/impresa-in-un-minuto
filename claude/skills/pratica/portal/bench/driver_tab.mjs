@@ -52,7 +52,9 @@ const tab = {
         const undo = [trap(HTMLInputElement.prototype, "value", (v) => (re.test(v) ? "<redacted>" : v)),
           trap(HTMLInputElement.prototype, "checked"), trap(HTMLTextAreaElement.prototype, "value"),
           trap(HTMLSelectElement.prototype, "value"), trap(Document.prototype, "title")];
-        try { return (0, eval)(src); } finally { undo.forEach((f) => f()); }
+        // The globals ChatGPT's view lacks (2026-11-21) are undefined to the script, as there.
+        const missing = ["performance", "fetch", "parseFloat", "JSON", "eval"];
+        try { return new Function(...missing, `return (${src});`)(...missing.map(() => undefined)); } finally { undo.forEach((f) => f()); }
       }, [fn, redacted.source]);
     },
     locator: (css) => checked(page.locator(css)),

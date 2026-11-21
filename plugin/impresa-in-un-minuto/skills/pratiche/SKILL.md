@@ -953,7 +953,10 @@ section and field) and `snapshot` (the page with no value in it). Use those and 
 `run/private/`. "0 fields with this label" usually means the section wasn't open yet. Work out the fix for that one
 field (its new `id`, `css` or `label`) and start it again on the same draft, in a new tab:
 `d.start(tab, "<run>", {resume: true, fixes: [{"section": i, "field": k, "set": {"label": "..."}}]})`, then `wait` as
-above; a draft whose address expired (`/cmd/error`, "errore inatteso") is reopened from Pratiche in bozza by its name. Ask the
+above; a draft whose address expired (`/cmd/error`, "errore inatteso") is reopened from Pratiche in bozza by its name.
+If the JavaScript tool says its kernel was reset (after a while idle, or on its own error), the run in it is gone: start
+it again in a new tab with `{resume: true}` (it goes on from its last saved section), or from the start if `wait`
+had never answered. Ask the
 tecnico only for a fact nothing holds, in one plain question. Budget: two fixes or about three minutes; then stop,
 leave the draft saved, and say plainly what's left.
 <!-- /openai -->

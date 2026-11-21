@@ -192,7 +192,7 @@ function pageApi(cfg) {
       const e = document.getElementById(full);
       if (!e) return null;
       const r = e.getBoundingClientRect();
-      return r.width && r.height ? { x: Math.round(r.left + r.width / 2), y: Math.round(r.top + r.height / 2), inView: r.top >= 0 && r.bottom <= (window.innerHeight || 0) } : null;
+      return r.width && r.height ? { x: Math.round(r.left + r.width / 2), y: Math.round(r.top + r.height / 2), inView: r.top >= 0 && r.bottom <= ((typeof window !== "undefined" && window.innerHeight) || 0) } : null;
     },
     // A file box's widget as tags, classes and sizes (no value, no file name): what a failed upload reports.
     fileWidget(full) {
@@ -240,9 +240,15 @@ function pageApi(cfg) {
       const e = kind === "select" ? el(id + ":combo_label") || el(id + ":combo_input") : el(id);
       if (!e || !label) return { ok: true };
       const t = texts(e);
-      return t.some((x) => norm(x).includes(norm(label))) ? { ok: true } : fail(`expected the label ${label} by this field, found ${JSON.stringify(t.slice(0, 3))}`);
+      return t.some((x) => norm(x).includes(norm(label))) ? { ok: true } : fail(`expected the label ${label} by this field, found [${t.slice(0, 3).map((x) => `"${x}"`).join(", ")}]`);
     },
-    origin() { return `${performance.timeOrigin}|${location.href}`; },
+    // The document's identity, from what the view has (no `performance` there, 2026-11-21): its address, when it was
+    // made, and JSF's view state, which a new page renews. Each read on its own, so a missing one costs nothing.
+    origin() {
+      const part = (f) => { try { return String(f()); } catch (e) { return ""; } };
+      return [part(() => location.href), part(() => document.lastModified),
+        part(() => document.querySelector('input[name="javax.faces.ViewState"]').value)].join("|");
+    },
     options(id) { const s = el(id + ":combo_input"); return s ? s.options.length : -1; },
     select({ id, value }) {
       const s = el(id + ":combo_input");
