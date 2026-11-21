@@ -131,6 +131,15 @@ class InstallPage(unittest.TestCase):
                       "Nuovi plugin", "+", "Gestisci marketplace", "Verifica aggiornamenti", "Rimuovi"):
             self.assertIn(label, labels)
 
+    def test_labels_of_the_chatgpt_app(self):
+        # As read in the ChatGPT desktop app (build 26.1117) set to italiano and to English, on 2026-11-21: its plugins page
+        # (the sidebar, «Aggiungi»/«Add» and its menu, the marketplace dialog) and Impostazioni › Plugin › Marketplace.
+        it = PAGE.split('<div data-for="chatgpt">', 1)[1]
+        for label in ("Personalizza", "Plugin", "Aggiungi", "Aggiungi marketplace", "Origine", "Cerca plugin", "Marketplace", "Aggiorna"):
+            self.assertIn(f'<span class="ui">{label}</span>', it, label)
+        for label in ("Customize", "Plugins", "Add", "Add a marketplace", "Source", "Add marketplace", "Search plugins", "Upgrade"):
+            self.assertIn(f'<span class="ui">{label}</span>', it, label)
+
     def test_every_text_has_its_english(self):
         # The IT/EN switch shows one of two texts, each block written twice (lang="it", lang="en"), the app's
         # button names with them. Pairs sit next to each other, with the same tag and the same buttons.
