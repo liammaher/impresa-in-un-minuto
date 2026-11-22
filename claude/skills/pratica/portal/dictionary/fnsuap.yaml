@@ -6449,7 +6449,12 @@ sections:
   - section: SPECIFICHE DELLA MEDIA STRUTTURA DI VENDITA
     leave: [Farmacie, Carburanti]
     plus: "the season's own \"+\" (a second period): one period is mapped"
+    # Round 26 (2026-11-21): the same lock as the variation form's below (read on its draft 2026-11-12): «Alimentare» is `readonly` with `onclick="return false"` here too,
+    # MA/M ticked or not, so no click can tick it. A run that asked for food stopped at it («didn't stay ticked», 2026-11-21: the mixed and the food-only case); the draft's own
+    # title says «... media struttura di vendita non alimentare». Whether another route (a wizard sector) opens it is not known: refused, not rehearsed.
+    other_procedure: [Alimentare]
     supports:
+      - {when: "{{ask.superficie_alimentare_mq|positive|not}}", else: "In questo modulo il portale tiene bloccata la casella «Alimentare»: il settore alimentare non si può indicare da qui."}
       - {when: "{{ask.solo_distributori|not}}", else: "Una media struttura che vende solo con distributori automatici per ora non la preparo."}
       - {when: "{{ask.media_autonoma}}", else: "Una media struttura organizzata come centro commerciale, parco commerciale o outlet per ora non la preparo."}
       - {when: "{{ask.in_centro_commerciale|not}}", else: "Una media struttura dentro un centro commerciale per ora non la preparo."}

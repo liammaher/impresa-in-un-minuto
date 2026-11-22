@@ -1271,7 +1271,7 @@ mapped one: «Tipologia» was hardcoded to «insegna d'esercizio» on the sign's
   proprietario and as «altro: comodato» (the base case, compravendita with affittuario, was re-run with `values` so it counts), and a take-over with consumption on the spot. The notary's boxes and the deed's dates exist only for the four causes with a
   deed (compravendita, affitto, donazione, fusione): the three others' answers have none. Nothing was moved or loose.
 - **The medium shop (`media-struttura-fittizia`), base + 5 variants: 4 filled, 1 stopped.** ME instead of MA/M, wholesale too, seasonal (1 June - 30 September) and «Generi di monopolio» filled (67-93 s). **The mixed food and non-food case
-  (`answers-alimentare.json`) stopped at «Alimentare»: `r29c1p65reg:chk: didn't stay ticked`** (44.8 s in). The crawl has «Alimentare» at `r25c1p53reg:chk` (the live draft agrees: read by hand, nothing saved) and the same box at `r29c1p65reg:chk` in a
+  (`answers-alimentare.json`) stopped at «Alimentare»: `r29c1p65reg:chk: didn't stay ticked`** (44.8 s in; **round 26 found why: the box is read-only on this form, see that round, and the guess below about shifted ids was wrong**). The crawl has «Alimentare» at `r25c1p53reg:chk` (the live draft agrees: read by hand, nothing saved) and the same box at `r29c1p65reg:chk` in a
   `moved` entry (rows four lower, as when an earlier choice opens a block), so the runner ticked the id of a layout the live page did not have. The base case (only «Non alimentare», `r27c1p59`) and «Non alimentare» + monopolio, which share the
   same `moved` table, fill; only a run that ticks «Alimentare» first stops. Not found: which choice the runner believed had shifted the rows (a food-only case would say whether it is «Alimentare» or the pair). `test_gen` pins the
   stop (`stopped` for this case), so the day a run fills it the test says so.
@@ -1283,6 +1283,15 @@ mapped one: «Tipologia» was hardcoded to «insegna d'esercizio» on the sign's
   (live, and the crawl's own) and `r29c1p65reg:chk` (the shifted one) were told apart. A run that stops leaves its section **unsaved** on the draft (the section read back empty), so the draft shows nothing of what it had filled there.
   A click on a checkbox's label through the pane's `left_click` did not show the box checked in one try (the page scrolled to the top): unexplored; the runner's `kind: checkbox` is what ticks them.
 - **Tool facts met in this round**: `run.py plan` needs `--made-up` for rehearsals whose file asks are the person's; a zsh `for k in $LIST` does not split (`${=LIST}`); the portal session expires after some hours (`rerun.py`'s docstring).
+
+**Round 26 (2026-11-21, night): why the medium shop's food cases stopped.** Round 25's «didn't stay ticked» at «Alimentare» is the portal's, and the box can't be ticked: on the draft **«Alimentare» is `readonly` with `onclick="return false"`**
+(`r25c1p53reg:chk` in the idle layout; every other box of the section, MA/M, ME, Non alimentare, Generi di monopolio, Farmacie, Carburanti, is `onclick="return true"`), the draft's title reads «... media struttura di vendita non alimentare», and
+a real click on it ticked nothing. It is the lock the variation form had (read 2026-11-12). A new **food-only** case (`answers-alimentare-solo.json`, 300 mq of food) stopped the same way and the same 45 s in, so the pair «Alimentare» + «Non alimentare» was not the cause.
+The recipe now refuses a medium shop that sells food (the section's `supports`, the variation form's wording) and the dictionary lists the box as another procedure's; the two answers files stay as the cases that document it (their runs are
+`stopped` in `runs.json`; `test_gen` pins them). Not known: whether another route (a wizard sector) opens the box. **Two wrong turns, so the next round skips them:** the stop's id `r29c1p65reg` is the box's id in the run's layout (the crawl's `moved` pairs
+shift its rows), not a stale one; and a change to `tick()`'s re-lookup after a click (a box whose old id names another box once the rows shift: real in a fake portal, `?shift=1`) did not change the live run, so it was dropped. Also: a bundle's loop
+**skips a name already in the tab's results** (`pv-batch`): re-running a case in a tab that ran it before needs `fresh.js` first (the first re-run of the mixed case "stopped in 44.8 s" was round 25's stored result, not a run). `results.js`'s `stopped`
+rows carry the box's label now.
 
 ## What the portal does that bit us
 
