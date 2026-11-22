@@ -5,5 +5,12 @@
   "result": "filled",
   "seconds": 64.8,
   "browser": "pane"
+ },
+ {
+  "date": "2026-11-22",
+  "answers": "answers-tutti.json",
+  "result": "filled",
+  "seconds": 77.4,
+  "browser": "pane"
  }
 ]

@@ -3002,5 +3002,26 @@ def _():
             assert mine and mine[-1]["result"] == want, (name, f, want, mine[-1:])
 
 
+@case("round 27: the shop's opening (negozio-fittizio) has a case for each way its «Dati sull'esercizio di vicinato» section can differ (wholesale too, seasonal, monopoly goods, "
+      "vending machines only), each changing one answer of the base case and filled on the portal, and the alcohol notification one that ticks all nine products; the draft names fit 60 characters")
+def _():
+    name = "negozio-fittizio"
+    base = json.loads((REH / name / "answers.json").read_text())
+    want = {"ingrosso": ("anche_ingrosso", "true"), "stagionale": ("stagionale", "true"), "monopolio": ("superficie_monopolio_mq", "10"), "distributori": ("solo_distributori", "true")}
+    runs = json.loads((REH / name / "runs.json").read_text())
+    for k, (ask, val) in want.items():
+        a = json.loads((REH / name / f"answers-{k}.json").read_text())
+        assert a[ask] == val and base[ask] != val, (k, ask, a[ask])
+        assert a["descrizione"].startswith("PROVA NON INVIARE - ") and len(a["descrizione"]) <= 60, a["descrizione"]
+        mine = [r for r in runs if r.get("answers") == f"answers-{k}.json"]
+        assert mine and mine[-1]["result"] == "filled", (k, mine[-1:])
+    assert (json.loads((REH / name / "answers-stagionale.json").read_text())["stagione_dal"], json.loads((REH / name / "answers-stagionale.json").read_text())["stagione_al"]) == ("01/06", "30/09")
+    alc = "alcolici-negozio-fittizio"
+    every = json.loads((REH / alc / "answers-tutti.json").read_text())
+    assert len(every["alcolici"]) == 9 and len(set(every["alcolici"])) == 9 and len(every["descrizione"]) <= 60, every
+    mine = [r for r in json.loads((REH / alc / "runs.json").read_text()) if r.get("answers") == "answers-tutti.json"]
+    assert mine and mine[-1]["result"] == "filled", mine[-1:]
+
+
 print(f"{sum(results)}/{len(results)} passed")
 sys.exit(0 if all(results) else 1)

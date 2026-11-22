@@ -1,0 +1,18 @@
+{
+ "extras": [],
+ "descrizione": "PROVA NON INVIARE - negozio dettaglio e ingrosso",
+ "oggetto": "Apertura di un negozio di vicinato non alimentare (cartoleria e articoli da regalo), vendita congiunta al dettaglio e all'ingrosso.",
+ "superficie_vendita_mq": "40",
+ "superficie_non_alimentare_mq": "40",
+ "in_centro_commerciale": "false",
+ "diritti_euro": "100",
+ "fatti": [],
+ "stagionale": "false",
+ "solo_distributori": "false",
+ "anche_ingrosso": "true",
+ "superficie_alimentare_mq": "0",
+ "superficie_monopolio_mq": "0",
+ "in_ccn": "false",
+ "in_factory_outlet": "false",
+ "diritti_esente": false
+}

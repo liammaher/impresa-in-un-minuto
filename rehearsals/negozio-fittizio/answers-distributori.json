@@ -1,0 +1,18 @@
+{
+ "extras": [],
+ "descrizione": "PROVA NON INVIARE - negozio distributori",
+ "oggetto": "Apertura di un esercizio di vicinato che vende solo mediante apparecchi automatici.",
+ "superficie_vendita_mq": "40",
+ "superficie_non_alimentare_mq": "40",
+ "in_centro_commerciale": "false",
+ "diritti_euro": "100",
+ "fatti": [],
+ "stagionale": "false",
+ "solo_distributori": "true",
+ "anche_ingrosso": "false",
+ "superficie_alimentare_mq": "0",
+ "superficie_monopolio_mq": "0",
+ "in_ccn": "false",
+ "in_factory_outlet": "false",
+ "diritti_esente": false
+}

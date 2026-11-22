@@ -1293,6 +1293,22 @@ shift its rows), not a stale one; and a change to `tick()`'s re-lookup after a c
 **skips a name already in the tab's results** (`pv-batch`): re-running a case in a tab that ran it before needs `fresh.js` first (the first re-run of the mixed case "stopped in 44.8 s" was round 25's stored result, not a run). `results.js`'s `stopped`
 rows carry the box's label now.
 
+**Round 27 (2026-11-22): a counter that credits the SUE's runs, and the shop's and the alcohol notification's variants.** Two bundles, 5 runs, **all filled** (75-89 s each, nothing moved or loose, the portal's warnings the made-up PEC, address
+and cadastral data). The pane's SPID session had expired, so the sign-in was asked first; one file pick per bundle.
+
+- **The SUAP counter has a fifth state, «filled on the SUE, same section» (`twin`).** The bollo's section is one section for the portal (fingerprint `869752d2cea5aef3`, a `same_as` of the permesso di costruire's) that the SUAP's crawls
+  name two ways («...assolvimento dell'imposta di bollo», «...imposta di bollo», both in 016-interventi), so the counter held 22 bollo rows, and a join by section name credited only the 11 of one spelling. `twin_ticks()` joins by
+  fingerprint: a box a SUE case with a filled run ticks, in a section of the same fingerprint, reads «twin» instead of «mapped, no case yet» (22 rows: both copies of the bollo's seven exemptions and the four radios). It is **not** counted as filled:
+  a SUE run shows the portal takes the box in that section, not that the SUAP's own wizard accepts it. `test_schema_branches.suap_choices` holds both spellings.
+- **The shop's opening, four cases** (`negozio-fittizio/answers-{ingrosso,stagionale,monopolio,distributori}.json`, each the base case with one answer changed): wholesale too («Vendita congiunta al dettaglio e all'ingrosso»), seasonal (1 June - 30 September),
+  «Generi di monopolio» (10 of the 40 m²) and «Vendita esclusivamente mediante apparecchi automatici». The counter's rows for these boxes first came from the laboratorio's crawl (006); the section's labels are the same. No dictionary change.
+  The legal fit is not tested: the portal took a vending-only non-food shop without objecting. The «Si» of the shopping centre stays «mapped, no case»: the recipes refuse a shop inside one for now (the portal asks the centre's type, which no ask holds).
+- **The alcohol notification with all nine products** (`alcolici-negozio-fittizio/answers-tutti.json`): the base case ticked wine and beer; this one ticks every box of the section («Comunicazione per la vendita di alcolici», 9 of them), filled.
+- **The counter** (`schema_branches.py suap`): **417 filled (was 406), 22 filled on the SUE, 342 mapped with no case (was 375)**, 472 not mapped, 41 another procedure's; the wedge's own counts did not move (41 / 1 / 8 / 16 / 5).
+  `test_gen` holds the cases (162/162 before the alcohol assertion was added to the round-27 case; only that case changed after).
+- **Left, by size:** the hairdressers' and beauticians' (011, 44 boxes), hotels (054, 26), sign and public-land forms (mezzi pubblicitari, occupazione suolo: about 50 boxes, mostly voltura and takeover causes, plus the temporary signs' four types and the
+  canone unico's rateizzazione, which need a dictionary entry and an ask each), the stabilimento's variation forms (060), emissions, AUA and drain forms. The tenant and the cultural-asset refusal are still the owner's call.
+
 ## What the portal does that bit us
 
 - **Selects take an option's own text, and two screens may spell one option differently.** `inpage.js`'s `select()` matches the option's value or its text (case-insensitive), or a code before a colon, nothing looser; the sign's

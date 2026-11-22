@@ -1,0 +1,18 @@
+{
+ "extras": [],
+ "descrizione": "PROVA NON INVIARE - negozio con monopolio",
+ "oggetto": "Apertura di un negozio di vicinato non alimentare con generi di monopolio, vendita al dettaglio.",
+ "superficie_vendita_mq": "40",
+ "superficie_non_alimentare_mq": "30",
+ "in_centro_commerciale": "false",
+ "diritti_euro": "100",
+ "fatti": [],
+ "stagionale": "false",
+ "solo_distributori": "false",
+ "anche_ingrosso": "false",
+ "superficie_alimentare_mq": "0",
+ "superficie_monopolio_mq": "10",
+ "in_ccn": "false",
+ "in_factory_outlet": "false",
+ "diritti_esente": false
+}
