@@ -474,9 +474,17 @@ def twin_ticks():
                 names[norm(sec["section"])].add(sec["fingerprint"])
     runs, out = filled("sue"), defaultdict(list)
     for sec, _, kind, label, who in ticked("sue"):
-        if who in runs:
-            for fp in names.get(sec, ()):
-                out[fp].append((sec, None, kind, label, who))
+        if who not in runs:
+            continue
+        fps = names.get(sec)
+        if not fps:
+            # A steps file names a section by the start of the portal's name for it («dichiarazione relativa ai diritti» for «...diritti di
+            # segreteria/istruttori»), as `same_section` reads it everywhere: the exact name missed the diritti box in round 27. A start that
+            # several fingerprints share names no section, so it credits none.
+            alike = {fp for n, f in names.items() if same_section(sec, n) for fp in f}
+            fps = alike if len(alike) == 1 else ()
+        for fp in fps:
+            out[fp].append((sec, None, kind, label, who))
     return out
 
 

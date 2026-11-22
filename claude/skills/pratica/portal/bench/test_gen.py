@@ -25,6 +25,19 @@ import yaml  # noqa: E402
 
 gen.ensure()  # the rehearsals' steps files are built, never committed (steps.lock)
 
+
+def inputs_seen():
+    """sha256 of what the suite reads over its 45 minutes: the dictionary, the rules tables, the recipes, rerun.py and this file.
+    An edit to one of them while it runs (rounds 25-27: the working rule was «don't touch them while test_gen runs») leaves a result
+    that describes neither tree, so the suite compares the two readings and fails at the end instead of passing by luck."""
+    import hashlib
+    import rules as rules_mod
+    files = [HERE.parent / "dictionary" / "fnsuap.yaml", HERE / "rerun.py", Path(__file__).resolve(),
+             *sorted(ROOT.glob("rehearsals/*/recipe.yaml")), *sorted(rules_mod.TABLES.glob("*.yaml"))]
+    return {str(f): hashlib.sha256(f.read_bytes()).hexdigest() for f in files if f.is_file()}
+
+
+INPUTS_AT_START = inputs_seen()
 CILA = ROOT / "rehearsals" / "cila-fittizia"
 # The golden case: the CILA P6 the first walk found by hand (2026-10-28), ids and values.
 HAND_WALK = HERE / "fixtures" / "cila-p6-hand-walk.yaml"
@@ -3021,7 +3034,16 @@ def _():
     assert len(every["alcolici"]) == 9 and len(set(every["alcolici"])) == 9 and len(every["descrizione"]) <= 60, every
     mine = [r for r in json.loads((REH / alc / "runs.json").read_text()) if r.get("answers") == "answers-tutti.json"]
     assert mine and mine[-1]["result"] == "filled", mine[-1:]
+    # The shop inside a shopping centre has no case: the portal asks the centre's type, which no ask holds, so the opening's recipe refuses it
+    # (the counter's «Si» stays «mapped, no case»). The README says so; this keeps it true.
+    refused = [c for c in yaml.safe_load((REH / name / "recipe.yaml").read_text()).get("supports", [])
+               if c.get("when") == "{{ask.in_centro_commerciale|not}}"]
+    assert len(refused) == 1 and "centro commerciale" in refused[0]["else"] and "tipologia del centro" in refused[0]["else"], refused
 
 
+changed = sorted(f for f, h in inputs_seen().items() if INPUTS_AT_START.get(f) != h)
+if changed:
+    results.append(False)
+    print(f"FAIL  an input changed while the suite ran, so its result describes no tree: rerun it ({', '.join(changed[:5])}{' ...' if len(changed) > 5 else ''})")
 print(f"{sum(results)}/{len(results)} passed")
 sys.exit(0 if all(results) else 1)

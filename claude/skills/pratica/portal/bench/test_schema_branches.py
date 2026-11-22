@@ -145,6 +145,12 @@ def suap_choices():
         {r["section"] for r in twin}
     assert sum(r["kind"] == "option" and r["label"].startswith("ai sensi del") for r in twin) >= 14, "the seven reasons, in both copies"
     assert all(r["by"] for r in twin), "a twin names the SUE rehearsals whose runs cover it"
+    # A SUE steps file names a section by the start of the portal's name for it, so the join reads names as `same_section` does (the diritti box was missed
+    # in round 27 by an exact lookup); and a name alone is no join: the SUAP's «TITOLARITA' DELL'INTERVENTO» shares its name with the SUE's, not its
+    # fingerprint, and its «amministratore di condominio» is a box the SUE's section doesn't have, so it stays «mapped, no case».
+    by_state = lambda sec, kind, lab: {r["state"] for r in rows if r["kind"] == kind and sb.norm(r["section"]).startswith(sb.norm(sec)) and sb.norm(r["label"]).startswith(sb.norm(lab))}
+    assert by_state("dichiarazione relativa ai diritti di segreteria", "radio", "poiché esentati") == {"twin"}, by_state("dichiarazione relativa ai diritti di segreteria", "radio", "poiché esentati")
+    assert by_state("TITOLARITA' DELL'INTERVENTO", "option", "amministratore di condominio") == {"mapped"}, by_state("TITOLARITA' DELL'INTERVENTO", "option", "amministratore di condominio")
     # The report names the boxes without a filled run and keeps to one family of crawls.
     rep = sb.suap_report(rows, ncrawls, skipped, only="suap-060-")
     assert "on the portal, not mapped" in rep and "suap-016-" not in rep, rep[:300]
