@@ -54,5 +54,13 @@
   "seconds": 93,
   "browser": "pane",
   "values": "rehearsals/pizzeria-fittizia/fixture.json"
+ },
+ {
+  "date": "2026-11-22",
+  "answers": "answers-alimentare-solo.json",
+  "result": "stopped",
+  "seconds": 45.3,
+  "browser": "pane",
+  "values": "rehearsals/pizzeria-fittizia/fixture.json"
  }
 ]

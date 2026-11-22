@@ -2965,7 +2965,7 @@ def _():
 
 @case("round 25: the bakery take-over has a case for each cause of the transfer (affitto d'azienda, donazione, fusione, fallimento, successione, altre cause) and for the "
       "premises' title (proprietario, altro), the medium shop one for each variant of its specifications (ME, wholesale too, seasonal, food and non-food, monopoly) and the bakery's opening a "
-      "seasonal one and one with consumption on the spot, each filled on the portal except the mixed food and non-food one, which stops (see the assertion); the notary's boxes belong only to the four causes with a deed")
+      "seasonal one and one with consumption on the spot, each filled on the portal except the two that ask for food, which stop (see the assertion); the notary's boxes belong only to the four causes with a deed")
 def _():
     def runs_of(name):
         return json.loads((REH / name / "runs.json").read_text())
@@ -2980,18 +2980,19 @@ def _():
     assert json.loads((REH / take / "answers-affitto-azienda.json").read_text())["locali_titolo"] == "proprietario"
     assert json.loads((REH / take / "answers-consumo-sul-posto.json").read_text())["consumo_sul_posto"] == "true"
     med = "media-struttura-fittizia"
-    mm = {k: json.loads((REH / med / f"answers-{k}.json").read_text()) for k in ("me", "ingrosso", "stagionale", "alimentare", "monopolio")}
+    mm = {k: json.loads((REH / med / f"answers-{k}.json").read_text()) for k in ("me", "ingrosso", "stagionale", "alimentare", "alimentare-solo", "monopolio")}
     assert mm["me"]["media_struttura_tipo"] == "ME" and mm["ingrosso"]["anche_ingrosso"] == "true" and mm["stagionale"]["stagionale"] == "true", mm
     assert float(mm["alimentare"]["superficie_alimentare_mq"]) > 0 and float(mm["monopolio"]["superficie_monopolio_mq"]) > 0, mm
     bak = "panificio-fittizio"
     seas = json.loads((REH / bak / "answers-stagionale.json").read_text())
     assert seas["stagionale"] == "true" and seas["avvio_data"] < seas["termine_data"], seas
     assert json.loads((REH / bak / "answers-consumo-sul-posto.json").read_text())["consumo_sul_posto"] == "true"
-    # The mixed food and non-food case STOPPED on the portal (2026-11-21): the runner ticks «Alimentare» by the id r29c1p65reg:chk (the crawl's
-    # `moved` table, rows shifted by four), which the live layout does not have (Alimentare is r25c1p53reg:chk there), «didn't stay ticked».
-    # The same section with only «Non alimentare» (the base case) or «Non alimentare» + «Generi di monopolio» fills. README round 25 says what is known;
-    # this assertion flips the day a run of it fills.
-    stopped = {(med, "answers-alimentare.json")}
+    # The two cases that ask for food STOPPED on the portal (2026-11-21, «didn't stay ticked» at «Alimentare»): the box is `readonly` with `onclick="return false"` on this
+    # form, as on the variation form's (read 2026-11-12), so no click ticks it. The recipe now refuses a food medium shop (the section's `supports`), the dictionary lists
+    # the box as another procedure's, and the two answers files stay as the cases that document it (their runs: stopped, kept in runs.json). Round 26 first blamed the
+    # runner's re-lookup by id after a tick (not it: the food-only run stopped the same way with a runner that fixed that), and dropped the change.
+    stopped = {(med, "answers-alimentare.json"), (med, "answers-alimentare-solo.json")}
+    assert "«Alimentare»" in str(generated(med).get("supports", "")), "the recipe must refuse food (the section's `supports` joins the recipe's)"
     for name, files in ((take, [f"answers-{k}.json" for k in causes] + ["answers-consumo-sul-posto.json"]),
                         (med, [f"answers-{k}.json" for k in mm]), (bak, ["answers-stagionale.json", "answers-consumo-sul-posto.json"])):
         runs = runs_of(name)

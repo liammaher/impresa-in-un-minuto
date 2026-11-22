@@ -31,6 +31,7 @@ and its answers file) goes through run.py's page_files, as `run.py page` would. 
 The pane cuts a call off at 45 s: poll results.js. The values file is what `pvault get`
 prints, or a fixture as it is (rehearsals/cila-fittizia/fixture-p6.json: its "fields" are read, so a
 person added to it is in the next batch).
+A bundle's loop SKIPS a name already in the tab's results (`pv-batch`): re-running a case the tab ran before (round 26: «stopped in 44.8 s» was the stored round 25 result, not a run) needs `fresh.js` first.
 With --bundle, the pick starts the loop itself (the pane's `window.pvBundle` reads «started: N queued»: do not run loop.js too); poll `window.pvBatchBusy` and
 sessionStorage `pv-batch` with in-page waits under 45 s (a run takes 100-140 s) and read each run's `moved`, `loose` and `alerts` before `--record` (2026-11-21, round 24).
 Building the bundle takes about 2 minutes for 4 runs: run it as a background job and wait for its notification.
@@ -414,7 +415,7 @@ JSON.stringify({ done: done.length, of: (window.pvBatch || []).length, running: 
   filled: done.filter((d) => d.result === "filled").length,
   // Once the batch has ended: what `rerun.py --record` takes (name, result, seconds), so nobody types it (2026-11-20: twice by hand, six times in all).
   record: !window.pvBatchBusy && done.length ? done.map((d) => ({ name: d.name, result: d.result, total_seconds: d.total_seconds })) : null,
-  stopped: done.filter((d) => d.result !== "filled").map((d) => [d.name, d.error, d.at && d.at.section, d.gaps || []]),
+  stopped: done.filter((d) => d.result !== "filled").map((d) => [d.name, d.error, d.at && d.at.section, d.at && d.at.label, d.gaps || []]),  // the box it stopped at too (round 25: «Alimentare»)
   moved: done.filter((d) => (d.moved || []).length).map((d) => [d.name, d.moved]),
   loose: done.filter((d) => (d.loose || []).length).map((d) => [d.name, d.loose]),
   // `optional` sections the draft didn't show (ComUnica's Telemaco user: the portal's preselected destinatario varies).
