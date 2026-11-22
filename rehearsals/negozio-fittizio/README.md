@@ -24,6 +24,10 @@ generato" and stops before the declarations, payment, signing and sending.
 | Date | Browser | Case | Result |
 |---|---|---|---|
 | 2026-10-28 | pane |  | Stopped in the shop's section: three Si/No pairs in a row, and the runner counted a "Si" as a "No" (its nearby texts include the "No" before it), so the factory outlet's "No" was never ticked. `inpage.js` now counts a box by its own label, as the crawl does. Resumed on the draft from "Oggetto della pratica": every value kept and read back on a fresh load (57 s). The Scheda anagrafica was read back after its own Salva in the first pass. |
+| 2026-11-22 | pane | `answers-ingrosso.json` | **filled** in 89 s |
+| 2026-11-22 | pane | `answers-stagionale.json` | **filled** in 75 s |
+| 2026-11-22 | pane | `answers-monopolio.json` | **filled** in 77 s |
+| 2026-11-22 | pane | `answers-distributori.json` | **filled** in 76 s |
 
 <!-- /runs -->
 

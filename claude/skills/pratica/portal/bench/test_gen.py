@@ -25,6 +25,19 @@ import yaml  # noqa: E402
 
 gen.ensure()  # the rehearsals' steps files are built, never committed (steps.lock)
 
+
+def inputs_seen():
+    """sha256 of what the suite reads over its 45 minutes: the dictionary, the rules tables, the recipes, rerun.py and this file.
+    An edit to one of them while it runs (rounds 25-27: the working rule was «don't touch them while test_gen runs») leaves a result
+    that describes neither tree, so the suite compares the two readings and fails at the end instead of passing by luck."""
+    import hashlib
+    import rules as rules_mod
+    files = [HERE.parent / "dictionary" / "fnsuap.yaml", HERE / "rerun.py", Path(__file__).resolve(),
+             *sorted(ROOT.glob("rehearsals/*/recipe.yaml")), *sorted(rules_mod.TABLES.glob("*.yaml"))]
+    return {str(f): hashlib.sha256(f.read_bytes()).hexdigest() for f in files if f.is_file()}
+
+
+INPUTS_AT_START = inputs_seen()
 CILA = ROOT / "rehearsals" / "cila-fittizia"
 # The golden case: the CILA P6 the first walk found by hand (2026-10-28), ids and values.
 HAND_WALK = HERE / "fixtures" / "cila-p6-hand-walk.yaml"
@@ -3002,5 +3015,35 @@ def _():
             assert mine and mine[-1]["result"] == want, (name, f, want, mine[-1:])
 
 
+@case("round 27: the shop's opening (negozio-fittizio) has a case for each way its «Dati sull'esercizio di vicinato» section can differ (wholesale too, seasonal, monopoly goods, "
+      "vending machines only), each changing one answer of the base case and filled on the portal, and the alcohol notification one that ticks all nine products; the draft names fit 60 characters")
+def _():
+    name = "negozio-fittizio"
+    base = json.loads((REH / name / "answers.json").read_text())
+    want = {"ingrosso": ("anche_ingrosso", "true"), "stagionale": ("stagionale", "true"), "monopolio": ("superficie_monopolio_mq", "10"), "distributori": ("solo_distributori", "true")}
+    runs = json.loads((REH / name / "runs.json").read_text())
+    for k, (ask, val) in want.items():
+        a = json.loads((REH / name / f"answers-{k}.json").read_text())
+        assert a[ask] == val and base[ask] != val, (k, ask, a[ask])
+        assert a["descrizione"].startswith("PROVA NON INVIARE - ") and len(a["descrizione"]) <= 60, a["descrizione"]
+        mine = [r for r in runs if r.get("answers") == f"answers-{k}.json"]
+        assert mine and mine[-1]["result"] == "filled", (k, mine[-1:])
+    assert (json.loads((REH / name / "answers-stagionale.json").read_text())["stagione_dal"], json.loads((REH / name / "answers-stagionale.json").read_text())["stagione_al"]) == ("01/06", "30/09")
+    alc = "alcolici-negozio-fittizio"
+    every = json.loads((REH / alc / "answers-tutti.json").read_text())
+    assert len(every["alcolici"]) == 9 and len(set(every["alcolici"])) == 9 and len(every["descrizione"]) <= 60, every
+    mine = [r for r in json.loads((REH / alc / "runs.json").read_text()) if r.get("answers") == "answers-tutti.json"]
+    assert mine and mine[-1]["result"] == "filled", mine[-1:]
+    # The shop inside a shopping centre has no case: the portal asks the centre's type, which no ask holds, so the opening's recipe refuses it
+    # (the counter's «Si» stays «mapped, no case»). The README says so; this keeps it true.
+    refused = [c for c in yaml.safe_load((REH / name / "recipe.yaml").read_text()).get("supports", [])
+               if c.get("when") == "{{ask.in_centro_commerciale|not}}"]
+    assert len(refused) == 1 and "centro commerciale" in refused[0]["else"] and "tipologia del centro" in refused[0]["else"], refused
+
+
+changed = sorted(f for f, h in inputs_seen().items() if INPUTS_AT_START.get(f) != h)
+if changed:
+    results.append(False)
+    print(f"FAIL  an input changed while the suite ran, so its result describes no tree: rerun it ({', '.join(changed[:5])}{' ...' if len(changed) > 5 else ''})")
 print(f"{sum(results)}/{len(results)} passed")
 sys.exit(0 if all(results) else 1)

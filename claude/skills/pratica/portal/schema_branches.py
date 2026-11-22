@@ -372,7 +372,8 @@ def status(box, ticks, mapped, leaves, peers, runs=frozenset(), other=()):
 
 
 STATES = {"filled": "filled on the portal", "case": "a case, no recorded run", "mapped": "mapped, no case yet", "none": "on the portal, not mapped",
-          "leave": "left empty", "theirs": "the person's", "other": "a procedure no recipe maps", "absent": "no portal box"}
+          "leave": "left empty", "theirs": "the person's", "other": "a procedure no recipe maps", "absent": "no portal box",
+          "twin": "filled on the SUE, same section"}
 READ = {"cila": "CILA", "scia": "SCIA", "permesso_di_costruire": "Permesso di costruire",
         "scia_alternativa": "SCIA alternativa", "segnalazione_certificata_agibilita": "Agibilità (SCA)",
         "comunicazione_inizio_lavori": "Inizio lavori", "comunicazione_fine_lavori": "Fine lavori"}
@@ -459,6 +460,34 @@ def table():
 SPLIT = {("permesso_di_costruire", "009"): ["008"]}
 
 
+def twin_ticks():
+    """{section fingerprint: [(section, None, kind, label, (rehearsal, answers))]}: the boxes a SUE case with a filled run on the
+    portal ticks, by the fingerprint of the section they sit in. The portal shows one section (the bollo's) in the SUE and in the
+    SUAP, which the crawls record as a `same_as` of the same fingerprint, so a SUE run is evidence for the SUAP's copy: it shows
+    the portal takes the box there, not that the SUAP's own wizard accepts it, so the SUAP counter keeps it apart ("twin").
+    The names alone don't join them (the same section is «...assolvimento dell'imposta di bollo» in one SUAP crawl and
+    «...imposta di bollo» in another)."""
+    names = defaultdict(set)  # normalised section name -> fingerprints, over the crawls of the SUE's recipes
+    for crawl_name in {gen.resolved(gen.load_yaml(d / "recipe.yaml"))["crawl"] for d, _ in sue_steps("sue")}:
+        for sec in crawl(crawl_name)["sections"]:
+            if sec.get("fingerprint"):
+                names[norm(sec["section"])].add(sec["fingerprint"])
+    runs, out = filled("sue"), defaultdict(list)
+    for sec, _, kind, label, who in ticked("sue"):
+        if who not in runs:
+            continue
+        fps = names.get(sec)
+        if not fps:
+            # A steps file names a section by the start of the portal's name for it («dichiarazione relativa ai diritti» for «...diritti di
+            # segreteria/istruttori»), as `same_section` reads it everywhere: the exact name missed the diritti box in round 27. A start that
+            # several fingerprints share names no section, so it credits none.
+            alike = {fp for n, f in names.items() if same_section(sec, n) for fp in f}
+            fps = alike if len(alike) == 1 else ()
+        for fp in fps:
+            out[fp].append((sec, None, kind, label, who))
+    return out
+
+
 def suap_table():
     """The SUAP's choice boxes against the cases its rehearsals take: every radio, tick and
     dropdown option of the crawls its recipes use, once per section and label whatever crawl
@@ -468,16 +497,23 @@ def suap_table():
     skipped = []
     ticks, mapped, leaves, runs = ticked("suap", skipped), entries("suap"), left(), filled("suap")
     other = other_procedures()
+    twins = twin_ticks()
     crawls = sorted({gen.resolved(gen.load_yaml(d / "recipe.yaml"))["crawl"] for d, _ in sue_steps("suap")})
     rows, seen = [], set()
     for name in crawls:
         bx = boxes(name)
+        fps = {s["section"]: s.get("fingerprint") for s in crawl(name)["sections"]}
         for b in bx:
             key = (norm(b["section"]), b["kind"], norm(b["label"]))
             if key in seen:
                 continue
             seen.add(key)
             st, who = status(b, ticks, mapped, leaves, bx, runs, other)
+            if st == "mapped":  # a SUE run of the same section (same fingerprint) takes it: told apart from a SUAP run, never counted as one
+                recs = [(norm(b["section"]), i, kind, label, w) for _, i, kind, label, w in twins.get(fps.get(b["section"]), [])]
+                taken = hits(b, recs, bx)
+                if taken:
+                    st, who = "twin", sorted({r for r, _ in taken})
             rows.append({"crawl": name, "section": b["section"], "kind": b["kind"], "label": b["label"], "state": st, "by": who})
     return rows, len(crawls), skipped
 
@@ -491,8 +527,8 @@ def suap_report(rows, ncrawls, skipped, only=""):
         count[r["state"]] += 1
     lines = [f"{len(rows)} choice boxes in {ncrawls} SUAP crawls with a recipe, once per section and label; "
              f"{len(skipped)} rehearsals have no fixture.json of their own and are not counted as cases"]
-    for k in ("filled", "case", "mapped", "none", "leave", "theirs", "other"):
-        lines.append(f"  {STATES.get(k, k):28} {count[k]:5}")
+    for k in ("filled", "twin", "case", "mapped", "none", "leave", "theirs", "other"):
+        lines.append(f"  {STATES.get(k, k):32} {count[k]:5}")
     for k in ("case", "mapped", "none"):
         todo = [r for r in rows if r["state"] == k]
         if not todo:

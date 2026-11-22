@@ -133,10 +133,24 @@ def suap_choices():
     # the two silenzio assenso radios and the 10 procedures of their dropdown are another procedure's (a restaurant files none of them).
     bollo = [r for r in rows if "imposta di bollo" in r["section"].lower()]
     reasons = [r for r in bollo if r["kind"] == "option" and r["label"].startswith("ai sensi del")]
-    assert len(reasons) >= 7 and {r["state"] for r in reasons} <= {"mapped", "case", "filled"}, [(r["label"][:40], r["state"]) for r in reasons]
+    assert len(reasons) >= 7 and {r["state"] for r in reasons} <= {"mapped", "case", "filled", "twin"}, [(r["label"][:40], r["state"]) for r in reasons]
     other = [r for r in bollo if r["state"] == "other"]
     assert len(other) >= 12 and not [r for r in bollo if r["state"] == "none"], [(r["label"][:40], r["state"]) for r in bollo if r["state"] == "none"]
     assert sum(r["kind"] == "option" for r in other) >= 20 and all(r["label"][:3] != "ai " for r in other), other
+    # Round 27: the bollo is one section (one fingerprint) the portal shows in the SUE and the SUAP, under two names in the SUAP's crawls
+    # («...assolvimento dell'imposta di bollo», «...imposta di bollo»); the SUE's filled runs of the seven exemptions cover both copies, told apart
+    # from a SUAP run («twin»), and a box no SUE run ticked (a section of another fingerprint) stays «mapped».
+    twin = [r for r in rows if r["state"] == "twin"]
+    assert {sb.norm(r["section"]) for r in twin} >= {"dichiarazione relativa all imposta di bollo", "dichiarazione relativa all assolvimento dell imposta di bollo"}, \
+        {r["section"] for r in twin}
+    assert sum(r["kind"] == "option" and r["label"].startswith("ai sensi del") for r in twin) >= 14, "the seven reasons, in both copies"
+    assert all(r["by"] for r in twin), "a twin names the SUE rehearsals whose runs cover it"
+    # A SUE steps file names a section by the start of the portal's name for it, so the join reads names as `same_section` does (the diritti box was missed
+    # in round 27 by an exact lookup); and a name alone is no join: the SUAP's «TITOLARITA' DELL'INTERVENTO» shares its name with the SUE's, not its
+    # fingerprint, and its «amministratore di condominio» is a box the SUE's section doesn't have, so it stays «mapped, no case».
+    by_state = lambda sec, kind, lab: {r["state"] for r in rows if r["kind"] == kind and sb.norm(r["section"]).startswith(sb.norm(sec)) and sb.norm(r["label"]).startswith(sb.norm(lab))}
+    assert by_state("dichiarazione relativa ai diritti di segreteria", "radio", "poiché esentati") == {"twin"}, by_state("dichiarazione relativa ai diritti di segreteria", "radio", "poiché esentati")
+    assert by_state("TITOLARITA' DELL'INTERVENTO", "option", "amministratore di condominio") == {"mapped"}, by_state("TITOLARITA' DELL'INTERVENTO", "option", "amministratore di condominio")
     # The report names the boxes without a filled run and keeps to one family of crawls.
     rep = sb.suap_report(rows, ncrawls, skipped, only="suap-060-")
     assert "on the portal, not mapped" in rep and "suap-016-" not in rep, rep[:300]
