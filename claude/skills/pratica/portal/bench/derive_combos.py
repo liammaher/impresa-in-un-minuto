@@ -41,8 +41,6 @@ PIN2_YOURS = ("Il professionista antincendio firma tu o per lui, con la sua firm
 PIN2_SUPPORTS = (
     '  - {when: "{{ask.vvf_parziale|not}}", else: "Una SCIA antincendio parziale (lotto, stralcio, adeguamento parziale) non la preparo ancora."}',
     '  - {value: "{{ask.vvf_categoria}}", in: [a], else: "Per le attività di categoria B e C la SCIA antincendio segue l\'approvazione del progetto da parte dei Vigili del Fuoco (con il suo numero di pratica): non la preparo ancora."}',
-    '  - {when: "{{ask.vvf_pnrr|not}}", else: "Un\'attività finanziata dal PNRR, PNC o ZES apre altre voci della SCIA antincendio, che non preparo ancora."}',
-    '  - {when: "{{ask.vvf_impianti_speciali|not}}", else: "Impianti di idrogeno, GNL/GNC, rifiuti o le facciate e coperture di edifici civili aprono altre voci della SCIA antincendio, che non preparo ancora."}',
 )
 SIGN_OP = "SCIA per installazione insegna di esercizio"  # the sign as a second operation, where the screen has no tick for it
 DEHORS_OP = "Domanda di occupazione suolo pubblico per area annessa ad esercizio di somministrazione di alimenti e bevande"

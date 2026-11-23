@@ -1334,6 +1334,20 @@ and cadastral data). The pane's SPID session had expired, so the sign-in was ask
   `show_pane preview` did not change `document.hidden`, and reloading the page would have lost the queue.
 - **The file picker does not show a temporary folder:** `rerun.py --bundle` says so; the bundle was copied to the Desktop under the name the box shows and removed after the last bundle.
 
+**Round 29 (2026-11-23): two groups of boxes mapped; NOT yet run on the portal.** The sign-in did not complete, so the 14 new cases are filled in pre-flight only (`ready`, but for the signed fee receipt the person picks at run time). Counter before: 471 filled, 23 twin, 1 without run, 287 mapped with no case, 472 not mapped.
+
+- **Finalità dell'iniziativa** (the older temporary-occupation form, five radios; it appears only when the wizard's «in caso di eventi di natura non commerciale» is answered «Sì»). New rehearsal `suolo-pubblico-temporanea-2-finalita-fittizio`
+  (from the non-profit one; recipe `scelte` adds the section, the wizard answers «Sì»), asks `suolo_utilita` / `suolo_utilita_altro`, five cases (previdenza, sanità, educazione, cultura, altre with «precisare la finalità»).
+  The `is_` filter reads a-z and 0-9 only: «sanità» is `is_sanit`. The other three temporary-occupation recipes still answer No/No.
+- **PNRR/PNC/ZES and the special plants** (the statistics boxes of the PIN 2 SCIA VV.F.: two Si/No gates enable seven checkboxes). The gates `vvf_pnrr` / `vvf_impianti_speciali` keep their names (existing answers stand); seven new asks
+  (`vvf_misura_pnrr|pnc|zes`, `vvf_impianto_idrogeno|gnl|rifiuti`, `vvf_facciate`) are asked only once their gate is yes. The 48 recipes' two `supports` refusals are gone (and from `derive_combos.py`). Nine cases on
+  `acconciatore-pin-2-fittizio` (`answers-statistica-*.json`). `plan_diff.py`: 0 existing cases differ, none «NOT compared». **Unread:** whether a «Sì» opens other voices of the SCIA (the crawl shows only the checkboxes enabling), and whether
+  the portal wants at least one box after a «Sì» (no ask checks that yet).
+- **A candidate that was wrong:** «who holds the professional requirement» (titolare / socio / familiare / dipendente on the acconciatore and estetista, the tatuatore's declaration with sex and REA, 16 boxes) is another person's declaration,
+  opened by the wizard's «soci qualificati / responsabile tecnico» choices; the recipes refuse it on purpose (names, tax codes, residence, training certificate of someone else, and Allegato B/C). Not a dictionary gap: it needs a decision on other people's data.
+  The insegna take-over's «direttore dei lavori: SI» is refused by design too (his details), and its road-owner checkboxes sit behind «in area pubblica».
+- **Sign-in note:** after Sielte ID's «Autorizza» the pane landed on sielteid.it, and a later return showed «Application Not Authorized to Use CAS» on iasu.infocamere.it; reloading `cmd/home` while the person signs in starts a new flow and loses the state.
+
 ## What the portal does that bit us
 
 - **Selects take an option's own text, and two screens may spell one option differently.** `inpage.js`'s `select()` matches the option's value or its text (case-insensitive), or a code before a colon, nothing looser; the sign's
@@ -1986,8 +2000,8 @@ The last 117 cases of the SUAP rules table add fire prevention (`prevenzione_inc
   `people`) and the facts. The three pre-ticked assertions are `theirs`/`leave`: the professional ticks and signs (digital
   signature, `human_only`). The fee's payment and the signed receipt stay the person's.
 - **Only category A is reachable.** On a combined pratica the B and C radios and the «progetti approvati» box are disabled
-  without a Rif. Pratica VV.F. (a PIN 1 first), so the recipes refuse B/C, SCIA parziale, PNRR/PNC/ZES and special plants (asked
-  and refused in `supports`). Subingresso + fire prevention stays refused by the rules table.
+  without a Rif. Pratica VV.F. (a PIN 1 first), so the recipes refuse B/C and SCIA parziale (asked and refused in `supports`). PNRR/PNC/ZES and the special plants are asked and
+  mapped since round 29 (not yet run on the portal). Subingresso + fire prevention stays refused by the rules table.
 - **Crawls are per combination.** `*-pin-2` crawls (names start `suap-NNN-`: `catalogue.py import` refuses a SUAP crawl named otherwise, it would be filed as the SUE's) were taken with
   `catalogue.py ops suap --combo`; a dehors + PIN 2 crawl is two `also` lists merged. `bench/derive_combos.py` builds each recipe from
   its plain sibling (`sibling_rows()`: every routed opening/move/enlargement recipe without a PIN, the donor `cila-fittizia`'s `v:`

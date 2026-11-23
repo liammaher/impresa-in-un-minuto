@@ -1661,6 +1661,8 @@ asks:
   suolo_natura: {type: choice, question: "Che natura ha l'associazione per conto della quale chiedi l'occupazione? onlus (iscritta all'anagrafe delle onlus); impresa (ha carattere di impresa commerciale); nonprofit (organizzazione senza fini di lucro)", options: [onlus, impresa, nonprofit]}
   suolo_onlus_estremi: {type: text, question: "Gli estremi dell'iscrizione all'anagrafe delle onlus (30 caratteri al massimo)"}
   suolo_finalita: {type: choice, question: "Che finalità dichiari? ente (l'associazione o il comitato è un ente senza scopo di lucro); iniziativa (l'iniziativa non ha alcuna finalità di lucro)", options: [ente, iniziativa]}
+  suolo_utilita: {type: choice, question: "Per quale finalità di utilità sociale è l'iniziativa non commerciale? previdenza; sanità; educazione; cultura e ricerca scientifica; altre finalità (le descrivi dopo)", options: [previdenza, sanità, educazione, cultura e ricerca scientifica, altre finalità di utilità sociale]}
+  suolo_utilita_altro: {type: text, question: "Quale altra finalità di utilità sociale? Descrivila in una frase (il portale accetta testi lunghi)"}
   occupazione_area_tipo: {type: choice, question: "L'area è pubblica o privata ad uso pubblico? pubblica; privata (area privata ad uso pubblico)", options: [pubblica, privata]}
   arredi: {type: choice, question: "Quali arredi installi? sedie; tavoli; sedie e tavoli. Gli altri arredi (banchetto, gazebo, ombrelloni, stand, tenda, fioriere) non li preparo ancora", options: [sedie, tavoli, sedie e tavoli]}
   arredi_sedie_numero: {type: number, question: "Quante sedie? (al massimo 99999)"}
@@ -1924,8 +1926,15 @@ asks:
   vvf_approccio: {type: choice, question: "Con quale approccio tecnico è progettata la sicurezza antincendio? standard (modalità standard); conforme (RTO/RTV, soluzione conforme); ingegneria (DM 9 maggio 2007: serve anche la dichiarazione del responsabile sul sistema di gestione della sicurezza); deroga (RTO/RTV, soluzione in deroga). La soluzione alternativa non la preparo ancora", options: [standard, conforme, ingegneria, deroga], propose: "standard"}
   vvf_fotovoltaico: {type: yes_no, question: "È prevista l'installazione di un impianto fotovoltaico presso l'attività (DL 144/2022)?", propose: "false"}
   vvf_gsa_doc: {type: file, question: "La dichiarazione del responsabile dell'attività sul sistema di gestione della sicurezza antincendio (DM 9 maggio 2007, art. 6) (PDF)", when: "{{ask.vvf_approccio|is_ingegneria}}"}
-  vvf_pnrr: {type: yes_no, question: "Almeno una delle attività in progetto è finanziata o beneficia del regime del PNRR, PNC o ZES? Non lo preparo ancora", propose: "false"}
-  vvf_impianti_speciali: {type: yes_no, question: "Gli interventi in progetto riguardano impianti di idrogeno, GNL/GNC, stoccaggio o trattamento di rifiuti, o le facciate e coperture di edifici civili? Non lo preparo ancora", propose: "false"}
+  vvf_pnrr: {type: yes_no, question: "Almeno una delle attività in progetto è finanziata o beneficia del regime del PNRR, PNC o ZES?", propose: "false"}
+  vvf_misura_pnrr: {type: yes_no, question: "Il finanziamento è del Piano nazionale di ripresa e resilienza (PNRR)?", propose: "false", when: "{{ask.vvf_pnrr}}"}
+  vvf_misura_pnc: {type: yes_no, question: "È del Piano nazionale per gli investimenti complementari (PNC)?", propose: "false", when: "{{ask.vvf_pnrr}}"}
+  vvf_misura_zes: {type: yes_no, question: "L'attività è in una Zona economica speciale (ZES) e ne beneficia?", propose: "false", when: "{{ask.vvf_pnrr}}"}
+  vvf_impianti_speciali: {type: yes_no, question: "Gli interventi in progetto riguardano impianti di idrogeno, GNL/GNC, stoccaggio o trattamento di rifiuti, o le facciate e coperture di edifici civili?", propose: "false"}
+  vvf_impianto_idrogeno: {type: yes_no, question: "Sono impianti di produzione, stoccaggio o impiego di idrogeno?", propose: "false", when: "{{ask.vvf_impianti_speciali}}"}
+  vvf_impianto_gnl: {type: yes_no, question: "Sono impianti di produzione, stoccaggio o impiego di GNL/GNC?", propose: "false", when: "{{ask.vvf_impianti_speciali}}"}
+  vvf_impianto_rifiuti: {type: yes_no, question: "Sono impianti di stoccaggio o trattamento di rifiuti (art. 183 D.Lgs. 152/2006)?", propose: "false", when: "{{ask.vvf_impianti_speciali}}"}
+  vvf_facciate: {type: yes_no, question: "Sono interventi sui requisiti di sicurezza antincendio delle facciate e delle coperture degli edifici civili?", propose: "false", when: "{{ask.vvf_impianti_speciali}}"}
   vvf_importo: {type: text, question: "L'importo versato ai Vigili del Fuoco per questa attività, in euro (la tariffa della categoria; il versamento lo fai tu)"}
   vvf_versamento_numero: {type: text, question: "Il numero dell'attestato di versamento ai Vigili del Fuoco"}
   vvf_versamento_data: {type: date, question: "La data dell'attestato di versamento"}
@@ -7311,12 +7320,21 @@ sections:
       - {kind: radio, label: Si, when: "{{ask.vvf_fotovoltaico}}"}
       - {kind: radio, label: "No", when: "{{ask.vvf_fotovoltaico|not}}"}
       - {kind: file, label: Tipologie ammesse, nth: 2, value: "{{ask.vvf_gsa_doc}}", when: "{{ask.vvf_approccio|is_ingegneria}}"}
-  # Statistics only: both questions answered NO (a yes opens boxes for the PNRR/PNC/ZES and the hydrogen, GNL/GNC, waste and facade
-  # plants; the recipe refuses it).
+  # Statistics only. Each question is a Si/No; a Si enables its boxes (disabled until then), which the answers tick one by one. The
+  # PNRR/PNC/ZES and the plants' boxes: which Si opens other voices of the SCIA is read on the portal, not here (README, round 29).
   - section: INFORMAZIONE AI SOLI FINI STATISTICI
     fields:
+      - {kind: radio, label: "SI", nth: 1, when: "{{ask.vvf_pnrr}}"}
       - {kind: radio, label: "NO", nth: 1, when: "{{ask.vvf_pnrr|not}}"}
+      - {kind: checkbox, label: PIANO NAZIONALE DI RIPRESA E RESILIENZA, when: "{{ask.vvf_pnrr}} {{ask.vvf_misura_pnrr}}"}
+      - {kind: checkbox, label: PIANO NAZIONALE PER GLI INVESTIMENTI COMPLEMENTARI, when: "{{ask.vvf_pnrr}} {{ask.vvf_misura_pnc}}"}
+      - {kind: checkbox, label: ZONE ECONOMICHE SPECIALI, when: "{{ask.vvf_pnrr}} {{ask.vvf_misura_zes}}"}
+      - {kind: radio, label: "SI", nth: 2, when: "{{ask.vvf_impianti_speciali}}"}
       - {kind: radio, label: "NO", nth: 2, when: "{{ask.vvf_impianti_speciali|not}}"}
+      - {kind: checkbox, label: "IMPIANTI DI PRODUZIONE, STOCCAGGIO O IMPIEGO DI IDROGENO", when: "{{ask.vvf_impianti_speciali}} {{ask.vvf_impianto_idrogeno}}"}
+      - {kind: checkbox, label: "IMPIANTI DI PRODUZIONE, STOCCAGGIO O IMPIEGO GNL/GNC", when: "{{ask.vvf_impianti_speciali}} {{ask.vvf_impianto_gnl}}"}
+      - {kind: checkbox, label: "IMPIANTI DI STOCCAGGIO O TRATTAMENTO DI RIFIUTI", when: "{{ask.vvf_impianti_speciali}} {{ask.vvf_impianto_rifiuti}}"}
+      - {kind: checkbox, label: INTERVENTI AFFERENTI I REQUISITI DI SICUREZZA ANTINCENDIO DELLE FACCIATE, when: "{{ask.vvf_impianti_speciali}} {{ask.vvf_facciate}}"}
   # An address for the post and a delegate are optional: the boxes stay unticked (the person's, on the portal, if they want them).
   - section: SCIA VV.F.  - dati per la corrispondenza
     leave: [Eventuale diverso indirizzo presso il quale si chiede di inviare la corrispondenza, Cognome, Nome, indirizzo, n. civico, c.a.p., comune, Provincia, telefono, indirizzo di posta elettronica, indirizzo di posta elettronica certificata]
@@ -8688,6 +8706,17 @@ sections:
     fields:
       - {kind: radio, label: che l’Associazione/Comitato richiedente l’occupazione di suolo pubblico è un ente senza scopo di lucro, when: "{{ask.suolo_finalita|is_ente}}"}
       - {kind: radio, label: che l'iniziativa non ha alcuna finalità di lucro, when: "{{ask.suolo_finalita|is_iniziativa}}"}
+
+  # A non-commercial event (the wizard's «in caso di eventi di natura non commerciale»: Sì) adds this section: the initiative's purpose, one
+  # of five radios (a choice by its first word: «sanità» reads `is_sanit`, the filter takes a-z and 0-9 only). The last opens «precisare la finalità».
+  - section: Finalità dell’iniziativa
+    fields:
+      - {kind: radio, label: previdenza, when: "{{ask.suolo_utilita|is_previdenza}}"}
+      - {kind: radio, label: sanità, when: "{{ask.suolo_utilita|is_sanit}}"}
+      - {kind: radio, label: educazione, when: "{{ask.suolo_utilita|is_educazione}}"}
+      - {kind: radio, label: cultura e ricerca scientifica, when: "{{ask.suolo_utilita|is_cultura_e_ricerca_scientifica}}"}
+      - {kind: radio, label: altre finalità di utilità sociale, when: "{{ask.suolo_utilita|is_altre_finalit_di_utilit_sociale}}"}
+      - {kind: text, label: precisare la finalità, value: "{{ask.suolo_utilita_altro}}", when: "{{ask.suolo_utilita|is_altre_finalit_di_utilit_sociale}}"}
 
   # Round 13 (2026-11-17): PIN 4, the request for a derogation. The derogated rule in the form's five boxes («Attività n.» and «Articolo/Punto» are
   # prefilled by the portal and left); the technical annexes (PIN 5's two signed files and counts); the professional who signs them (the person `v`, as
