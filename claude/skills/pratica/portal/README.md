@@ -1311,8 +1311,28 @@ and cadastral data). The pane's SPID session had expired, so the sign-in was ask
   `test_gen` holds the cases (162/162 before the alcohol assertion was added to the round-27 case; only that case changed after).
 - **Two guards in `test_gen`, from this round's working rules.** The suite takes 45 minutes and reads the dictionary, the rules tables, every recipe, `rerun.py` and itself throughout; the round's rule «don't edit them while it runs» is now checked: it
   hashes them at the start and fails at the end if one changed (`inputs_seen`). And the README's claim that the shop's «Si» in a shopping centre has no case is held by the opening's recipe refusing it («tipologia del centro»).
-- **Left, by size:** the hairdressers' and beauticians' (011, 44 boxes), hotels (054, 26), sign and public-land forms (mezzi pubblicitari, occupazione suolo: about 50 boxes, mostly voltura and takeover causes, plus the temporary signs' four types and the
-  canone unico's rateizzazione, which need a dictionary entry and an ask each), the stabilimento's variation forms (060), emissions, AUA and drain forms. The tenant and the cultural-asset refusal are still the owner's call.
+- **Left, by size:** the hairdressers' and beauticians' (011), hotels (054), the stabilimento's variation forms (060), emissions, AUA and drain forms. (This line said the sign and public-land boxes needed a dictionary entry and an ask each:
+  wrong, see round 28; they were mapped and only lacked cases.) The tenant and the cultural-asset refusal are still the owner's call.
+
+**Round 28 (2026-11-23): the sign and public-land boxes that were mapped and had no case.** Four bundles, 46 runs, **all filled** (52-101 s each; nothing moved or loose; the portal's warnings the made-up PEC and the made-up addresses). Round 27's
+«Left» line had put these boxes among those that «need a dictionary entry and an ask each»; the counter had them under «mapped, no case yet» all along (`pubblicita_temporanea_tipo`, `impianto_causa`, `canone_pagamento`, `riprese_tipo`,
+`occupazione_toponimo` and the rest were asked and mapped; every case used one value of each). Check the counter's list before planning dictionary work for a box. No dictionary, rules or recipe change: 46 new answers files
+(`answers-<value>.json` in the rehearsal that holds the section; each the base case with one answer changed, or two that sit in different radio groups), `plan_diff.py` planned all of them (0 differ, none «NOT compared»), `test_gen` takes them with its `answers*.json` glob.
+
+- **Temporary advertising, both forms** (`pubblicita-temporanea-fittizia`, `-scia-fittizia`): the four types the base (cartello di cantiere) leaves unticked, each on its own run: immobile in locazione o vendita, manifestazione o evento, cartello
+  immobiliare, messaggio su vetrina o porta (8 runs).
+- **Take-over and voltura of an advertising installation** (`pubblicita-voltura-fittizia`, `pubblicita-subentro-fittizia`): the eight causes the base (compravendita) leaves unticked, including «altre cause» (with its «specificare») and
+  «successione» (the date of death; the deed's boxes are switched off); the voltura's three other title kinds the cedente held (autorizzazione, comunicazione, D.I.A.) ride on the first three causes (16 runs). Public land's take-over
+  (`suolo-pubblico-subingresso-fittizio`): affitto, fusione, conferimento, donazione, reintestazione, with the same three title kinds (5 runs); a death stays refused by its recipe, as before.
+- **Single boxes:** a partial cessation of an advertising message and of an occupation (`cessazione_parziale`), the advertising's change of name and registered office together (`variazioni`: denominazione + sede legale), the renewal's previous
+  title as an authorization, the canone unico by instalments (`canone_pagamento: a rate`), the promotional initiative's «altro» with the Comune's patronage, the six film-shoot types the base (documentario) leaves unticked, and the five street
+  types the base (VIA) leaves unticked on the occupation's communication (ALTRO, CORSO, LARGO, PIAZZA, VIALE).
+- **The counter** (`schema_branches.py suap`): **471 filled (was 417), 287 mapped with no case (was 341)**, 23 filled on the SUE, 472 not mapped (unchanged), 41 another procedure's. Of the sign and public-land boxes only two stay
+  «mapped, no case»: the advertising renewal's «Si» (a scaffold on public land: the recipe refuses it, asking for the concession's details) and the occupation communication's extra declaration checkbox (not looked at). The temporary-occupation
+  form's five «Finalità dell'iniziativa» radios (previdenza, sanità, educazione, cultura e ricerca scientifica, altre finalità) are among the 472 not mapped: they need a dictionary entry and an ask.
+- **A hidden pane is slow, not stuck.** While the pane was hidden (`document.hidden` true) a run showed the same section for more than three minutes and then finished, its own `total_seconds` 75: the page's timers are throttled. Poll on;
+  `show_pane preview` did not change `document.hidden`, and reloading the page would have lost the queue.
+- **The file picker does not show a temporary folder:** `rerun.py --bundle` says so; the bundle was copied to the Desktop under the name the box shows and removed after the last bundle.
 
 ## What the portal does that bit us
 

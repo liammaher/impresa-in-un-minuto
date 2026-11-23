@@ -12,5 +12,47 @@
   "result": "filled",
   "seconds": 78.6,
   "browser": "pane"
+ },
+ {
+  "date": "2026-11-23",
+  "answers": "answers-film.json",
+  "result": "filled",
+  "seconds": 83,
+  "browser": "pane"
+ },
+ {
+  "date": "2026-11-23",
+  "answers": "answers-fiction.json",
+  "result": "filled",
+  "seconds": 91.8,
+  "browser": "pane"
+ },
+ {
+  "date": "2026-11-23",
+  "answers": "answers-cortometraggio.json",
+  "result": "filled",
+  "seconds": 83.6,
+  "browser": "pane"
+ },
+ {
+  "date": "2026-11-23",
+  "answers": "answers-servizio-tv.json",
+  "result": "filled",
+  "seconds": 90.8,
+  "browser": "pane"
+ },
+ {
+  "date": "2026-11-23",
+  "answers": "answers-spot-pubblicitario.json",
+  "result": "filled",
+  "seconds": 91.8,
+  "browser": "pane"
+ },
+ {
+  "date": "2026-11-23",
+  "answers": "answers-videoclip.json",
+  "result": "filled",
+  "seconds": 86.4,
+  "browser": "pane"
  }
 ]

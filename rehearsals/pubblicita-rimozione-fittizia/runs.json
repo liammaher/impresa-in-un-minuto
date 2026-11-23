@@ -14,5 +14,12 @@
   "seconds": 65.8,
   "browser": "pane",
   "note": "Filled (66 s): that box is filled only for a partial cessation."
+ },
+ {
+  "date": "2026-11-23",
+  "answers": "answers-parziale.json",
+  "result": "filled",
+  "seconds": 51.8,
+  "browser": "pane"
  }
 ]

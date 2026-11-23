@@ -12,5 +12,12 @@
   "result": "filled",
   "seconds": 78.4,
   "browser": "pane"
+ },
+ {
+  "date": "2026-11-23",
+  "answers": "answers-denominazione-sede.json",
+  "result": "filled",
+  "seconds": 52.7,
+  "browser": "pane"
  }
 ]

@@ -5,5 +5,40 @@
   "result": "filled",
   "seconds": 93.7,
   "browser": "pane"
+ },
+ {
+  "date": "2026-11-23",
+  "answers": "answers-affitto.json",
+  "result": "filled",
+  "seconds": 56.3,
+  "browser": "pane"
+ },
+ {
+  "date": "2026-11-23",
+  "answers": "answers-fusione.json",
+  "result": "filled",
+  "seconds": 70.1,
+  "browser": "pane"
+ },
+ {
+  "date": "2026-11-23",
+  "answers": "answers-conferimento.json",
+  "result": "filled",
+  "seconds": 86.2,
+  "browser": "pane"
+ },
+ {
+  "date": "2026-11-23",
+  "answers": "answers-donazione.json",
+  "result": "filled",
+  "seconds": 84.1,
+  "browser": "pane"
+ },
+ {
+  "date": "2026-11-23",
+  "answers": "answers-reintestazione.json",
+  "result": "filled",
+  "seconds": 87.3,
+  "browser": "pane"
  }
 ]
