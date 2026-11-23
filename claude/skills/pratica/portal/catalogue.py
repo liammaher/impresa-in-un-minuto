@@ -702,7 +702,7 @@ def bundle(out, path, srcs, ops, args):
     (out / "pick.js").write_text(f"""document.querySelectorAll("iframe, #pv-pick").forEach((x) => x.remove());
 const box = document.createElement("div"); box.id = "pv-pick";
 box.style.cssText = "position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:2147483647;background:#fff;border:3px solid #1a4fd6;padding:16px 20px;font:16px sans-serif;box-shadow:0 4px 18px rgba(0,0,0,.3);border-radius:8px;max-width:520px";
-box.innerHTML = '<b>Choose <code>{path.name}</code> (once)</b><br><input type="file" accept=".js" style="margin-top:10px"><div style="margin-top:8px;color:#444"></div>';
+box.innerHTML = '<b>Choose <code>{path.name}</code> (once)</b><br><input type="file" accept=".js,.json" style="margin-top:10px"><div style="margin-top:8px;color:#444"></div>';
 document.body.appendChild(box);
 const [input, msg] = [box.querySelector("input"), box.querySelector("div")];
 input.addEventListener("change", async () => {{
@@ -862,7 +862,7 @@ def cmd_pairs(args):
     (out / "pick.js").write_text(f"""document.querySelectorAll("iframe, #pv-pick").forEach((x) => x.remove());
 const box = document.createElement("div"); box.id = "pv-pick";
 box.style.cssText = "position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:2147483647;background:#fff;border:3px solid #1a4fd6;padding:16px 20px;font:16px sans-serif;box-shadow:0 4px 18px rgba(0,0,0,.3);border-radius:8px;max-width:520px";
-box.innerHTML = '<b>Choose <code>{path.name}</code> (once)</b><br><input type="file" accept=".js" style="margin-top:10px"><div style="margin-top:8px;color:#444"></div>';
+box.innerHTML = '<b>Choose <code>{path.name}</code> (once)</b><br><input type="file" accept=".js,.json" style="margin-top:10px"><div style="margin-top:8px;color:#444"></div>';
 document.body.appendChild(box);
 const [input, msg] = [box.querySelector("input"), box.querySelector("div")];
 input.addEventListener("change", async () => {{

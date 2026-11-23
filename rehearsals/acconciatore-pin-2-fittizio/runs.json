@@ -5,5 +5,68 @@
   "result": "filled",
   "seconds": 114.3,
   "browser": "pane"
+ },
+ {
+  "date": "2026-11-23",
+  "answers": "answers-statistica-pnrr.json",
+  "result": "filled",
+  "seconds": 157.8,
+  "browser": "pane"
+ },
+ {
+  "date": "2026-11-23",
+  "answers": "answers-statistica-pnc.json",
+  "result": "filled",
+  "seconds": 138.8,
+  "browser": "pane"
+ },
+ {
+  "date": "2026-11-23",
+  "answers": "answers-statistica-zes.json",
+  "result": "filled",
+  "seconds": 151.4,
+  "browser": "pane"
+ },
+ {
+  "date": "2026-11-23",
+  "answers": "answers-statistica-pnrr-zes.json",
+  "result": "filled",
+  "seconds": 127.6,
+  "browser": "pane"
+ },
+ {
+  "date": "2026-11-23",
+  "answers": "answers-statistica-idrogeno.json",
+  "result": "filled",
+  "seconds": 175.3,
+  "browser": "pane"
+ },
+ {
+  "date": "2026-11-23",
+  "answers": "answers-statistica-gnl.json",
+  "result": "filled",
+  "seconds": 179.8,
+  "browser": "pane"
+ },
+ {
+  "date": "2026-11-23",
+  "answers": "answers-statistica-rifiuti.json",
+  "result": "filled",
+  "seconds": 142.6,
+  "browser": "pane"
+ },
+ {
+  "date": "2026-11-23",
+  "answers": "answers-statistica-facciate.json",
+  "result": "filled",
+  "seconds": 124.1,
+  "browser": "pane"
+ },
+ {
+  "date": "2026-11-23",
+  "answers": "answers-statistica-zes-facciate.json",
+  "result": "filled",
+  "seconds": 169.1,
+  "browser": "pane"
  }
 ]

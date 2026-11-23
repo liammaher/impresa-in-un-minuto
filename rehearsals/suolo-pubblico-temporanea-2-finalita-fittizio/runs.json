@@ -1,0 +1,37 @@
+[
+ {
+  "date": "2026-11-23",
+  "answers": "answers.json",
+  "result": "filled",
+  "seconds": 100.7,
+  "browser": "pane"
+ },
+ {
+  "date": "2026-11-23",
+  "answers": "answers-sanita.json",
+  "result": "filled",
+  "seconds": 97.2,
+  "browser": "pane"
+ },
+ {
+  "date": "2026-11-23",
+  "answers": "answers-educazione.json",
+  "result": "filled",
+  "seconds": 100,
+  "browser": "pane"
+ },
+ {
+  "date": "2026-11-23",
+  "answers": "answers-cultura.json",
+  "result": "filled",
+  "seconds": 96.2,
+  "browser": "pane"
+ },
+ {
+  "date": "2026-11-23",
+  "answers": "answers-altre.json",
+  "result": "filled",
+  "seconds": 108.5,
+  "browser": "pane"
+ }
+]
