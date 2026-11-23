@@ -14,5 +14,12 @@
   "seconds": 73.8,
   "browser": "pane",
   "note": "Filled (74 s): the measures are filled only for a partial cessation."
+ },
+ {
+  "date": "2026-11-23",
+  "answers": "answers-parziale.json",
+  "result": "filled",
+  "seconds": 57.6,
+  "browser": "pane"
  }
 ]

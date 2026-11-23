@@ -12,5 +12,12 @@
   "result": "filled",
   "seconds": 92.2,
   "browser": "pane"
+ },
+ {
+  "date": "2026-11-23",
+  "answers": "answers-rateizzazione.json",
+  "result": "filled",
+  "seconds": 76,
+  "browser": "pane"
  }
 ]

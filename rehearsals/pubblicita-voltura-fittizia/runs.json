@@ -5,5 +5,61 @@
   "result": "filled",
   "seconds": 101.3,
   "browser": "pane"
+ },
+ {
+  "date": "2026-11-23",
+  "answers": "answers-affitto.json",
+  "result": "filled",
+  "seconds": 67,
+  "browser": "pane"
+ },
+ {
+  "date": "2026-11-23",
+  "answers": "answers-fusione.json",
+  "result": "filled",
+  "seconds": 59.9,
+  "browser": "pane"
+ },
+ {
+  "date": "2026-11-23",
+  "answers": "answers-conferimento.json",
+  "result": "filled",
+  "seconds": 63.6,
+  "browser": "pane"
+ },
+ {
+  "date": "2026-11-23",
+  "answers": "answers-fallimento.json",
+  "result": "filled",
+  "seconds": 57.9,
+  "browser": "pane"
+ },
+ {
+  "date": "2026-11-23",
+  "answers": "answers-donazione.json",
+  "result": "filled",
+  "seconds": 56.5,
+  "browser": "pane"
+ },
+ {
+  "date": "2026-11-23",
+  "answers": "answers-reintestazione.json",
+  "result": "filled",
+  "seconds": 56.9,
+  "browser": "pane"
+ },
+ {
+  "date": "2026-11-23",
+  "answers": "answers-altre-cause.json",
+  "result": "filled",
+  "seconds": 62.2,
+  "browser": "pane"
+ },
+ {
+  "date": "2026-11-23",
+  "answers": "answers-successione.json",
+  "result": "filled",
+  "seconds": 59.3,
+  "browser": "pane"
  }
 ]

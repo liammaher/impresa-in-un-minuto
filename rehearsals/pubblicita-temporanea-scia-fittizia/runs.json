@@ -5,5 +5,33 @@
   "result": "filled",
   "seconds": 103.2,
   "browser": "pane"
+ },
+ {
+  "date": "2026-11-23",
+  "answers": "answers-immobile.json",
+  "result": "filled",
+  "seconds": 65.6,
+  "browser": "pane"
+ },
+ {
+  "date": "2026-11-23",
+  "answers": "answers-manifestazione.json",
+  "result": "filled",
+  "seconds": 74.7,
+  "browser": "pane"
+ },
+ {
+  "date": "2026-11-23",
+  "answers": "answers-cartello-immobiliare.json",
+  "result": "filled",
+  "seconds": 90,
+  "browser": "pane"
+ },
+ {
+  "date": "2026-11-23",
+  "answers": "answers-vetrina.json",
+  "result": "filled",
+  "seconds": 87.6,
+  "browser": "pane"
  }
 ]

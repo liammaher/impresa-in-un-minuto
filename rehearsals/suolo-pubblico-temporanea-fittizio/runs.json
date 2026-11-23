@@ -12,5 +12,12 @@
   "result": "filled",
   "seconds": 107.5,
   "browser": "pane"
+ },
+ {
+  "date": "2026-11-23",
+  "answers": "answers-altro-patrocinio.json",
+  "result": "filled",
+  "seconds": 61.3,
+  "browser": "pane"
  }
 ]

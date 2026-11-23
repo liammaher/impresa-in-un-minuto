@@ -12,5 +12,40 @@
   "result": "filled",
   "seconds": 89.8,
   "browser": "pane"
+ },
+ {
+  "date": "2026-11-23",
+  "answers": "answers-altro.json",
+  "result": "filled",
+  "seconds": 87,
+  "browser": "pane"
+ },
+ {
+  "date": "2026-11-23",
+  "answers": "answers-corso.json",
+  "result": "filled",
+  "seconds": 93.4,
+  "browser": "pane"
+ },
+ {
+  "date": "2026-11-23",
+  "answers": "answers-largo.json",
+  "result": "filled",
+  "seconds": 87,
+  "browser": "pane"
+ },
+ {
+  "date": "2026-11-23",
+  "answers": "answers-piazza.json",
+  "result": "filled",
+  "seconds": 86.8,
+  "browser": "pane"
+ },
+ {
+  "date": "2026-11-23",
+  "answers": "answers-viale.json",
+  "result": "filled",
+  "seconds": 100.5,
+  "browser": "pane"
  }
 ]
