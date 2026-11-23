@@ -47,8 +47,6 @@ yours:
 supports:
   - {when: "{{ask.vvf_parziale|not}}", else: "Una SCIA antincendio parziale (lotto, stralcio, adeguamento parziale) non la preparo ancora."}
   - {value: "{{ask.vvf_categoria}}", in: [a], else: "Per le attività di categoria B e C la SCIA antincendio segue l'approvazione del progetto da parte dei Vigili del Fuoco (con il suo numero di pratica): non la preparo ancora."}
-  - {when: "{{ask.vvf_pnrr|not}}", else: "Un'attività finanziata dal PNRR, PNC o ZES apre altre voci della SCIA antincendio, che non preparo ancora."}
-  - {when: "{{ask.vvf_impianti_speciali|not}}", else: "Impianti di idrogeno, GNL/GNC, rifiuti o le facciate e coperture di edifici civili aprono altre voci della SCIA antincendio, che non preparo ancora."}
   - {when: "{{ask.coperto|not}}", else: "I dehors coperti (tipo C o D) non sono ancora gestiti."}
   - {when: "{{ask.centro_storico|not}}", else: "Un dehors nel centro storico per ora non lo preparo."}
   - {when: "{{ask.nuovo_852|not}}", else: "Presentare la notifica Reg. 852 insieme al dehors per ora non lo preparo: presenta prima l'apertura dell'attività."}

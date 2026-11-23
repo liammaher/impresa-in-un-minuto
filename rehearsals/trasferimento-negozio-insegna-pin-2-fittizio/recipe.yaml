@@ -50,8 +50,6 @@ yours:
 supports:
   - {when: "{{ask.vvf_parziale|not}}", else: "Una SCIA antincendio parziale (lotto, stralcio, adeguamento parziale) non la preparo ancora."}
   - {value: "{{ask.vvf_categoria}}", in: [a], else: "Per le attività di categoria B e C la SCIA antincendio segue l'approvazione del progetto da parte dei Vigili del Fuoco (con il suo numero di pratica): non la preparo ancora."}
-  - {when: "{{ask.vvf_pnrr|not}}", else: "Un'attività finanziata dal PNRR, PNC o ZES apre altre voci della SCIA antincendio, che non preparo ancora."}
-  - {when: "{{ask.vvf_impianti_speciali|not}}", else: "Impianti di idrogeno, GNL/GNC, rifiuti o le facciate e coperture di edifici civili aprono altre voci della SCIA antincendio, che non preparo ancora."}
   - {when: "{{ask.insegna_consenso|not}}", else: "Un'insegna che richiede il consenso del proprietario o del condominio per ora non la preparo."}
   - {when: "{{ask.insegna_bene_culturale|not}}", else: "Un'insegna su un edificio o in un'area tutelati come bene culturale richiede prima l'autorizzazione della Soprintendenza (art. 49 D.Lgs. 42/2004): non lo preparo ancora."}
   - {when: "{{ask.insegna_grande|not}}", else: "Le insegne sopra i 5 m² pagano anche il canone unico: per ora non lo preparo."}
