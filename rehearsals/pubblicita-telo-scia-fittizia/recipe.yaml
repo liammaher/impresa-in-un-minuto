@@ -1,13 +1,13 @@
-# Richiedere l'autorizzazione per installazione di pubblicità su teli collegati a facciate di palazzi e monumenti, su ponteggi di cantiere, recinzioni ed altre strutture di servizio e di pertinenza (Esercizio di somministrazione di alimenti e bevande in zone NON tutelate), as gen.py writes its steps file from the batch crawl
-# (catalogue/F839/sections/suap-common-mezzi-pubblicitari-installazione-di-mezzi-pubblicitari-richi.json), for the made-up business of this folder's fixture.json.
-# Derived from rehearsals/pubblicita-temporanea-scia-fittizia (bench/derive_recipe.py): no `rules:` and no `after:`; the attachments and payment screens are not read.
+# SCIA per installazione di pubblicità su teli collegati a facciate di palazzi e monumenti, su ponteggi di cantiere, recinzioni, ed altre strutture di servizio e di pertinenza (Esercizio di somministrazione di alimenti e bevande in zone NON tutelate), as gen.py writes its steps file from the batch crawl
+# (catalogue/F839/sections/suap-common-mezzi-pubblicitari-installazione-di-mezzi-pubblicitari-scia-6.json), for the made-up business of this folder's fixture.json.
+# Derived from rehearsals/pubblicita-telo-fittizia (bench/derive_recipe.py): no `rules:` and no `after:`; the attachments and payment screens are not read.
 procedure: napoli/comune/insegna-esercizio
-title: "Richiedere l'autorizzazione per installazione di pubblicità su teli collegati a facciate di palazzi e monumenti, su ponteggi di cantiere, recinzioni ed altre strutture di servizio e di pertinenza, bar o ristorante, SUAP Napoli"
+title: "SCIA per installazione di pubblicità su teli collegati a facciate di palazzi e monumenti, su ponteggi di cantiere, recinzioni, ed altre strutture di servizio e di pertinenza, bar o ristorante, SUAP Napoli"
 comune: F839
 sportello: suap
-crawl: suap-common-mezzi-pubblicitari-installazione-di-mezzi-pubblicitari-richi
+crawl: suap-common-mezzi-pubblicitari-installazione-di-mezzi-pubblicitari-scia-6
 subject: impresa
-operation: Richiedere l'autorizzazione per installazione di pubblicità su teli collegati a facciate di palazzi e monumenti, su ponteggi di cantiere, recinzioni ed altre strutture di servizio e di pertinenza
+operation: SCIA per installazione di pubblicità su teli collegati a facciate di palazzi e monumenti, su ponteggi di cantiere, recinzioni, ed altre strutture di servizio e di pertinenza
 start: https://suap.impresainungiorno.gov.it/fnsuap/cmd/create?comune=F839
 wizard:
   - screen: Assegna una descrizione alla pratica
@@ -15,7 +15,7 @@ wizard:
     confirm: CONFERMA
   - {screen: Controlla l'accesso alla pratica, confirm: CONFERMA}
   - {screen: Scelta settore attività, tree: [Esercizio di somministrazione di alimenti e bevande in zone NON tutelate], confirm: CONFERMA}
-  - {screen: Scelta operazioni, tree: ["Richiedere l'autorizzazione per installazione di pubblicità su teli collegati a facciate di palazzi e monumenti, su ponteggi di cantiere, recinzioni ed altre strutture di servizio e di pertinenza"], confirm: CONFERMA}
+  - {screen: Scelta operazioni, tree: ["SCIA per installazione di pubblicità su teli collegati a facciate di palazzi e monumenti, su ponteggi di cantiere, recinzioni, ed altre strutture di servizio e di pertinenza"], confirm: CONFERMA}
   - {screen: Scelta del destinatario della pratica, confirm: CONFERMA}
   - {screen: Scelte eventuali, confirm: CONFERMA}
 groups:

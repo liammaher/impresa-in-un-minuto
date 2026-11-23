@@ -127,6 +127,728 @@
   "suap-061-aprire-l-attivita": {
    "checked": "2026-11-12",
    "differences": []
+  },
+  "suap-004-aprire-l-attivita": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-004-cessare-l-attivita": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-004-sospendere-l-attivita": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-004-subentrare-nell-esercizio-dell-attivita": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-004-trasferire-la-sede-dell-attivita": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-004-variazioni-soggetti": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-004-variazioni-strutturali": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-005-aprire-l-attivita": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-005-cessare-l-attivita": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-005-subentrare-nell-esercizio-dell-attivita": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-005-trasferire-la-sede-dell-attivita": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-011-aprire-l-attivita-di-acconciatore": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-011-aprire-l-attivita-di-estetista": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-011-cessare-l-attivita-di-acconciatore": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-011-cessare-l-attivita-di-estetista": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-011-sospendere-l-attivita-di-acconciatore": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-011-sospendere-l-attivita-di-estetista": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-011-subentrare-nell-attivita-di-acconciatore": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-011-subentrare-nell-attivita-di-estetista": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-011-trasferire-la-sede-dell-attivita-di-acconciatore": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-011-trasferire-la-sede-dell-attivita-di-estetista": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-011-variazioni-soggetti-in-attivita-di-acconciatore": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-011-variazioni-soggetti-in-attivita-di-estetista": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-011-variazioni-strutturali-in-attivita-di-acconciatore": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-011-variazioni-strutturali-in-attivita-di-estetista": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-016-cessare-l-attivita": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-016-sospendere-l-attivita": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-016-subentrare-nell-esercizio-dell-attivita": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-016-trasferire-la-sede-dell-attivita": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-016-variazioni-soggetti": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-016-variazioni-strutturali": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-017-cessare-l-attivita": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-017-sospendere-l-attivita": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-017-subentrare-nell-esercizio-dell-attivita": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-017-trasferire-la-sede-dell-attivita": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-017-variazioni-soggetti": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-017-variazioni-strutturali": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-018-cessare-l-attivita": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-018-subentrare-nell-esercizio-dell-attivita": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-018-trasferire-la-sede-dell-attivita": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-018-variazioni-soggetti": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-018-variazioni-strutturali": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-056-aprire-l-attivita": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-056-cessare-l-attivita": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-056-sospendere-l-attivita": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-060-cessare-l-attivita": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-060-sospendere-l-attivita": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-060-subentrare-nell-esercizio-dell-attivita": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-060-trasferire-la-sede-dell-attivita": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-060-variazioni-soggetti": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-061-cessare-l-attivita": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-061-subentrare-nell-esercizio-dell-attivita": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-061-trasferire-la-sede-dell-attivita": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-061-variazioni-soggetti": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-061-variazioni-strutturali": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-002-iniziare-l-attivita-di-vendita-di-prodotti-agricol": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-003-aprire-l-attivita": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-003-cessare-l-attivita": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-003-comunicazione-all-agenzia-delle-dogane-per-la-vend": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-003-scia-per-variazioni-strutturali": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-006-aprire-l-attivita": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-010-aprire-l-attivita": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-010-comunicazione-variazione-responsabile-tecnico": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-011-affitto-di-poltrona-cabina-per-esercizio-attivita": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-011-subentrare-nell-attivita-di-tatuatore-piercer": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-011-trasferire-la-sede-dell-attivita-di-tatuatore-pier": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-011-variazioni-soggetti-in-attivita-di-tatuatore-pierc": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-014-aprire-l-attivita": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-014-comunicazione-variazione-responsabile-tecnico": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-014-variazioni-soggetti": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-015-comunicazione-per-lo-svolgimento-di-attivita-conce": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-015-rilascio-tesserino-per-hobbisti-o-creatori-delle-o": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-016-affidare-in-gestione-reparto": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-016-aprire-lattivita-di-temporary-shop": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-016-inizio-attivita-per-l-esercizio-di-vicinato-nel-se": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-016-richiedere-l-orario-di-apertura-in-deroga-a-quanto": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-016-ridurre-il-settore-merceologico": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-016-ridurre-la-superficie-di-vendita": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-017-avvio-di-consumo-immediato-sul-posto-per-esercizio": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-017-inizio-attivita-per-l-esercizio-di-vicinato-nel-se": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-019-ampliare-la-superficie-di-vendita": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-019-ampliare-la-superficie-di-vendita-a-seguito-di-con": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-019-ampliare-la-superficie-di-vendita-per-attivita-ult": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-019-aprire-l-attivita": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-019-aprire-l-attivita-per-accorpamento-o-concentrazion": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-019-modifica-della-superficie-di-un-centro-commerciale": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-019-modifica-di-ripartizione-della-superficie-di-vendi": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-019-prorogare-l-attivazione-dell-attivita": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-019-trasferimento-di-sede-senza-ampliamento": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-019-trasferire-la-sede-dell-attivita": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-019-variare-settore-merceologico": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-020-aprire-l-attivita": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-020-aprire-l-attivita-per-accorpamento-o-concentrazion": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-020-subentrare-nell-esercizio-dell-attivita": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-020-trasferimento-di-sede-senza-ampliamento": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-020-trasferire-la-sede-dell-attivita": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-054-domanda-per-prima-classificazione-rinnovo-o-modifi": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-054-scia-per-variazioni-strutturali": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-056-comunicazione-avvio-attivita-di-locazione-breve-tu": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-056-comunicazione-per-variazione-in-attivita-di-locazi": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-056-scia-per-variazione-in-locazione-breve-turistica-a": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-056-scia-per-variazioni-strutturali": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-060-aggiunzione-di-linee-d-attivita-in-uno-stabiliment": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-060-ampliamento-di-superficie": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-060-avvio-delle-attivita": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-060-riattivazione-delle-attivita-sospese-volontariamen": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-060-richiesta-di-approvazione-del-progetto-relativo-al": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-060-richiesta-di-approvazione-del-progetto-teso-allagg": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-060-richiesta-di-approvazione-progetto-per-riconoscime": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-060-richiesta-di-riconoscimento-per-una-impresa-senza": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-060-variazione-sede-legale-di-una-impresa-che-conduce": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-060-variazione-titolarita-di-uno-stabilimento-registra": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-060-variazioni-significative-allo-stato-dei-luoghi": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-common-autorizzazione-unica-ambientale-a-u-a-adempimenti-successivi": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-common-autorizzazione-unica-ambientale-a-u-a-adempimenti-successivi-2": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-common-autorizzazione-unica-ambientale-a-u-a-adempimenti-successivi-3": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-common-autorizzazione-unica-ambientale-a-u-a-istanza-di-autorizzazi": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-common-autorizzazione-unica-ambientale-a-u-a-istanza-di-autorizzazi-10": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-common-autorizzazione-unica-ambientale-a-u-a-istanza-di-autorizzazi-11": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-common-autorizzazione-unica-ambientale-a-u-a-istanza-di-autorizzazi-3": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-common-autorizzazione-unica-ambientale-a-u-a-istanza-di-autorizzazi-4": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-common-autorizzazione-unica-ambientale-a-u-a-istanza-di-autorizzazi-5": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-common-autorizzazione-unica-ambientale-a-u-a-istanza-di-autorizzazi-6": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-common-autorizzazione-unica-ambientale-a-u-a-istanza-di-autorizzazi-7": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-common-autorizzazione-unica-ambientale-a-u-a-istanza-di-autorizzazi-8": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-common-autorizzazione-unica-ambientale-a-u-a-istanza-di-autorizzazi-9": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-common-autorizzazione-unica-ambientale-a-u-a-volturare-l-autorizzaz": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-common-comunicare-il-rispetto-dei-valori-di-zona-circa-l-emissione": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-common-emissioni-in-atmosfera-comunicare-emissioni-ad-inquinamento": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-common-emissioni-in-atmosfera-modificare-in-modo-non-sostanziale-un": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-common-emissioni-in-atmosfera-richiedere-la-voltura-di-autorizzazio": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-common-emissioni-in-atmosfera-richiesta-di-adesione-all-autorizzazi": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-common-emissioni-in-atmosfera-richiesta-di-adesione-all-autorizzazi-2": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-common-mezzi-pubblicitari-installazione-di-mezzi-pubblicitari-comun": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-common-mezzi-pubblicitari-installazione-di-mezzi-pubblicitari-comun-2": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-common-mezzi-pubblicitari-installazione-di-mezzi-pubblicitari-modif": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-common-mezzi-pubblicitari-installazione-di-mezzi-pubblicitari-richi-2": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-common-mezzi-pubblicitari-installazione-di-mezzi-pubblicitari-rimoz": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-common-mezzi-pubblicitari-installazione-di-mezzi-pubblicitari-rinno": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-common-mezzi-pubblicitari-installazione-di-mezzi-pubblicitari-scia": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-common-mezzi-pubblicitari-installazione-di-mezzi-pubblicitari-scia-2": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-common-mezzi-pubblicitari-installazione-di-mezzi-pubblicitari-scia-3": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-common-mezzi-pubblicitari-installazione-di-mezzi-pubblicitari-scia-4": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-common-mezzi-pubblicitari-installazione-di-mezzi-pubblicitari-scia-5": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-common-mezzi-pubblicitari-installazione-di-mezzi-pubblicitari-varia": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-common-mezzi-pubblicitari-installazione-di-mezzi-pubblicitari-voltu": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-common-occupazione-suolo-pubblico-cessazione-di-occupazione-di-suol": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-common-occupazione-suolo-pubblico-comunicazione-occupazione-suolo-p": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-common-occupazione-suolo-pubblico-domanda-di-concessione-occupazion": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-common-occupazione-suolo-pubblico-domanda-di-occupazione-suolo-area": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-common-occupazione-suolo-pubblico-domanda-di-occupazione-suolo-pubb": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-common-occupazione-suolo-pubblico-domanda-di-occupazione-temporanea": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-common-occupazione-suolo-pubblico-domanda-di-occupazione-temporanea-2": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-common-occupazione-suolo-pubblico-richiesta-di-occupazione-suolo-pu": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-common-occupazione-suolo-pubblico-rinnovo-di-concessione-occupazion": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-common-occupazione-suolo-pubblico-subingresso-alla-concessione-per": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-common-prevenzione-incendi-pin-1-istanza-di-valutazione-del-progett": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-common-prevenzione-incendi-pin-3-attestazione-di-rinnovo-periodico": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-common-prevenzione-incendi-pin-4-istanza-di-deroga-al-rispetto-dell": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-common-prevenzione-incendi-pin-5-istanza-di-nulla-osta-di-fattibili": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-common-prevenzione-incendi-pin-6-istanza-di-verifiche-in-corso-d-op": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-common-richiedere-l-autorizzazione-in-deroga-ai-limiti-di-rumorosit": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-common-rifiuti-in-procedura-semplificata-comunicazione-di-esercizio": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-common-scarichi-istanza-di-assimilazione-alle-acque-reflue-domestic": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-common-scarichi-volturare-l-autorizzazione-allo-scarico-di-acque-re": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-common-scarichi-volturare-l-autorizzazione-allo-scarico-di-acque-re-2": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-common-spandimenti-in-agricoltura-richiedere-l-autorizzazione-all-u": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-010-variazioni-soggetti": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-012-aprire-l-attivita": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-012-subentrare-nell-esercizio-dell-attivita": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-012-trasferire-la-sede-dell-attivita": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-012-variazioni-soggetti": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-012-variazioni-strutturali": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-013-aprire-l-attivita": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-054-aprire-l-attivita": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-056-comunicazione-per-la-variazione-nelle-strutture-ri": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-056-scia-per-avvio-locazione-breve-turistica-a-caratte": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-060-variazione-del-preposto-in-attivita-di-somministra": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-011-aprire-l-attivita-di-tatuatore-piercer": {
+   "checked": "2026-11-23",
+   "differences": []
+  },
+  "suap-common-mezzi-pubblicitari-installazione-di-mezzi-pubblicitari-richi": {
+   "checked": "2026-11-23",
+   "differences": [
+    "gone: Richiedere l'autorizzazione per installazione di pubblicità su teli collegati a facciate di palazzi e monumenti (the wizard now offers the SCIA for these cloths, crawled as suap-common-mezzi-pubblicitari-installazione-di-mezzi-pubblicitari-scia-6)"
+   ]
   }
  }
 }

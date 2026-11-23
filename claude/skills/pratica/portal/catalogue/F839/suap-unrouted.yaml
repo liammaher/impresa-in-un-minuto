@@ -153,7 +153,7 @@ suolo-pubblico-concessione-fittizio: "a public-land concession request, filed al
 suolo-pubblico-temporanea-fittizio: "a one-off public-land occupation request, filed alone: the table has no event for it and no library procedure"
 suolo-pubblico-subingresso-fittizio: "the take-over of a public-land concession, filed alone: the table adds the dehors' concession only as `also` of an opening, never as a main pratica, and has no event for a concession's take-over"
 albergo-apertura-fittizio: "a hotel: not an `attivita` of the table (the router has no activity for it) and no library procedure"
-pubblicita-telo-fittizia: "the authorization of an advertising cloth, filed alone: the table adds the sign's SCIA only as `also` of an opening, move or take-over, never as a main pratica, and has no event for an authorization of advertising"
+pubblicita-telo-scia-fittizia: "the SCIA for an advertising cloth, filed alone (the portal replaced the authorization with it, seen 2026-11-23): the table adds the sign's SCIA only as `also` of an opening, move or take-over, never as a main pratica, and has no event for advertising on cloths"
 responsabile-tecnico-officina-fittizio: "a garage's technical manager designated by communication (the degree): a variation of people with no `attivita` event in the table and no library procedure"
 responsabile-tecnico-officina-diploma-fittizio: "a garage's technical manager designated by communication (the diploma): a variation of people with no `attivita` event in the table and no library procedure"
 responsabile-tecnico-officina-esperienza-fittizio: "a garage's technical manager designated by communication (the experience as titolare): a variation of people with no `attivita` event in the table and no library procedure"
