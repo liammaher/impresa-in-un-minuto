@@ -305,6 +305,14 @@ def _():
     assert "box shown" in out, out
 
 
+@case("the file box takes a .json bundle as well as .js (2026-11-23: the macOS picker greyed out b1-bundle.json, \"won't let me pick it\"); catalogue.py's two boxes the same")
+def _():
+    pick = (built() / "pick.js").read_text()
+    assert 'accept=".js,.json"' in pick, pick[-900:]
+    cat = (HERE.parent / "catalogue.py").read_text()
+    assert cat.count('<input type="file" accept=".js,.json"') == 2 and '<input type="file" accept=".js"' not in cat
+
+
 @case("check.js says the same on the sign-in page, in the same words")
 def _():
     check = (built() / "check.js").read_text()

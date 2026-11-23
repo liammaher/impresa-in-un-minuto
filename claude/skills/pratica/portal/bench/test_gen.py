@@ -2085,7 +2085,7 @@ def _():
     assert checked >= 60, checked
 
 
-@case("no two SUAP rehearsals' cases share a draft name: a draft is read and found by its name, the newest of it (2026-11-12: the twins of sectors 60 and 61 and two recognition forms had one each)")
+@case("no two SUAP rehearsals share a draft name: a draft is read and found by its name, the newest of it (2026-11-12: the twins of sectors 60 and 61 and two recognition forms had one each). The cases of ONE rehearsal share its name on purpose: a batch runs them one after another and each reads back the newest draft of the name, its own (rounds 28-29 ran dozens that way, all filled). Until round 29 the check compared cases, so it failed from round 28 on and went unseen, those rounds not running test_gen")
 def _():
     seen = {}
     for d in sorted((ROOT / "rehearsals").iterdir()):
@@ -2095,8 +2095,7 @@ def _():
         for a in sorted(d.glob("answers*.json")):
             name = json.loads(a.read_text()).get("descrizione")
             if name:
-                assert name not in seen, (name, seen[name], f"{d.name}/{a.name}")
-                seen[name] = f"{d.name}/{a.name}"
+                assert seen.setdefault(name, d.name) == d.name, (name, seen[name], f"{d.name}/{a.name}")
     assert len(seen) >= 120, len(seen)
 
 
