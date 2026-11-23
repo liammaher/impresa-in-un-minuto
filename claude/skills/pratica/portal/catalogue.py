@@ -4,6 +4,8 @@
     catalogue.py ops sue|suap [--sectors N,M] [--common]   the batch's `ops`, as JSON (suap: what is not stored or
                                                            recorded same; a path crawled in another sector is a
                                                            `check` op `like` it; --all: every pair, as before)
+    catalogue.py ops suap --check [NAME ...]               check ops for stored crawls, each in its own sector; none named:
+                                                           the fewest crawls vouching for every section not yet vouched
     catalogue.py ops sue --combo NAME MAIN OTHER           two operations in one pratica, with the procura
                                                            scelta and its attachments screen (crawl.js `also`)
     catalogue.py known                                     fingerprints of the stored crawls
@@ -16,7 +18,8 @@
                                                            text, its sha256 checked)
     catalogue.py drift --digests FILE|-                   digest.js's per-pratica digests against the stored
                                                            crawls: the same are recorded, the others named
-    catalogue.py pane DIR                                  the pane's scripts: install.js stores wizard.js
+    catalogue.py pane DIR                                  the pane's scripts (tree.js: the live list of a sector's operations):
+                                                           install.js stores wizard.js
                                                            and crawl.js in localStorage, load.js runs them
                                                            (an op with `like`: against that pratica, into same.json)
     catalogue.py pairs DIR --bundle FILE                   the SUE wizard's operations two at a time (wizard.js
@@ -111,7 +114,64 @@ def sue_name(label):
     return "sue-" + slug(label, 72)
 
 
+def stored_op(name):
+    """A check op for a stored SUAP crawl, or None (a combination, a crawl named in prose): its path and the sector it was crawled
+    in, which its `pratica` ends with («SUAP: <path> (sector <sector>)»). The sector matters for a common operation: `ops suap
+    --common` hangs them on the first sector (Allevamento), which does not offer all of them, and a check of
+    `...-richi` read «not in the tree» there (2026-11-23); the sector of the crawl has it."""
+    c = json.loads((SECTIONS / f"{name}.json").read_text())
+    pratica = c.get("pratica", "")
+    if c.get("also") or "operations in one pratica" in pratica or not pratica.startswith("SUAP: ") or " (sector " not in pratica:
+        return None
+    if name.endswith("-interventi") or ticked_interventi(c.get("screens")):
+        return None  # crawled with a tick on: a plain check reads the base pratica, whose sections are not the tick's
+    path, _, sector = pratica[len("SUAP: "):].rpartition(" (sector ")
+    return {"name": name, "sector": sector[:-1] if sector.endswith(")") else sector, "sector_nth": 0, "path": path, "check": True}
+
+
+def vouched():
+    """The sections (name, fingerprint) an unchanged drift entry vouches for, today or earlier."""
+    drift = json.loads((CAT / "drift.json").read_text())["pratiche"] if (CAT / "drift.json").exists() else {}
+    cache, out = {}, set()
+    for n, d in drift.items():
+        if n.startswith("suap-") and not d.get("differences") and (SECTIONS / f"{n}.json").exists():
+            out |= {(s, f) for s, f in stored_fingerprints(n, cache).items() if f}
+    return out
+
+
+def check_ops(names=None):
+    """Check ops for the named stored crawls, or, with none named, the fewest whose checks would vouch for every SUAP section
+    no unchanged drift entry vouches for yet (greedy: the crawl with the most such sections first; 2026-11-23: 125 operations
+    covered 534 of 541 sections, where the 60 wedge pratiche covered 103). A crawl a check cannot be built for (no op spec:
+    a combination, a crawl with a tick) is left out and counted on stderr."""
+    cache = {}
+    if names:
+        ops = [stored_op(n) for n in names]
+        bad = [n for n, o in zip(names, ops) if o is None]
+        if bad:
+            sys.exit(f"no check op for {bad}: a combination or a crawl named in prose")
+        return ops
+    have = sorted(p.stem for p in SECTIONS.glob("suap-*.json"))
+    secs = {n: {(s, f) for s, f in stored_fingerprints(n, cache).items() if f} for n in have}
+    left = set().union(*secs.values()) - vouched()
+    drift = json.loads((CAT / "drift.json").read_text())["pratiche"] if (CAT / "drift.json").exists() else {}
+    # A crawl whose pratica changed needs a new crawl, not a check (its sections would be picked for ever).
+    buildable = {n: (None if drift.get(n, {}).get("differences") else stored_op(n)) for n in have}
+    chosen = []
+    while left:
+        best = max((n for n in have if buildable[n]), key=lambda n: len(secs[n] & left), default=None)
+        if best is None or not secs[best] & left:
+            break
+        chosen.append(best)
+        left -= secs[best]
+    print(f"check cover: {len(chosen)} operations; {len(left)} sections left that no buildable crawl holds; "
+          f"{sum(1 for n in have if not buildable[n])} crawls have no check op", file=sys.stderr)
+    return [buildable[n] for n in chosen]
+
+
 def ops_of(args):
+    if args.sportello == "suap" and getattr(args, "check", None) is not None:
+        return check_ops(args.check)
     if args.sportello == "sue" and args.combo:
         # Two operations in one pratica (a building pratica with its landscape authorization):
         # only the scelte a recipe takes (the procura) are tried, and the attachments screen is
@@ -557,9 +617,31 @@ def drift_digests(source):
             again.append(name)
             out.append(f"{name}: differs: print it (window.pvCheckNames, check-print.js) for `drift -`")
     path.write_text(json.dumps(drift, ensure_ascii=False, indent=1) + "\n")
+    if len(again) >= 10 and len(again) * 2 >= len(data["digests"]):
+        out.append(f"{len(again)} of {len(data['digests'])} differ: when nearly all do, suspect the scratch draft (a run's saved values change four sections' "
+                   "fingerprints) before the portal: print one (check-print.js) and `drift -` says so if it is")
     if again:
         out.append("window.pvCheckNames = " + json.dumps(again))
     return out
+
+
+TELEMACO = "dichiarazione della user Telemaco"
+
+
+def only_aside(diff, scelte):
+    """True when what a check lists is no change of the portal's: the sections a scelta adds (a stored crawl older than the
+    variants lacks them) and ComUnica's Telemaco user, which the portal shows only under the fourth of the preselected
+    destinatari, so a crawl and a check can disagree about it (README, 2026-11-12). A changed section, or one gone that is
+    not Telemaco, stays a difference. 2026-11-23: 11 of 125 checks "differed" on these alone, and a recorded difference makes
+    gen.py and pre-flight refuse the pratica."""
+    return bool(diff) and all(d.startswith(("new: ", "gone: ")) and (d.partition(": ")[2] == TELEMACO
+                              or (d.startswith("new: ") and d[5:] in scelte)) for d in diff)
+
+
+DRAFT_STATE = ("Oggetto della pratica", "DOMICILIO DIGITALE", "DOMICILIO ELETTRONICO (DOMICILIO DIGITALE SPECIALE)")
+DIRTY_DRAFT = ("the scratch draft looks dirty: «Oggetto della pratica» and both domicilio sections changed together, which is what saved "
+               "values in the draft do to a fingerprint (the description's «N Caratteri restanti», «Indirizzo Pec non valido»); "
+               "use a fresh `PROVA NON INVIARE - catalogo suap` draft (catalogue/README.md), clear today's checks (pane --check --fresh) and check again")
 
 
 def cmd_drift(args):
@@ -587,13 +669,13 @@ def cmd_drift(args):
         now = {s["section"]: s.get("fingerprint") for s in r["sections"] if not s.get("skipped") and not s.get("error")}
         diff = sorted(f"gone: {n}" for n in old if n not in now) + sorted(f"new: {n}" for n in now if n not in old)
         diff += sorted(f"changed: {n}" for n in now if n in old and now[n] != old[n])
-        if like and diff:
+        if diff:
             # A stored crawl older than the variants lacks the sections a scelta adds (the procura's), which a check lists:
             # the same pratica when those are all that differs, as drift --digests reads it (2026-11-17: 22 of the first
             # bundle's 39 "differed" for that alone, the 011 crawls being older than the variants). A changed or gone
-            # section, or a new one no scelta adds, stays a difference.
+            # section, or a new one no scelta adds, stays a difference. Own crawls too (2026-11-23: it had been only `like`).
             scelte = {x["section"] for x in r["sections"] if x.get("scelta")}
-            if all(d.startswith("new: ") and d[5:] in scelte for d in diff):
+            if only_aside(diff, scelte):
                 diff, aside = [], True
         if like:
             # The same operation in another sector: the same pratica, or one to crawl itself.
@@ -601,11 +683,34 @@ def cmd_drift(args):
             (same["different" if not diff else "same"]).pop(name, None)
             out.append(f"{name}: " + (f"same pratica as {like}" + (" (its scelte's sections aside)" if aside else "") if not diff else f"differs from {like}, crawl it: " + "; ".join(diff)))
             continue
+        if all(f"changed: {s}" in diff for s in DRAFT_STATE) and DIRTY_DRAFT not in out:
+            out.append(DIRTY_DRAFT)
         drift["pratiche"][name] = {"checked": r["crawled"][:10], "differences": diff}
-        out.append(f"{name}: " + ("same as the stored crawl" if not diff else "; ".join(diff)))
+        out.append(f"{name}: " + (("same as the stored crawl" + (" (its scelte's sections and the Telemaco user aside)" if aside else "")) if not diff else "; ".join(diff)))
     path.write_text(json.dumps(drift, ensure_ascii=False, indent=1) + "\n")
     SAME.write_text(json.dumps(same, ensure_ascii=False, indent=1, sort_keys=True) + "\n")
     return out
+
+
+# A check says «not in the tree» for an operation the portal no longer offers (2026-11-23: the advertising cloth's authorization is now a
+# SCIA); this reads the live list of one sector's group to see which. Set window.pvTree = {sector, match} (the sector's name or its start,
+# a regular expression for the labels), on the portal's origin with load.js run; it returns the matching nodes of «Scelta operazioni».
+TREE_JS = """document.querySelectorAll("iframe").forEach((x) => x.remove());
+const { sector, match } = window.pvTree, draft = window.pvTree.draft || JSON.parse(localStorage.getItem("crawl:batch") || "{}").draft;
+const f = document.createElement("iframe"); f.dataset.pv = "crawl";
+f.style.cssText = "position:fixed;inset:0;width:100vw;height:100vh;border:0;z-index:2147483647;background:#fff";
+const loaded = new Promise((r) => f.addEventListener("load", r, { once: true })); f.src = location.href; document.body.append(f); await loaded;
+await new Promise((r) => setTimeout(r, 4000));
+const d = window.__wizard.driver(f, draft), norm = (s) => s.toLowerCase().replace(/\\s+/g, " ").trim();
+await d.reopen(true); await d.toScreen("scelta settore");
+const sec = d.tree().find((n) => norm(n.label).startsWith(norm(sector)));
+if (!sec) throw new Error("no sector " + sector);
+await d.setSelected(sec.key, true); await d.go(() => d.button("Conferma").click());
+await new Promise((r) => setTimeout(r, 3000));
+const re = new RegExp(match, "i"), nodes = d.tree().filter((n) => re.test(n.label)).map((n) => [n.key, n.type, n.label.slice(0, 230)]);
+const title = d.title(); f.remove();
+JSON.stringify({ title, n: nodes.length, nodes })
+"""
 
 
 def cmd_pane(args):
@@ -634,6 +739,7 @@ def cmd_pane(args):
         "const stale = []; for (const k of Object.keys(want)) if (await sha(localStorage.getItem(k) || \"\") !== want[k]) stale.push(k);\n"
         "if (!stale.length) { (0, eval)(localStorage.getItem(\"pv-wizard\")); (0, eval)(localStorage.getItem(\"pv-crawl\")); }\n"
         "stale.length ? `stale: ${stale.join(\", \")}: run install.js` : \"loaded\"\n")
+    (out / "tree.js").write_text(TREE_JS)
     if not args.bundle:
         return [f"{out}/install.js ({(out / 'install.js').stat().st_size // 1024} KB), {out}/load.js: "
                 "on the portal's origin, load.js first; install.js only if it says stale"]
@@ -651,6 +757,11 @@ def bundle(out, path, srcs, ops, args):
     if args.check:
         ops = [{**o, "check": True} for o in ops]
     draft = args.draft or default_draft(names)
+    if args.check:
+        # A fingerprint hashes labels and ids, and the portal writes a saved draft's state into both (the description's
+        # "N Caratteri restanti", "Indirizzo sconosciuto", a revealed box): 2026-11-23, 55 of 55 "differed" on a draft a run had filled.
+        print(f"drift check on {draft!r}: it must be a fresh draft (never one a run filled), or four common sections differ in every pratica",
+              file=sys.stderr)
     if names and all(n.startswith("suap-") for n in names) and "catalogo sue" in draft:
         raise SystemExit("these are SUAP's pratiche but the scratch draft is the SUE's: every sector would read \"not in the tree\"; "
                          "pass --draft of a SUAP draft (it must exist in Pratiche in bozza)")
@@ -677,6 +788,8 @@ def bundle(out, path, srcs, ops, args):
             + (f"  for (const k of [\"crawl:known\", \"crawl:scelte\"]) {{ const v = localStorage.getItem(k); if (v !== null) localStorage.setItem(k + \":{stamp}\", v); }}\n"
                "  localStorage.setItem(\"crawl:known\", \"{}\"); localStorage.removeItem(\"crawl:scelte\");\n" if args.forget_known else "")
             + ("  for (const o of opts.ops) localStorage.removeItem(\"crawl:op:\" + o.name);\n" if args.fresh or args.forget_known else "")
+            # A check made earlier today counts as today's (`since` is the date): after a pass on a dirty scratch draft it would be skipped.
+            + ("  for (const o of opts.ops) localStorage.removeItem(\"crawl:check:\" + o.name);\n" if args.check and (args.fresh or args.forget_known) else "")
             + "  window.__crawlBusy = true;\n  window.__crawl.batch(opts);\n"
             f"  return `started: ${{opts.ops.length}} pratiche, depth ${{opts.depth}}{' (fresh)' if args.fresh or args.forget_known else ''}`;\n")
     text = (f"(() => {{\n{guard}  const src = {json.dumps(srcs)};\n"
@@ -716,7 +829,9 @@ input.addEventListener("change", async () => {{
 "box shown: pick the file once, then poll status.js"
 """)
     # As rerun.py's results.js: it waits only while the pane shows the page.
-    (out / "status.js").write_text("""if (!document.hidden) await new Promise((r) => setTimeout(r, 38000));
+    (out / "status.js").write_text("""// Always wait: the pane reads document.hidden as true while it is shown in the app, and a poll that skipped its wait
+// returned at once, many times in a minute (2026-11-23). A hidden page's timers run, only slower.
+await new Promise((r) => setTimeout(r, 38000));
 const r = window.__crawl ? await window.__crawl.wait(300) : null;
 JSON.stringify(r ? { done: r.done, done_ops: r.done_ops, skipped: r.skipped, of: JSON.parse(localStorage.getItem("crawl:batch")).ops.length,
   current: r.current, tried: r.tried, errors: r.errors, stopped: r.stopped, error: r.error, storage: r.storage } : "no crawl in this tab")
@@ -875,7 +990,9 @@ input.addEventListener("change", async () => {{
 }});
 "box shown: pick the file once, then poll status.js"
 """)
-    (out / "status.js").write_text("""if (!document.hidden) await new Promise((r) => setTimeout(r, 38000));
+    (out / "status.js").write_text("""// Always wait: the pane reads document.hidden as true while it is shown in the app, and a poll that skipped its wait
+// returned at once, many times in a minute (2026-11-23). A hidden page's timers run, only slower.
+await new Promise((r) => setTimeout(r, 38000));
 const r = window.__wizard ? await window.__wizard.wait(300) : null;
 JSON.stringify(r && r.pairs ? { done: r.done, done_ops: r.done_ops, skipped: r.skipped, of: r.pairs, current: r.current,
   errors: r.errors, stopped: r.stopped, error: r.error } : "no probe in this tab")
@@ -964,6 +1081,8 @@ def main():
     p.add_argument("--sectors", help="SUAP sector indices in suap-wizard.json, comma-separated")
     p.add_argument("--common", action="store_true", help="the common operations, under the first sector")
     p.add_argument("--all", action="store_true", help="also the pratiche already crawled (suap: every sector-operation pair, no checks)")
+    p.add_argument("--check", nargs="*", metavar="NAME", help="suap: check ops (pass them to `pane --check`) for these stored crawls, in the sector each was crawled in; "
+                   "with no name, the fewest crawls that vouch for every section no unchanged drift entry vouches for yet")
     p.add_argument("--combo", nargs="+", action="append", metavar="NAME MAIN OTHER",
                    help="sue: a combination's crawl name, then its operations' labels, the main one first; repeat it for several. suap: NAME SECTOR_INDEX MAIN OTHER, the operations by the start of their leaf label")
     p.add_argument("--scelta", action="append", help="--combo: a scelta to try, for every combination (default: the procura)")

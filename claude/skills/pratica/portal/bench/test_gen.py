@@ -819,6 +819,38 @@ def _():
             catalogue.CAT, catalogue.SECTIONS, catalogue.SAME = old
 
 
+@case("a drift check of a pratica's own crawl sets aside the sections a scelta adds and the Telemaco user (the preselected destinatario), not a changed or gone one (2026-11-23: 11 of 125 recorded as changed for those alone, which pre-flight refuses)")
+def _():
+    import tempfile, catalogue
+    with tempfile.TemporaryDirectory() as tmp:
+        base = batch_copy(tmp)
+        old = (catalogue.CAT, catalogue.SECTIONS, catalogue.SAME)
+        catalogue.CAT = base / "catalogue/F839"
+        catalogue.SECTIONS, catalogue.SAME = catalogue.CAT / "sections", catalogue.CAT / "same.json"
+        try:
+            n = "suap-016-cessare-l-attivita"
+            fps = catalogue.stored_fingerprints(n)
+            first = next(iter(fps))
+            def check(extra=(), change=None, gone=None, scelta=()):
+                secs = [{"section": k, "fingerprint": ("0" * 16 if k == change else v)} for k, v in fps.items() if k != gone]
+                secs += [{"section": s, "fingerprint": "1" * 16, **({"scelta": "x"} if s in scelta else {})} for s in extra]
+                return {"name": n, "crawled": "2026-11-23T00:00:00Z", "sections": secs}
+            def run(**kw):
+                export = base / "export.json"
+                export.write_text(gen.json.dumps({"crawl:check:" + n: check(**kw)}))
+                out = catalogue.cmd_drift(type("a", (), {"export": str(export)}))
+                return gen.json.loads((catalogue.CAT / "drift.json").read_text())["pratiche"][n]["differences"], out
+            assert run()[0] == []
+            assert run(extra=["Nomina del rappresentante"], scelta=["Nomina del rappresentante"])[0] == []   # a scelta's own section
+            assert run(extra=[catalogue.TELEMACO])[0] == []                                                  # the 4th destinatario
+            assert run(extra=["Nomina del rappresentante"])[0] == ["new: Nomina del rappresentante"]          # new, no scelta adds it
+            assert run(change=first)[0] == [f"changed: {first}"]
+            assert run(gone=first)[0] == [f"gone: {first}"]
+            assert run(change=first, extra=[catalogue.TELEMACO])[0] == [f"new: {catalogue.TELEMACO}", f"changed: {first}"]  # the real change keeps it all listed
+        finally:
+            catalogue.CAT, catalogue.SECTIONS, catalogue.SAME = old
+
+
 @case("a choice made for only some answers inside a branch sends what follows by label (CILA tolerances, d.1)")
 def _():
     steps = gen.generate(gen.load_yaml(CILA / "recipe.yaml"))
@@ -2538,7 +2570,7 @@ def _():
 
 ROUND10 = {
     "pubblicita-temporanea-scia-fittizia": "suap-common-mezzi-pubblicitari-installazione-di-mezzi-pubblicitari-scia-2",
-    "pubblicita-telo-fittizia": "suap-common-mezzi-pubblicitari-installazione-di-mezzi-pubblicitari-richi",
+    "pubblicita-telo-scia-fittizia": "suap-common-mezzi-pubblicitari-installazione-di-mezzi-pubblicitari-scia-6",  # 2026-11-23: the portal replaced the cloth's authorization (…-richi) with this SCIA
     "albergo-apertura-fittizio": "suap-054-aprire-l-attivita",
     "aua-voltura-fittizia": "suap-common-autorizzazione-unica-ambientale-a-u-a-volturare-l-autorizzaz",
     "suolo-pubblico-comunicazione-fittizio": "suap-common-occupazione-suolo-pubblico-comunicazione-occupazione-suolo-p",

@@ -46,8 +46,10 @@ catastale (`F839` is Napoli).
 
 In the Claude browser pane, logged in, on a scratch draft named "PROVA NON INVIARE -
 catalogo <sportello>" (Liam deletes it afterwards). If Pratiche in bozza hasn't it, make it:
-`/fnsuap/cmd/create?comune=F839&tipoSportello=E` (the SUE), its name in the description box,
-Conferma, then Conferma on the access screen; the draft is listed from then on.
+`/fnsuap/cmd/create?comune=F839&tipoSportello=E` (the SUE; the SUAP's is `/fnsuap/cmd/create?comune=F839`), its name in the description box,
+Conferma, then Conferma on the access screen; the draft is listed from then on. **Never reuse a draft a run has filled** (a rehearsal's):
+a fingerprint hashes labels and ids, and a saved description, PEC or address changes them («140 Caratteri restanti», «Indirizzo Pec non valido»,
+a revealed INI-PEC box), so every pratica of a drift check then «differs» in the same four sections (2026-11-23: 55 of 55). Keep this one empty.
 
 `catalogue.py pane DIR` writes the scripts: on the portal's origin run `load.js` (it runs the
 copies kept in the pane's localStorage), and `install.js` only when it says they're stale (it
