@@ -64,14 +64,11 @@ class InstallPage(unittest.TestCase):
         self.assertIn("https://github.com/liammaher/impresa-in-un-minuto", PAGE)  # the admin's import source
 
     def test_claude_is_recommended(self):
-        # Claude is the recommended app (2026-11-21): the switch says so, opens on Claude, and the ChatGPT tab says why.
+        # Claude is the recommended app (2026-11-21): the switch says so and opens on Claude.
         claude = PAGE.split('data-pick="claude"', 1)[1].split("</button>", 1)[0]
         self.assertIn('aria-pressed="true"', claude)
         self.assertIn("Consigliato", claude)
         self.assertIn("Recommended", claude)
-        chatgpt = PAGE.split('<div data-for="chatgpt">', 1)[1]
-        self.assertIn("<strong>Consigliamo Claude.</strong>", chatgpt.split("<ol>", 1)[0])
-        self.assertIn("<strong>We recommend Claude.</strong>", chatgpt.split("<ol>", 1)[0])
         self.assertIn('html:not([data-app="chatgpt"]) [data-for="chatgpt"]', PAGE)  # hidden unless chosen
 
     def test_prova_phrase_is_the_skills(self):
