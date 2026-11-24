@@ -10,6 +10,11 @@ sportello: suap
 crawl: suap-011-aprire-l-attivita-di-tatuatore-piercer
 subject: impresa
 operation: Aprire l'attività di tatuatore / piercer
+# The two choices that open the holder of the professional requirement's declarations (answers `tat_altri_qualificati`, `tat_conduzione_rt`, no by default):
+# the person, when someone else than the one declaring holds it, is `q:` in answers.json people.
+scelte:
+  - {option: "nella conduzione dell'attività partecipano soci qualificati / familiari coadiuvanti/ collaboratori/ dipendenti dell'impresa", when: "{{ask.tat_altri_qualificati}}"}
+  - {option: "la conduzione dell'attività è effettuata dal \"responsabile tecnico\"", when: "{{ask.tat_conduzione_rt}}"}
 start: https://suap.impresainungiorno.gov.it/fnsuap/cmd/create?comune=F839
 wizard:
   - screen: Assegna una descrizione alla pratica
@@ -19,7 +24,12 @@ wizard:
   - {screen: Scelta settore attività, tree: [{leaf: "Acconciatore, barbiere, estetista, tatuatore e piercer", nth: 1}], confirm: CONFERMA}
   - {screen: Scelta operazioni, tree: ["Aprire l'attività di tatuatore / piercer"], confirm: CONFERMA}
   - {screen: Scelta del destinatario della pratica, confirm: CONFERMA}
-  - {screen: Scelte eventuali, confirm: CONFERMA}
+  # A recipe with its own wizard ticks its scelte itself (gen.py adds the screen only to a generated wizard).
+  - screen: Scelte eventuali
+    tree:
+      - {leaf: "nella conduzione dell'attività partecipano soci qualificati / familiari coadiuvanti/ collaboratori/ dipendenti dell'impresa", when: "{{ask.tat_altri_qualificati}}"}
+      - {leaf: "la conduzione dell'attività è effettuata dal \"responsabile tecnico\"", when: "{{ask.tat_conduzione_rt}}"}
+    confirm: CONFERMA
 groups:
   extras:
     question: "Qualcuna di queste voci vale per l'attività? Spunta tutte quelle che valgono, o nessuna."

@@ -49,6 +49,10 @@
     ["locale.catasto_subalterno", "7"],
     ["locale.catasto_categoria", "C/1"],
     ["locale.superficie_mq", "45"],
-    ["locale.destinazione_uso", "negozio"]
+    ["locale.destinazione_uso", "negozio"],
+    ["quinto:ruolo.tipo", "dipendente"],
+    ["quinto:identity.display_name", "Quinto Fittizio"],
+    ["quinto:identity.first_name", "Quinto"],
+    ["quinto:identity.last_name", "Fittizio"]
   ]
 }

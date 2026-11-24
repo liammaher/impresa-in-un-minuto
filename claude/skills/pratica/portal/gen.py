@@ -1118,6 +1118,14 @@ def generate(recipe, base=HERE):
         {"screen": "Scelta operazioni", "tree": op["label"], "confirm": "CONFERMA"},
         {"screen": "Scelta del destinatario della pratica", "confirm": "CONFERMA"},
     ]
+    if scelte and "wizard" in recipe:
+        # A recipe with its own wizard ticks its scelte itself: one it names but no screen ticks adds its sections to the steps and stops the
+        # run on «no section» (2026-11-23: the tatuatore's two requisito scelte; the draft had the base's 17 sections).
+        ticked = {x if isinstance(x, str) else x.get("leaf") for w in recipe["wizard"] for x in (w.get("tree") if isinstance(w.get("tree"), list) else [w.get("tree")] if w.get("tree") else [])}
+        ticked |= {k for w in recipe["wizard"] for k in (w.get("answers") or {})}  # a Si/No screen answers each choice by its label
+        unticked = [sc for sc in scelte if sc not in ticked]
+        if unticked:
+            raise GenError(f"{recipe['crawl']}: the recipe has its own wizard, and no screen of it ticks {unticked}: add each as a leaf of the «Scelte eventuali» tree")
     if recipe.get("scelte") is not None and "wizard" not in recipe:
         tree = [{"leaf": s, "when": scelta_when[s]} if s in scelta_when else s for s in scelte]
         wizard.append({"screen": "Scelte eventuali", **({"tree": tree[0] if len(tree) == 1 else tree} if tree else {}),

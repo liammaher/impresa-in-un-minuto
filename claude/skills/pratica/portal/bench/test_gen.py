@@ -2086,11 +2086,15 @@ def _():
     steps = generated("estetista-fittizio")
     sec = section(steps, "Dichiarazione sul possesso dei requisiti professionali (attività di estetista)")
     labels = [f["label"] for f in sec["fields"]]
+    # Round 31: someone else holding the requirement is mapped (the person `q`), its five boxes `on_page` like the radio's.
     assert labels == ["di essere Responsabile tecnico", "di essere in possesso della qualificazione", "rilasciata da", "in data", "con atto n.",
-                      "che il/i Responsabile/i tecnico/i è/sono:"], labels
+                      "che il/i Responsabile/i tecnico/i è/sono:", "Cognome", "Nome", "in qualità di",
+                      "che possiede/ono l'abilitazione professionale prevista,", "Tipologie ammesse"], labels
     assert next(f for f in sec["fields"] if f["label"] == "di essere in possesso della qualificazione")["kind"] == "radio", sec
+    assert next(f for f in sec["fields"] if f["label"] == "Cognome")["value"] == "{{q:identity.last_name}}", sec
     refusals = " ".join(str(c.get("else", "")) for c in steps.get("supports", []))
-    assert "legge n. 1 del 1990" in refusals and "responsabile tecnico è un'altra persona" in refusals, refusals
+    assert "legge n. 1 del 1990" in refusals and "lettera q" in refusals and "una sola delle due" in refusals, refusals
+    assert "per ora non lo preparo" not in refusals, refusals
     # The hairdresser's own section keeps its boxes (abilitazione, rilasciata da twice).
     acc = section(generated("acconciatore-fittizio"), "Dichiarazione sul possesso dei requisiti professionali (attività di acconciatore)")
     assert any("abilitazione professionale" in f["label"] for f in acc["fields"]), acc

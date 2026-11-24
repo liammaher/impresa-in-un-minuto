@@ -5,5 +5,19 @@
   "result": "filled",
   "seconds": 122.3,
   "browser": "pane"
+ },
+ {
+  "date": "2026-11-23",
+  "answers": "answers-requisito-socio.json",
+  "result": "filled",
+  "seconds": 91.4,
+  "browser": "pane"
+ },
+ {
+  "date": "2026-11-23",
+  "answers": "answers-requisito-dipendente.json",
+  "result": "filled",
+  "seconds": 81.9,
+  "browser": "pane"
  }
 ]

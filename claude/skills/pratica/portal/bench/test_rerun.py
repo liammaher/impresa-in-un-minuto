@@ -380,5 +380,72 @@ def _():
         shutil.rmtree(tmp, ignore_errors=True)
 
 
+@case("loop.js says which names it did not run because the tab held a result under them, and results.js lists them (round 26: a stored result read as a run)")
+def _():
+    import re
+    import subprocess
+    msg, q = batch("ristorante-fittizio")
+    assert msg is None, msg
+    loop = (batch.out / "loop.js").read_text()
+    res = (batch.out / "results.js").read_text()
+    assert "pvBatchSkipped" in loop and "not_run" in res, "the skip is silent again"
+    if not shutil.which("node"):
+        return
+    stub = 'window.__pv = {start(p, v) { window.started = (window.started || []).concat(p); }, wait: async () => ({result: "filled", sections: [], total_seconds: 1})};'
+    want = re.search(r'"pv-runner": "([0-9a-f]{64})"', (batch.out / "check.js").read_text())[1]
+    import hashlib
+    harness = (
+        "global.window = {pvBatch: [['old', 'p1', {}], ['new', 'p2', {}]]}; global.document = {querySelectorAll: () => []};\n"
+        f"const store = {{'pv-runner': {json.dumps(stub)}}};\n"
+        "global.localStorage = {getItem: (k) => store[k] ?? null};\n"
+        "const ss = {'pv-batch': JSON.stringify([{name: 'old', result: 'stopped', error: 'an earlier batch'}])};\n"
+        "global.sessionStorage = {getItem: (k) => ss[k] ?? null, setItem: (k, v) => { ss[k] = v; }};\n"
+        "(0, eval)(" + json.dumps(loop.replace(want, hashlib.sha256(stub.encode()).hexdigest())) + ");\n"
+        "global.__pv = {start(p) { (window.started = window.started || []).push(p); }, wait: async () => ({result: 'filled', sections: [], total_seconds: 1})};\n"
+        "window.pvBatchRun.then(() => console.log(JSON.stringify({started: window.started, skipped: window.pvBatchSkipped, halted: window.pvBatchHalted})));\n"
+    )
+    out = subprocess.run(["node", "-e", harness], capture_output=True, text=True, timeout=30)
+    got = json.loads(out.stdout.strip().splitlines()[-1]) if out.stdout.strip() else out.stderr
+    assert got == {"started": ["p2"], "skipped": ["old"], "halted": None}, got
+    # results.js reports them
+    body = res.split("setTimeout(r, 35000));\n", 1)[1]
+    harness = (
+        "global.window = {pvBatch: [1, 2], pvBatchSkipped: ['old']}; global.document = {hidden: true};\n"
+        "global.sessionStorage = {getItem: (k) => k === 'pv-batch' ? JSON.stringify([{name: 'old', result: 'stopped'}]) : null};\n"
+        "console.log((0, eval)(" + json.dumps(body) + "));\n"
+    )
+    out = subprocess.run(["node", "-e", harness], capture_output=True, text=True, timeout=30)
+    assert json.loads(out.stdout.strip().splitlines()[-1])["not_run"] == ["old"], out.stdout + out.stderr
+
+
+@case("read_draft.js: on the portal's error page (where Back lands) the helper says so, and values() reads a section in full (round 31)")
+def _():
+    if not shutil.which("node"):
+        return
+    import subprocess
+    src = (HERE.parent / "read_draft.js").read_text(encoding="utf-8")
+    harness = (
+        "const el = (name, type, value, checked, text, visible = true) => ({name: 'x:dynaForm:' + name, type, value, checked, disabled: false,\n"
+        "  offsetParent: visible ? {} : null, closest: () => ({innerText: text, previousElementSibling: null}), parentElement: null});\n"
+        "const els = [el('a', 'text', 'Fittizio', false, 'Cognome'), el('b', 'text', '', false, 'Nome'), el('c', 'checkbox', 'on', true, 'tick'),\n"
+        "  el('d', 'radio', 'x', true, 'REA', false), el('e', 'radio', 'y', false, 'other', false), el('f', 'text', 'x'.repeat(150), false, 'long'),\n"
+        "  el('g', 'text', 'hidden value', false, 'hid', false)];\n"
+        "global.window = {}; global.document = {querySelectorAll: (s) => s.includes('dynaForm') ? els : []};\n"
+        "global.location = {pathname: '/fnsuap/cmd/error'};\n"
+        "(0, eval)(" + json.dumps(src) + ");\n"
+        "(async () => {\n"
+        "const bad = []; for (const f of ['open', 'section', 'list', 'sections', 'page']) bad.push(String(await window.__draft[f]('x')));\n"
+        "location.pathname = '/fnsuap/cmd/home';\n"
+        "console.log(JSON.stringify({bad, values: JSON.parse(window.__draft.values())}));\n"
+        "})();\n"
+    )
+    out = subprocess.run(["node", "-e", harness], capture_output=True, text=True, timeout=30)
+    got = json.loads(out.stdout.strip().splitlines()[-1]) if out.stdout.strip() else out.stderr
+    assert isinstance(got, dict), got
+    assert all("error page" in b and "cmd/home" in b for b in got["bad"]), got["bad"]
+    assert [v[0] for v in got["values"]] == ["a", "c", "d", "f"], got["values"]
+    assert got["values"][0][2] == "Fittizio" and got["values"][1][2] == "CHK" and got["values"][2][2] == "CHK" and len(got["values"][3][2]) == 100, got["values"]
+
+
 print(f"{sum(results)}/{len(results)} passed")
 sys.exit(0 if all(results) else 1)

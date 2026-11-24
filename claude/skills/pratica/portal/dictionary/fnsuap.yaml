@@ -83,6 +83,8 @@
 # presenting the pratica, `a:`/`a2:`/`a3:` other technicians appointed for the works
 # and `ad:`/`ad2:`/`ad3:` the firm each is employed by.
 # `v:` the professional who signs the fire prevention's asseverazione (the SCIA VV.F., PIN 2): a person of their own, never the titolare.
+# `q:` the person who holds the professional requirement when it isn't the one declaring (the acconciatore's and estetista's «che il/i Responsabile/i
+# tecnico/i è/sono:»): surname, first name and ruolo are read from the vault; the case is refused with no `q`.
 
 # Yes/no asks with a `group` are asked as one checklist (`item`), the answer the list of
 # items that apply.
@@ -1674,6 +1676,23 @@ asks:
   arredi_tavoli_materiale: {type: text, question: "Il materiale dei tavoli (30 caratteri al massimo)"}
   arredi_tavoli_colore: {type: text, question: "Il colore dei tavoli (30 caratteri al massimo)"}
   rt_dichiarazione_doc: {type: file, question: "La dichiarazione del responsabile tecnico compilata (si scarica dal portale), con la copia del suo documento d'identità (PDF)"}
+  # The tatuatore's and piercer's holders of the professional requirement (the opening's two wizard choices «nella conduzione dell'attività
+  # partecipano soci qualificati / familiari coadiuvanti / collaboratori / dipendenti» and «la conduzione dell'attività è effettuata dal
+  # "responsabile tecnico"»). The person is `q:` in answers.json people; both default to no, so a case that names neither is unchanged.
+  tat_altri_qualificati: {type: yes_no, default: "false", question: "Nella conduzione dell'attività partecipa una persona qualificata (un socio, un familiare coadiuvante, un collaboratore o un dipendente) che ha il requisito professionale al posto tuo? Il modulo chiede allora i suoi dati e i suoi attestati. La persona va indicata tra quelle della pratica con la lettera q"}
+  tat_conduzione_rt: {type: yes_no, default: "false", question: "La conduzione dell'attività è affidata a un responsabile tecnico, che è un'altra persona? Il modulo chiede allora il suo nome, il rapporto di lavoro con l'impresa e l'iscrizione al REA. La persona va indicata tra quelle della pratica con la lettera q"}
+  tat_corso_ente: {type: text, question: "Chi ha rilasciato l'attestato del corso di formazione (80 caratteri al massimo)"}
+  tat_corso_data: {type: date, question: "La data dell'attestato del corso di formazione"}
+  tat_corso_regione: {type: text, question: "La Regione che riconosce l'attestato (100 caratteri al massimo)"}
+  tat_corso_regione_data: {type: date, question: "La data in cui la Regione ha riconosciuto l'attestato"}
+  tat_corso_numero: {type: text, question: "Il numero identificativo del riconoscimento della Regione (30 caratteri al massimo)"}
+  tat_asl_ente: {type: text, question: "L'ASL che ha organizzato il corso abilitante, ad es. Napoli 1 Centro (100 caratteri al massimo)"}
+  tat_asl_data: {type: date, question: "La data in cui l'ASL ha rilasciato l'attestato di frequenza"}
+  tat_asl_numero: {type: text, question: "Il numero identificativo dell'attestato dell'ASL (30 caratteri al massimo)"}
+  rapporto_lavoro_rt: {type: text, question: "Che rapporto di lavoro ha con l'impresa il responsabile tecnico, in una parola (30 caratteri al massimo: titolare, socio, dipendente, collaboratore, ...)", propose: "{{q:ruolo.tipo|rapporto_lavoro}}"}
+  rea_rt: {type: choice, question: "Il responsabile tecnico è iscritto al REA o ha presentato la domanda di iscrizione? iscritto; domanda", options: [iscritto, domanda]}
+  rea_rt_numero: {type: text, question: "Il numero REA del responsabile tecnico (9 caratteri al massimo)"}
+  rea_rt_data: {type: date, question: "La data di iscrizione al REA del responsabile tecnico, o della domanda"}
   # A hotel's structural SCIA (sector 054, round 9): the variation of the classification or "altro" (the capacity needs the draft read).
   hotel_variazione: {type: choice, question: "Che variazione segnali per l'albergo? classificazione; altro", options: [classificazione, altro]}
   hotel_classif_ambito: {type: choice, question: "La classificazione varia per la struttura principale o per una dipendenza? struttura principale; dipendenza", options: [struttura principale, dipendenza]}
@@ -1858,12 +1877,10 @@ asks:
   data_qualifica_estero_professionale: {type: "date", question: "in data", schema: "modulo_acconciatori_estetisti_apertura/acconciatori_estetisti_apertura/acconciatori_estetisti_apertura/data_qualifica_estero_professionale"}
   altro: {type: "yes_no", question: "altro?", schema: "modulo_acconciatori_estetisti_apertura/acconciatori_estetisti_apertura/acconciatori_estetisti_apertura/altro_check"}
   altro_testo: {type: "text", question: "altro: (specificare)", schema: "modulo_acconciatori_estetisti_apertura/acconciatori_estetisti_apertura/acconciatori_estetisti_apertura/altro"}
-  multi_responsabili_tecnici: {type: "yes_no", question: "che il/i Responsabile/i tecnico/i è/sono:?", schema: "modulo_acconciatori_estetisti_apertura/acconciatori_estetisti_apertura/acconciatori_estetisti_apertura/multi_responsabili_tecnici_check"}
-  cognome: {type: "text", question: "Cognome", schema: "modulo_acconciatori_estetisti_apertura/acconciatori_estetisti_apertura/acconciatori_estetisti_apertura/responsabile_tecnico_blocco/cognome"}
-  nome: {type: "text", question: "Nome", schema: "modulo_acconciatori_estetisti_apertura/acconciatori_estetisti_apertura/acconciatori_estetisti_apertura/responsabile_tecnico_blocco/nome"}
-  tipo_qualita_responsabile_tecnico: {type: "choice", question: "in qualità di", schema: "modulo_acconciatori_estetisti_apertura/acconciatori_estetisti_apertura/acconciatori_estetisti_apertura/responsabile_tecnico_blocco/tipo_qualita_responsabile_tecnico", options: ["Titolare", "Socio partecipante al lavoro", "Familiare coadiuvante", "Dipendente"]}
-  essere_responsabile_qualifica_professionale: {type: "yes_no", question: "che possiede/ono l'abilitazione professionale prevista, come dichiarato in Allegato B.?", schema: "modulo_acconciatori_estetisti_apertura/acconciatori_estetisti_apertura/acconciatori_estetisti_apertura/essere_responsabile_qualifica_professionale_check"}
-  allegato_dichiarazione_sul_possesso_dei_requisiti: {type: "file", question: "Caricare l'ALLEGATO B compilato + Copia documento di Identità in corso di validità"}
+  multi_responsabili_tecnici: {type: "yes_no", question: "Il requisito professionale (l'abilitazione o la qualifica) ce l'ha un'altra persona, e non tu? In quel caso il modulo chiede il suo cognome, nome e ruolo, e di caricare il suo Allegato (B per l'acconciatore, C per l'estetista) con la copia del suo documento. La persona va indicata tra quelle della pratica con la lettera q", schema: "modulo_acconciatori_estetisti_apertura/acconciatori_estetisti_apertura/acconciatori_estetisti_apertura/multi_responsabili_tecnici_check"}
+  tipo_qualita_responsabile_tecnico: {type: "choice", question: "In che qualità lavora nell'attività chi ha il requisito professionale? Titolare; Socio partecipante al lavoro; Familiare coadiuvante; Dipendente (dal suo ruolo nell'impresa si propongono titolare, socio e dipendente; familiare coadiuvante non ha un ruolo suo e lo dici tu)", propose: "{{q:ruolo.tipo|requisito_qualita}}", schema: "modulo_acconciatori_estetisti_apertura/acconciatori_estetisti_apertura/acconciatori_estetisti_apertura/responsabile_tecnico_blocco/tipo_qualita_responsabile_tecnico", options: ["Titolare", "Socio partecipante al lavoro", "Familiare coadiuvante", "Dipendente"]}
+  essere_responsabile_qualifica_professionale: {type: "yes_no", question: "Chi ha il requisito professionale lo dichiara con l'Allegato B (acconciatore) o C (estetista)? In quel caso il modulo chiede di caricare l'Allegato compilato e la copia del suo documento d'identità in corso di validità", schema: "modulo_acconciatori_estetisti_apertura/acconciatori_estetisti_apertura/acconciatori_estetisti_apertura/essere_responsabile_qualifica_professionale_check"}
+  allegato_dichiarazione_sul_possesso_dei_requisiti: {type: "file", question: "L'Allegato B (acconciatore) o C (estetista) compilato e firmato da chi ha il requisito professionale, con la copia del suo documento d'identità (un unico file: PDF, anche firmato .p7m)"}
   # Round 5 (2026-11-12): medium shops in a shopping centre or built by merger, the renewal of a dehors' concession, the
   # stabilimenti's (Reg. CE 852/853) variation of title, of the premises and of the project.
   centro_commerciale_tipo: {type: choice, question: "Di che tipo è il centro commerciale in cui si trova l'esercizio? (il modulo offre MA/M e ME per le medie strutture, G2CQ, G2CI, G2CS e GACP per le grandi, senza spiegarle: se non lo sai, chiedilo al SUAP)", options: ["MA/M", "ME", "G2CQ", "G2CI", "G2CS", "GACP"]}
@@ -6845,6 +6862,56 @@ sections:
   - section: dichiarazione del rispetto delle leggi e regolamenti vigenti in materia
     theirs: [di rispettare tutte le norme di legge e regolamenti vigenti]
     fields: []
+  # The tatuatore's and piercer's holder of the professional requirement, someone else than the one declaring (`q:` in answers.json people:
+  # surname, name, codice fiscale, birth, citizenship, sex, residence, from the vault; the attestato's boxes are asked). Read on the crawl
+  # (2026-10-28, behind the wizard's scelta «nella conduzione dell'attività partecipano soci qualificati…»); the form has two attestati,
+  # a corso di formazione recognised by the Regione and an ASL's corso abilitante, and wants BOTH: a run that filled one stopped on the
+  # other's boxes with «il valore e obbligatorio» (2026-11-23, two runs, one each way).
+  # «Comune» and «Provincia» are there twice (the birth place, then the residence), «Stato» is the birth country.
+  - section: DICHIARAZIONE RELATIVA AI REQUISITI PROFESSIONALI PER L'ATTIVITÀ DI TATUATORE E PIERCER
+    supports:
+      - {value: "{{ask.tat_altri_qualificati,q:identity.last_name|requisito_holder}}", in: ["true"], else: "Il modulo chiede i dati di chi ha il requisito professionale al posto tuo: la persona deve essere nel vault dell'impresa (con cognome, nome, codice fiscale, nascita, residenza e ruolo) e indicata tra quelle della pratica con la lettera q. Senza di lei non preparo la pratica."}
+    fields:
+      - {kind: checkbox, label: titolare, when: "{{ask.tipo_qualita_responsabile_tecnico|is_titolare}}"}
+      - {kind: checkbox, label: socio, when: "{{ask.tipo_qualita_responsabile_tecnico|is_socio_partecipante_al_lavoro}}"}
+      - {kind: checkbox, label: familiare coadiuvante/ collaboratore/ dipendende dell'impresa, when: "{{ask.tipo_qualita_responsabile_tecnico|in_familiare_coadiuvante__dipendente}}"}
+      - {kind: text, label: cognome, value: "{{q:identity.last_name}}"}
+      - {kind: text, label: nome, value: "{{q:identity.first_name}}"}
+      - {kind: text, label: codice fiscale, value: "{{q:identity.codice_fiscale}}"}
+      - {kind: date, label: data di nascita, value: "{{q:identity.date_of_birth|date_it}}"}
+      - {kind: select, label: cittadinanza, value: "{{q:identity.citizenship|cittadinanza}}"}
+      - {kind: radio, label: M, when: "{{q:identity.sex|is_m}}"}
+      - {kind: radio, label: F, when: "{{q:identity.sex|is_f}}"}
+      - {kind: select, label: Stato, value: "{{q:identity.birth_country}}"}
+      - {kind: text, label: Comune, nth: 1, value: "{{q:identity.birth_comune}}"}
+      - {kind: text, label: Provincia, nth: 1, value: "{{q:identity.birth_province}}"}
+      - {kind: text, label: Comune, nth: 2, value: "{{q:residenza.comune}}"}
+      - {kind: text, label: Provincia, nth: 2, value: "{{q:residenza.provincia}}"}
+      - {kind: text, label: "via, piazza", value: "{{q:residenza.indirizzo}}"}
+      - {kind: text, label: numero civico, value: "{{q:residenza.civico}}"}
+      - {kind: text, label: C.A.P., value: "{{q:residenza.cap}}"}
+      - {kind: text, label: "in possesso di attestato relativo al corso di formazione per l'attività rilasciato da:", value: "{{ask.tat_corso_ente}}"}
+      - {kind: date, label: in data, nth: 1, value: "{{ask.tat_corso_data|date_it}}"}
+      - {kind: text, label: "L’attestato inoltre è riconosciuto dalla Regione (indicare la Regione)", value: "{{ask.tat_corso_regione}}"}
+      - {kind: date, label: in data, nth: 2, value: "{{ask.tat_corso_regione_data|date_it}}"}
+      - {kind: text, label: "con il numero identificativo:", nth: 1, value: "{{ask.tat_corso_numero}}"}
+      - {kind: text, label: "In possesso di attestato di frequenza di corso abilitante all’attività di tatuatore/percing organizzato dall’ASL di", value: "{{ask.tat_asl_ente}}"}
+      - {kind: date, label: "Rilasciato in data:", value: "{{ask.tat_asl_data|date_it}}"}
+      - {kind: text, label: "con il numero identificativo:", nth: 2, value: "{{ask.tat_asl_numero}}"}
+  # The responsabile tecnico who conducts the activity (behind «la conduzione dell'attività è effettuata dal "responsabile tecnico"»): his or
+  # her name and relation to the business from the vault, the REA asked. Each REA radio has its own «in data» (the first for «È iscritto», the
+  # second for «Ha presentato domanda»): the other is switched off, and a run that typed the first after «domanda» stopped there (2026-11-23).
+  - section: dichiarazione di qualifica professionale del responsabile tecnico
+    supports:
+      - {value: "{{ask.tat_conduzione_rt,q:identity.last_name|requisito_holder}}", in: ["true"], else: "Se la conduzione è affidata a un responsabile tecnico, il modulo chiede il suo nome: la persona deve essere nel vault dell'impresa e indicata tra quelle della pratica con la lettera q. Senza di lei non preparo la pratica."}
+    fields:
+      - {kind: text, label: Sig./sig.a, value: "{{q:identity.first_name}} {{q:identity.last_name}}"}
+      - {kind: text, label: che nei confronti dell'impresa ha il seguente rapporto di lavoro, value: "{{ask.rapporto_lavoro_rt}}"}
+      - {kind: radio, label: È iscritto al REA, when: "{{ask.rea_rt|is_iscritto}}"}
+      - {kind: text, label: numero REA, value: "{{ask.rea_rt_numero}}", when: "{{ask.rea_rt|is_iscritto}}"}
+      - {kind: radio, label: Ha presentato domanda di iscrizione al REA, when: "{{ask.rea_rt|is_domanda}}"}
+      - {kind: date, label: in data, nth: 1, value: "{{ask.rea_rt_data|date_it}}", when: "{{ask.rea_rt|is_iscritto}}"}
+      - {kind: date, label: in data, nth: 2, value: "{{ask.rea_rt_data|date_it}}", when: "{{ask.rea_rt|is_domanda}}"}
   - section: dichiarazione del responsabile tecnico
     theirs: [di essere a conoscenza che il responsabile tecnico debba garantire]
     fields: []
@@ -6899,24 +6966,38 @@ sections:
   # the first is mapped: the others' boxes are unread, so they are refused. Its crawl borrowed the hairdresser's
   # reveals (`same_as` by the section's fingerprint before any choice), hence `leave`, and lacks the qualification
   # radio and its three boxes, hence `on_page`. The radio's label is a short prefix: the full text was not found
-  # by label on the page. "che il/i Responsabile/i tecnico/i è/sono:" asks someone else's details: refused.
+  # by label on the page. "che il/i Responsabile/i tecnico/i è/sono:" (someone else holds the requirement) is mapped since round 31 from the
+  # person `q:` (its Cognome, Nome, «in qualità di», the tick «come dichiarato in Allegato C» and its file, all `on_page`: filled on the portal 2026-11-23).
   - section: "Dichiarazione sul possesso dei requisiti professionali (attività di estetista)"
     leave: [di essere in possesso dell'abilitazione professionale, di essere in possesso di qualifica, di avere conseguito la qualificazione professionale,
-            con decreto n., altro, (specificare), Cognome, Nome, in qualità di, che possiede/ono l'abilitazione professionale, Tipologie ammesse]
+            con decreto n., altro, (specificare)]
     supports:
-      - {value: "{{ask.responsabile_tecnico}}", in: ["true"], else: "Se il responsabile tecnico è un'altra persona, il modulo chiede i suoi dati e un allegato: per ora non lo preparo."}
-      - {value: "{{ask.estetista_requisito}}", in: [qualificazione], else: "Per l'abilitazione conseguita alla data di entrata in vigore della legge n. 1 del 1990 e per i titoli «di essere in possesso di:» (corso regionale, scuola professionale, qualifica estera, altro) il modulo chiede altri dati che non ho ancora letto: per ora non li preparo."}
+      # Someone else holds the requirement: as the hairdresser's section (below), the person is `q:` in answers.json people.
+      - {value: "{{ask.responsabile_tecnico,ask.multi_responsabili_tecnici|differ}}", in: ["true"], else: "Il modulo vuole una sola delle due: che il responsabile tecnico sei tu, oppure che è un'altra persona."}
+      - {value: "{{ask.multi_responsabili_tecnici,q:identity.last_name|requisito_holder}}", in: ["true"], else: "Se il requisito professionale ce l'ha un'altra persona, il modulo chiede i suoi dati: la persona deve essere nel vault dell'impresa (con il cognome, il nome e il ruolo) e indicata tra quelle della pratica con la lettera q. Senza di lei non preparo la pratica."}
+      - {if: "{{ask.responsabile_tecnico}}", value: "{{ask.estetista_requisito}}", in: [qualificazione], else: "Per l'abilitazione conseguita alla data di entrata in vigore della legge n. 1 del 1990 e per i titoli «di essere in possesso di:» (corso regionale, scuola professionale, qualifica estera, altro) il modulo chiede altri dati che non ho ancora letto: per ora non li preparo."}
     fields:
       - {kind: "tick", label: "di essere Responsabile tecnico", when: "{{ask.responsabile_tecnico}}"}
       - {kind: "radio", label: "di essere in possesso della qualificazione", on_page: true, when: "{{ask.responsabile_tecnico}} {{ask.estetista_requisito|is_qualificazione}}"}
       - {kind: "text", label: "rilasciata da", on_page: true, value: "{{ask.ente_qualifica_professionale}}", when: "{{ask.responsabile_tecnico}} {{ask.estetista_requisito|is_qualificazione}}"}
       - {kind: "date", label: "in data", on_page: true, value: "{{ask.data_qualifica_professionale|date_it}}", when: "{{ask.responsabile_tecnico}} {{ask.estetista_requisito|is_qualificazione}}"}
       - {kind: "text", label: "con atto n.", on_page: true, value: "{{ask.atto_qualifica_professionale}}", when: "{{ask.responsabile_tecnico}} {{ask.estetista_requisito|is_qualificazione}}"}
-      - {kind: "tick", label: "che il/i Responsabile/i tecnico/i è/sono:", when: "{{ask.responsabile_tecnico|not}}"}
+      - {kind: "tick", label: "che il/i Responsabile/i tecnico/i è/sono:", when: "{{ask.multi_responsabili_tecnici}}"}
+      - {kind: "text", label: "Cognome", on_page: true, value: "{{q:identity.last_name}}", when: "{{ask.multi_responsabili_tecnici}}"}
+      - {kind: "text", label: "Nome", on_page: true, value: "{{q:identity.first_name}}", when: "{{ask.multi_responsabili_tecnici}}"}
+      - {kind: "select", label: "in qualità di", on_page: true, value: "{{ask.tipo_qualita_responsabile_tecnico}}", when: "{{ask.multi_responsabili_tecnici}}"}
+      - {kind: "tick", label: "che possiede/ono l'abilitazione professionale prevista,", on_page: true, when: "{{ask.multi_responsabili_tecnici}} {{ask.essere_responsabile_qualifica_professionale}}"}
+      - {kind: "file", label: "Tipologie ammesse", on_page: true, value: "{{ask.allegato_dichiarazione_sul_possesso_dei_requisiti}}", when: "{{ask.multi_responsabili_tecnici}} {{ask.essere_responsabile_qualifica_professionale}}"}
 
   - section: "Dichiarazione sul possesso dei requisiti professionali (attività di acconciatore)"
     aliases: ["Dichiarazione sul possesso dei requisiti professionali (attività di estetista)"]
     schema: modulo_acconciatori_estetisti_apertura/acconciatori_estetisti_apertura
+    # Someone else holds the requirement («che il/i Responsabile/i tecnico/i è/sono:»): the radio excludes «di essere Responsabile tecnico»,
+    # and the person (`q:` in answers.json people) is read from the vault: surname, first name, and «in qualità di» from their ruolo.
+    # With no `q`, or one with no surname, the case is refused (the boxes would stay empty). Allegato B and the ID copy stay the person's files.
+    supports:
+      - {value: "{{ask.responsabile_tecnico,ask.multi_responsabili_tecnici|differ}}", in: ["true"], else: "Il modulo vuole una sola delle due: che il responsabile tecnico sei tu, oppure che è un'altra persona."}
+      - {value: "{{ask.multi_responsabili_tecnici,q:identity.last_name|requisito_holder}}", in: ["true"], else: "Se il requisito professionale ce l'ha un'altra persona, il modulo chiede i suoi dati: la persona deve essere nel vault dell'impresa (con il cognome, il nome e il ruolo) e indicata tra quelle della pratica con la lettera q. Senza di lei non preparo la pratica."}
     fields:
       - {kind: "tick", label: "di essere Responsabile tecnico", when: "{{ask.responsabile_tecnico}}"}
       - {kind: "tick", label: "di essere in possesso dell'abilitazione professionale", when: "{{ask.responsabile_tecnico}} {{ask.abilitazione_professionale}}"}
@@ -6933,8 +7014,8 @@ sections:
       - {kind: "tick", label: "altro", when: "{{ask.responsabile_tecnico}} {{ask.altro}}"}
       - {kind: "text", label: "(specificare)", value: "{{ask.altro_testo}}", when: "{{ask.responsabile_tecnico}} {{ask.altro}}"}
       - {kind: "tick", label: "che il/i Responsabile/i tecnico/i è/sono:", when: "{{ask.multi_responsabili_tecnici}}"}
-      - {kind: "text", label: "Cognome", value: "{{ask.cognome}}", when: "{{ask.multi_responsabili_tecnici}}"}
-      - {kind: "text", label: "Nome", value: "{{ask.nome}}", when: "{{ask.multi_responsabili_tecnici}}"}
+      - {kind: "text", label: "Cognome", value: "{{q:identity.last_name}}", when: "{{ask.multi_responsabili_tecnici}}"}
+      - {kind: "text", label: "Nome", value: "{{q:identity.first_name}}", when: "{{ask.multi_responsabili_tecnici}}"}
       - {kind: "select", label: "in qualità di", value: "{{ask.tipo_qualita_responsabile_tecnico}}", when: "{{ask.multi_responsabili_tecnici}}"}
       - {kind: "tick", label: "che possiede/ono l'abilitazione professionale prevista,", when: "{{ask.multi_responsabili_tecnici}} {{ask.essere_responsabile_qualifica_professionale}}"}
       - {kind: "file", label: "Tipologie ammesse", value: "{{ask.allegato_dichiarazione_sul_possesso_dei_requisiti}}", when: "{{ask.multi_responsabili_tecnici}} {{ask.essere_responsabile_qualifica_professionale}}"}

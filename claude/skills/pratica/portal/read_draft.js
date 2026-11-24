@@ -9,6 +9,7 @@
 //                                              boxes changed from disabled to enabled or the reverse (what a tick switches on)
 //   __draft.required()                         press SALVA with the section as it is and list the boxes the portal calls required
 //                                              ("Il valore è obbligatorio", "deve essere selezionata almeno un'opzione"): the page re-renders
+//   __draft.values()                           [id, the text next to it, value] of every box with a value (in full; controls() cuts at 12), "CHK" for a tick
 //   __draft.text(from)                         the section's visible text from the first line containing `from`
 //   __draft.list() / page(n)                   the home list's drafts as "[type] name" / click its numbered link n (10 a page)
 //   __draft.sections()                         an open draft's section links (Dati Dichiarazioni), upper-case titles
@@ -48,6 +49,12 @@
 // Round 25: a section's ids shift when an earlier choice opens a block, and the runner can tick the id of a layout the live page does not have (`didn't stay ticked`): read the live ids with controls() and compare them with the crawl's `moved` pairs (README, round 25). A click on a checkbox's label through the pane's left_click did not tick it in one try (not investigated).
 // The helper now has list(), page(n), sections(), confirm(), options(frag) and choose(frag, text) for what each of those took by hand in rounds 22-24; every click that
 // navigates goes in a timeout, so the call returns, and the helper must be pasted again afterwards (the page is reloaded, not swapped).
+// Round 31 (2026-11-23), reading the requisito sections of three drafts by hand: (a) the browser's Back button from a section lands on the portal's
+// `cmd/error` page, and so does an old `execution` key: open/section/page/list/sections now say so (and where to go) instead of «no link»; navigate to
+// `cmd/home` and open the draft again from its list. (b) `values()` reads the open section in full: controls() cuts a value at 12 characters, which hid a
+// name and a date. (c) A click and the read that follows it go in two calls: a `.click()` in the same call is cut off by the navigation (value lost), and a
+// call made while the tab is still loading is refused («The tab is loading a new page»): wait ~4 s between them. The pane's own click (`find`, then
+// `computer` left_click on the ref) works too, and is what the section links took when a script's click did not register.
 // Written 2026-11-15 for round 7 (README): it found that the VV.F. take-over's statements a) and b) are required and b) switches on the
 // previous manager's boxes, that the garage's header radio is not kept, and what the B&B variation's capacity groups need. A page that
 // navigates (open, section, required) loses the return value of the call that caused it: look at the page, then call again.
@@ -60,8 +67,12 @@ window.__draft = (() => {
     return ((td.innerText || "").trim() || (prev && prev.innerText || "").trim()).replace(/\s+/g, " ").slice(0, 70);
   };
   const state = () => Object.fromEntries(boxes().filter((e) => !(e.type === "radio" && e.offsetParent === null)).map((e) => [id(e), !e.disabled]));
+  // The portal's error page: the browser's Back button lands on it, and so does a draft's old `execution` key (round 31). It has the menu, no draft row and no section.
+  const errorPage = () => /\/fnsuap\/cmd\/error\b/.test(location.pathname)
+    ? "this is the portal's error page (the browser's Back button lands here): navigate to https://suap.impresainungiorno.gov.it/fnsuap/cmd/home, open the draft from its list, paste this file again" : null;
   return {
     open(name) {
+      if (errorPage()) return errorPage();
       const row = [...document.querySelectorAll("tr")].find((r) => r.innerText.replace(/\s+/g, " ").toLowerCase().includes(name.toLowerCase()));
       if (!row) return "no draft row with " + name;
       // APRI is a <button> around a <span>; the click navigates twice, so it goes in a timeout and the call returns first (rounds 23 and 24).
@@ -71,6 +82,7 @@ window.__draft = (() => {
       return "clicked APRI: wait ~8 s, paste this file again (the page was reloaded), then sections() or section()";
     },
     async section(name) {
+      if (errorPage()) return errorPage();
       const a = [...document.querySelectorAll("a")].find((x) => x.innerText.toLowerCase().includes(name.toLowerCase()));
       if (!a) return "no section link with " + name;
       // The page is reloaded, so the helper is gone after it: click in a timeout, wait ~6 s outside, paste the file again. A section left with
@@ -80,9 +92,11 @@ window.__draft = (() => {
     },
     // The home list: the drafts on this page as "[type] name" (10 a page), and the numbered links under it.
     list() {
+      if (errorPage()) return errorPage();
       return [...document.body.innerText.matchAll(/\[(\w\w)\] - ([^\n\t]*)\t/g)].map((m) => m[1] + " " + m[2]);
     },
     page(n) {
+      if (errorPage()) return errorPage();
       const e = [...document.querySelectorAll("a, span")].find((x) => x.textContent.trim() === String(n) && x.children.length === 0);
       if (!e) return "no page link " + n;
       setTimeout(() => e.click(), 50);
@@ -90,6 +104,7 @@ window.__draft = (() => {
     },
     // The section links of an open draft (Dati Dichiarazioni): upper-case titles.
     sections() {
+      if (errorPage()) return errorPage();
       return [...document.querySelectorAll("a")].map((a) => a.innerText.trim()).filter((t) => t.length > 3 && !/^[A-Z][a-z]/.test(t));
     },
     // «Proseguire senza salvare?»: press the visible Conferma of the dialog (what leaving a section with toggled boxes shows).
@@ -122,6 +137,12 @@ window.__draft = (() => {
     controls() {
       return JSON.stringify(boxes().filter((e) => !(e.type === "radio" && e.offsetParent === null))
         .map((e) => [e.type, id(e), e.disabled ? "DIS" : "", e.checked ? "CHK" : "", (e.value || "").slice(0, 12), e.offsetParent === null ? "hid" : "", near(e)]));
+    },
+    // What the open section holds, in full: [id, the text next to it, value] of every box with a value, and "CHK" for a ticked box or radio (a radio's real input is
+    // hidden, its `_clone` is what shows). controls() cuts a value at 12 characters; round 31 read a name, a date and a REA number by hand with this.
+    values() {
+      return JSON.stringify(boxes().filter((e) => e.type === "checkbox" || e.type === "radio" ? e.checked : e.offsetParent !== null && (e.value || "").trim())
+        .map((e) => [id(e), near(e), e.type === "checkbox" || e.type === "radio" ? "CHK" : e.value.slice(0, 100)]));
     },
     async toggle(name) {
       const before = state();
