@@ -31,7 +31,7 @@ and its answers file) goes through run.py's page_files, as `run.py page` would. 
 The pane cuts a call off at 45 s: poll results.js. The values file is what `pvault get`
 prints, or a fixture as it is (rehearsals/cila-fittizia/fixture-p6.json: its "fields" are read, so a
 person added to it is in the next batch).
-A bundle's loop SKIPS a name already in the tab's results (`pv-batch`): re-running a case the tab ran before (round 26: «stopped in 44.8 s» was the stored round 25 result, not a run) needs `fresh.js` first.
+A bundle's loop SKIPS a name already in the tab's results (`pv-batch`): re-running a case the tab ran before (round 26: «stopped in 44.8 s» was the stored round 25 result, not a run) needs `fresh.js` first (loop.js lists such names in `window.pvBatchSkipped`, and results.js as `not_run`: read it before trusting a result, round 31).
 With --bundle, the pick starts the loop itself (the pane's `window.pvBundle` reads «started: N queued»: do not run loop.js too); poll `window.pvBatchBusy` and
 sessionStorage `pv-batch` with in-page waits under 45 s (a run takes 100-140 s) and read each run's `moved`, `loose` and `alerts` before `--record` (2026-11-21, round 24).
 Building the bundle takes about 2 minutes for 4 runs: run it as a background job and wait for its notification.
@@ -362,8 +362,11 @@ if (!pvAlready) window.pvBatchRun = (async () => {
   // was reloaded (2026-10-31: 6 lost). Then: record.js, reload, and a bundle of what's left.
   let unreached = 0;
   window.pvBatchHalted = null;
+  // A name the tab already holds a result for is not run again (see fresh.js), and said so: results.js lists it as `not_run`, so a
+  // stored result is never read as this batch's (round 26: «stopped in 44.8 s» was the earlier round's; round 31: a rerun of one case).
+  window.pvBatchSkipped = [];
   for (const [name, proc, values] of window.pvBatch || []) {
-    if (done.some((d) => d.name === name)) continue;
+    if (done.some((d) => d.name === name)) { window.pvBatchSkipped.push(name); continue; }
     window.pvBatchNow = name;
     __pv.start(proc, values);
     let r; do { r = await __pv.wait(30000); } while (r.result === "running");
@@ -410,6 +413,8 @@ const live = (() => { try { const r = window.__pv && window.pvBatchBusy ? __pv.l
 JSON.stringify({ done: done.length, of: (window.pvBatch || []).length, running: !!window.pvBatchBusy, now: live, hidden: document.hidden,
   reloaded: !window.__pv && lastReport ? { note: "the page was reloaded: re-arm the same bundle (pick it again) and rerun what is not in done", last: { result: lastReport.result, error: lastReport.error || null, at: lastReport.at && lastReport.at.section, url: lastReport.url } } : null,
   halted: window.pvBatchHalted || null,
+  // Names the loop did not run because the tab already held a result under them: that result is an earlier batch's, not this one's (run fresh.js, then the bundle again).
+  not_run: window.pvBatchSkipped && window.pvBatchSkipped.length ? window.pvBatchSkipped : null,
   // Runs that never reached the portal and aren't in done: rerun them (a bundle of what's left).
   unreached: JSON.parse(sessionStorage.getItem("pv-batch-unreached") || "[]").filter((u) => !done.some((d) => d.name === u.name)),
   filled: done.filter((d) => d.result === "filled").length,

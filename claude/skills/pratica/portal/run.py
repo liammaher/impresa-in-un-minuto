@@ -311,6 +311,31 @@ def _carica(v):
     raise ValueError(f"no portal carica for ruolo {v!r}")
 
 
+# The professional requirement's other holder (the SUAP's acconciatore and estetista openings, "che il/i Responsabile/i tecnico/i
+# è/sono:"): the form's «in qualità di» from the person's ruolo in the vault. «Familiare coadiuvante» has no vault ruolo, and a
+# ruolo none of these (legale_rappresentante, amministratore, responsabile_tecnico alone, ...) says is not guessed: the filter
+# says nothing, so the question stays.
+QUALITA_REQUISITO = (("titolare", "Titolare"), ("socio", "Socio partecipante al lavoro"), ("dipendente", "Dipendente"))
+
+
+def _qualita_requisito(v):
+    roles = {r.strip() for r in v.split(",")}
+    return next((opt for role, opt in QUALITA_REQUISITO if role in roles), None)
+
+
+def _rapporto_lavoro(v):
+    """The tatuatore's responsabile tecnico «rapporto di lavoro» (a word) from the person's ruolo; None when none of these, so it is asked."""
+    roles = {x.strip() for x in v.split(",")}
+    return next((w for w in ("titolare", "socio", "dipendente", "collaboratore") if w in roles), None)
+
+
+def _requisito_holder(v):
+    """From `{{ask.multi_responsabili_tecnici,q:identity.last_name|requisito_holder}}`: «false» when someone else holds the requirement
+    and the case names nobody (no `q` in people, or a person with no surname): the form's boxes would stay empty."""
+    declared, _, holder = v.partition("/")
+    return "false" if truthy(declared) and not holder.strip() else "true"
+
+
 def _categorie(s):
     """Several units' categorie joined by "/" (a/b/c, "" for a unit with none), where a categoria
     itself may hold one (A/2): each read whole, in order."""
@@ -556,6 +581,9 @@ FILTERS = Filters({
     "sesso": lambda v: {"F": "Femmina", "M": "Maschio"}[v.strip().upper()],
     "provincia_nome": lambda v: PROVINCE[v.strip().upper()],
     "qualita": _qualita,
+    "requisito_qualita": _qualita_requisito,
+    "requisito_holder": _requisito_holder,
+    "rapporto_lavoro": _rapporto_lavoro,
     "qualita_is_altro": lambda v: "true" if _qualita(v) == "Altro" else "false",
     "qualita_altro": lambda v: v.strip().capitalize(),
     "titolo_pratica": _titolo_pratica,
@@ -725,13 +753,17 @@ class Values:
 
     def _titolare(self):
         # A studio's other architect presents the pratica when the job names them ("people" t).
-        named = (self.answers.get("people") or {}).get("t")
+        people = self.answers.get("people") or {}
+        named = people.get("t")
         ids = list(self.fields) if self.fields is not None else [f["id"] for f in self._get("/vault/fields")]
+        # A person the job names as another role (the other holder of the professional requirement, `q`, may be a titolare or a socio
+        # legale rappresentante too) is not the one declaring.
+        others = {slug for role, slug in people.items() if role != "t" and isinstance(slug, str)}
         if named:
             if not any(i.startswith(named + ":") for i in ids):
                 raise StepError(f"the architect named in people (t: {named}) has nothing in the vault")
             return named
-        slugs = sorted({i.split(":")[0] for i in ids if i.endswith(":ruolo.tipo")})
+        slugs = sorted({i.split(":")[0] for i in ids if i.endswith(":ruolo.tipo")} - others)
         found = [s for s in slugs if "titolare" in self.category(s + ":ruolo").get(s + ":ruolo.tipo", "")
                  or "legale_rappresentante" in self.category(s + ":ruolo").get(s + ":ruolo.tipo", "")]
         if len(found) != 1:
@@ -1806,7 +1838,8 @@ WHOSE = [(r"(c|cr|o|r|f\d*|ad\d*|a\d*|s|d|p|v)(#\d+)?:(immobile|locale\d*)\.", "
          (r"f\d*(#\d+)?:", "delle imprese"), (r"ad\d*(#\d+)?:", "delle imprese degli altri tecnici"),
          (r"a\d*(#\d+)?:", "degli altri tecnici"), (r"s(#\d+)?:", "del progettista delle strutture"),
          (r"d(#\d+)?:", "del direttore dei lavori"), (r"p(#\d+)?:", "del progettista architettonico"),
-         (r"v(#\d+)?:", "del professionista antincendio")]
+         (r"v(#\d+)?:", "del professionista antincendio"),
+         (r"q(#\d+)?:", "di chi ha il requisito professionale al posto tuo")]
 OWN = "Tuoi e dello studio (una volta sola: valgono per le prossime pratiche)"
 WHOSE_ORDER = [OWN] + [w[:1].upper() + w[1:] for w in dict.fromkeys(w for _, w in WHOSE)]
 

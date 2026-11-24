@@ -5,5 +5,12 @@
   "result": "filled",
   "seconds": 107.9,
   "browser": "pane"
+ },
+ {
+  "date": "2026-11-23",
+  "answers": "answers-requisito-dipendente.json",
+  "result": "filled",
+  "seconds": 93.2,
+  "browser": "pane"
  }
 ]

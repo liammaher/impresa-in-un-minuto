@@ -49,6 +49,10 @@
     ["locale.catasto_subalterno", "7"],
     ["locale.catasto_categoria", "C/1"],
     ["locale.superficie_mq", "45"],
-    ["locale.destinazione_uso", "negozio"]
+    ["locale.destinazione_uso", "negozio"],
+    ["quirina:ruolo.tipo", "socio"],
+    ["quirina:identity.display_name", "Quirina Fittizia"],
+    ["quirina:identity.first_name", "Quirina"],
+    ["quirina:identity.last_name", "Fittizia"]
   ]
 }
