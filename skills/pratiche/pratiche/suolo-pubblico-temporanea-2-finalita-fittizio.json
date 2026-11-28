@@ -1,23 +1,23 @@
 {
- "procedure": "napoli/comune/insegna-esercizio",
- "title": "Richiedere l'autorizzazione per installazione di pubblicità su teli collegati a facciate di palazzi e monumenti, su ponteggi di cantiere, recinzioni ed altre strutture di servizio e di pertinenza, bar o ristorante, SUAP Napoli",
- "generated": "gen.py from suap-common-mezzi-pubblicitari-installazione-di-mezzi-pubblicitari-richi (2026-10-28) and dictionary/fnsuap.yaml",
+ "procedure": "napoli/comune/concessione-suolo-pubblico-dehors",
+ "title": "Domanda di occupazione temporanea di suolo pubblico superiore ai 500 mq per eventi di natura commerciale o non commerciale, bar o ristorante, SUAP Napoli",
+ "generated": "gen.py from suap-common-occupazione-suolo-pubblico-domanda-di-occupazione-temporanea-2 (2026-10-28) and dictionary/fnsuap.yaml",
  "yours": [
   "Apri la bozza in Pratiche in bozza ({{ask.descrizione}}) e confrontala con questa pagina",
-  "Spunta tu le dichiarazioni della pratica: consapevolezza (artt. 46-47), informativa privacy, tasse comunali",
-  "Allega quanto chiede la schermata degli allegati dopo aver spuntato le dichiarazioni",
-  "Firma e invia (Firma e invio); conserva la ricevuta"
+  "Fai firmare a un tecnico il progetto del dehors (elaborati grafici e relazione) e allegalo",
+  "Spunta tu le dichiarazioni e gli impegni: consapevolezza (artt. 46-47), informativa privacy, tasse comunali, il montaggio certificato, il canone",
+  "Firma e invia (Firma e invio); una volta concessa, paga il canone unico con l'avviso che invia il Comune"
  ],
  "groups": {
   "extras": {
-   "question": "Qualcuna di queste voci vale per questa pratica? Spunta tutte quelle che valgono, o nessuna."
+   "question": "Qualcuna di queste voci vale per il dehors? Spunta tutte quelle che valgono, o nessuna."
   }
  },
  "asks": {
   "descrizione": {
    "type": "text",
    "question": "Nome della bozza in Pratiche in bozza sul portale",
-   "default": "bar o ristorante {{business.denominazione}}"
+   "default": "dehors {{business.denominazione}}"
   },
   "oggetto": {
    "type": "text",
@@ -83,40 +83,104 @@
    "type": "text",
    "question": "Perché non sono dovuti diritti: l'esenzione e la norma del tariffario del Comune che la prevede (al massimo 300 caratteri)"
   },
-  "messaggio_testo": {
+  "suolo_natura": {
+   "type": "choice",
+   "question": "Che natura ha l'associazione per conto della quale chiedi l'occupazione? onlus (iscritta all'anagrafe delle onlus); impresa (ha carattere di impresa commerciale); nonprofit (organizzazione senza fini di lucro)",
+   "options": [
+    "onlus",
+    "impresa",
+    "nonprofit"
+   ]
+  },
+  "suolo_onlus_estremi": {
    "type": "text",
-   "question": "Il testo del messaggio pubblicitario (1000 caratteri al massimo)"
+   "question": "Gli estremi dell'iscrizione all'anagrafe delle onlus (30 caratteri al massimo)"
   },
-  "esposizione_dal": {
+  "suolo_finalita": {
+   "type": "choice",
+   "question": "Che finalità dichiari? ente (l'associazione o il comitato è un ente senza scopo di lucro); iniziativa (l'iniziativa non ha alcuna finalità di lucro)",
+   "options": [
+    "ente",
+    "iniziativa"
+   ]
+  },
+  "suolo_utilita": {
+   "type": "choice",
+   "question": "Per quale finalità di utilità sociale è l'iniziativa non commerciale? previdenza; sanità; educazione; cultura e ricerca scientifica; altre finalità (le descrivi dopo)",
+   "options": [
+    "previdenza",
+    "sanità",
+    "educazione",
+    "cultura e ricerca scientifica",
+    "altre finalità di utilità sociale"
+   ]
+  },
+  "suolo_utilita_altro": {
+   "type": "text",
+   "question": "Quale altra finalità di utilità sociale? Descrivila in una frase (il portale accetta testi lunghi)"
+  },
+  "occupazione_mq": {
+   "type": "number",
+   "question": "Per quanti metri quadrati complessivi (la comunicazione: 10 al massimo)"
+  },
+  "occupazione_dal": {
    "type": "date",
-   "question": "Il primo giorno di esposizione del messaggio"
+   "question": "Il primo giorno di occupazione"
   },
-  "esposizione_al": {
+  "occupazione_al": {
    "type": "date",
-   "question": "L'ultimo giorno di esposizione del messaggio"
+   "question": "L'ultimo giorno di occupazione"
   },
-  "ponteggi_suolo_pubblico": {
+  "suolo_iniziativa": {
+   "type": "text",
+   "question": "Per quale iniziativa occupi il suolo pubblico (50 caratteri al massimo)"
+  },
+  "suolo_ora_dalle": {
+   "type": "text",
+   "question": "Dalle ore (hh:mm)"
+  },
+  "suolo_ora_alle": {
+   "type": "text",
+   "question": "Alle ore (hh:mm)"
+  },
+  "suolo_attrezzature": {
+   "type": "text",
+   "question": "Con quali attrezzature (ad es. tavolo, gazebo, ombrellone; 100 caratteri al massimo)"
+  },
+  "temporanea_luogo": {
+   "type": "text",
+   "question": "La via, viale o piazza dell'occupazione (30 caratteri al massimo)"
+  },
+  "patrocinio": {
    "type": "yes_no",
-   "question": "I ponteggi di servizio o le recinzioni di cantiere insistono su suolo pubblico?",
+   "question": "Per l'iniziativa chiedi il patrocinio del Comune?",
    "propose": "false"
   },
-  "telo_descrizione": {
+  "iniziativa_attivita": {
+   "type": "choice",
+   "question": "Che attività si svolge nell'iniziativa? stand gastronomico; altro",
+   "options": [
+    "stand gastronomico",
+    "altro"
+   ]
+  },
+  "iniziativa_attivita_altro": {
    "type": "text",
-   "question": "Che impianto pubblicitario vuoi installare, in poche parole (ad es. telo sul ponteggio della facciata; 500 caratteri al massimo)"
+   "question": "Quale altra attività (50 caratteri al massimo)"
   },
-  "telo_proprieta_privata": {
+  "mezzi_emergenza": {
    "type": "yes_no",
-   "question": "Il telo va su un bene di proprietà privata, con il consenso del proprietario?",
-   "propose": "true"
-  },
-  "telo_bene_culturale": {
-   "type": "yes_no",
-   "question": "Il telo va su un edificio o in un'area tutelata come bene culturale?",
+   "question": "Sono presenti mezzi di emergenza (ambulanza, vigili del fuoco)?",
    "propose": "false"
   },
-  "telo_ditta": {
+  "suolo_percorso": {
    "type": "text",
-   "question": "La ditta che esegue i lavori di installazione (100 caratteri al massimo)"
+   "question": "Il percorso che faranno i mezzi di trasporto per raggiungere l'area (1000 caratteri al massimo)"
+  },
+  "riprese_responsabile_altro": {
+   "type": "yes_no",
+   "question": "Chi risponde della troupe e delle attrezzature è una persona diversa da te?",
+   "propose": "false"
   },
   "altri_soggetti": {
    "group": "extras",
@@ -143,16 +207,12 @@
    "else": "Gli altri soci o amministratori presentano le proprie dichiarazioni antimafia come allegati firmati (art. 85 D.Lgs. 159/2011): non lo preparo ancora."
   },
   {
-   "when": "{{ask.telo_proprieta_privata}}",
-   "else": "Un telo su un bene pubblico o del Comune ha altre caselle (contratto, titolo): per ora non lo preparo."
+   "when": "{{ask.mezzi_emergenza|not}}",
+   "else": "Con ambulanza o vigili del fuoco il modulo chiede altro: per ora non lo preparo."
   },
   {
-   "when": "{{ask.telo_bene_culturale|not}}",
-   "else": "Un telo su un edificio tutelato chiede l'autorizzazione della Soprintendenza: per ora non lo preparo."
-  },
-  {
-   "when": "{{ask.ponteggi_suolo_pubblico|not}}",
-   "else": "Un ponteggio su suolo pubblico chiede anche gli estremi della concessione: per ora non lo preparo."
+   "when": "{{ask.riprese_responsabile_altro|not}}",
+   "else": "Se chi risponde è un'altra persona, il modulo ne chiede il nome e il telefono: per ora non lo preparo."
   },
   {
    "if": "{{ask.bollo_esenzione|is_onlus}}",
@@ -186,7 +246,7 @@
   {
    "screen": "Scelta operazioni",
    "tree": [
-    "Richiedere l'autorizzazione per installazione di pubblicità su teli collegati a facciate di palazzi e monumenti, su ponteggi di cantiere, recinzioni ed altre strutture di servizio e di pertinenza"
+    "Domanda di occupazione temporanea di suolo pubblico superiore ai 500 mq per eventi di natura commerciale o non commerciale"
    ],
    "confirm": "CONFERMA"
   },
@@ -196,6 +256,10 @@
   },
   {
    "screen": "Scelte eventuali",
+   "answers": {
+    "in caso di eventi di natura commerciale": "No",
+    "in caso di eventi di natura non commerciale": "Sì"
+   },
    "confirm": "CONFERMA"
   }
  ],
@@ -745,7 +809,7 @@
    ]
   },
   {
-   "section": "ubicazione dell'attività",
+   "section": "dichiarazione relativa alla sede dell'attività",
    "fields": [
     {
      "id": "r2c4p8reg:txtws_input",
@@ -795,82 +859,186 @@
    ]
   },
   {
-   "section": "OGGETTO DELL'ISTANZA",
+   "section": "mezzi di emergenza",
    "fields": [
     {
-     "id": "r3c1p4reg:txta",
-     "kind": "text",
-     "value": "{{ask.telo_descrizione}}",
-     "max": 500,
-     "label": "Il rilascio dell’autorizzazione per l’installazione"
+     "id": "r5c1p9reg:chk",
+     "kind": "checkbox",
+     "label": "non sono presenti mezzi di emergenza"
     }
    ]
   },
   {
-   "section": "dichiarazione relativa al messaggio pubblicitario",
+   "section": "richiesta occupazione suolo pubblico",
    "fields": [
     {
-     "id": "r2c1p2reg:txta",
+     "id": "r2c1p2reg:txt",
      "kind": "text",
-     "value": "{{ask.messaggio_testo}}",
-     "max": 1000,
-     "label": "il messaggio pubblicitario è il seguente:"
+     "value": "{{ask.suolo_iniziativa}}",
+     "max": 50,
+     "label": "l'autorizzazione ad occupare il suolo pubblico per"
     },
     {
-     "id": "r5c1p6reg:calendar_input",
-     "kind": "date",
-     "value": "{{ask.esposizione_dal|date_it}}",
-     "label": "Da:"
+     "id": "r4c1p4reg:txt",
+     "kind": "text",
+     "value": "{{ask.temporanea_luogo}}",
+     "max": 30,
+     "label": "su Via/Viale/Piazza"
     },
     {
-     "id": "r5c2p8reg:calendar_input",
+     "id": "r4c2p6reg:number",
+     "kind": "text",
+     "value": "{{ask.occupazione_mq}}",
+     "max": 10,
+     "label": "per un'area totale di mq"
+    },
+    {
+     "id": "r7c1p11reg:txt",
+     "kind": "text",
+     "value": "{{ask.suolo_ora_dalle}}",
+     "max": 5,
+     "label": "per il periodo dalle ore"
+    },
+    {
+     "id": "r7c2p13reg:calendar_input",
      "kind": "date",
-     "value": "{{ask.esposizione_al|date_it}}",
-     "label": "A:"
+     "value": "{{ask.occupazione_dal|date_it}}",
+     "label": "del giorno"
+    },
+    {
+     "id": "r7c3p15reg:txt",
+     "kind": "text",
+     "value": "{{ask.suolo_ora_alle}}",
+     "max": 5,
+     "label": "alle ore"
+    },
+    {
+     "id": "r7c4p17reg:calendar_input",
+     "kind": "date",
+     "value": "{{ask.occupazione_al|date_it}}",
+     "label": "del giorno",
+     "nth": 2
+    },
+    {
+     "id": "r10c1p23reg:txt",
+     "kind": "text",
+     "value": "{{ask.suolo_attrezzature}}",
+     "max": 100,
+     "label": "con le seguente attrezzature"
+    },
+    {
+     "id": "r12c1p25reg:radio:0_clone",
+     "kind": "radio",
+     "when": "{{ask.patrocinio}}",
+     "label": "si"
+    },
+    {
+     "id": "r12c2p26reg:radio:1_clone",
+     "kind": "radio",
+     "when": "{{ask.patrocinio|not}}",
+     "label": "no"
     }
    ]
   },
   {
-   "section": "installazione del telo pubblicitario",
+   "section": "ulteriori dichiarazioni",
    "theirs": [
-    "che gli interventi previsti non ledono i diritti di terzi",
-    "che l’installazione del telo avviene su ponteggi metallici",
-    "che i ponteggi di servizio e/o le recinzioni di cantiere insistono su suolo privato"
+    "si assume l'onere di rispondere in proprio",
+    "si impegna a rimuovere ogni attrezzatura",
+    "si impegna ad acquisire le eventuali licenze",
+    "si impegna ad acquisire eventuali ulteriori",
+    "si impegna a provvedere al versamento della cauzione",
+    "si impegna ad acquisire le certificazioni",
+    "si impegna a realizzare le condizioni di sicurezza",
+    "provvederà con proprio personale alla custodia"
    ],
    "fields": [
     {
-     "id": "r3c1p4reg:radio:0_clone",
+     "id": "r2c1p2reg:radio:0_clone",
      "kind": "radio",
-     "label": "che l’installazione del telo pubblicitario avviene su beni di proprietà privata"
+     "when": "{{ask.suolo_natura|is_onlus}}",
+     "label": "l'Associazione, per conto della quale viene presentata la domanda HA NATURA GIURIDICA DI O.N.L.U.S."
     },
     {
-     "id": "r13c1p21reg:radio:4_clone",
-     "kind": "radio",
-     "label": "che l’installazione del telo pubblicitario non ricade su edificio o in aree tutelate"
+     "id": "r2c2p4reg:txt",
+     "kind": "text",
+     "value": "{{ask.suolo_onlus_estremi}}",
+     "when": "{{ask.suolo_natura|is_onlus}}",
+     "max": 30,
+     "label": "riportare gli estremi dell'iscrizione all'anagrafe delle onlus"
     },
     {
-     "id": "r16c2p25reg:radio:6_clone",
+     "id": "r3c1p5reg:radio:1_clone",
      "kind": "radio",
-     "label": "No"
+     "when": "{{ask.suolo_natura|is_impresa}}",
+     "label": "che l'Associazione, per conto della quale viene presentata la domanda HA CARATTERE DI IMPRESA COMMERCIALE"
+    },
+    {
+     "id": "r4c1p6reg:radio:2_clone",
+     "kind": "radio",
+     "when": "{{ask.suolo_natura|is_nonprofit}}",
+     "label": "che l'Associazione, per conto della quale viene presentata la domanda E' UN'ORGANIZZAZIONE SENZA FINI DI LUCRO"
+    },
+    {
+     "id": "r6c1p8reg:radio:3_clone",
+     "kind": "radio",
+     "label": "il dichiarante"
+    },
+    {
+     "id": "r22c1p32reg:txta",
+     "kind": "text",
+     "value": "{{ask.suolo_percorso}}",
+     "max": 1000,
+     "label": "I mezzi di trasporto utilizzati faranno il seguente percorso"
     }
    ]
   },
   {
-   "section": "ditta esecutrice lavori",
+   "section": "Attività svolte nell'ambito dell'iniziativa di tipo commerciale/promozionale",
    "fields": [
     {
-     "id": "r3c1p3reg:txt",
+     "id": "r1c1p1reg:chk",
+     "kind": "checkbox",
+     "when": "{{ask.iniziativa_attivita|is_stand_gastronomico}}",
+     "label": "stand gastronomico"
+    },
+    {
+     "id": "r5c1p9reg:chk",
+     "kind": "checkbox",
+     "when": "{{ask.iniziativa_attivita|is_altro}}",
+     "label": "altro"
+    },
+    {
+     "id": "r5c2p11reg:txt",
      "kind": "text",
-     "value": "{{ask.telo_ditta}}",
-     "max": 100,
-     "label": "dalla Ditta"
+     "value": "{{ask.iniziativa_attivita_altro}}",
+     "when": "{{ask.iniziativa_attivita|is_altro}}",
+     "max": 50,
+     "label": "specificare"
     }
    ]
   },
   {
-   "section": "dichiarazione relativa alla normativa tecnica",
+   "section": "dichiarazione finalità",
+   "fields": [
+    {
+     "id": "r2c1p2reg:radio:0_clone",
+     "kind": "radio",
+     "when": "{{ask.suolo_finalita|is_ente}}",
+     "label": "che l’Associazione/Comitato richiedente l’occupazione di suolo pubblico è un ente senza scopo di lucro"
+    },
+    {
+     "id": "r3c1p3reg:radio:1_clone",
+     "kind": "radio",
+     "when": "{{ask.suolo_finalita|is_iniziativa}}",
+     "label": "che l'iniziativa non ha alcuna finalità di lucro"
+    }
+   ]
+  },
+  {
+   "section": "Avvertenza per le domande di concessione",
    "theirs": [
-    "PER PRESA VISIONE"
+    "PRESA VISIONE"
    ],
    "fields": []
   },
@@ -924,7 +1092,7 @@
    ]
   },
   {
-   "section": "dichiarazione relativa all'imposta di bollo",
+   "section": "Dichiarazione relativa all'assolvimento dell'imposta di bollo",
    "fields": [
     {
      "id": "r3c1p3reg:radio:0_clone",
@@ -1003,6 +1171,48 @@
      "value": "{{ask.bollo_esenzione|bollo_motivo}}",
      "when": "{{ask.bollo_esenzione|bollo_esente}}",
      "label": "per la seguente motivazione"
+    }
+   ]
+  },
+  {
+   "section": "Finalità dell’iniziativa",
+   "fields": [
+    {
+     "id": "r1c1p1reg:radio:0_clone",
+     "kind": "radio",
+     "when": "{{ask.suolo_utilita|is_previdenza}}",
+     "label": "previdenza"
+    },
+    {
+     "id": "r2c1p2reg:radio:1_clone",
+     "kind": "radio",
+     "when": "{{ask.suolo_utilita|is_sanit}}",
+     "label": "sanità"
+    },
+    {
+     "id": "r3c1p3reg:radio:2_clone",
+     "kind": "radio",
+     "when": "{{ask.suolo_utilita|is_educazione}}",
+     "label": "educazione"
+    },
+    {
+     "id": "r4c1p4reg:radio:3_clone",
+     "kind": "radio",
+     "when": "{{ask.suolo_utilita|is_cultura_e_ricerca_scientifica}}",
+     "label": "cultura e ricerca scientifica"
+    },
+    {
+     "kind": "radio",
+     "when": "{{ask.suolo_utilita|is_altre_finalit_di_utilit_sociale}}",
+     "label": "altre finalità di utilità sociale"
+    },
+    {
+     "id": "r6c2p8reg:txt",
+     "kind": "text",
+     "value": "{{ask.suolo_utilita_altro}}",
+     "when": "{{ask.suolo_utilita|is_altre_finalit_di_utilit_sociale}}",
+     "max": 9999,
+     "label": "precisare la finalità"
     }
    ]
   }

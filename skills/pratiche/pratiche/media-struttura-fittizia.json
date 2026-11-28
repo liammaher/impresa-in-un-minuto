@@ -187,6 +187,10 @@
    "else": "Gli altri soci o amministratori presentano le proprie dichiarazioni antimafia come allegati firmati (art. 85 D.Lgs. 159/2011): non lo preparo ancora."
   },
   {
+   "when": "{{ask.superficie_alimentare_mq|positive|not}}",
+   "else": "In questo modulo il portale tiene bloccata la casella «Alimentare»: il settore alimentare non si può indicare da qui."
+  },
+  {
    "when": "{{ask.solo_distributori|not}}",
    "else": "Una media struttura che vende solo con distributori automatici per ora non la preparo."
   },

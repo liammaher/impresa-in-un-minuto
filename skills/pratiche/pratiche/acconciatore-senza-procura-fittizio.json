@@ -148,22 +148,13 @@
   },
   "multi_responsabili_tecnici": {
    "type": "yes_no",
-   "question": "che il/i Responsabile/i tecnico/i è/sono:?",
+   "question": "Il requisito professionale (l'abilitazione o la qualifica) ce l'ha un'altra persona, e non tu? In quel caso il modulo chiede il suo cognome, nome e ruolo, e di caricare il suo Allegato (B per l'acconciatore, C per l'estetista) con la copia del suo documento. La persona va indicata tra quelle della pratica con la lettera q",
    "schema": "modulo_acconciatori_estetisti_apertura/acconciatori_estetisti_apertura/acconciatori_estetisti_apertura/multi_responsabili_tecnici_check"
-  },
-  "cognome": {
-   "type": "text",
-   "question": "Cognome",
-   "schema": "modulo_acconciatori_estetisti_apertura/acconciatori_estetisti_apertura/acconciatori_estetisti_apertura/responsabile_tecnico_blocco/cognome"
-  },
-  "nome": {
-   "type": "text",
-   "question": "Nome",
-   "schema": "modulo_acconciatori_estetisti_apertura/acconciatori_estetisti_apertura/acconciatori_estetisti_apertura/responsabile_tecnico_blocco/nome"
   },
   "tipo_qualita_responsabile_tecnico": {
    "type": "choice",
-   "question": "in qualità di",
+   "question": "In che qualità lavora nell'attività chi ha il requisito professionale? Titolare; Socio partecipante al lavoro; Familiare coadiuvante; Dipendente (dal suo ruolo nell'impresa si propongono titolare, socio e dipendente; familiare coadiuvante non ha un ruolo suo e lo dici tu)",
+   "propose": "{{q:ruolo.tipo|requisito_qualita}}",
    "schema": "modulo_acconciatori_estetisti_apertura/acconciatori_estetisti_apertura/acconciatori_estetisti_apertura/responsabile_tecnico_blocco/tipo_qualita_responsabile_tecnico",
    "options": [
     "Titolare",
@@ -174,12 +165,12 @@
   },
   "essere_responsabile_qualifica_professionale": {
    "type": "yes_no",
-   "question": "che possiede/ono l'abilitazione professionale prevista, come dichiarato in Allegato B.?",
+   "question": "Chi ha il requisito professionale lo dichiara con l'Allegato B (acconciatore) o C (estetista)? In quel caso il modulo chiede di caricare l'Allegato compilato e la copia del suo documento d'identità in corso di validità",
    "schema": "modulo_acconciatori_estetisti_apertura/acconciatori_estetisti_apertura/acconciatori_estetisti_apertura/essere_responsabile_qualifica_professionale_check"
   },
   "allegato_dichiarazione_sul_possesso_dei_requisiti": {
    "type": "file",
-   "question": "Caricare l'ALLEGATO B compilato + Copia documento di Identità in corso di validità"
+   "question": "L'Allegato B (acconciatore) o C (estetista) compilato e firmato da chi ha il requisito professionale, con la copia del suo documento d'identità (un unico file: PDF, anche firmato .p7m)"
   },
   "altri_soggetti": {
    "group": "extras",
@@ -204,6 +195,20 @@
   {
    "when": "{{ask.altri_soggetti|not}}",
    "else": "Gli altri soci o amministratori presentano le proprie dichiarazioni antimafia come allegati firmati (art. 85 D.Lgs. 159/2011): non lo preparo ancora."
+  },
+  {
+   "value": "{{ask.responsabile_tecnico,ask.multi_responsabili_tecnici|differ}}",
+   "in": [
+    "true"
+   ],
+   "else": "Il modulo vuole una sola delle due: che il responsabile tecnico sei tu, oppure che è un'altra persona."
+  },
+  {
+   "value": "{{ask.multi_responsabili_tecnici,q:identity.last_name|requisito_holder}}",
+   "in": [
+    "true"
+   ],
+   "else": "Se il requisito professionale ce l'ha un'altra persona, il modulo chiede i suoi dati: la persona deve essere nel vault dell'impresa (con il cognome, il nome e il ruolo) e indicata tra quelle della pratica con la lettera q. Senza di lei non preparo la pratica."
   }
  ],
  "start": "https://suap.impresainungiorno.gov.it/fnsuap/cmd/create?comune=F839",
@@ -1073,14 +1078,14 @@
     },
     {
      "kind": "text",
-     "value": "{{ask.cognome}}",
+     "value": "{{q:identity.last_name}}",
      "when": "{{ask.multi_responsabili_tecnici}}",
      "max": 100,
      "label": "Cognome"
     },
     {
      "kind": "text",
-     "value": "{{ask.nome}}",
+     "value": "{{q:identity.first_name}}",
      "when": "{{ask.multi_responsabili_tecnici}}",
      "max": 100,
      "label": "Nome"

@@ -67,6 +67,69 @@
    "type": "date",
    "question": "L'ultimo giorno della stagione"
   },
+  "tat_altri_qualificati": {
+   "type": "yes_no",
+   "default": "false",
+   "question": "Nella conduzione dell'attività partecipa una persona qualificata (un socio, un familiare coadiuvante, un collaboratore o un dipendente) che ha il requisito professionale al posto tuo? Il modulo chiede allora i suoi dati e i suoi attestati. La persona va indicata tra quelle della pratica con la lettera q"
+  },
+  "tat_conduzione_rt": {
+   "type": "yes_no",
+   "default": "false",
+   "question": "La conduzione dell'attività è affidata a un responsabile tecnico, che è un'altra persona? Il modulo chiede allora il suo nome, il rapporto di lavoro con l'impresa e l'iscrizione al REA. La persona va indicata tra quelle della pratica con la lettera q"
+  },
+  "tat_corso_ente": {
+   "type": "text",
+   "question": "Chi ha rilasciato l'attestato del corso di formazione (80 caratteri al massimo)"
+  },
+  "tat_corso_data": {
+   "type": "date",
+   "question": "La data dell'attestato del corso di formazione"
+  },
+  "tat_corso_regione": {
+   "type": "text",
+   "question": "La Regione che riconosce l'attestato (100 caratteri al massimo)"
+  },
+  "tat_corso_regione_data": {
+   "type": "date",
+   "question": "La data in cui la Regione ha riconosciuto l'attestato"
+  },
+  "tat_corso_numero": {
+   "type": "text",
+   "question": "Il numero identificativo del riconoscimento della Regione (30 caratteri al massimo)"
+  },
+  "tat_asl_ente": {
+   "type": "text",
+   "question": "L'ASL che ha organizzato il corso abilitante, ad es. Napoli 1 Centro (100 caratteri al massimo)"
+  },
+  "tat_asl_data": {
+   "type": "date",
+   "question": "La data in cui l'ASL ha rilasciato l'attestato di frequenza"
+  },
+  "tat_asl_numero": {
+   "type": "text",
+   "question": "Il numero identificativo dell'attestato dell'ASL (30 caratteri al massimo)"
+  },
+  "rapporto_lavoro_rt": {
+   "type": "text",
+   "question": "Che rapporto di lavoro ha con l'impresa il responsabile tecnico, in una parola (30 caratteri al massimo: titolare, socio, dipendente, collaboratore, ...)",
+   "propose": "{{q:ruolo.tipo|rapporto_lavoro}}"
+  },
+  "rea_rt": {
+   "type": "choice",
+   "question": "Il responsabile tecnico è iscritto al REA o ha presentato la domanda di iscrizione? iscritto; domanda",
+   "options": [
+    "iscritto",
+    "domanda"
+   ]
+  },
+  "rea_rt_numero": {
+   "type": "text",
+   "question": "Il numero REA del responsabile tecnico (9 caratteri al massimo)"
+  },
+  "rea_rt_data": {
+   "type": "date",
+   "question": "La data di iscrizione al REA del responsabile tecnico, o della domanda"
+  },
   "stato_luoghi_tipo": {
    "type": "choice",
    "question": "Con quale atto si attesta lo stato dei locali? edilizia libera (la comunicazione di attività edilizia libera); certificato (di conformità edilizia e agibilità del locale); fine lavori (la dichiarazione di fine lavori di una DIA o di un permesso di costruire); altro (un atto diverso)",
@@ -128,6 +191,18 @@
    "question": "Superficie complessiva del locale: mq",
    "schema": "modulo_acconciatori_estetisti_apertura/acconciatori_estetisti_apertura/acconciatori_estetisti_apertura/superficie_acc_est/[superfice_acc_est_ctype]/superficie_complessiva"
   },
+  "tipo_qualita_responsabile_tecnico": {
+   "type": "choice",
+   "question": "In che qualità lavora nell'attività chi ha il requisito professionale? Titolare; Socio partecipante al lavoro; Familiare coadiuvante; Dipendente (dal suo ruolo nell'impresa si propongono titolare, socio e dipendente; familiare coadiuvante non ha un ruolo suo e lo dici tu)",
+   "propose": "{{q:ruolo.tipo|requisito_qualita}}",
+   "schema": "modulo_acconciatori_estetisti_apertura/acconciatori_estetisti_apertura/acconciatori_estetisti_apertura/responsabile_tecnico_blocco/tipo_qualita_responsabile_tecnico",
+   "options": [
+    "Titolare",
+    "Socio partecipante al lavoro",
+    "Familiare coadiuvante",
+    "Dipendente"
+   ]
+  },
   "altri_soggetti": {
    "group": "extras",
    "type": "yes_no",
@@ -151,6 +226,20 @@
   {
    "when": "{{ask.altri_soggetti|not}}",
    "else": "Gli altri soci o amministratori presentano le proprie dichiarazioni antimafia come allegati firmati (art. 85 D.Lgs. 159/2011): non lo preparo ancora."
+  },
+  {
+   "value": "{{ask.tat_altri_qualificati,q:identity.last_name|requisito_holder}}",
+   "in": [
+    "true"
+   ],
+   "else": "Il modulo chiede i dati di chi ha il requisito professionale al posto tuo: la persona deve essere nel vault dell'impresa (con cognome, nome, codice fiscale, nascita, residenza e ruolo) e indicata tra quelle della pratica con la lettera q. Senza di lei non preparo la pratica."
+  },
+  {
+   "value": "{{ask.tat_conduzione_rt,q:identity.last_name|requisito_holder}}",
+   "in": [
+    "true"
+   ],
+   "else": "Se la conduzione è affidata a un responsabile tecnico, il modulo chiede il suo nome: la persona deve essere nel vault dell'impresa e indicata tra quelle della pratica con la lettera q. Senza di lei non preparo la pratica."
   }
  ],
  "start": "https://suap.impresainungiorno.gov.it/fnsuap/cmd/create?comune=F839",
@@ -192,6 +281,16 @@
   },
   {
    "screen": "Scelte eventuali",
+   "tree": [
+    {
+     "leaf": "nella conduzione dell'attività partecipano soci qualificati / familiari coadiuvanti/ collaboratori/ dipendenti dell'impresa",
+     "when": "{{ask.tat_altri_qualificati}}"
+    },
+    {
+     "leaf": "la conduzione dell'attività è effettuata dal \"responsabile tecnico\"",
+     "when": "{{ask.tat_conduzione_rt}}"
+    }
+   ],
    "confirm": "CONFERMA"
   }
  ],
@@ -1151,6 +1250,265 @@
      "kind": "radio",
      "when": "{{ask.diritti_euro|positive}}",
      "label": "pagamento on line"
+    }
+   ]
+  },
+  {
+   "section": "DICHIARAZIONE RELATIVA AI REQUISITI PROFESSIONALI PER L'ATTIVITÀ DI TATUATORE E PIERCER",
+   "when": "{{ask.tat_altri_qualificati}}",
+   "fields": [
+    {
+     "id": "r2c1p2reg:chk",
+     "kind": "checkbox",
+     "when": "{{ask.tat_altri_qualificati}} {{ask.tipo_qualita_responsabile_tecnico|is_titolare}}",
+     "label": "titolare"
+    },
+    {
+     "id": "r3c1p3reg:chk",
+     "kind": "checkbox",
+     "when": "{{ask.tat_altri_qualificati}} {{ask.tipo_qualita_responsabile_tecnico|is_socio_partecipante_al_lavoro}}",
+     "label": "socio"
+    },
+    {
+     "id": "r4c1p4reg:chk",
+     "kind": "checkbox",
+     "when": "{{ask.tat_altri_qualificati}} {{ask.tipo_qualita_responsabile_tecnico|in_familiare_coadiuvante__dipendente}}",
+     "label": "familiare coadiuvante/ collaboratore/ dipendende dell'impresa"
+    },
+    {
+     "id": "r6c1p6reg:txt",
+     "kind": "text",
+     "value": "{{q:identity.last_name}}",
+     "max": 25,
+     "label": "cognome",
+     "when": "{{ask.tat_altri_qualificati}}"
+    },
+    {
+     "id": "r8c1p10reg:txt",
+     "kind": "text",
+     "value": "{{q:identity.first_name}}",
+     "max": 25,
+     "label": "nome",
+     "when": "{{ask.tat_altri_qualificati}}"
+    },
+    {
+     "id": "r10c1p14reg:txt",
+     "kind": "text",
+     "value": "{{q:identity.codice_fiscale}}",
+     "max": 16,
+     "label": "codice fiscale",
+     "when": "{{ask.tat_altri_qualificati}}"
+    },
+    {
+     "id": "r12c1p18reg:calendar_input",
+     "kind": "date",
+     "value": "{{q:identity.date_of_birth|date_it}}",
+     "label": "data di nascita",
+     "when": "{{ask.tat_altri_qualificati}}"
+    },
+    {
+     "id": "r14c1p22reg",
+     "kind": "select",
+     "value": "{{q:identity.citizenship|cittadinanza}}",
+     "label": "cittadinanza",
+     "when": "{{ask.tat_altri_qualificati}}"
+    },
+    {
+     "id": "r15c2p26reg:radio:0_clone",
+     "kind": "radio",
+     "when": "{{ask.tat_altri_qualificati}} {{q:identity.sex|is_m}}",
+     "label": "M"
+    },
+    {
+     "id": "r15c3p27reg:radio:1_clone",
+     "kind": "radio",
+     "when": "{{ask.tat_altri_qualificati}} {{q:identity.sex|is_f}}",
+     "label": "F"
+    },
+    {
+     "id": "r17c2p31reg",
+     "kind": "select",
+     "value": "{{q:identity.birth_country}}",
+     "label": "Stato",
+     "when": "{{ask.tat_altri_qualificati}}"
+    },
+    {
+     "id": "r19c1p33reg:txt",
+     "kind": "text",
+     "value": "{{q:identity.birth_comune}}",
+     "max": 50,
+     "label": "Comune",
+     "when": "{{ask.tat_altri_qualificati}}"
+    },
+    {
+     "id": "r19c2p35reg:txt",
+     "kind": "text",
+     "value": "{{q:identity.birth_province}}",
+     "max": 2,
+     "label": "Provincia",
+     "when": "{{ask.tat_altri_qualificati}}"
+    },
+    {
+     "id": "r22c1p38reg:txt",
+     "kind": "text",
+     "value": "{{q:residenza.comune}}",
+     "max": 30,
+     "label": "Comune",
+     "nth": 2,
+     "when": "{{ask.tat_altri_qualificati}}"
+    },
+    {
+     "id": "r22c2p40reg:txt",
+     "kind": "text",
+     "value": "{{q:residenza.provincia}}",
+     "max": 2,
+     "label": "Provincia",
+     "nth": 2,
+     "when": "{{ask.tat_altri_qualificati}}"
+    },
+    {
+     "id": "r24c1p44reg:txt",
+     "kind": "text",
+     "value": "{{q:residenza.indirizzo}}",
+     "max": 30,
+     "label": "via, piazza",
+     "when": "{{ask.tat_altri_qualificati}}"
+    },
+    {
+     "id": "r24c2p46reg:txt",
+     "kind": "text",
+     "value": "{{q:residenza.civico}}",
+     "max": 8,
+     "label": "numero civico",
+     "when": "{{ask.tat_altri_qualificati}}"
+    },
+    {
+     "id": "r24c3p48reg:number",
+     "kind": "text",
+     "value": "{{q:residenza.cap}}",
+     "max": 5,
+     "label": "C.A.P.",
+     "when": "{{ask.tat_altri_qualificati}}"
+    },
+    {
+     "id": "r26c1p52reg:txt",
+     "kind": "text",
+     "value": "{{ask.tat_corso_ente}}",
+     "max": 80,
+     "label": "in possesso di attestato relativo al corso di formazione per l'attività rilasciato da:",
+     "when": "{{ask.tat_altri_qualificati}}"
+    },
+    {
+     "id": "r28c1p54reg:calendar_input",
+     "kind": "date",
+     "value": "{{ask.tat_corso_data|date_it}}",
+     "label": "in data",
+     "when": "{{ask.tat_altri_qualificati}}"
+    },
+    {
+     "id": "r30c1p58reg:txt",
+     "kind": "text",
+     "value": "{{ask.tat_corso_regione}}",
+     "max": 100,
+     "label": "L’attestato inoltre è riconosciuto dalla Regione (indicare la Regione)",
+     "when": "{{ask.tat_altri_qualificati}}"
+    },
+    {
+     "id": "r32c1p62reg:calendar_input",
+     "kind": "date",
+     "value": "{{ask.tat_corso_regione_data|date_it}}",
+     "label": "in data",
+     "nth": 2,
+     "when": "{{ask.tat_altri_qualificati}}"
+    },
+    {
+     "id": "r32c2p64reg:txt",
+     "kind": "text",
+     "value": "{{ask.tat_corso_numero}}",
+     "max": 30,
+     "label": "con il numero identificativo:",
+     "when": "{{ask.tat_altri_qualificati}}"
+    },
+    {
+     "id": "r34c1p68reg:txt",
+     "kind": "text",
+     "value": "{{ask.tat_asl_ente}}",
+     "max": 100,
+     "label": "In possesso di attestato di frequenza di corso abilitante all’attività di tatuatore/percing organizzato dall’ASL di",
+     "when": "{{ask.tat_altri_qualificati}}"
+    },
+    {
+     "id": "r36c1p70reg:calendar_input",
+     "kind": "date",
+     "value": "{{ask.tat_asl_data|date_it}}",
+     "label": "Rilasciato in data:",
+     "when": "{{ask.tat_altri_qualificati}}"
+    },
+    {
+     "id": "r36c2p72reg:txt",
+     "kind": "text",
+     "value": "{{ask.tat_asl_numero}}",
+     "max": 30,
+     "label": "con il numero identificativo:",
+     "nth": 2,
+     "when": "{{ask.tat_altri_qualificati}}"
+    }
+   ]
+  },
+  {
+   "section": "dichiarazione di qualifica professionale del responsabile tecnico",
+   "when": "{{ask.tat_conduzione_rt}}",
+   "fields": [
+    {
+     "id": "r2c1p2reg:txt",
+     "kind": "text",
+     "value": "{{q:identity.first_name}} {{q:identity.last_name}}",
+     "max": 30,
+     "label": "Sig./sig.a",
+     "when": "{{ask.tat_conduzione_rt}}"
+    },
+    {
+     "id": "r4c1p6reg:txt",
+     "kind": "text",
+     "value": "{{ask.rapporto_lavoro_rt}}",
+     "max": 30,
+     "label": "che nei confronti dell'impresa ha il seguente rapporto di lavoro",
+     "when": "{{ask.tat_conduzione_rt}}"
+    },
+    {
+     "id": "r7c1p12reg:radio:0_clone",
+     "kind": "radio",
+     "when": "{{ask.tat_conduzione_rt}} {{ask.rea_rt|is_iscritto}}",
+     "label": "È iscritto al REA"
+    },
+    {
+     "id": "r7c2p14reg:txt",
+     "kind": "text",
+     "value": "{{ask.rea_rt_numero}}",
+     "when": "{{ask.tat_conduzione_rt}} {{ask.rea_rt|is_iscritto}}",
+     "max": 9,
+     "label": "numero REA"
+    },
+    {
+     "id": "r9c1p20reg:radio:1_clone",
+     "kind": "radio",
+     "when": "{{ask.tat_conduzione_rt}} {{ask.rea_rt|is_domanda}}",
+     "label": "Ha presentato domanda di iscrizione al REA"
+    },
+    {
+     "id": "r7c3p16reg:calendar_input",
+     "kind": "date",
+     "value": "{{ask.rea_rt_data|date_it}}",
+     "when": "{{ask.tat_conduzione_rt}} {{ask.rea_rt|is_iscritto}}",
+     "label": "in data"
+    },
+    {
+     "id": "r9c2p22reg:calendar_input",
+     "kind": "date",
+     "value": "{{ask.rea_rt_data|date_it}}",
+     "when": "{{ask.tat_conduzione_rt}} {{ask.rea_rt|is_domanda}}",
+     "label": "in data",
+     "nth": 2
     }
    ]
   }
