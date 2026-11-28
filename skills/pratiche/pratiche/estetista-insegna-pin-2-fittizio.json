@@ -62,6 +62,17 @@
    "type": "text",
    "question": "L'insegna in poche parole (ad es. insegna frontale sopra la vetrina, 100 caratteri)"
   },
+  "insegna_tipologia": {
+   "type": "choice",
+   "question": "Che cosa installi: un'insegna d'esercizio, una vetrofania, una targa o una tenda esterna",
+   "options": [
+    "insegna d'esercizio",
+    "vetrofania",
+    "targa/porta targhe",
+    "tenda esterna"
+   ],
+   "default": "insegna d'esercizio"
+  },
   "insegna_larghezza_m": {
    "type": "number",
    "question": "La larghezza dell'insegna in metri"
@@ -174,6 +185,32 @@
    "question": "con atto n.",
    "schema": "modulo_acconciatori_estetisti_apertura/acconciatori_estetisti_apertura/acconciatori_estetisti_apertura/atto_qualifica_professionale"
   },
+  "multi_responsabili_tecnici": {
+   "type": "yes_no",
+   "question": "Il requisito professionale (l'abilitazione o la qualifica) ce l'ha un'altra persona, e non tu? In quel caso il modulo chiede il suo cognome, nome e ruolo, e di caricare il suo Allegato (B per l'acconciatore, C per l'estetista) con la copia del suo documento. La persona va indicata tra quelle della pratica con la lettera q",
+   "schema": "modulo_acconciatori_estetisti_apertura/acconciatori_estetisti_apertura/acconciatori_estetisti_apertura/multi_responsabili_tecnici_check"
+  },
+  "tipo_qualita_responsabile_tecnico": {
+   "type": "choice",
+   "question": "In che qualità lavora nell'attività chi ha il requisito professionale? Titolare; Socio partecipante al lavoro; Familiare coadiuvante; Dipendente (dal suo ruolo nell'impresa si propongono titolare, socio e dipendente; familiare coadiuvante non ha un ruolo suo e lo dici tu)",
+   "propose": "{{q:ruolo.tipo|requisito_qualita}}",
+   "schema": "modulo_acconciatori_estetisti_apertura/acconciatori_estetisti_apertura/acconciatori_estetisti_apertura/responsabile_tecnico_blocco/tipo_qualita_responsabile_tecnico",
+   "options": [
+    "Titolare",
+    "Socio partecipante al lavoro",
+    "Familiare coadiuvante",
+    "Dipendente"
+   ]
+  },
+  "essere_responsabile_qualifica_professionale": {
+   "type": "yes_no",
+   "question": "Chi ha il requisito professionale lo dichiara con l'Allegato B (acconciatore) o C (estetista)? In quel caso il modulo chiede di caricare l'Allegato compilato e la copia del suo documento d'identità in corso di validità",
+   "schema": "modulo_acconciatori_estetisti_apertura/acconciatori_estetisti_apertura/acconciatori_estetisti_apertura/essere_responsabile_qualifica_professionale_check"
+  },
+  "allegato_dichiarazione_sul_possesso_dei_requisiti": {
+   "type": "file",
+   "question": "L'Allegato B (acconciatore) o C (estetista) compilato e firmato da chi ha il requisito professionale, con la copia del suo documento d'identità (un unico file: PDF, anche firmato .p7m)"
+  },
   "vvf_attivita": {
    "type": "text",
    "question": "Che attività segnali ai Vigili del Fuoco (il tipo di attività, ad es. «ristorante»; 200 caratteri al massimo)"
@@ -232,13 +269,55 @@
   },
   "vvf_pnrr": {
    "type": "yes_no",
-   "question": "Almeno una delle attività in progetto è finanziata o beneficia del regime del PNRR, PNC o ZES? Non lo preparo ancora",
+   "question": "Almeno una delle attività in progetto è finanziata o beneficia del regime del PNRR, PNC o ZES?",
    "propose": "false"
+  },
+  "vvf_misura_pnrr": {
+   "type": "yes_no",
+   "question": "Il finanziamento è del Piano nazionale di ripresa e resilienza (PNRR)?",
+   "propose": "false",
+   "when": "{{ask.vvf_pnrr}}"
+  },
+  "vvf_misura_pnc": {
+   "type": "yes_no",
+   "question": "È del Piano nazionale per gli investimenti complementari (PNC)?",
+   "propose": "false",
+   "when": "{{ask.vvf_pnrr}}"
+  },
+  "vvf_misura_zes": {
+   "type": "yes_no",
+   "question": "L'attività è in una Zona economica speciale (ZES) e ne beneficia?",
+   "propose": "false",
+   "when": "{{ask.vvf_pnrr}}"
   },
   "vvf_impianti_speciali": {
    "type": "yes_no",
-   "question": "Gli interventi in progetto riguardano impianti di idrogeno, GNL/GNC, stoccaggio o trattamento di rifiuti, o le facciate e coperture di edifici civili? Non lo preparo ancora",
+   "question": "Gli interventi in progetto riguardano impianti di idrogeno, GNL/GNC, stoccaggio o trattamento di rifiuti, o le facciate e coperture di edifici civili?",
    "propose": "false"
+  },
+  "vvf_impianto_idrogeno": {
+   "type": "yes_no",
+   "question": "Sono impianti di produzione, stoccaggio o impiego di idrogeno?",
+   "propose": "false",
+   "when": "{{ask.vvf_impianti_speciali}}"
+  },
+  "vvf_impianto_gnl": {
+   "type": "yes_no",
+   "question": "Sono impianti di produzione, stoccaggio o impiego di GNL/GNC?",
+   "propose": "false",
+   "when": "{{ask.vvf_impianti_speciali}}"
+  },
+  "vvf_impianto_rifiuti": {
+   "type": "yes_no",
+   "question": "Sono impianti di stoccaggio o trattamento di rifiuti (art. 183 D.Lgs. 152/2006)?",
+   "propose": "false",
+   "when": "{{ask.vvf_impianti_speciali}}"
+  },
+  "vvf_facciate": {
+   "type": "yes_no",
+   "question": "Sono interventi sui requisiti di sicurezza antincendio delle facciate e delle coperture degli edifici civili?",
+   "propose": "false",
+   "when": "{{ask.vvf_impianti_speciali}}"
   },
   "vvf_importo": {
    "type": "text",
@@ -393,14 +472,6 @@
    "else": "Per le attività di categoria B e C la SCIA antincendio segue l'approvazione del progetto da parte dei Vigili del Fuoco (con il suo numero di pratica): non la preparo ancora."
   },
   {
-   "when": "{{ask.vvf_pnrr|not}}",
-   "else": "Un'attività finanziata dal PNRR, PNC o ZES apre altre voci della SCIA antincendio, che non preparo ancora."
-  },
-  {
-   "when": "{{ask.vvf_impianti_speciali|not}}",
-   "else": "Impianti di idrogeno, GNL/GNC, rifiuti o le facciate e coperture di edifici civili aprono altre voci della SCIA antincendio, che non preparo ancora."
-  },
-  {
    "when": "{{ask.insegna_consenso|not}}",
    "else": "Un'insegna che richiede il consenso del proprietario o del condominio per ora non la preparo."
   },
@@ -429,13 +500,21 @@
    "else": "Gli altri soci o amministratori presentano le proprie dichiarazioni antimafia come allegati firmati (art. 85 D.Lgs. 159/2011): non lo preparo ancora."
   },
   {
-   "value": "{{ask.responsabile_tecnico}}",
+   "value": "{{ask.responsabile_tecnico,ask.multi_responsabili_tecnici|differ}}",
    "in": [
     "true"
    ],
-   "else": "Se il responsabile tecnico è un'altra persona, il modulo chiede i suoi dati e un allegato: per ora non lo preparo."
+   "else": "Il modulo vuole una sola delle due: che il responsabile tecnico sei tu, oppure che è un'altra persona."
   },
   {
+   "value": "{{ask.multi_responsabili_tecnici,q:identity.last_name|requisito_holder}}",
+   "in": [
+    "true"
+   ],
+   "else": "Se il requisito professionale ce l'ha un'altra persona, il modulo chiede i suoi dati: la persona deve essere nel vault dell'impresa (con il cognome, il nome e il ruolo) e indicata tra quelle della pratica con la lettera q. Senza di lei non preparo la pratica."
+  },
+  {
+   "if": "{{ask.responsabile_tecnico}}",
    "value": "{{ask.estetista_requisito}}",
    "in": [
     "qualificazione"
@@ -1267,8 +1346,44 @@
     },
     {
      "kind": "radio",
-     "when": "{{ask.responsabile_tecnico|not}}",
+     "when": "{{ask.multi_responsabili_tecnici}}",
      "label": "che il/i Responsabile/i tecnico/i è/sono:"
+    },
+    {
+     "kind": "text",
+     "on_page": true,
+     "value": "{{q:identity.last_name}}",
+     "when": "{{ask.multi_responsabili_tecnici}}",
+     "max": 100,
+     "label": "Cognome"
+    },
+    {
+     "kind": "text",
+     "on_page": true,
+     "value": "{{q:identity.first_name}}",
+     "when": "{{ask.multi_responsabili_tecnici}}",
+     "max": 100,
+     "label": "Nome"
+    },
+    {
+     "kind": "select",
+     "on_page": true,
+     "value": "{{ask.tipo_qualita_responsabile_tecnico}}",
+     "when": "{{ask.multi_responsabili_tecnici}}",
+     "label": "in qualità di"
+    },
+    {
+     "kind": "checkbox",
+     "on_page": true,
+     "when": "{{ask.multi_responsabili_tecnici}} {{ask.essere_responsabile_qualifica_professionale}}",
+     "label": "che possiede/ono l'abilitazione professionale prevista,"
+    },
+    {
+     "kind": "file",
+     "on_page": true,
+     "value": "{{ask.allegato_dichiarazione_sul_possesso_dei_requisiti}}",
+     "when": "{{ask.multi_responsabili_tecnici}} {{ask.essere_responsabile_qualifica_professionale}}",
+     "label": "Tipologie ammesse"
     }
    ]
   },
@@ -1334,10 +1449,41 @@
    "section": "INFORMAZIONE AI SOLI FINI STATISTICI",
    "fields": [
     {
+     "id": "r2c1p2reg:radio:0_clone",
+     "kind": "radio",
+     "when": "{{ask.vvf_pnrr}}",
+     "label": "SI"
+    },
+    {
      "id": "r2c2p3reg:radio:1_clone",
      "kind": "radio",
      "when": "{{ask.vvf_pnrr|not}}",
      "label": "NO"
+    },
+    {
+     "id": "r3c1p5reg:chk",
+     "kind": "checkbox",
+     "when": "{{ask.vvf_pnrr}} {{ask.vvf_misura_pnrr}}",
+     "label": "PIANO NAZIONALE DI RIPRESA E RESILIENZA"
+    },
+    {
+     "id": "r4c1p6reg:chk",
+     "kind": "checkbox",
+     "when": "{{ask.vvf_pnrr}} {{ask.vvf_misura_pnc}}",
+     "label": "PIANO NAZIONALE PER GLI INVESTIMENTI COMPLEMENTARI"
+    },
+    {
+     "id": "r5c1p7reg:chk",
+     "kind": "checkbox",
+     "when": "{{ask.vvf_pnrr}} {{ask.vvf_misura_zes}}",
+     "label": "ZONE ECONOMICHE SPECIALI"
+    },
+    {
+     "id": "r7c1p9reg:radio:2_clone",
+     "kind": "radio",
+     "when": "{{ask.vvf_impianti_speciali}}",
+     "label": "SI",
+     "nth": 2
     },
     {
      "id": "r7c2p10reg:radio:3_clone",
@@ -1345,6 +1491,30 @@
      "when": "{{ask.vvf_impianti_speciali|not}}",
      "label": "NO",
      "nth": 2
+    },
+    {
+     "id": "r8c1p12reg:chk",
+     "kind": "checkbox",
+     "when": "{{ask.vvf_impianti_speciali}} {{ask.vvf_impianto_idrogeno}}",
+     "label": "IMPIANTI DI PRODUZIONE, STOCCAGGIO O IMPIEGO DI IDROGENO"
+    },
+    {
+     "id": "r9c1p13reg:chk",
+     "kind": "checkbox",
+     "when": "{{ask.vvf_impianti_speciali}} {{ask.vvf_impianto_gnl}}",
+     "label": "IMPIANTI DI PRODUZIONE, STOCCAGGIO O IMPIEGO GNL/GNC"
+    },
+    {
+     "id": "r10c1p14reg:chk",
+     "kind": "checkbox",
+     "when": "{{ask.vvf_impianti_speciali}} {{ask.vvf_impianto_rifiuti}}",
+     "label": "IMPIANTI DI STOCCAGGIO O TRATTAMENTO DI RIFIUTI"
+    },
+    {
+     "id": "r11c1p15reg:chk",
+     "kind": "checkbox",
+     "when": "{{ask.vvf_impianti_speciali}} {{ask.vvf_facciate}}",
+     "label": "INTERVENTI AFFERENTI I REQUISITI DI SICUREZZA ANTINCENDIO DELLE FACCIATE"
     }
    ]
   },
@@ -1942,7 +2112,7 @@
     {
      "id": "r2c1p2reg",
      "kind": "select",
-     "value": "insegna d'esercizio",
+     "value": "{{ask.insegna_tipologia}}",
      "label": "Tipologia"
     },
     {
@@ -2147,7 +2317,7 @@
     {
      "id": "r3c1p3reg",
      "kind": "select",
-     "value": "insegna d'esercizio",
+     "value": "{{ask.insegna_tipologia|insegna_luogo}}",
      "label": "Tipologia"
     },
     {

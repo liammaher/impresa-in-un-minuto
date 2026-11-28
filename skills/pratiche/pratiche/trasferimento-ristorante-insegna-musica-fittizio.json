@@ -211,6 +211,17 @@
    "type": "text",
    "question": "L'insegna in poche parole (ad es. insegna frontale sopra la vetrina, 100 caratteri)"
   },
+  "insegna_tipologia": {
+   "type": "choice",
+   "question": "Che cosa installi: un'insegna d'esercizio, una vetrofania, una targa o una tenda esterna",
+   "options": [
+    "insegna d'esercizio",
+    "vetrofania",
+    "targa/porta targhe",
+    "tenda esterna"
+   ],
+   "default": "insegna d'esercizio"
+  },
   "insegna_larghezza_m": {
    "type": "number",
    "question": "La larghezza dell'insegna in metri"
@@ -1469,7 +1480,7 @@
     {
      "id": "r2c1p2reg",
      "kind": "select",
-     "value": "insegna d'esercizio",
+     "value": "{{ask.insegna_tipologia}}",
      "label": "Tipologia"
     },
     {
@@ -1674,7 +1685,7 @@
     {
      "id": "r3c1p3reg",
      "kind": "select",
-     "value": "insegna d'esercizio",
+     "value": "{{ask.insegna_tipologia|insegna_luogo}}",
      "label": "Tipologia"
     },
     {
