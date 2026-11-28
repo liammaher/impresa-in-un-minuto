@@ -10,16 +10,19 @@
   :root {
     --bg: #f7f6f2; --surface: #ffffff; --text: #1d1d1b; --muted: #6a6a64; --line: #e3e1d9;
     --accent: #1f5f4a; --accent-text: #ffffff; --accent-soft: #e6f0eb; --chip: #efeee8; --focus: #2f7d63;
+    --no: #b3412f;
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
       --bg: #161715; --surface: #1f201e; --text: #ecebe6; --muted: #a3a29b; --line: #34352f;
       --accent: #5fb592; --accent-text: #0f1a15; --accent-soft: #1d2b24; --chip: #2a2b28; --focus: #7fcfae;
+      --no: #e27a68;
     }
   }
   :root[data-theme="dark"] {
     --bg: #161715; --surface: #1f201e; --text: #ecebe6; --muted: #a3a29b; --line: #34352f;
     --accent: #5fb592; --accent-text: #0f1a15; --accent-soft: #1d2b24; --chip: #2a2b28; --focus: #7fcfae;
+    --no: #e27a68;
   }
 
   * { box-sizing: border-box; }
@@ -34,7 +37,6 @@
 
   header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 40px; }
   h1 { margin: 0 0 6px; font-size: clamp(30px, 7vw, 40px); line-height: 1.1; letter-spacing: -.02em; }
-  .lead { margin: 0; color: var(--muted); }
 
   .lang { flex: none; display: flex; border: 1px solid var(--line); border-radius: 999px; padding: 2px; margin-top: 6px; }
   .lang button {
@@ -102,6 +104,13 @@
 
   .notice { margin: -16px 0 32px; padding: 12px 14px; background: var(--accent-soft); border-radius: 10px; font-size: 15px; }
 
+  /* What Claude does that ChatGPT can't yet (docs/design/openai-platform.md): ticks on Claude's side, crosses on ChatGPT's. */
+  .feats { list-style: none; margin: -12px 0 32px; padding: 0; display: grid; gap: 6px; font-size: 15px; }
+  .feats li { display: flex; gap: 10px; }
+  .feats li::before { content: "✓"; flex: none; width: 1em; font-weight: 700; color: var(--accent); }
+  .feats li.no::before { content: "✕"; color: var(--no); }
+  .feats ~ .notice { margin-top: 0; }
+
   footer { margin-top: 40px; font-size: 14px; color: var(--muted); }
 
   /* Claude or ChatGPT: each app's steps sit in a data-for block; the switch shows one, Claude unless chosen. */
@@ -125,8 +134,6 @@
   <header>
     <div>
       <h1>Impresa in un minuto</h1>
-      <p class="lead" lang="it">Quattro passi, due minuti, nessun terminale.</p>
-      <p class="lead" lang="en">Four steps, two minutes, no terminal.</p>
     </div>
     <div class="lang" role="group" aria-label="Lingua / Language">
       <button type="button" data-lang="it" aria-pressed="true">IT</button>
@@ -148,6 +155,18 @@
   </div>
 
   <div data-for="claude">
+  <ul class="feats" lang="it">
+    <li>Allega i documenti e la procura</li>
+    <li>Controlla email e numeri di telefono</li>
+    <li>Confronta l'anteprima del portale con i documenti</li>
+    <li>Compila ogni sezione in pochi secondi</li>
+  </ul>
+  <ul class="feats" lang="en">
+    <li>Attaches the documents and the procura</li>
+    <li>Checks email addresses and phone numbers</li>
+    <li>Checks the portal's preview against the documents</li>
+    <li>Fills each section in seconds</li>
+  </ul>
   <p class="notice" lang="it"><strong>Per chi queste pratiche le presenta già.</strong> Impresa in un minuto compila: non è una consulenza e non decide al posto tuo. Claude può sbagliare, e il controllo finale è tuo. Se non sai riconoscere un errore in una pratica, non usarlo.</p>
   <p class="notice" lang="en"><strong>For people who already file these pratiche.</strong> Impresa in un minuto fills in forms: it is not a consultancy and does not decide for you. Claude can make mistakes, and the final check is yours. If you can't tell when a pratica is filled in wrongly, don't use it.</p>
 
@@ -250,8 +269,20 @@
   </div>
 
   <div data-for="chatgpt">
-  <p class="notice" lang="it"><strong>Per chi queste pratiche le presenta già.</strong> Impresa in un minuto compila: non è una consulenza e non decide al posto tuo. ChatGPT può sbagliare, e il controllo finale è tuo. Serve l'app ChatGPT per computer (Mac o Windows): non funziona in ChatGPT sul web o sul telefono.</p>
-  <p class="notice" lang="en"><strong>For people who already file these pratiche.</strong> Impresa in un minuto fills in forms: it is not a consultancy and does not decide for you. ChatGPT can make mistakes, and the final check is yours. You need the ChatGPT desktop app (Mac or Windows): it doesn't work in ChatGPT on the web or on a phone.</p>
+  <ul class="feats" lang="it">
+    <li class="no">Non allega i documenti né la procura: li alleghi tu</li>
+    <li class="no">Non controlla email e numeri di telefono</li>
+    <li class="no">Non confronta l'anteprima del portale con i documenti</li>
+    <li class="no">Più lento: fino a 45 secondi a sezione</li>
+    <li class="no">Non funziona sul web né sul telefono: serve l'app per Mac o Windows</li>
+  </ul>
+  <ul class="feats" lang="en">
+    <li class="no">Doesn't attach the documents or the procura: you attach them</li>
+    <li class="no">Doesn't check email addresses and phone numbers</li>
+    <li class="no">Doesn't check the portal's preview against the documents</li>
+    <li class="no">Slower: up to 45 seconds a section</li>
+    <li class="no">Doesn't work on the web or on a phone: you need the Mac or Windows app</li>
+  </ul>
 
   <ol>
     <li>
